@@ -1,0 +1,5 @@
+tags:
+  integration:
+    # Tests that use Drift streams need real async because Drift's
+    # StreamQueryStore.markAsClosed schedules zero-duration timers
+    # that are incompatible with FakeAsync.

@@ -1,0 +1,179 @@
+// ignore_for_file: prefer_single_quotes
+
+import 'package:drift/drift.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../models/user.dart';
+import 'database_service.dart';
+
+/// Current document versions — bump when legal text changes.
+const String currentPrivacyPolicyVersion = '2026-03-29';
+const String currentTermsOfServiceVersion = '2026-03-29';
+const String currentHealthDisclaimerVersion = '2026-03-29';
+
+/// User CRUD, consent records, and data deletion.
+class UserRepository {
+  final AppDatabase _db;
+
+  UserRepository(this._db);
+
+  /// Save or update a user. Returns the row ID.
+  Future<int> saveUser(User user) async {
+    try {
+      if (user.id != null) {
+        await (_db.update(_db.users)
+              ..where((t) => t.id.equals(user.id!)))
+            .write(UsersCompanion(
+          displayName: Value(user.displayName),
+          email: Value(user.email),
+          subscriptionTier: Value(user.subscriptionTier),
+        ));
+        return user.id!;
+      } else {
+        return await _db.into(_db.users).insert(
+              UsersCompanion.insert(
+                displayName: Value(user.displayName),
+                email: Value(user.email),
+                subscriptionTier: Value(user.subscriptionTier),
+                createdAt: user.createdAt,
+              ),
+            );
+      }
+    } catch (e) {
+      debugPrint('UserRepository.saveUser failed: $e');
+      rethrow;
+    }
+  }
+
+  /// Get the first user (for single-user mode).
+  Future<User?> getUser() async {
+    try {
+      final row = await (_db.select(_db.users)..limit(1)).getSingleOrNull();
+      if (row == null) return null;
+      return User(
+        id: row.id,
+        displayName: row.displayName,
+        email: row.email,
+        subscriptionTier: row.subscriptionTier,
+        createdAt: row.createdAt.toLocal(),
+      );
+    } catch (e) {
+      debugPrint('UserRepository.getUser failed: $e');
+      return null;
+    }
+  }
+
+  /// Watch the first user for reactive updates.
+  Stream<User?> watchUser() {
+    return (_db.select(_db.users)..limit(1))
+        .watchSingleOrNull()
+        .map((row) {
+      if (row == null) return null;
+      return User(
+        id: row.id,
+        displayName: row.displayName,
+        email: row.email,
+        subscriptionTier: row.subscriptionTier,
+        createdAt: row.createdAt.toLocal(),
+      );
+    })
+    .handleError((e) => DatabaseService.logStreamError('watchUser', e));
+  }
+
+  /// Delete all journal entries, settings, users, consent records,
+  /// and clear related SharedPreferences keys. Re-insert default settings.
+  Future<void> deleteAllData() async {
+    try {
+      await _db.transaction(() async {
+        await _db.delete(_db.journalEntries).go();
+        await _db.delete(_db.userSettingsTable).go();
+        await _db.delete(_db.users).go();
+        await _db.delete(_db.consentRecords).go();
+        // Re-insert default settings row.
+        await _db.into(_db.userSettingsTable).insert(
+              UserSettingsTableCompanion.insert(),
+            );
+      });
+      // Clear SharedPreferences keys related to lock and age verification.
+      try {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.remove('age_verified');
+        await prefs.remove('lock_failed_attempts');
+        await prefs.remove('lock_lockout_count');
+        await prefs.remove('lock_lockout_end');
+      } catch (_) {
+        // SharedPreferences may not be available in test environments.
+      }
+      // Clear the DB encryption key so a fresh key is generated on next launch.
+      try {
+        const storage = FlutterSecureStorage();
+        await storage.delete(key: 'sincethen_db_key');
+      } catch (_) {
+        // Secure storage may not be available in test environments.
+      }
+    } catch (e) {
+      debugPrint('UserRepository.deleteAllData failed: $e');
+      rethrow;
+    }
+  }
+
+  /// Save a consent record (e.g., privacy policy acceptance).
+  Future<int> saveConsentRecord({
+    required String consentType,
+    required String documentVersion,
+    required DateTime acceptedAt,
+    String? appVersion,
+  }) async {
+    try {
+      return await _db.into(_db.consentRecords).insert(
+            ConsentRecordsCompanion.insert(
+              consentType: consentType,
+              documentVersion: documentVersion,
+              acceptedAt: acceptedAt,
+              appVersion: Value(appVersion),
+            ),
+          );
+    } catch (e) {
+      debugPrint('UserRepository.saveConsentRecord failed: $e');
+      rethrow;
+    }
+  }
+
+  /// Check whether the user needs to re-consent to updated legal documents.
+  /// Returns true if any required consent is missing or outdated.
+  Future<bool> needsReconsent() async {
+    try {
+      final records = await getConsentRecords();
+      bool hasCurrentPrivacy = false;
+      bool hasCurrentTerms = false;
+      for (final r in records) {
+        if (r.consentType == 'privacy_policy' &&
+            r.documentVersion == currentPrivacyPolicyVersion) {
+          hasCurrentPrivacy = true;
+        }
+        if (r.consentType == 'terms_of_service' &&
+            r.documentVersion == currentTermsOfServiceVersion) {
+          hasCurrentTerms = true;
+        }
+      }
+      return !hasCurrentPrivacy || !hasCurrentTerms;
+    } catch (e) {
+      debugPrint('UserRepository.needsReconsent failed: $e');
+      return true; // Fail safe: require re-consent if we can't check
+    }
+  }
+
+  /// Get all consent records, newest first.
+  Future<List<ConsentRecordRow>> getConsentRecords() async {
+    try {
+      final rows = await (_db.select(_db.consentRecords)
+            ..orderBy([(t) => OrderingTerm.desc(t.acceptedAt)]))
+          .get();
+      return rows;
+    } catch (e) {
+      debugPrint('UserRepository.getConsentRecords failed: $e');
+      return [];
+    }
+  }
+}

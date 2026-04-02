@@ -1,0 +1,177 @@
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import '../../theme/app_spacing.dart';
+import '../molecules/number_pad.dart';
+
+class PinSetupSheet extends StatefulWidget {
+  const PinSetupSheet({super.key});
+
+  @override
+  State<PinSetupSheet> createState() => PinSetupSheetState();
+}
+
+class PinSetupSheetState extends State<PinSetupSheet> {
+  String _enteredPin = '';
+  String _firstPin = '';
+  bool _isConfirmStep = false;
+  bool _isError = false;
+
+  static const _pinLength = 4;
+  Timer? _advanceTimer;
+  bool _isDenylisted = false;
+
+  static const _denylist = {
+    '0000', '1111', '2222', '3333', '4444',
+    '5555', '6666', '7777', '8888', '9999',
+    '1234', '4321', '1230', '0123', '2580',
+  };
+
+  @override
+  void dispose() {
+    _advanceTimer?.cancel();
+    super.dispose();
+  }
+
+  void _onDigit(int digit) {
+    if (_enteredPin.length >= _pinLength) return;
+    setState(() {
+      _isError = false;
+      _isDenylisted = false;
+      _enteredPin += '$digit';
+    });
+
+    // Auto-advance at 4 digits
+    if (_enteredPin.length == _pinLength) {
+      _advanceTimer?.cancel();
+      _advanceTimer = Timer(const Duration(milliseconds: 200), _advance);
+    }
+  }
+
+  void _onDelete() {
+    if (_enteredPin.isEmpty) return;
+    setState(() {
+      _isError = false;
+      _enteredPin = _enteredPin.substring(0, _enteredPin.length - 1);
+    });
+  }
+
+  void _advance() {
+    if (_enteredPin.length < _pinLength) return;
+
+    if (!_isConfirmStep) {
+      if (_denylist.contains(_enteredPin)) {
+        HapticFeedback.heavyImpact();
+        setState(() {
+          _isDenylisted = true;
+          _enteredPin = '';
+        });
+        return;
+      }
+      // Move to confirm step
+      setState(() {
+        _isDenylisted = false;
+        _firstPin = _enteredPin;
+        _enteredPin = '';
+        _isConfirmStep = true;
+      });
+    } else {
+      // Verify match
+      if (_enteredPin == _firstPin) {
+        Navigator.of(context).pop(_firstPin);
+      } else {
+        HapticFeedback.heavyImpact();
+        setState(() {
+          _isError = true;
+          _enteredPin = '';
+        });
+      }
+    }
+  }
+
+  String get _title => _isConfirmStep ? 'Confirm PIN' : 'Set a PIN';
+
+  String get _subtitle {
+    if (_isDenylisted) return 'Too easy to guess. Choose a different PIN.';
+    if (_isError) return 'PINs did not match. Try again.';
+    return _isConfirmStep
+        ? 'Enter the same PIN again'
+        : 'Choose a 4-digit PIN';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
+
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: AppSpacing.md),
+
+            Text(
+              _title,
+              style: tt.headlineSmall?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Semantics(
+              liveRegion: true,
+              child: Text(
+                _subtitle,
+                style: tt.bodyMedium?.copyWith(
+                  color: (_isError || _isDenylisted) ? cs.error : cs.onSurfaceVariant,
+                ),
+              ),
+            ),
+
+            const SizedBox(height: AppSpacing.xl),
+
+            // PIN dots
+            PinDots(
+              length: _enteredPin.length,
+              maxLength: _pinLength,
+              isError: _isError,
+            ),
+
+            const SizedBox(height: AppSpacing.xl),
+
+            // Number pad
+            NumberPad(
+              onDigit: _onDigit,
+              onDelete: _onDelete,
+            ),
+
+            const SizedBox(height: AppSpacing.md),
+
+            // Action buttons
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('Cancel'),
+                ),
+                if (_enteredPin.length >= _pinLength)
+                  FilledButton(
+                    onPressed: _advance,
+                    style: FilledButton.styleFrom(
+                      shape: const StadiumBorder(),
+                    ),
+                    child: Text(_isConfirmStep ? 'Set PIN' : 'Next'),
+                  ),
+              ],
+            ),
+
+            const SizedBox(height: AppSpacing.lg),
+          ],
+        ),
+      ),
+    );
+  }
+}

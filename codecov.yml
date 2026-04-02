@@ -1,0 +1,16 @@
+coverage:
+  status:
+    project:
+      default:
+        threshold: 1%
+        target: 60%
+    patch:
+      default:
+        threshold: 1%
+        target: 70%
+        # New code must maintain at least 70% coverage
+  round: down
+  precision: 2
+comment:
+  layout: "reach,diff,flags,files"
+  behavior: default

@@ -1,0 +1,66 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:sincethen/widgets/atoms/sincethen_card.dart';
+
+import '../../test_helpers.dart';
+
+void main() {
+  group('SinceThenCard', () {
+    testWidgets('renders child content', (tester) async {
+      await tester.pumpWidget(wrapWidget(
+        const SinceThenCard(child: Text('Card Content')),
+      ));
+      expect(find.text('Card Content'), findsOneWidget);
+    });
+
+    testWidgets('applies custom color', (tester) async {
+      await tester.pumpWidget(wrapWidget(
+        const SinceThenCard(
+          color: Colors.amber,
+          child: Text('Colored'),
+        ),
+      ));
+
+      final container = tester.widget<Container>(
+        find.byType(Container).first,
+      );
+      final decoration = container.decoration as BoxDecoration;
+      expect(decoration.color, Colors.amber);
+    });
+
+    testWidgets('onTap callback fires', (tester) async {
+      var tapped = false;
+      await tester.pumpWidget(wrapWidget(
+        SinceThenCard(
+          onTap: () => tapped = true,
+          child: const Text('Tappable'),
+        ),
+      ));
+
+      await tester.tap(find.text('Tappable'));
+      await tester.pump();
+      expect(tapped, true);
+    });
+
+    testWidgets('wraps in GestureDetector when onTap is set', (tester) async {
+      await tester.pumpWidget(wrapWidget(
+        SinceThenCard(onTap: () {}, child: const Text('Tap')),
+      ));
+      expect(find.byType(GestureDetector), findsOneWidget);
+    });
+
+    testWidgets('no GestureDetector when onTap is null', (tester) async {
+      await tester.pumpWidget(wrapWidget(
+        const SinceThenCard(child: Text('No Tap')),
+      ));
+      expect(find.byType(GestureDetector), findsNothing);
+    });
+
+    testWidgets('has AnimatedScale when tappable', (tester) async {
+      await tester.pumpWidget(wrapWidget(
+        SinceThenCard(onTap: () {}, child: const Text('Scale')),
+      ));
+      expect(find.byType(AnimatedScale), findsOneWidget);
+    });
+  });
+}
