@@ -5,11 +5,11 @@ const String privacyPolicyText = '''
 
 ## Overview
 
-SinceThen ("the App") is a personal journaling application designed to help people with ADHD capture and organize their thoughts. Your privacy is fundamental to how SinceThen is built. The App stores all data locally on your device and does not transmit any information over the internet.
+SinceThen ("the App") is a personal journaling application designed to help people with ADHD capture and organize their thoughts. Your privacy is fundamental to how SinceThen is built. The App stores all data locally on your device and does not transmit your journal entries or personal data over the internet.
 
 ## Data Collection
 
-SinceThen does **not** collect any personal data. There are no accounts, no sign-ups, no analytics, no telemetry, and no tracking of any kind. The App makes zero network calls.
+SinceThen does **not** collect any personal data. There are no accounts, no sign-ups, no analytics, no telemetry, and no tracking of any kind. Your journal data never leaves your device.
 
 ## Data Stored Locally on Your Device
 
@@ -67,7 +67,7 @@ SinceThen is developed by an independent developer. All data remains on your dev
 
 ## Changes to This Policy
 
-We may update this Privacy Policy from time to time. Changes will be communicated through an in-app notice when you open the App after an update. We encourage you to review this policy periodically. Continued use of the App after changes are posted constitutes acceptance of those changes.
+We may update this Privacy Policy from time to time. Changes will be communicated through an in-app notice when you open the App after an update. We encourage you to review this policy periodically. Material changes to this policy will require your explicit acceptance before you can continue using the App.
 
 ## Contact Us
 

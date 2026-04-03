@@ -1,0 +1,117 @@
+@Tags(['integration'])
+library;
+
+import 'package:flutter/services.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:sincethen/models/journal_entry.dart';
+import 'package:sincethen/services/database_service.dart';
+import 'package:sincethen/services/widget_service.dart';
+
+import '../test_helpers.dart';
+
+/// Tracks data saved via HomeWidget.saveWidgetData and updateWidget calls.
+final Map<String, dynamic> _savedWidgetData = {};
+bool _widgetUpdated = false;
+
+void _mockHomeWidgetPlugin() {
+  _savedWidgetData.clear();
+  _widgetUpdated = false;
+  const channel = MethodChannel('home_widget');
+  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+      .setMockMethodCallHandler(channel, (call) async {
+    switch (call.method) {
+      case 'setAppGroupId':
+        return null;
+      case 'saveWidgetData':
+        final key = call.arguments['id'] as String;
+        final value = call.arguments['data'];
+        _savedWidgetData[key] = value;
+        return true;
+      case 'updateWidget':
+        _widgetUpdated = true;
+        return true;
+      default:
+        return null;
+    }
+  });
+}
+
+void main() {
+  final db = DatabaseService.instance;
+
+  setUpAll(() async {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    await initTestDatabase();
+  });
+
+  setUp(() async {
+    _mockHomeWidgetPlugin();
+    // Clear all entries
+    final all = await db.entries.getAllEntries();
+    for (final e in all) {
+      if (e.id != null) await db.entries.deleteEntry(e.id!);
+    }
+  });
+
+  group('WidgetService.init', () {
+    test('init calls setAppGroupId without error', () async {
+      // Should not throw; mock handles setAppGroupId
+      await WidgetService.instance.init();
+    });
+  });
+
+  group('WidgetService.update', () {
+    test('pushes correct keys with no entries', () async {
+      await WidgetService.instance.update();
+
+      expect(_savedWidgetData.containsKey('streak'), true);
+      expect(_savedWidgetData.containsKey('totalEntries'), true);
+      expect(_savedWidgetData.containsKey('lastEntryDate'), true);
+      expect(_savedWidgetData.containsKey('mood'), true);
+      expect(_widgetUpdated, true);
+    });
+
+    test('streak and totalEntries are 0 with no entries', () async {
+      await WidgetService.instance.update();
+
+      expect(_savedWidgetData['streak'], 0);
+      expect(_savedWidgetData['totalEntries'], 0);
+      expect(_savedWidgetData['lastEntryDate'], '');
+      expect(_savedWidgetData['mood'], -1);
+    });
+
+    test('pushes correct data after saving an entry', () async {
+      final now = DateTime.now();
+      final today = DateTime(now.year, now.month, now.day);
+
+      await db.entries.saveEntry(JournalEntry(
+        date: today,
+        entry: 'Widget test entry',
+        mood: 4,
+        createdAt: now,
+      ));
+
+      await WidgetService.instance.update();
+
+      expect(_savedWidgetData['totalEntries'], 1);
+      expect(_savedWidgetData['mood'], 4);
+      expect(_savedWidgetData['lastEntryDate'], isNotEmpty);
+      expect(_widgetUpdated, true);
+    });
+
+    test('mood is -1 when entry has no mood set', () async {
+      final now = DateTime.now();
+      final today = DateTime(now.year, now.month, now.day);
+
+      await db.entries.saveEntry(JournalEntry(
+        date: today,
+        entry: 'No mood entry',
+        createdAt: now,
+      ));
+
+      await WidgetService.instance.update();
+
+      expect(_savedWidgetData['mood'], -1);
+    });
+  });
+}

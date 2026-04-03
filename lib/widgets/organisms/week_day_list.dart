@@ -108,7 +108,7 @@ class WeekDayList extends StatelessWidget {
                           style: tt.titleSmall?.copyWith(
                             fontWeight: FontWeight.w600,
                             color: isFuture
-                                ? cs.onSurfaceVariant.withValues(alpha: 0.65)
+                                ? cs.onSurfaceVariant.withValues(alpha: 0.75)
                                 : isToday
                                     ? cs.primary
                                     : cs.onSurface,
@@ -119,7 +119,7 @@ class WeekDayList extends StatelessWidget {
                           dateLabel,
                           style: tt.labelMedium?.copyWith(
                             color: isFuture
-                                ? cs.onSurfaceVariant.withValues(alpha: 0.65)
+                                ? cs.onSurfaceVariant.withValues(alpha: 0.75)
                                 : cs.onSurfaceVariant.withValues(alpha: 0.7),
                           ),
                         ),

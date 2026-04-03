@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user_settings.dart';
 import '../services/database_service.dart';
@@ -9,6 +10,7 @@ import '../services/settings_repository.dart';
 import '../theme/app_spacing.dart';
 import '../widgets/atoms/sincethen_logo.dart';
 import '../widgets/molecules/number_pad.dart';
+import '../widgets/organisms/pin_setup_sheet.dart' show pinLengthPrefKey;
 
 /// Full-screen lock that shows on app open when app lock is enabled.
 /// Supports PIN entry, optional biometric unlock, and brute-force protection.
@@ -24,6 +26,7 @@ class LockScreen extends StatefulWidget {
 class _LockScreenState extends State<LockScreen> {
   final SettingsRepository _settingsRepo = DatabaseService.instance.settings;
   final _auth = LocalAuthentication();
+  final _secureStorage = const FlutterSecureStorage();
 
   String _enteredPin = '';
   bool _isError = false;
@@ -50,12 +53,19 @@ class _LockScreenState extends State<LockScreen> {
   Future<void> _loadSettings() async {
     final s = await _settingsRepo.getSettings();
     if (!mounted) return;
-    setState(() => _settings = s);
 
+    // Read configured PIN length (4 or 6, default 4).
     final prefs = await SharedPreferences.getInstance();
-    _failedAttempts = prefs.getInt(_prefFailedAttempts) ?? 0;
-    _lockoutCount = prefs.getInt(_prefLockoutCount) ?? 0;
-    final lockoutEndMs = prefs.getInt(_prefLockoutEnd) ?? 0;
+    final storedPinLength = prefs.getInt(pinLengthPrefKey) ?? 4;
+
+    setState(() {
+      _settings = s;
+      _pinLength = (storedPinLength == 6) ? 6 : 4;
+    });
+
+    _failedAttempts = int.tryParse(await _secureStorage.read(key: _prefFailedAttempts) ?? '') ?? 0;
+    _lockoutCount = int.tryParse(await _secureStorage.read(key: _prefLockoutCount) ?? '') ?? 0;
+    final lockoutEndMs = int.tryParse(await _secureStorage.read(key: _prefLockoutEnd) ?? '') ?? 0;
     if (lockoutEndMs > 0) {
       final lockoutEnd = DateTime.fromMillisecondsSinceEpoch(lockoutEndMs);
       final remaining = lockoutEnd.difference(DateTime.now()).inSeconds;
@@ -74,17 +84,15 @@ class _LockScreenState extends State<LockScreen> {
   }
 
   Future<void> _persistLockout(DateTime lockoutEnd) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt(_prefFailedAttempts, _failedAttempts);
-    await prefs.setInt(_prefLockoutCount, _lockoutCount);
-    await prefs.setInt(_prefLockoutEnd, lockoutEnd.millisecondsSinceEpoch);
+    await _secureStorage.write(key: _prefFailedAttempts, value: '$_failedAttempts');
+    await _secureStorage.write(key: _prefLockoutCount, value: '$_lockoutCount');
+    await _secureStorage.write(key: _prefLockoutEnd, value: '${lockoutEnd.millisecondsSinceEpoch}');
   }
 
   Future<void> _clearPersistedLockout() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_prefFailedAttempts);
-    await prefs.remove(_prefLockoutCount);
-    await prefs.remove(_prefLockoutEnd);
+    await _secureStorage.delete(key: _prefFailedAttempts);
+    await _secureStorage.delete(key: _prefLockoutCount);
+    await _secureStorage.delete(key: _prefLockoutEnd);
   }
 
   Future<void> _tryBiometric() async {
@@ -105,7 +113,7 @@ class _LockScreenState extends State<LockScreen> {
     }
   }
 
-  static const _pinLength = 4;
+  int _pinLength = 4;
 
   void _onDigit(int digit) {
     if (_settings == null || _isLockedOut || _isVerifying || _enteredPin.length >= _pinLength) return;
@@ -215,6 +223,33 @@ class _LockScreenState extends State<LockScreen> {
     return 'Enter your PIN';
   }
 
+  void _showForgotPinDialog() {
+    final cs = Theme.of(context).colorScheme;
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Forgot PIN?'),
+        content: const Text(
+          "If you've forgotten your PIN, you can reset the app. "
+          'This will delete all your data and let you start fresh.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              DatabaseService.instance.userRepo.deleteAllData();
+            },
+            child: Text('Reset App', style: TextStyle(color: cs.error)),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
@@ -262,6 +297,20 @@ class _LockScreenState extends State<LockScreen> {
                     : null,
                 isDisabled: _isLockedOut,
               ),
+
+              if (_lockoutCount >= 2)
+                Padding(
+                  padding: const EdgeInsets.only(top: AppSpacing.md),
+                  child: TextButton(
+                    onPressed: _showForgotPinDialog,
+                    child: Text(
+                      'Forgot PIN?',
+                      style: TextStyle(
+                        color: cs.onSurfaceVariant.withValues(alpha: 0.75),
+                      ),
+                    ),
+                  ),
+                ),
 
               const SizedBox(height: AppSpacing.xl),
             ],

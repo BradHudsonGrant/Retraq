@@ -5,16 +5,19 @@ class NudgeCard extends StatelessWidget {
   const NudgeCard({
     super.key,
     required this.nudgeHour,
+    this.nudgeMinute = 0,
     required this.onChangeTime,
   });
 
   final int nudgeHour;
+  final int nudgeMinute;
   final VoidCallback onChangeTime;
 
-  String _formatHour(int hour) {
+  String _formatTime(int hour, int minute) {
     final period = hour >= 12 ? 'PM' : 'AM';
     final h = hour % 12 == 0 ? 12 : hour % 12;
-    return '$h:00 $period';
+    final m = minute.toString().padLeft(2, '0');
+    return '$h:$m $period';
   }
 
   @override
@@ -46,7 +49,7 @@ class NudgeCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Daily at ${_formatHour(nudgeHour)}',
+                'Daily at ${_formatTime(nudgeHour, nudgeMinute)}',
                 style: tt.bodySmall?.copyWith(
                   color: cs.onPrimary,
                 ),
@@ -56,7 +59,6 @@ class NudgeCard extends StatelessWidget {
                 style: FilledButton.styleFrom(
                   backgroundColor: cs.surfaceContainerLowest,
                   foregroundColor: cs.primary,
-                  shape: const StadiumBorder(),
                 ),
                 child: const Text('Change Time'),
               ),

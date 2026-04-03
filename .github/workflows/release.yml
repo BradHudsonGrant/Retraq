@@ -5,6 +5,10 @@ on:
     tags:
       - 'v*'
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   # Quality gate: run tests and analysis before building release artifacts
   test:
@@ -77,14 +81,32 @@ jobs:
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
 
+      - name: Parse version from tag
+        id: version
+        run: |
+          TAG="${GITHUB_REF#refs/tags/v}"
+          if [[ "$TAG" == *"+"* ]]; then
+            BUILD_NAME="${TAG%%+*}"
+            BUILD_NUMBER="${TAG##*+}"
+          else
+            BUILD_NAME="$TAG"
+            BUILD_NUMBER="${{ github.run_number }}"
+          fi
+          echo "build_name=$BUILD_NAME" >> "$GITHUB_OUTPUT"
+          echo "build_number=$BUILD_NUMBER" >> "$GITHUB_OUTPUT"
+
       - name: Build release AAB
-        run: flutter build appbundle --release --obfuscate --split-debug-info=build/debug-info
+        run: flutter build appbundle --release --obfuscate --split-debug-info=build/debug-info --build-name=${{ steps.version.outputs.build_name }} --build-number=${{ steps.version.outputs.build_number }}
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
           KEYSTORE_PATH: ${{ github.workspace }}/release-keystore.jks
+
+      - name: Cleanup keystore
+        if: always()
+        run: rm -f release-keystore.jks
 
       - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
@@ -117,8 +139,22 @@ jobs:
       - name: Generate code
         run: dart run build_runner build --delete-conflicting-outputs
 
+      - name: Parse version from tag
+        id: version
+        run: |
+          TAG="${GITHUB_REF#refs/tags/v}"
+          if [[ "$TAG" == *"+"* ]]; then
+            BUILD_NAME="${TAG%%+*}"
+            BUILD_NUMBER="${TAG##*+}"
+          else
+            BUILD_NAME="$TAG"
+            BUILD_NUMBER="${{ github.run_number }}"
+          fi
+          echo "build_name=$BUILD_NAME" >> "$GITHUB_OUTPUT"
+          echo "build_number=$BUILD_NUMBER" >> "$GITHUB_OUTPUT"
+
       - name: Build iOS (no codesign)
-        run: flutter build ios --no-codesign --release --obfuscate --split-debug-info=build/debug-info
+        run: flutter build ios --no-codesign --release --obfuscate --split-debug-info=build/debug-info --build-name=${{ steps.version.outputs.build_name }} --build-number=${{ steps.version.outputs.build_number }}
 
       - name: Upload iOS build artifact
         uses: actions/upload-artifact@v4

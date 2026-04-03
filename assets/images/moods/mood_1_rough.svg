@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <!-- Deflated/melted blob - very wide and flat, puddled at the bottom -->
+  <path d="M5 34 C4 30, 6 27, 9 25 C11 24, 10 22, 14 21 C17 20, 19 22, 24 21 C29 20, 31 19, 35 21 C39 23, 42 25, 43 28 C44 31, 43 35, 38 37 C33 39, 28 40, 24 40 C18 40, 12 39, 8 37 C5 36, 5 35, 5 34Z" fill="currentColor"/>
+  <!-- Left eye - droopy, low -->
+  <circle cx="17" cy="28" r="2" fill="white" opacity="0.9"/>
+  <!-- Right eye - droopy, asymmetric -->
+  <circle cx="30" cy="27.5" r="2" fill="white" opacity="0.9"/>
+  <!-- Mouth - sad downward curve -->
+  <path d="M20 33 Q24 30, 28 33" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.9"/>
+</svg>

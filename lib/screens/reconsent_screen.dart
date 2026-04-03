@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../legal/health_disclaimer.dart';
 import '../legal/privacy_policy.dart';
 import '../legal/terms_of_service.dart';
 import '../services/database_service.dart';
@@ -21,9 +22,12 @@ class ReconsentScreen extends StatefulWidget {
 class _ReconsentScreenState extends State<ReconsentScreen> {
   bool _privacyAccepted = false;
   bool _termsAccepted = false;
+  bool _healthDisclaimerAccepted = false;
 
   Future<void> _submit() async {
-    if (!_privacyAccepted || !_termsAccepted) return;
+    if (!_privacyAccepted || !_termsAccepted || !_healthDisclaimerAccepted) {
+      return;
+    }
     final userRepo = DatabaseService.instance.userRepo;
     final now = DateTime.now();
     await userRepo.saveConsentRecord(
@@ -35,6 +39,12 @@ class _ReconsentScreenState extends State<ReconsentScreen> {
     await userRepo.saveConsentRecord(
       consentType: 'terms_of_service',
       documentVersion: currentTermsOfServiceVersion,
+      acceptedAt: now,
+      appVersion: info.appVersion,
+    );
+    await userRepo.saveConsentRecord(
+      consentType: 'health_disclaimer',
+      documentVersion: currentHealthDisclaimerVersion,
       acceptedAt: now,
       appVersion: info.appVersion,
     );
@@ -73,7 +83,8 @@ class _ReconsentScreenState extends State<ReconsentScreen> {
               const SizedBox(height: AppSpacing.md),
               Center(
                 child: Text(
-                  "We've updated our Privacy Policy and/or Terms of Use. "
+                  "We've updated our Privacy Policy, Terms of Use, "
+                  'and/or Health Disclaimer. '
                   'Please review and accept to continue.',
                   textAlign: TextAlign.center,
                   style: tt.bodyLarge?.copyWith(
@@ -110,12 +121,29 @@ class _ReconsentScreenState extends State<ReconsentScreen> {
                   ),
                 ),
               ),
+              const SizedBox(height: AppSpacing.md),
+              _ReconsentCheckbox(
+                value: _healthDisclaimerAccepted,
+                onChanged: (v) =>
+                    setState(() => _healthDisclaimerAccepted = v ?? false),
+                label: 'I have read and accept the Health Disclaimer',
+                onTapLink: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => const LegalScreen(
+                      title: 'Health & Wellness Disclaimer',
+                      content: healthDisclaimerText,
+                    ),
+                  ),
+                ),
+              ),
               const SizedBox(height: AppSpacing.xl),
               Center(
                 child: FilledButton(
-                  onPressed: _privacyAccepted && _termsAccepted ? _submit : null,
+                  onPressed:
+                      _privacyAccepted && _termsAccepted && _healthDisclaimerAccepted
+                          ? _submit
+                          : null,
                   style: FilledButton.styleFrom(
-                    shape: const StadiumBorder(),
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacing.lg,
                       vertical: AppSpacing.md,

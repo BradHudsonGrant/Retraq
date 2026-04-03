@@ -4,6 +4,7 @@ library;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sincethen/models/journal_entry.dart';
 import 'package:sincethen/services/database_service.dart';
+import 'package:sincethen/services/stats_service.dart';
 
 import '../test_helpers.dart';
 
@@ -60,6 +61,88 @@ void main() {
     test('getWeeklyEntryCounts returns empty list for zero weeks', () async {
       final counts = await db.stats.getWeeklyEntryCounts(weeks: 0);
       expect(counts, isEmpty);
+    });
+  });
+
+  // NOTE: The streak SQL queries use date(date, 'unixepoch', 'localtime')
+  // which returns null in Flutter's in-memory test SQLite (no localtime support).
+  // The service catches the error and returns 0. These tests verify the fallback
+  // behavior and data model. Full streak logic requires on-device integration tests.
+
+  group('Streak forgiveness (freeze) — data model', () {
+    test('empty database returns streak of 0', () async {
+      final streak = await db.stats.getCurrentStreak();
+      expect(streak, 0);
+    });
+
+    test('empty database returns freezeAvailable true', () async {
+      final info = await db.stats.getCurrentStreakWithFreezeInfo();
+      expect(info.streak, 0);
+      expect(info.freezeAvailable, true);
+    });
+
+    test('StreakFreezeInfo holds streak and freeze values', () {
+      const info = StreakFreezeInfo(streak: 7, freezeAvailable: false);
+      expect(info.streak, 7);
+      expect(info.freezeAvailable, false);
+    });
+
+    test('StreakFreezeInfo with freeze available', () {
+      const info = StreakFreezeInfo(streak: 3, freezeAvailable: true);
+      expect(info.streak, 3);
+      expect(info.freezeAvailable, true);
+    });
+
+    test('getAllStats includes freezeAvailable field', () async {
+      final stats = await db.stats.getAllStats();
+      // With no entries, default values
+      expect(stats.currentStreak, 0);
+      expect(stats.freezeAvailable, true);
+      expect(stats.longestStreakThisMonth, 0);
+    });
+
+    test('StatsSnapshot equality works correctly', () {
+      const a = StatsSnapshot(
+        totalEntries: 5,
+        currentStreak: 3,
+        freezeAvailable: true,
+        longestStreakThisMonth: 3,
+      );
+      const b = StatsSnapshot(
+        totalEntries: 5,
+        currentStreak: 3,
+        freezeAvailable: true,
+        longestStreakThisMonth: 3,
+      );
+      const c = StatsSnapshot(
+        totalEntries: 5,
+        currentStreak: 3,
+        freezeAvailable: false,
+        longestStreakThisMonth: 3,
+      );
+      expect(a, equals(b));
+      expect(a, isNot(equals(c)));
+    });
+
+    test('StatsSnapshot defaults are all zeroes', () {
+      const stats = StatsSnapshot();
+      expect(stats.totalEntries, 0);
+      expect(stats.totalDays, 0);
+      expect(stats.currentStreak, 0);
+      expect(stats.longestStreak, 0);
+      expect(stats.longestStreakThisMonth, 0);
+      expect(stats.freezeAvailable, true);
+      expect(stats.weeklyTrends, isEmpty);
+      expect(stats.mostActiveWeekday, 0);
+      expect(stats.averageMood, isNull);
+      expect(stats.moodDistribution, isEmpty);
+    });
+  });
+
+  group('getLongestStreakThisMonth', () {
+    test('returns 0 with no entries', () async {
+      final longest = await db.stats.getLongestStreakThisMonth();
+      expect(longest, 0);
     });
   });
 

@@ -81,7 +81,10 @@ class JournalTextArea extends StatelessWidget {
                 AppSpacing.lg,
                 AppSpacing.lg,
               ),
+              filled: false,
               border: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              focusedBorder: InputBorder.none,
             ),
           ),
           if (topRightWidget != null)

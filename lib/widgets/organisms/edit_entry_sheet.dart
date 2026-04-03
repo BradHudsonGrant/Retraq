@@ -120,8 +120,7 @@ class _EditEntrySheetState extends State<EditEntrySheet> {
             const SizedBox(height: AppSpacing.md),
 
             // Title field
-            if (widget.entry.title != null) ...[
-              TextField(
+            TextField(
                 controller: _titleCtrl,
                 textCapitalization: TextCapitalization.sentences,
                 style: tt.titleMedium?.copyWith(
@@ -139,7 +138,6 @@ class _EditEntrySheetState extends State<EditEntrySheet> {
               ),
               Divider(color: cs.outlineVariant),
               const SizedBox(height: AppSpacing.sm),
-            ],
 
             // Mood selector
             if (widget.entry.mood != null || _mood != null)

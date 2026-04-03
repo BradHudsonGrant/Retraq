@@ -28,8 +28,9 @@ class ThemeCard extends StatelessWidget {
       button: true,
       label: '$label theme',
       selected: isSelected,
-      child: GestureDetector(
+      child: InkWell(
         onTap: onTap,
+        borderRadius: AppSpacing.borderRadiusLg,
         child: AnimatedContainer(
         duration: reduceMotion ? Duration.zero : const Duration(milliseconds: 300),
         padding: const EdgeInsets.all(AppSpacing.sm),

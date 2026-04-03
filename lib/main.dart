@@ -8,10 +8,8 @@ import 'screens/app_shell.dart';
 import 'screens/lock_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'services/database_service.dart';
-import 'providers/premium_provider.dart';
 import 'providers/settings_provider.dart';
 import 'services/notification_service.dart';
-import 'services/purchase_service.dart';
 import 'services/widget_service.dart';
 import 'l10n/app_localizations.dart';
 import 'screens/reconsent_screen.dart';
@@ -52,13 +50,6 @@ void main() async {
     await WidgetService.instance.update();
   } catch (e) {
     debugPrint('Widget init failed (non-fatal): $e');
-  }
-
-  // Initialise RevenueCat for subscriptions (non-fatal if it fails)
-  try {
-    await PurchaseService.instance.init();
-  } catch (e) {
-    debugPrint('PurchaseService init failed (non-fatal): $e');
   }
 
   runApp(const SinceThenApp());
@@ -221,8 +212,7 @@ class _SinceThenAppState extends State<SinceThenApp> with WidgetsBindingObserver
 
   @override
   Widget build(BuildContext context) {
-    return PremiumProvider(
-      child: SettingsProvider(
+    return SettingsProvider(
       settings: _settings,
       child: MaterialApp(
         title: 'SinceThen',
@@ -245,7 +235,6 @@ class _SinceThenAppState extends State<SinceThenApp> with WidgetsBindingObserver
           },
         ),
       ),
-    ),
     );
   }
 }

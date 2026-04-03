@@ -48,6 +48,8 @@ class _SecuritySectionState extends State<SecuritySection> {
       builder: (_) => const PinSetupSheet(),
     );
     if (pin != null && mounted) {
+      // Dismiss any keyboard that might reappear when the sheet closes.
+      FocusScope.of(context).unfocus();
       final hash = await PinService.hashPin(pin);
       if (!mounted) return;
       widget.onSettingsChanged(
@@ -138,7 +140,7 @@ class _SecuritySectionState extends State<SecuritySection> {
           const SizedBox(height: AppSpacing.md),
           SettingsRow(
             title: 'Change PIN',
-            subtitle: 'Set a new 4-digit PIN',
+            subtitle: 'Set a new PIN',
             trailing: IconButton(
               icon: Icon(Icons.chevron_right, color: cs.onSurfaceVariant),
               onPressed: () async {
@@ -182,6 +184,10 @@ class _SecuritySectionState extends State<SecuritySection> {
                             );
                             return;
                           }
+                          // Require PIN verification before enabling biometrics.
+                          if (!mounted) return;
+                          final verified = await _verifyPinIfNeeded(context);
+                          if (!verified || !mounted) return;
                         }
                         widget.onSettingsChanged(s.copyWith(biometricEnabled: v));
                         if (v && mounted) {

@@ -132,11 +132,14 @@ class CalendarGrid extends StatelessWidget {
     }
 
     // Current month days
+    final now = DateTime.now();
+    final isCurrentMonth = month.year == now.year && month.month == now.month;
     for (var day = 1; day <= daysInMonth; day++) {
       cells.add(_DayCell(
         day: day,
         isSelected: day == selectedDay,
         hasEntry: entryDays.contains(day),
+        isToday: isCurrentMonth && day == now.day,
         onTap: () => onDaySelected?.call(day),
       ));
     }
@@ -170,6 +173,7 @@ class _DayCell extends StatelessWidget {
     required this.day,
     this.isSelected = false,
     this.hasEntry = false,
+    this.isToday = false,
     this.isDimmed = false,
     this.onTap,
   });
@@ -177,6 +181,7 @@ class _DayCell extends StatelessWidget {
   final int day;
   final bool isSelected;
   final bool hasEntry;
+  final bool isToday;
   final bool isDimmed;
   final VoidCallback? onTap;
 
@@ -187,48 +192,58 @@ class _DayCell extends StatelessWidget {
 
     return Semantics(
       button: !isDimmed,
-      label: 'Day $day${hasEntry ? ', has entries' : ''}${isSelected ? ', selected' : ''}',
+      label: 'Day $day${isToday ? ', today' : ''}${hasEntry ? ', has entries' : ''}${isSelected ? ', selected' : ''}',
       child: InkWell(
       onTap: isDimmed ? null : onTap,
       borderRadius: BorderRadius.circular(26),
       child: SizedBox(
         height: 52,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 44,
-              height: 44,
-              decoration: isSelected
-                  ? BoxDecoration(
-                      color: cs.primary,
+        child: Center(
+          child: Container(
+            width: 44,
+            height: 44,
+            decoration: isSelected
+                ? BoxDecoration(
+                    color: cs.primary,
+                    shape: BoxShape.circle,
+                  )
+                : isToday
+                    ? BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: cs.primary.withValues(alpha: 0.5),
+                          width: 1.5,
+                        ),
+                      )
+                    : null,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  '$day',
+                  style: tt.bodySmall?.copyWith(
+                    color: isDimmed
+                        ? cs.onSurfaceVariant.withValues(alpha: 0.65)
+                        : isSelected
+                            ? cs.onPrimary
+                            : cs.onSurface,
+                    fontWeight:
+                        isSelected ? FontWeight.w700 : FontWeight.w400,
+                  ),
+                ),
+                if (hasEntry && !isDimmed)
+                  Container(
+                    width: 4,
+                    height: 4,
+                    margin: const EdgeInsets.only(top: 1),
+                    decoration: BoxDecoration(
+                      color: isSelected ? cs.onPrimary : cs.primary,
                       shape: BoxShape.circle,
-                    )
-                  : null,
-              alignment: Alignment.center,
-              child: Text(
-                '$day',
-                style: tt.bodySmall?.copyWith(
-                  color: isDimmed
-                      ? cs.onSurfaceVariant.withValues(alpha: 0.65)
-                      : isSelected
-                          ? cs.onPrimary
-                          : cs.onSurface,
-                  fontWeight:
-                      isSelected ? FontWeight.w700 : FontWeight.w400,
-                ),
-              ),
+                    ),
+                  ),
+              ],
             ),
-            if (hasEntry && !isDimmed)
-              Container(
-                width: 4,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: isSelected ? cs.onPrimary : cs.primary,
-                  shape: BoxShape.circle,
-                ),
-              ),
-          ],
+          ),
         ),
       ),
     ),

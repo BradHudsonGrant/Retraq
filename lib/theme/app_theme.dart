@@ -45,6 +45,30 @@ class AppTheme {
           shape: const StadiumBorder(),
           backgroundColor: AppColors.lightScheme.surfaceContainerHigh,
         ),
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: AppColors.lightScheme.surfaceContainerLow,
+          border: OutlineInputBorder(
+            borderRadius: AppSpacing.borderRadiusMd,
+            borderSide: BorderSide.none,
+          ),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.md,
+            vertical: AppSpacing.sm,
+          ),
+          hintStyle: TextStyle(
+            color: AppColors.lightScheme.onSurfaceVariant.withValues(alpha: 0.75),
+          ),
+        ),
+        filledButtonTheme: FilledButtonThemeData(
+          style: FilledButton.styleFrom(
+            shape: const StadiumBorder(),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.lg,
+              vertical: AppSpacing.sm,
+            ),
+          ),
+        ),
         bottomSheetTheme: BottomSheetThemeData(
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(AppSpacing.radiusXxl)),
@@ -89,6 +113,30 @@ class AppTheme {
         chipTheme: ChipThemeData(
           shape: const StadiumBorder(),
           backgroundColor: AppColors.darkScheme.surfaceContainerHigh,
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: AppColors.darkScheme.surfaceContainerLow,
+          border: OutlineInputBorder(
+            borderRadius: AppSpacing.borderRadiusMd,
+            borderSide: BorderSide.none,
+          ),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.md,
+            vertical: AppSpacing.sm,
+          ),
+          hintStyle: TextStyle(
+            color: AppColors.darkScheme.onSurfaceVariant.withValues(alpha: 0.75),
+          ),
+        ),
+        filledButtonTheme: FilledButtonThemeData(
+          style: FilledButton.styleFrom(
+            shape: const StadiumBorder(),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.lg,
+              vertical: AppSpacing.sm,
+            ),
+          ),
         ),
         bottomSheetTheme: BottomSheetThemeData(
           shape: const RoundedRectangleBorder(

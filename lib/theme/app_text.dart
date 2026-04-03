@@ -21,6 +21,7 @@ class AppText {
         fontFamily: headlineFamily,
         fontSize: 12,
         fontWeight: FontWeight.w500,
+        fontVariations: [FontVariation('wght', 500)],
         letterSpacing: 0.5,
       );
 
@@ -43,29 +44,35 @@ class AppText {
         headlineLarge: TextStyle(
             fontFamily: headlineFamily,
             fontSize: 32,
-            fontWeight: FontWeight.w600),
+            fontWeight: FontWeight.w600,
+            fontVariations: [FontVariation('wght', 600)]),
         headlineMedium: TextStyle(
             fontFamily: headlineFamily,
             fontSize: 28,
-            fontWeight: FontWeight.w600),
+            fontWeight: FontWeight.w600,
+            fontVariations: [FontVariation('wght', 600)]),
         headlineSmall: TextStyle(
             fontFamily: headlineFamily,
             fontSize: 24,
-            fontWeight: FontWeight.w600),
+            fontWeight: FontWeight.w600,
+            fontVariations: [FontVariation('wght', 600)]),
 
         // Title
         titleLarge: TextStyle(
             fontFamily: headlineFamily,
             fontSize: 22,
-            fontWeight: FontWeight.w600),
+            fontWeight: FontWeight.w600,
+            fontVariations: [FontVariation('wght', 600)]),
         titleMedium: TextStyle(
             fontFamily: headlineFamily,
             fontSize: 16,
-            fontWeight: FontWeight.w500),
+            fontWeight: FontWeight.w500,
+            fontVariations: [FontVariation('wght', 500)]),
         titleSmall: TextStyle(
             fontFamily: headlineFamily,
             fontSize: 14,
-            fontWeight: FontWeight.w500),
+            fontWeight: FontWeight.w500,
+            fontVariations: [FontVariation('wght', 500)]),
 
         // Body
         bodyLarge: TextStyle(
@@ -85,15 +92,18 @@ class AppText {
         labelLarge: TextStyle(
             fontFamily: headlineFamily,
             fontSize: 14,
-            fontWeight: FontWeight.w500),
+            fontWeight: FontWeight.w500,
+            fontVariations: [FontVariation('wght', 500)]),
         labelMedium: TextStyle(
             fontFamily: headlineFamily,
             fontSize: 12,
-            fontWeight: FontWeight.w500),
+            fontWeight: FontWeight.w500,
+            fontVariations: [FontVariation('wght', 500)]),
         labelSmall: TextStyle(
             fontFamily: headlineFamily,
             fontSize: 11,
             fontWeight: FontWeight.w500,
+            fontVariations: [FontVariation('wght', 500)],
             letterSpacing: 0.5),
       );
 }

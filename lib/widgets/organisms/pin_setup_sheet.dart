@@ -2,8 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../theme/app_spacing.dart';
 import '../molecules/number_pad.dart';
+
+/// SharedPreferences key for the configured PIN length (4 or 6).
+const pinLengthPrefKey = 'pin_length';
 
 class PinSetupSheet extends StatefulWidget {
   const PinSetupSheet({super.key});
@@ -18,15 +22,23 @@ class PinSetupSheetState extends State<PinSetupSheet> {
   bool _isConfirmStep = false;
   bool _isError = false;
 
-  static const _pinLength = 4;
+  int _pinLength = 4;
   Timer? _advanceTimer;
   bool _isDenylisted = false;
 
-  static const _denylist = {
+  static const _denylist4 = {
     '0000', '1111', '2222', '3333', '4444',
     '5555', '6666', '7777', '8888', '9999',
     '1234', '4321', '1230', '0123', '2580',
   };
+
+  static const _denylist6 = {
+    '000000', '111111', '222222', '333333', '444444',
+    '555555', '666666', '777777', '888888', '999999',
+    '123456', '654321', '012345',
+  };
+
+  Set<String> get _denylist => _pinLength == 6 ? _denylist6 : _denylist4;
 
   @override
   void dispose() {
@@ -42,7 +54,7 @@ class PinSetupSheetState extends State<PinSetupSheet> {
       _enteredPin += '$digit';
     });
 
-    // Auto-advance at 4 digits
+    // Auto-advance when all digits entered.
     if (_enteredPin.length == _pinLength) {
       _advanceTimer?.cancel();
       _advanceTimer = Timer(const Duration(milliseconds: 200), _advance);
@@ -57,7 +69,7 @@ class PinSetupSheetState extends State<PinSetupSheet> {
     });
   }
 
-  void _advance() {
+  Future<void> _advance() async {
     if (_enteredPin.length < _pinLength) return;
 
     if (!_isConfirmStep) {
@@ -79,6 +91,10 @@ class PinSetupSheetState extends State<PinSetupSheet> {
     } else {
       // Verify match
       if (_enteredPin == _firstPin) {
+        // Persist the chosen PIN length for lock/verify screens.
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setInt(pinLengthPrefKey, _pinLength);
+        if (!mounted) return;
         Navigator.of(context).pop(_firstPin);
       } else {
         HapticFeedback.heavyImpact();
@@ -97,7 +113,7 @@ class PinSetupSheetState extends State<PinSetupSheet> {
     if (_isError) return 'PINs did not match. Try again.';
     return _isConfirmStep
         ? 'Enter the same PIN again'
-        : 'Choose a 4-digit PIN';
+        : 'Choose a $_pinLength-digit PIN';
   }
 
   @override
@@ -130,6 +146,31 @@ class PinSetupSheetState extends State<PinSetupSheet> {
               ),
             ),
 
+            // PIN length selector — only shown during initial entry.
+            if (!_isConfirmStep) ...[
+              const SizedBox(height: AppSpacing.md),
+              SegmentedButton<int>(
+                segments: const [
+                  ButtonSegment(value: 4, label: Text('4 digits')),
+                  ButtonSegment(value: 6, label: Text('6 digits')),
+                ],
+                selected: {_pinLength},
+                onSelectionChanged: (v) {
+                  setState(() {
+                    _pinLength = v.first;
+                    _enteredPin = '';
+                    _isError = false;
+                    _isDenylisted = false;
+                  });
+                },
+                showSelectedIcon: false,
+                style: const ButtonStyle(
+                  visualDensity: VisualDensity.compact,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+              ),
+            ],
+
             const SizedBox(height: AppSpacing.xl),
 
             // PIN dots
@@ -160,9 +201,6 @@ class PinSetupSheetState extends State<PinSetupSheet> {
                 if (_enteredPin.length >= _pinLength)
                   FilledButton(
                     onPressed: _advance,
-                    style: FilledButton.styleFrom(
-                      shape: const StadiumBorder(),
-                    ),
                     child: Text(_isConfirmStep ? 'Set PIN' : 'Next'),
                   ),
               ],

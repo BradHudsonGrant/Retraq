@@ -78,7 +78,7 @@ class RecentDayCard extends StatelessWidget {
                       child: Text(
                         entries[i].label!,
                         style: tt.labelSmall?.copyWith(
-                          color: cs.onSurfaceVariant.withValues(alpha: 0.5),
+                          color: cs.onSurfaceVariant.withValues(alpha: 0.75),
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -109,7 +109,7 @@ class RecentDayCard extends StatelessWidget {
                 child: Text(
                   '+${entries.length - 2} more',
                   style: tt.labelSmall?.copyWith(
-                    color: cs.onSurfaceVariant.withValues(alpha: 0.5),
+                    color: cs.onSurfaceVariant.withValues(alpha: 0.75),
                   ),
                 ),
               ),

@@ -120,7 +120,7 @@ class _EntryCard extends StatelessWidget {
               Text(
                 timeLabel,
                 style: tt.labelSmall?.copyWith(
-                  color: cs.onSurfaceVariant.withValues(alpha: 0.6),
+                  color: cs.onSurfaceVariant.withValues(alpha: 0.75),
                   letterSpacing: 0.5,
                 ),
               ),

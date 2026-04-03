@@ -2,6 +2,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sincethen/screens/lock_screen.dart';
 import 'package:sincethen/services/database_service.dart';
@@ -10,14 +11,40 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../test_helpers.dart';
 
+/// Mock FlutterSecureStorage plugin channel for tests.
+void _mockSecureStorage() {
+  const channel = MethodChannel('plugins.it_nomads.com/flutter_secure_storage');
+  final storage = <String, String>{};
+  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+      .setMockMethodCallHandler(channel, (call) async {
+    switch (call.method) {
+      case 'read':
+        return storage[call.arguments['key']];
+      case 'write':
+        storage[call.arguments['key']] = call.arguments['value'] as String;
+        return null;
+      case 'delete':
+        storage.remove(call.arguments['key']);
+        return null;
+      case 'deleteAll':
+        storage.clear();
+        return null;
+      default:
+        return null;
+    }
+  });
+}
+
 void main() {
   setUpAll(() async {
     SharedPreferences.setMockInitialValues({});
+    _mockSecureStorage();
     await initTestDatabase(fastPbkdf2: true);
   });
 
   setUp(() {
     SharedPreferences.setMockInitialValues({});
+    _mockSecureStorage();
   });
 
   tearDownAll(() {

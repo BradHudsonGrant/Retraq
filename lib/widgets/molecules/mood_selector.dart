@@ -1,24 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import '../../theme/app_colors.dart';
 import '../../theme/app_spacing.dart';
+import '../atoms/mood_blob.dart';
 
 /// Mood levels from 1 (Rough) to 5 (Amazing).
-/// Each has a blob emoji, label, and teal-scale color.
+/// Each has a blob emoji and label; color is resolved from the theme.
 class MoodOption {
   final int value;
   final String emoji;
   final String label;
-  final Color color;
 
-  const MoodOption(this.value, this.emoji, this.label, this.color);
+  const MoodOption(this.value, this.emoji, this.label);
 }
 
 const _moodOptions = [
-  MoodOption(1, '\u{1F622}', 'Rough', Color(0xFF80CBC4)), // teal 200
-  MoodOption(2, '\u{1F614}', 'Low', Color(0xFF4DB6AC)),   // teal 300
-  MoodOption(3, '\u{1F610}', 'Neutral', Color(0xFF26A69A)), // teal 400
-  MoodOption(4, '\u{1F60A}', 'Good', Color(0xFF009688)),   // teal 500
-  MoodOption(5, '\u{1F929}', 'Amazing', Color(0xFF00796B)), // teal 700
+  MoodOption(1, '\u{1F622}', 'Rough'),
+  MoodOption(2, '\u{1F614}', 'Low'),
+  MoodOption(3, '\u{1F610}', 'Neutral'),
+  MoodOption(4, '\u{1F60A}', 'Good'),
+  MoodOption(5, '\u{1F929}', 'Amazing'),
 ];
+
+/// Returns the mood color list appropriate for the current brightness.
+List<Color> _moodColors(Brightness brightness) =>
+    AppColors.moodColors(brightness);
 
 /// A row of 5 tappable mood options with blob emojis and teal-scale colors.
 /// Selected mood shows a colored ring and label; unselected are dimmed.
@@ -35,6 +41,7 @@ class MoodSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final colors = _moodColors(theme.brightness);
 
     return Semantics(
       label: 'Mood selector',
@@ -42,11 +49,14 @@ class MoodSelector extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: _moodOptions.map((option) {
           final isSelected = selectedMood == option.value;
+          final color = colors[option.value - 1];
           return _MoodButton(
             option: option,
+            color: color,
             isSelected: isSelected,
             hasSelection: selectedMood != null,
             onTap: () {
+              HapticFeedback.lightImpact();
               // Tap again to deselect
               onChanged(isSelected ? null : option.value);
             },
@@ -60,6 +70,7 @@ class MoodSelector extends StatelessWidget {
 
 class _MoodButton extends StatelessWidget {
   final MoodOption option;
+  final Color color;
   final bool isSelected;
   final bool hasSelection;
   final VoidCallback onTap;
@@ -67,6 +78,7 @@ class _MoodButton extends StatelessWidget {
 
   const _MoodButton({
     required this.option,
+    required this.color,
     required this.isSelected,
     required this.hasSelection,
     required this.onTap,
@@ -76,6 +88,8 @@ class _MoodButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final opacity = hasSelection && !isSelected ? 0.4 : 1.0;
+    final reduceMotion = MediaQuery.of(context).disableAnimations;
+    final animDuration = reduceMotion ? Duration.zero : const Duration(milliseconds: 150);
 
     return Semantics(
       button: true,
@@ -86,38 +100,40 @@ class _MoodButton extends StatelessWidget {
         borderRadius: AppSpacing.borderRadiusFull,
         child: AnimatedOpacity(
           opacity: opacity,
-          duration: const Duration(milliseconds: 150),
+          duration: animDuration,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               AnimatedContainer(
-                duration: const Duration(milliseconds: 150),
+                duration: animDuration,
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: isSelected
-                      ? Border.all(color: option.color, width: 2.5)
+                      ? Border.all(color: color, width: 2.5)
                       : null,
                   color: isSelected
-                      ? option.color.withAlpha(30)
+                      ? color.withValues(alpha: 0.12)
                       : Colors.transparent,
                 ),
                 child: Center(
-                  child: Text(
-                    option.emoji,
-                    style: const TextStyle(fontSize: 24),
+                  child: MoodBlob(
+                    mood: option.value,
+                    size: 28,
+                    color: color,
+                    isSelected: isSelected,
                   ),
                 ),
               ),
               const SizedBox(height: AppSpacing.xs),
               AnimatedDefaultTextStyle(
-                duration: const Duration(milliseconds: 150),
+                duration: animDuration,
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
                   color: isSelected
-                      ? option.color
+                      ? color
                       : theme.colorScheme.onSurfaceVariant,
                 ),
                 child: Text(option.label),
@@ -136,10 +152,17 @@ String moodLabel(int mood) {
   return _moodOptions[mood - 1].label;
 }
 
-/// Get the color for a mood value (1-5).
+/// Get the color for a mood value (1-5), using light palette by default.
+/// Prefer [moodColorFor] when a [Brightness] is available.
 Color moodColor(int mood) {
   if (mood < 1 || mood > 5) return Colors.grey;
-  return _moodOptions[mood - 1].color;
+  return AppColors.moodColorsLight[mood - 1];
+}
+
+/// Get the color for a mood value (1-5) adapted to the given [brightness].
+Color moodColorFor(int mood, Brightness brightness) {
+  if (mood < 1 || mood > 5) return Colors.grey;
+  return _moodColors(brightness)[mood - 1];
 }
 
 /// Get the emoji for a mood value (1-5).

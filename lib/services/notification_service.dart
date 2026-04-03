@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart' as tzdata;
@@ -64,7 +65,8 @@ class NotificationService {
 
   /// Rotating ADHD-friendly notification messages — warm, low-pressure.
   /// Categorised by time-of-day for contextual relevance.
-  static const _morningMessages = [
+  @visibleForTesting
+  static const morningMessages = [
     'Good morning! Set an intention for today — even one word counts.',
     'Rise and write. What are you looking forward to today?',
     'Morning check-in: how are you feeling right now?',
@@ -72,7 +74,8 @@ class NotificationService {
     'A fresh page for a fresh day. What\'s on your mind?',
   ];
 
-  static const _eveningMessages = [
+  @visibleForTesting
+  static const eveningMessages = [
     'What happened today? Even one sentence counts.',
     'Take a moment to capture today before it slips away.',
     'How was your day? A few words is all it takes.',
@@ -84,7 +87,8 @@ class NotificationService {
     'What surprised you today? Write it down before you forget.',
   ];
 
-  static const _generalMessages = [
+  @visibleForTesting
+  static const generalMessages = [
     'Your journal is waiting. No pressure, just jot something down.',
     'Ready to write? Your future self will thank you.',
     'Just checking in. What\'s on your mind today?',
@@ -105,41 +109,44 @@ class NotificationService {
     'Plot twist: you actually have time for this. Promise.',
   ];
 
-  static const _weekendMessages = [
+  @visibleForTesting
+  static const weekendMessages = [
     'Lazy weekend? Perfect journaling weather.',
     'Weekends fly by. Capture this one before it does.',
     'No rush today. Take a moment to reflect.',
   ];
 
-  static const _streakAtRiskMessages = [
+  @visibleForTesting
+  static const streakAtRiskMessages = [
     'Your streak called. It misses you.',
     'Don\'t let today break your streak — one sentence is enough.',
     'You\'ve been consistent. Keep it going with a quick entry.',
   ];
 
   /// Pick a contextually relevant message based on hour and day of week.
-  static String _pickMessage(int hour, {bool streakAtRisk = false}) {
+  @visibleForTesting
+  static String pickMessage(int hour, {bool streakAtRisk = false}) {
     final now = DateTime.now();
     final day = now.day;
 
     if (streakAtRisk) {
-      return _streakAtRiskMessages[day % _streakAtRiskMessages.length];
+      return streakAtRiskMessages[day % streakAtRiskMessages.length];
     }
 
     final isWeekend = now.weekday == DateTime.saturday || now.weekday == DateTime.sunday;
     if (isWeekend) {
       // Mix weekend-specific with general messages
       if (day % 3 == 0) {
-        return _weekendMessages[day % _weekendMessages.length];
+        return weekendMessages[day % weekendMessages.length];
       }
     }
 
     if (hour < 12) {
-      return _morningMessages[day % _morningMessages.length];
+      return morningMessages[day % morningMessages.length];
     } else if (hour >= 18) {
-      return _eveningMessages[day % _eveningMessages.length];
+      return eveningMessages[day % eveningMessages.length];
     }
-    return _generalMessages[day % _generalMessages.length];
+    return generalMessages[day % generalMessages.length];
   }
 
   /// Schedule a daily notification at the given hour (0-23) and minute (0-59).
@@ -154,7 +161,7 @@ class NotificationService {
       scheduled = scheduled.add(const Duration(days: 1));
     }
 
-    final message = _pickMessage(hour, streakAtRisk: streakAtRisk);
+    final message = pickMessage(hour, streakAtRisk: streakAtRisk);
 
     await _plugin.zonedSchedule(
       _notificationId,
@@ -193,6 +200,12 @@ class NotificationService {
       return;
     }
     await scheduleDaily(hour, minute: minute, streakAtRisk: currentStreak > 0);
+  }
+
+  /// Called by home_screen after an entry is saved.
+  /// Cancels today's remaining notification since the user already journaled.
+  Future<void> onEntrySaved() async {
+    await cancel();
   }
 
   /// Cancel all scheduled notifications.

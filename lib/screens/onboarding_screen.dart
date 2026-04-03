@@ -8,6 +8,7 @@ import '../legal/privacy_policy.dart';
 import '../legal/health_disclaimer.dart';
 import '../legal/terms_of_service.dart';
 import '../widgets/atoms/sincethen_logo.dart';
+import '../widgets/molecules/page_indicator_dots.dart';
 import 'legal_screen.dart';
 import '../utils/app_info.dart' as info;
 
@@ -258,23 +259,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     Semantics(
                       label: 'Page $_currentPage of ${_totalPageCount - 1}',
                       excludeSemantics: true,
-                      child: Row(
-                        children: List.generate(_pages.length + 1, (i) {
-                          final isActive = i == _currentPage - 1;
-                          final reduceMotionDots = MediaQuery.of(context).disableAnimations;
-                          return AnimatedContainer(
-                            duration: reduceMotionDots ? Duration.zero : const Duration(milliseconds: 300),
-                            margin: const EdgeInsets.only(right: AppSpacing.sm),
-                            width: isActive ? 24 : 8,
-                            height: 8,
-                            decoration: BoxDecoration(
-                              color: isActive
-                                  ? cs.primary
-                                  : cs.primary.withValues(alpha: 0.2),
-                              borderRadius: AppSpacing.borderRadiusFull,
-                            ),
-                          );
-                        }),
+                      child: PageIndicatorDots(
+                        count: _pages.length + 1,
+                        current: _currentPage - 1,
                       ),
                     ),
 
@@ -284,7 +271,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       style: FilledButton.styleFrom(
                         backgroundColor: cs.primary,
                         foregroundColor: cs.onPrimary,
-                        shape: const StadiumBorder(),
                         padding: const EdgeInsets.symmetric(
                           horizontal: AppSpacing.lg,
                           vertical: AppSpacing.md,
@@ -391,7 +377,6 @@ class _AgeGatePage extends StatelessWidget {
               style: FilledButton.styleFrom(
                 backgroundColor: cs.primary,
                 foregroundColor: cs.onPrimary,
-                shape: const StadiumBorder(),
                 padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.lg,
                   vertical: AppSpacing.md,

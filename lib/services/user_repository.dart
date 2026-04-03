@@ -1,8 +1,9 @@
 // ignore_for_file: prefer_single_quotes
 
+import 'dart:io';
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user.dart';
 import 'database_service.dart';
@@ -99,18 +100,22 @@ class UserRepository {
       try {
         final prefs = await SharedPreferences.getInstance();
         await prefs.remove('age_verified');
+        await prefs.remove('age_denied');
         await prefs.remove('lock_failed_attempts');
         await prefs.remove('lock_lockout_count');
         await prefs.remove('lock_lockout_end');
       } catch (_) {
         // SharedPreferences may not be available in test environments.
       }
-      // Clear the DB encryption key so a fresh key is generated on next launch.
-      try {
-        const storage = FlutterSecureStorage();
-        await storage.delete(key: 'sincethen_db_key');
-      } catch (_) {
-        // Secure storage may not be available in test environments.
+      // Force-restart the app so the UI reflects the clean state.
+      // Skip when running in Flutter test harness.
+      if (Platform.environment.containsKey('FLUTTER_TEST') == false) {
+        await Future<void>.delayed(const Duration(milliseconds: 500));
+        if (Platform.isAndroid) {
+          SystemNavigator.pop();
+        } else {
+          exit(0);
+        }
       }
     } catch (e) {
       debugPrint('UserRepository.deleteAllData failed: $e');
@@ -147,6 +152,7 @@ class UserRepository {
       final records = await getConsentRecords();
       bool hasCurrentPrivacy = false;
       bool hasCurrentTerms = false;
+      bool hasCurrentHealthDisclaimer = false;
       for (final r in records) {
         if (r.consentType == 'privacy_policy' &&
             r.documentVersion == currentPrivacyPolicyVersion) {
@@ -156,8 +162,12 @@ class UserRepository {
             r.documentVersion == currentTermsOfServiceVersion) {
           hasCurrentTerms = true;
         }
+        if (r.consentType == 'health_disclaimer' &&
+            r.documentVersion == currentHealthDisclaimerVersion) {
+          hasCurrentHealthDisclaimer = true;
+        }
       }
-      return !hasCurrentPrivacy || !hasCurrentTerms;
+      return !hasCurrentPrivacy || !hasCurrentTerms || !hasCurrentHealthDisclaimer;
     } catch (e) {
       debugPrint('UserRepository.needsReconsent failed: $e');
       return true; // Fail safe: require re-consent if we can't check

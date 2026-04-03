@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sincethen/models/user_settings.dart';
-import 'package:sincethen/providers/premium_provider.dart';
 import 'package:sincethen/providers/settings_provider.dart';
 import 'package:sincethen/services/database_service.dart';
 
@@ -12,7 +11,6 @@ Widget wrapWidget(Widget child, {UserSettings? settings}) {
   if (settings != null) {
     app = SettingsProvider(settings: settings, child: app);
   }
-  app = PremiumProvider(child: app);
   return app;
 }
 
@@ -23,7 +21,6 @@ Widget wrapScreen(Widget child, {UserSettings? settings}) {
   if (settings != null) {
     app = SettingsProvider(settings: settings, child: app);
   }
-  app = PremiumProvider(child: app);
   return app;
 }
 
@@ -34,7 +31,6 @@ Widget wrapScrollable(Widget child, {UserSettings? settings}) {
   if (settings != null) {
     app = SettingsProvider(settings: settings, child: app);
   }
-  app = PremiumProvider(child: app);
   return app;
 }
 

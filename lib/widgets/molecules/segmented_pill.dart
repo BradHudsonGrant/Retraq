@@ -40,6 +40,13 @@ class _SegmentedPillState extends State<SegmentedPill>
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final reduceMotion = MediaQuery.of(context).disableAnimations;
+    _ctrl.duration = reduceMotion ? Duration.zero : const Duration(milliseconds: 200);
+  }
+
+  @override
   void didUpdateWidget(SegmentedPill old) {
     super.didUpdateWidget(old);
     if (old.isRightActive != widget.isRightActive) {
@@ -64,6 +71,8 @@ class _SegmentedPillState extends State<SegmentedPill>
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
+    final reduceMotion = MediaQuery.of(context).disableAnimations;
+    final textAnimDuration = reduceMotion ? Duration.zero : const Duration(milliseconds: 150);
 
     final labelStyle = tt.labelLarge!.copyWith(
       fontWeight: FontWeight.w500,
@@ -133,7 +142,7 @@ class _SegmentedPillState extends State<SegmentedPill>
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: _vPad),
                       child: AnimatedDefaultTextStyle(
-                        duration: const Duration(milliseconds: 150),
+                        duration: textAnimDuration,
                         style: labelStyle.copyWith(
                           color: !widget.isRightActive
                               ? cs.onSurface
@@ -160,7 +169,7 @@ class _SegmentedPillState extends State<SegmentedPill>
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: _vPad),
                       child: AnimatedDefaultTextStyle(
-                        duration: const Duration(milliseconds: 150),
+                        duration: textAnimDuration,
                         style: labelStyle.copyWith(
                           color: widget.isRightActive
                               ? cs.onSurface

@@ -470,6 +470,111 @@ void main() {
       final decoded = base64Decode(key);
       expect(decoded.length, 32);
     });
+
+    test('256-bit key produces exactly 44 base64 characters', () {
+      // 32 bytes = 256 bits. base64 output = ceil(32/3)*4 = 44 chars.
+      // This is the length _getOrCreateDbKey should always produce.
+      for (var i = 0; i < 10; i++) {
+        final bytes = List<int>.generate(32, (j) => (i * 17 + j * 3) % 256);
+        final key = base64Encode(bytes);
+        expect(key.length, 44, reason: 'Key $i had unexpected length');
+      }
+    });
+
+    test('key is consistent across multiple reads (simulated)', () {
+      // Simulate _getOrCreateDbKey behavior: first call generates, second returns same
+      String? storedKey;
+
+      String getOrCreateKey() {
+        if (storedKey != null) return storedKey!;
+        final bytes = List<int>.generate(32, (i) => (i * 11 + 7) % 256);
+        storedKey = base64Encode(bytes);
+        return storedKey!;
+      }
+
+      final firstRead = getOrCreateKey();
+      final secondRead = getOrCreateKey();
+      final thirdRead = getOrCreateKey();
+
+      expect(firstRead, equals(secondRead));
+      expect(secondRead, equals(thirdRead));
+      expect(firstRead.length, 44);
+    });
+
+    test('in-memory database does not require encryption key', () async {
+      // initInMemory should work without any encryption setup
+      final db = DatabaseService.instance;
+      await db.initInMemory();
+      // If we got here without error, in-memory path skips encryption
+      final count = await db.entries.getTotalEntryCount();
+      expect(count, isA<int>());
+      await db.dispose();
+    });
+
+    test('hex encoding of key bytes produces correct format', () {
+      // _setupDb converts base64 key → bytes → hex for PRAGMA key
+      final bytes = List<int>.generate(32, (i) => i);
+      final base64Key = base64Encode(bytes);
+      final decoded = base64Decode(base64Key);
+      final hex = decoded.map((b) => b.toRadixString(16).padLeft(2, '0')).join();
+
+      // Should be 64 hex chars (32 bytes * 2 hex chars each)
+      expect(hex.length, 64);
+      // First byte (0) should be '00', second (1) should be '01', etc.
+      expect(hex.substring(0, 2), '00');
+      expect(hex.substring(2, 4), '01');
+      expect(hex.substring(62, 64), '1f'); // 31 in hex
+    });
+  });
+
+  // ── Group 2b: PIN cross-format verification ──────────────
+
+  group('PIN cross-format verification', () {
+    test('4-digit PIN hash does not verify with 6-digit input', () {
+      final stored = PinService.hashPinSync('1234');
+      expect(PinService.verifyPinSync('123400', stored), false);
+      expect(PinService.verifyPinSync('001234', stored), false);
+    });
+
+    test('6-digit PIN hash does not verify with 4-digit input', () {
+      final stored = PinService.hashPinSync('123456');
+      expect(PinService.verifyPinSync('1234', stored), false);
+      expect(PinService.verifyPinSync('3456', stored), false);
+    });
+
+    test('v3 format stores iteration count for future-proofing', () {
+      final hash = PinService.hashPinSync('9999');
+      final parts = hash.split(':');
+      expect(parts[0], 'v3');
+      final iterations = int.parse(parts[1]);
+      // Should be the test iteration count (100) since we called setPbkdf2Iterations(100)
+      expect(iterations, 100);
+    });
+
+    test('legacy v1 SHA-256 format is detected as legacy', () {
+      // v1 format: "base64salt:hexhash" (no version prefix)
+      expect(PinService.isLegacyPinHash('YWJjMTIz:abcdef0123456789'), true);
+    });
+
+    test('v2 PBKDF2 600K format is detected as legacy', () {
+      // v2 format: "v2:base64salt:base64hash"
+      expect(PinService.isLegacyPinHash('v2:YWJjMTIz:ZGVmNDU2'), true);
+    });
+
+    test('v3 PBKDF2 format is NOT detected as legacy', () {
+      final hash = PinService.hashPinSync('5555');
+      expect(PinService.isLegacyPinHash(hash), false);
+    });
+
+    test('same PIN with different salts produces different hashes', () {
+      final hashes = List.generate(5, (_) => PinService.hashPinSync('0000'));
+      // All should be unique (random salts)
+      expect(hashes.toSet().length, hashes.length);
+      // But all should verify against the original PIN
+      for (final hash in hashes) {
+        expect(PinService.verifyPinSync('0000', hash), true);
+      }
+    });
   });
 
   // ── Group 3: Database migration data integrity ────────────

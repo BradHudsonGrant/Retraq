@@ -12,57 +12,142 @@ class StatsService {
 
   StatsService(this._db);
 
-  /// Count consecutive days with entries ending today or yesterday.
-  /// Uses SQL window functions to avoid pulling all rows into Dart.
+  /// Count consecutive days with entries ending today or yesterday,
+  /// allowing 1 "streak freeze" (missed day) per 7-day window.
+  ///
+  /// Also returns whether a freeze is still available this week via
+  /// [getCurrentStreakWithFreezeInfo].
   Future<int> getCurrentStreak() async {
+    final info = await getCurrentStreakWithFreezeInfo();
+    return info.streak;
+  }
+
+  /// Returns the current streak length **and** whether the user still has
+  /// a streak freeze available this week (i.e., they haven't used their
+  /// one free missed-day allowance in the last 7 days of the streak).
+  Future<StreakFreezeInfo> getCurrentStreakWithFreezeInfo() async {
     try {
       final now = DateTime.now();
-      final todayStr = '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+      final todayStr = _dateStr(now);
 
+      // Fetch all distinct entry dates, newest first
       final rows = await _db.customSelect(
-        // Assign each distinct date a row_number descending, then compute
-        // the difference between the date and the row offset from a reference.
-        // Consecutive days will share the same group value.
-        "WITH dates AS ("
-        "  SELECT DISTINCT date(date, 'unixepoch', 'localtime') AS d"
-        "  FROM journal_entries"
-        "  ORDER BY d DESC"
-        "), ranked AS ("
-        "  SELECT d, ROW_NUMBER() OVER (ORDER BY d DESC) AS rn"
-        "  FROM dates"
-        "  WHERE d <= ?"
-        ")"
-        "SELECT COUNT(*) AS streak FROM ranked "
-        "WHERE date(d, '+' || (rn - 1) || ' days') = ("
-        "  SELECT d FROM ranked WHERE rn = 1"
-        ")",
+        "SELECT DISTINCT date(date, 'unixepoch', 'localtime') AS d "
+        "FROM journal_entries WHERE date(date, 'unixepoch', 'localtime') <= ? "
+        "ORDER BY d DESC",
         variables: [Variable<String>(todayStr)],
         readsFrom: {_db.journalEntries},
       ).get();
 
-      final streak = rows.first.read<int>('streak');
-
-      // If the most recent entry day isn't today or yesterday, streak is 0
-      if (streak > 0) {
-        final topRow = await _db.customSelect(
-          "SELECT date(date, 'unixepoch', 'localtime') AS d "
-          "FROM journal_entries ORDER BY d DESC LIMIT 1",
-          readsFrom: {_db.journalEntries},
-        ).get();
-        if (topRow.isNotEmpty) {
-          final topDate = topRow.first.read<String>('d');
-          final yesterday = now.subtract(const Duration(days: 1));
-          final yesterdayStr = '${yesterday.year}-${yesterday.month.toString().padLeft(2, '0')}-${yesterday.day.toString().padLeft(2, '0')}';
-          if (topDate != todayStr && topDate != yesterdayStr) return 0;
-        }
+      if (rows.isEmpty) {
+        return const StreakFreezeInfo(streak: 0, freezeAvailable: true);
       }
 
-      return streak;
+      // Parse into a Set for O(1) lookup
+      final entryDates = <String>{};
+      for (final row in rows) {
+        entryDates.add(row.read<String>('d'));
+      }
+
+      // The streak must start from today or yesterday
+      final yesterday = now.subtract(const Duration(days: 1));
+      final yesterdayStr = _dateStr(yesterday);
+      if (!entryDates.contains(todayStr) &&
+          !entryDates.contains(yesterdayStr)) {
+        return const StreakFreezeInfo(streak: 0, freezeAvailable: true);
+      }
+
+      // Walk backwards from today counting streak days.
+      // Allow 1 gap day per rolling 7-day window (freeze).
+      // A freeze is only consumed for gaps WITHIN an active streak,
+      // not at the boundary (e.g., the day before the first-ever entry).
+      int streak = 0;
+      bool freezeUsedInWindow = false;
+      int daysSinceLastFreeze = 0;
+      int consecutiveGaps = 0;
+
+      // Start from today and go backwards
+      var cursor = DateTime(now.year, now.month, now.day);
+      while (true) {
+        final cursorStr = _dateStr(cursor);
+        if (entryDates.contains(cursorStr)) {
+          streak++;
+          daysSinceLastFreeze++;
+          consecutiveGaps = 0;
+        } else {
+          consecutiveGaps++;
+
+          // If we haven't started a streak yet (no entries found so far),
+          // or hit 2+ consecutive gaps, the streak ends here.
+          if (streak == 0 || consecutiveGaps > 1) break;
+
+          // Reset freeze allowance every 7 streak days
+          if (daysSinceLastFreeze >= 7) {
+            freezeUsedInWindow = false;
+          }
+
+          if (!freezeUsedInWindow) {
+            // Use the freeze — skip this gap day, streak continues
+            freezeUsedInWindow = true;
+            daysSinceLastFreeze = 0;
+          } else {
+            // Already used freeze in this window — streak breaks
+            break;
+          }
+        }
+        cursor = cursor.subtract(const Duration(days: 1));
+
+        // Safety: don't iterate more than 3 years back
+        if (streak > 1095) break;
+      }
+
+      return StreakFreezeInfo(
+        streak: streak,
+        freezeAvailable: !freezeUsedInWindow,
+      );
     } catch (e) {
-      debugPrint('StatsService.getCurrentStreak failed: $e');
+      debugPrint('StatsService.getCurrentStreakWithFreezeInfo failed: $e');
+      return const StreakFreezeInfo(streak: 0, freezeAvailable: true);
+    }
+  }
+
+  /// Longest streak within the current calendar month.
+  Future<int> getLongestStreakThisMonth() async {
+    try {
+      final now = DateTime.now();
+      final monthStart =
+          '${now.year}-${now.month.toString().padLeft(2, '0')}-01';
+      final todayStr = _dateStr(now);
+
+      final rows = await _db.customSelect(
+        "WITH dates AS ("
+        "  SELECT DISTINCT date(date, 'unixepoch', 'localtime') AS d"
+        "  FROM journal_entries"
+        "  WHERE date(date, 'unixepoch', 'localtime') BETWEEN ? AND ?"
+        "), grouped AS ("
+        "  SELECT d, date(d, '-' || (ROW_NUMBER() OVER (ORDER BY d) - 1) || ' days') AS grp"
+        "  FROM dates"
+        ")"
+        "SELECT COALESCE(MAX(cnt), 0) AS longest FROM ("
+        "  SELECT COUNT(*) AS cnt FROM grouped GROUP BY grp"
+        ")",
+        variables: [
+          Variable<String>(monthStart),
+          Variable<String>(todayStr),
+        ],
+        readsFrom: {_db.journalEntries},
+      ).get();
+
+      return rows.first.read<int>('longest');
+    } catch (e) {
+      debugPrint('StatsService.getLongestStreakThisMonth failed: $e');
       return 0;
     }
   }
+
+  /// Format a DateTime as 'YYYY-MM-DD'.
+  static String _dateStr(DateTime dt) =>
+      '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')}';
 
   /// Find the longest ever run of consecutive days with entries.
   /// Uses SQL window functions to compute entirely in the database.
@@ -223,22 +308,26 @@ class StatsService {
       final results = await Future.wait([
         _getTotalEntryCount(),
         getTotalDaysWithEntries(),
-        getCurrentStreak(),
+        getCurrentStreakWithFreezeInfo(),
         getLongestStreak(),
         getWeeklyEntryCounts(weeks: weeks),
         getMostActiveWeekday(),
         getAverageMood(),
         getMoodDistribution(),
+        getLongestStreakThisMonth(),
       ]);
+      final freezeInfo = results[2] as StreakFreezeInfo;
       return StatsSnapshot(
         totalEntries: results[0] as int,
         totalDays: results[1] as int,
-        currentStreak: results[2] as int,
+        currentStreak: freezeInfo.streak,
         longestStreak: results[3] as int,
         weeklyTrends: results[4] as List<int>,
         mostActiveWeekday: results[5] as int,
         averageMood: results[6] as double?,
         moodDistribution: results[7] as Map<int, int>,
+        longestStreakThisMonth: results[8] as int,
+        freezeAvailable: freezeInfo.freezeAvailable,
       );
     } catch (e) {
       debugPrint('StatsService.getAllStats failed: $e');
@@ -249,7 +338,7 @@ class StatsService {
   /// Single stream that recomputes all stats when journal_entries changes.
   /// Replaces 4+ independent watch streams with one trigger.
   Stream<StatsSnapshot> watchAllStats({int weeks = 12}) {
-    return _db.select(_db.journalEntries).watch()
+    return _db.customSelect('SELECT COUNT(*) AS c FROM journal_entries', readsFrom: {_db.journalEntries}).watch()
         .transform(_debounce(const Duration(milliseconds: 300)))
         .asyncMap((_) => getAllStats(weeks: weeks))
         .distinct()
@@ -285,12 +374,22 @@ class StatsService {
   }
 }
 
+/// Streak + freeze availability info returned by [getCurrentStreakWithFreezeInfo].
+class StreakFreezeInfo {
+  final int streak;
+  final bool freezeAvailable;
+
+  const StreakFreezeInfo({required this.streak, required this.freezeAvailable});
+}
+
 /// Immutable snapshot of all stats — computed once per journal change.
 class StatsSnapshot {
   final int totalEntries;
   final int totalDays;
   final int currentStreak;
   final int longestStreak;
+  final int longestStreakThisMonth;
+  final bool freezeAvailable;
   final List<int> weeklyTrends;
   final int mostActiveWeekday;
   final double? averageMood;
@@ -301,6 +400,8 @@ class StatsSnapshot {
     this.totalDays = 0,
     this.currentStreak = 0,
     this.longestStreak = 0,
+    this.longestStreakThisMonth = 0,
+    this.freezeAvailable = true,
     this.weeklyTrends = const [],
     this.mostActiveWeekday = 0,
     this.averageMood,
@@ -315,6 +416,8 @@ class StatsSnapshot {
           totalDays == other.totalDays &&
           currentStreak == other.currentStreak &&
           longestStreak == other.longestStreak &&
+          longestStreakThisMonth == other.longestStreakThisMonth &&
+          freezeAvailable == other.freezeAvailable &&
           mostActiveWeekday == other.mostActiveWeekday &&
           averageMood == other.averageMood &&
           listEquals(weeklyTrends, other.weeklyTrends) &&
@@ -334,6 +437,8 @@ class StatsSnapshot {
         totalDays,
         currentStreak,
         longestStreak,
+        longestStreakThisMonth,
+        freezeAvailable,
         mostActiveWeekday,
         averageMood,
         Object.hashAll(weeklyTrends),

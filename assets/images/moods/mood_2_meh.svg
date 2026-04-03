@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <!-- Slouched blob - wider than tall, slightly lopsided, leaning right -->
+  <path d="M8 32 C7 27, 8 22, 12 18 C15 15, 18 14, 22 13 C27 12, 32 13, 36 17 C39 20, 41 26, 40 31 C39 35, 36 38, 30 39 C25 40, 19 40, 14 38 C10 36, 8 35, 8 32Z" fill="currentColor"/>
+  <!-- Left eye -->
+  <circle cx="18" cy="24" r="2" fill="white" opacity="0.9"/>
+  <!-- Right eye - slightly higher, uncertain -->
+  <circle cx="30" cy="23" r="2" fill="white" opacity="0.9"/>
+  <!-- Mouth - flat with slight downturn -->
+  <path d="M20 31 Q25 30, 29 31.5" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.9"/>
+</svg>

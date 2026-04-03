@@ -69,4 +69,24 @@ class AppColors {
     inverseSurface: Color(0xFFF8FAF8),
     inversePrimary: Color(0xFF33694B),
   );
+
+  // ── Mood teal-scale colors ──
+  static const List<Color> moodColorsLight = [
+    Color(0xFF80CBC4), // 1 - Rough
+    Color(0xFF4DB6AC), // 2 - Meh
+    Color(0xFF26A69A), // 3 - Okay
+    Color(0xFF009688), // 4 - Good
+    Color(0xFF00796B), // 5 - Amazing
+  ];
+
+  static const List<Color> moodColorsDark = [
+    Color(0xFFB2DFDB), // 1 - Rough (brighter for dark bg)
+    Color(0xFF80CBC4), // 2 - Meh
+    Color(0xFF4DB6AC), // 3 - Okay
+    Color(0xFF26A69A), // 4 - Good
+    Color(0xFF00897B), // 5 - Amazing
+  ];
+
+  static List<Color> moodColors(Brightness brightness) =>
+      brightness == Brightness.dark ? moodColorsDark : moodColorsLight;
 }

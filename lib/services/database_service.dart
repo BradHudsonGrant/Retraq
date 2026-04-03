@@ -204,6 +204,7 @@ class DatabaseService {
     final entryRows = await (oldDb.select(oldDb.journalEntries)).get();
     final userRows = await (oldDb.select(oldDb.users)).get();
     final settingsRows = await (oldDb.select(oldDb.userSettingsTable)).get();
+    final consentRows = await (oldDb.select(oldDb.consentRecords)).get();
     await oldDb.close();
 
     // Rename old file, create encrypted DB, import data.
@@ -223,6 +224,7 @@ class DatabaseService {
           label: Value(row.label),
           title: Value(row.title),
           createdAt: row.createdAt,
+          mood: Value(row.mood),
           userId: Value(row.userId),
         ));
       }
@@ -250,6 +252,14 @@ class DatabaseService {
           enterToSave: Value(row.enterToSave),
           bulletPointsOnEnter: Value(row.bulletPointsOnEnter),
           amPmCutoffHour: Value(row.amPmCutoffHour),
+        ));
+      }
+      for (final row in consentRows) {
+        batch.insert(_db.consentRecords, ConsentRecordsCompanion.insert(
+          consentType: row.consentType,
+          documentVersion: row.documentVersion,
+          acceptedAt: row.acceptedAt,
+          appVersion: Value(row.appVersion),
         ));
       }
     });

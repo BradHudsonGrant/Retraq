@@ -149,8 +149,9 @@ class DataSection extends StatelessWidget {
         title: const Text('Export scope'),
         content: const Text(
           'Export this week\u2019s entries or all entries?\n\n'
-          'The exported file will contain your personal journal entries '
-          'and settings. Keep it somewhere safe.',
+          'The export will include your journal entries, settings, and any '
+          'profile information you\'ve provided (such as display name or '
+          'email). Keep it somewhere safe.',
         ),
         actions: [
           TextButton(

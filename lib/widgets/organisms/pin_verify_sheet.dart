@@ -1,9 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../services/pin_service.dart';
+import 'pin_setup_sheet.dart' show pinLengthPrefKey;
 import '../../theme/app_spacing.dart';
+import '../atoms/drag_handle.dart';
 import '../molecules/number_pad.dart';
 
 /// Bottom-sheet widget that verifies the current PIN before disabling app lock.
@@ -17,6 +20,7 @@ class PinVerifySheet extends StatefulWidget {
 }
 
 class _PinVerifySheetState extends State<PinVerifySheet> {
+  final _secureStorage = const FlutterSecureStorage();
   String _entered = '';
   bool _isError = false;
   bool _isVerifying = false;
@@ -26,7 +30,7 @@ class _PinVerifySheetState extends State<PinVerifySheet> {
   Timer? _lockoutTimer;
   int _lockoutSecondsLeft = 0;
 
-  static const _pinLength = 4;
+  int _pinLength = 4;
   static const _maxAttempts = 5;
   static const _maxLockoutSeconds = 300; // 5 minutes cap
 
@@ -48,10 +52,16 @@ class _PinVerifySheetState extends State<PinVerifySheet> {
   }
 
   Future<void> _loadLockoutState() async {
+    // Read configured PIN length (4 or 6, default 4).
     final prefs = await SharedPreferences.getInstance();
-    _failedAttempts = prefs.getInt(_prefFailedAttempts) ?? 0;
-    _lockoutCount = prefs.getInt(_prefLockoutCount) ?? 0;
-    final lockoutEndMs = prefs.getInt(_prefLockoutEnd) ?? 0;
+    final storedPinLength = prefs.getInt(pinLengthPrefKey) ?? 4;
+    if (mounted) {
+      setState(() => _pinLength = (storedPinLength == 6) ? 6 : 4);
+    }
+
+    _failedAttempts = int.tryParse(await _secureStorage.read(key: _prefFailedAttempts) ?? '') ?? 0;
+    _lockoutCount = int.tryParse(await _secureStorage.read(key: _prefLockoutCount) ?? '') ?? 0;
+    final lockoutEndMs = int.tryParse(await _secureStorage.read(key: _prefLockoutEnd) ?? '') ?? 0;
     if (lockoutEndMs > 0) {
       final lockoutEnd = DateTime.fromMillisecondsSinceEpoch(lockoutEndMs);
       final remaining = lockoutEnd.difference(DateTime.now()).inSeconds;
@@ -66,17 +76,15 @@ class _PinVerifySheetState extends State<PinVerifySheet> {
   }
 
   Future<void> _persistLockout(DateTime lockoutEnd) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt(_prefFailedAttempts, _failedAttempts);
-    await prefs.setInt(_prefLockoutCount, _lockoutCount);
-    await prefs.setInt(_prefLockoutEnd, lockoutEnd.millisecondsSinceEpoch);
+    await _secureStorage.write(key: _prefFailedAttempts, value: '$_failedAttempts');
+    await _secureStorage.write(key: _prefLockoutCount, value: '$_lockoutCount');
+    await _secureStorage.write(key: _prefLockoutEnd, value: '${lockoutEnd.millisecondsSinceEpoch}');
   }
 
   Future<void> _clearPersistedLockout() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_prefFailedAttempts);
-    await prefs.remove(_prefLockoutCount);
-    await prefs.remove(_prefLockoutEnd);
+    await _secureStorage.delete(key: _prefFailedAttempts);
+    await _secureStorage.delete(key: _prefLockoutCount);
+    await _secureStorage.delete(key: _prefLockoutEnd);
   }
 
   Duration get _lockoutDuration {
@@ -163,7 +171,7 @@ class _PinVerifySheetState extends State<PinVerifySheet> {
       final remaining = _maxAttempts - _failedAttempts;
       return 'Incorrect PIN. $remaining ${remaining == 1 ? 'attempt' : 'attempts'} remaining.';
     }
-    return 'Enter your PIN to disable app lock';
+    return 'Enter your PIN';
   }
 
   @override
@@ -181,14 +189,7 @@ class _PinVerifySheetState extends State<PinVerifySheet> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-            width: 40,
-            height: 4,
-            decoration: BoxDecoration(
-              color: cs.onSurfaceVariant.withValues(alpha: 0.5),
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
+          const DragHandle(),
           const SizedBox(height: AppSpacing.lg),
           Semantics(
             liveRegion: _isError || _isLockedOut,

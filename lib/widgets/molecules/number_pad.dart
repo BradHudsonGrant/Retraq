@@ -97,30 +97,32 @@ class PadButton extends StatelessWidget {
     return Semantics(
       button: true,
       label: label ?? (icon == Icons.backspace_outlined ? 'Delete' : 'Biometric'),
-      child: GestureDetector(
-      onTap: () {
-        HapticFeedback.lightImpact();
-        onTap();
-      },
-      child: Container(
-        width: 72,
-        height: 72,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: cs.surfaceContainerLow,
+      child: Material(
+        color: cs.surfaceContainerLow,
+        shape: const CircleBorder(),
+        child: InkWell(
+          onTap: () {
+            HapticFeedback.lightImpact();
+            onTap();
+          },
+          customBorder: const CircleBorder(),
+          child: SizedBox(
+            width: 72,
+            height: 72,
+            child: Center(
+              child: label != null
+                  ? Text(
+                      label!,
+                      style: tt.headlineSmall?.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: color ?? cs.onSurface,
+                      ),
+                    )
+                  : Icon(icon, size: 28, color: color ?? cs.onSurface),
+            ),
+          ),
         ),
-        alignment: Alignment.center,
-        child: label != null
-            ? Text(
-                label!,
-                style: tt.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: color ?? cs.onSurface,
-                ),
-              )
-            : Icon(icon, size: 28, color: color ?? cs.onSurface),
       ),
-    ),
     );
   }
 }

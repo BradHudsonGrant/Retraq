@@ -24,8 +24,16 @@ void main() {
       await tester.pumpWidget(wrapWidget(const HomeScreen()));
       await tester.pump(const Duration(milliseconds: 200));
 
-      // The hero prompt rotates by weekday, but always includes the accent word
-      expect(find.textContaining('today?'), findsOneWidget);
+      // The hero prompt is a Text.rich with the prompt + accent word (date label).
+      // Verify one of the known hero prompt fragments is present.
+      final heroPrompts = [
+        'TL;DR of', 'How was', 'What happened',
+        'Sum up', 'What stood', 'Brain dump', 'One thing',
+      ];
+      final found = heroPrompts.any(
+        (p) => find.textContaining(p).evaluate().isNotEmpty,
+      );
+      expect(found, isTrue, reason: 'Expected one of the hero prompt texts');
 
       // Dispose widget and flush Drift timers
       await flushDriftTimers(tester);

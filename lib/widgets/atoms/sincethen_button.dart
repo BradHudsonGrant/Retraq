@@ -79,7 +79,6 @@ class _SinceThenButtonState extends State<SinceThenButton> {
         style: FilledButton.styleFrom(
           backgroundColor: cs.primary,
           foregroundColor: cs.onPrimary,
-          shape: const StadiumBorder(),
           padding: EdgeInsets.symmetric(
             horizontal: widget.isSmall ? AppSpacing.md : AppSpacing.lg,
             vertical: widget.isSmall ? AppSpacing.sm : AppSpacing.md,

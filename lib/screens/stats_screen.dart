@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
+import '../models/journal_entry.dart';
 import '../services/database_service.dart';
 import '../services/stats_service.dart';
 import '../theme/app_spacing.dart';
@@ -26,6 +27,10 @@ class _StatsScreenState extends State<StatsScreen>
 
   StatsSnapshot _stats = const StatsSnapshot();
   StreamSubscription<StatsSnapshot>? _statsSub;
+  bool _isLoading = true;
+
+  /// Entry from exactly one year ago today, if any.
+  JournalEntry? _onThisDayEntry;
 
   static const _dayNames = [
     'Monday',
@@ -42,14 +47,126 @@ class _StatsScreenState extends State<StatsScreen>
     super.initState();
     _statsSub = _statsSvc.watchAllStats(weeks: 12).listen((snapshot) {
       if (!mounted) return;
-      setState(() => _stats = snapshot);
+      setState(() {
+        _stats = snapshot;
+        _isLoading = false;
+      });
     });
+    _loadOnThisDay();
+  }
+
+  Future<void> _loadOnThisDay() async {
+    final now = DateTime.now();
+    final lastYear = DateTime(now.year - 1, now.month, now.day);
+    final entries =
+        await DatabaseService.instance.entries.getEntriesForDate(lastYear);
+    if (!mounted) return;
+    if (entries.isNotEmpty) {
+      setState(() => _onThisDayEntry = entries.first);
+    }
   }
 
   @override
   void dispose() {
     _statsSub?.cancel();
     super.dispose();
+  }
+
+  Widget _buildLoadingSkeleton(ColorScheme cs) {
+    return _SkeletonShimmer(
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Expanded(child: _skeletonCard(cs)),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(child: _skeletonCard(cs)),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Row(
+            children: [
+              Expanded(child: _skeletonCard(cs)),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(child: _skeletonCard(cs)),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          Container(
+            height: 160,
+            decoration: BoxDecoration(
+              color: cs.surfaceContainerLow,
+              borderRadius: AppSpacing.borderRadiusXl,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _skeletonCard(ColorScheme cs) {
+    return Container(
+      height: 90,
+      decoration: BoxDecoration(
+        color: cs.surfaceContainerLow,
+        borderRadius: AppSpacing.borderRadiusXl,
+      ),
+    );
+  }
+
+  Widget _buildOnThisDayCard(ColorScheme cs, TextTheme tt) {
+    final entry = _onThisDayEntry;
+    if (entry == null) return const SizedBox.shrink();
+
+    final text = entry.displayText;
+    final preview =
+        text.length > 150 ? '${text.substring(0, 150)}...' : text;
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.lg),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        decoration: BoxDecoration(
+          color: cs.tertiaryContainer,
+          borderRadius: AppSpacing.borderRadiusXl,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.auto_awesome,
+                    size: 18, color: cs.onTertiaryContainer),
+                const SizedBox(width: AppSpacing.sm),
+                Text(
+                  'On this day last year...',
+                  style: tt.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: cs.onTertiaryContainer,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            if (entry.mood != null) ...[
+              Text(
+                moodEmoji(entry.mood!),
+                style: const TextStyle(fontSize: 24),
+              ),
+              const SizedBox(height: AppSpacing.xs),
+            ],
+            if (preview.isNotEmpty)
+              Text(
+                preview,
+                style: tt.bodyMedium?.copyWith(
+                  color: cs.onTertiaryContainer,
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildHeroStats() {
@@ -102,6 +219,72 @@ class _StatsScreenState extends State<StatsScreen>
                 ),
               ),
             ],
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Row(
+            children: [
+              Expanded(
+                child: StatCard(
+                  label: 'Longest This Month',
+                  value: _stats.longestStreakThisMonth,
+                  icon: Icons.date_range,
+                  suffix: 'days',
+                  delay: 400,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(child: _buildFreezeIndicator()),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFreezeIndicator() {
+    final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
+    return Container(
+      height: 90,
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: cs.surfaceContainerLow,
+        borderRadius: AppSpacing.borderRadiusXl,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Row(
+            children: [
+              Icon(
+                Icons.shield,
+                size: 16,
+                color: _stats.freezeAvailable
+                    ? cs.primary
+                    : cs.onSurfaceVariant,
+              ),
+              const SizedBox(width: AppSpacing.xs),
+              Flexible(
+                child: Text(
+                  'Streak Freeze',
+                  style: tt.labelMedium?.copyWith(
+                    color: cs.onSurfaceVariant,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            _stats.freezeAvailable ? '1 available' : 'Used this week',
+            style: tt.bodyMedium?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: _stats.freezeAvailable
+                  ? cs.primary
+                  : cs.onSurfaceVariant,
+            ),
           ),
         ],
       ),
@@ -314,8 +497,12 @@ class _StatsScreenState extends State<StatsScreen>
 
             const SizedBox(height: AppSpacing.lg),
 
+            // ── Loading skeleton ──
+            if (_isLoading)
+              _buildLoadingSkeleton(cs)
+
             // ── Empty state ──
-            if (_stats.totalEntries == 0) ...[
+            else if (_stats.totalEntries == 0) ...[
               Padding(
                 padding: const EdgeInsets.symmetric(
                     vertical: AppSpacing.xxl),
@@ -326,7 +513,7 @@ class _StatsScreenState extends State<StatsScreen>
                         Icons.bar_chart,
                         size: 48,
                         color: cs.onSurfaceVariant
-                            .withValues(alpha: 0.5),
+                            .withValues(alpha: 0.75),
                       ),
                       const SizedBox(height: AppSpacing.md),
                       Text(
@@ -342,27 +529,69 @@ class _StatsScreenState extends State<StatsScreen>
                         textAlign: TextAlign.center,
                         style: tt.bodyMedium?.copyWith(
                           color: cs.onSurfaceVariant
-                              .withValues(alpha: 0.6),
+                              .withValues(alpha: 0.75),
                         ),
                       ),
                     ],
                   ),
                 ),
               ),
-            ],
+            ]
 
-            if (_stats.totalEntries > 0) ...[
+            else ...[
+              _buildOnThisDayCard(cs, tt),
               if (isTablet(context))
                 _buildTabletStats(cs, tt)
               else
                 _buildPhoneStats(cs, tt),
-            ], // end if totalEntries > 0
+            ], // end stats content
 
             // ── Bottom padding for nav bar ──
             const SizedBox(height: AppSpacing.navBarClearance),
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Pulsing opacity animation for loading skeleton placeholders.
+class _SkeletonShimmer extends StatefulWidget {
+  const _SkeletonShimmer({required this.child});
+  final Widget child;
+
+  @override
+  State<_SkeletonShimmer> createState() => _SkeletonShimmerState();
+}
+
+class _SkeletonShimmerState extends State<_SkeletonShimmer>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    )..repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) => Opacity(
+        opacity: 0.3 + 0.4 * _controller.value,
+        child: child,
+      ),
+      child: widget.child,
     );
   }
 }

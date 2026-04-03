@@ -8,6 +8,7 @@ import '../providers/settings_provider.dart';
 import '../services/entry_repository.dart';
 import '../services/settings_repository.dart';
 import '../services/database_service.dart';
+import '../services/notification_service.dart';
 import '../services/review_service.dart';
 import '../services/widget_service.dart';
 import '../theme/app_spacing.dart';
@@ -30,7 +31,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen>
-    with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
+    with AutomaticKeepAliveClientMixin, WidgetsBindingObserver, TickerProviderStateMixin {
   @override
   bool get wantKeepAlive => true;
 
@@ -55,6 +56,18 @@ class _HomeScreenState extends State<HomeScreen>
   List<JournalEntry> _yesterdayEntries = [];
   List<JournalEntry> _dayBeforeEntries = [];
   DateTime _lastInitDate = DateTime.now();
+
+  late final AnimationController _shakeController = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 300),
+  );
+  late final Animation<double> _shakeAnimation = TweenSequence<double>([
+    TweenSequenceItem(tween: Tween(begin: 0, end: 8), weight: 1),
+    TweenSequenceItem(tween: Tween(begin: 8, end: -8), weight: 2),
+    TweenSequenceItem(tween: Tween(begin: -8, end: 8), weight: 2),
+    TweenSequenceItem(tween: Tween(begin: 8, end: -8), weight: 2),
+    TweenSequenceItem(tween: Tween(begin: -8, end: 0), weight: 1),
+  ]).animate(_shakeController);
 
   @override
   void initState() {
@@ -137,6 +150,7 @@ class _HomeScreenState extends State<HomeScreen>
     _weekCountSub?.cancel();
     _yesterdaySub?.cancel();
     _dayBeforeSub?.cancel();
+    _shakeController.dispose();
     _titleController.dispose();
     _entryController.dispose();
     _entryFocus.dispose();
@@ -164,7 +178,131 @@ class _HomeScreenState extends State<HomeScreen>
     'One thing\nabout ',
   ];
 
-  String get _heroPrompt => _heroPrompts[DateTime.now().weekday % _heroPrompts.length];
+  String get _heroPrompt {
+    final now = DateTime.now();
+    final dayOfYear = now.difference(DateTime(now.year, 1, 1)).inDays;
+    return _heroPrompts[dayOfYear % _heroPrompts.length];
+  }
+
+  /// Shared journal input widgets used by both tablet and phone layouts.
+  List<Widget> _buildJournalContent(ColorScheme cs, TextTheme tt) {
+    return [
+      const SizedBox(height: AppSpacing.xl),
+
+      // Hero prompt
+      Semantics(
+        header: true,
+        label: '$_heroPrompt$_accentWord',
+        excludeSemantics: true,
+        child: Text.rich(
+          TextSpan(
+            style: tt.displaySmall?.copyWith(
+              fontWeight: FontWeight.w700,
+              height: 1.1,
+            ),
+            children: [
+              TextSpan(text: _heroPrompt),
+              TextSpan(
+                text: _accentWord,
+                style: TextStyle(color: cs.primary),
+              ),
+            ],
+          ),
+        ),
+      ),
+      const SizedBox(height: AppSpacing.sm),
+
+      // Date chip
+      Semantics(
+        button: true,
+        label: 'Change entry date, currently ${_selectedDate != null ? DateFormat('MMM d, yyyy').format(_entryDate) : formatDateLabel(_entryDate)}',
+        excludeSemantics: true,
+        child: InkWell(
+          onTap: _pickDate,
+          borderRadius: AppSpacing.borderRadiusLg,
+          child: Chip(
+            avatar: Icon(Icons.calendar_today, size: 16, color: cs.onSurfaceVariant),
+            label: Text(
+              _selectedDate != null
+                  ? DateFormat('MMM d, yyyy').format(_entryDate)
+                  : formatDateLabel(_entryDate),
+              style: tt.labelLarge?.copyWith(color: cs.onSurfaceVariant),
+            ),
+            backgroundColor: cs.surfaceContainerHigh,
+            side: BorderSide(
+              color: _selectedDate != null
+                  ? cs.primary.withValues(alpha: 0.5)
+                  : cs.outlineVariant.withValues(alpha: 0.3),
+            ),
+            shape: RoundedRectangleBorder(borderRadius: AppSpacing.borderRadiusLg),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
+          ),
+        ),
+      ),
+
+      const SizedBox(height: AppSpacing.sm),
+      Text(
+        'Brain dump here. Full sentences optional.',
+        style: tt.bodyLarge?.copyWith(color: cs.onSurfaceVariant),
+      ),
+
+      const SizedBox(height: AppSpacing.md),
+
+      // Mood selector (opt-in via settings)
+      if (_settings?.moodEnabled ?? false) ...[
+        MoodSelector(
+          selectedMood: _selectedMood,
+          onChanged: (mood) => setState(() => _selectedMood = mood),
+        ),
+        const SizedBox(height: AppSpacing.md),
+      ],
+
+      // Entry title (optional)
+      if (_settings?.showEntryTitle ?? false) ...[
+        _buildTitleField(cs, tt),
+        const SizedBox(height: AppSpacing.sm),
+      ],
+
+      // Journal input
+      AnimatedBuilder(
+        animation: _shakeController,
+        builder: (context, child) {
+          final dx = _shakeAnimation.value;
+          return Transform.translate(
+            offset: Offset(dx, 0),
+            child: child,
+          );
+        },
+        child: JournalTextArea(
+          controller: _entryController,
+          focusNode: _entryFocus,
+          hint: _isAllDayMode
+              ? dailyJournalPrompt()
+              : _isAm
+                  ? 'How did the morning go?'
+                  : 'How about the rest of the day?',
+          isSaving: _isSaving,
+          onSave: _saveEntry,
+          enterToSave: _settings?.enterToSave ?? false,
+          bulletPoints: _settings?.bulletPointsOnEnter ?? false,
+          topRightWidget: _isAllDayMode
+              ? null
+              : SegmentedPill(
+                  leftLabel: 'AM',
+                  rightLabel: 'PM',
+                  isRightActive: !_isAm,
+                  onTapLeft: () => _switchPeriod(true),
+                  onTapRight: () => _switchPeriod(false),
+                ),
+        ),
+      ),
+
+      const SizedBox(height: AppSpacing.lg),
+
+      // Progress bar
+      _buildProgressBar(cs, tt),
+    ];
+  }
 
   Widget _buildJournalPane(ColorScheme cs, TextTheme tt) {
     return SingleChildScrollView(
@@ -172,111 +310,7 @@ class _HomeScreenState extends State<HomeScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: AppSpacing.xl),
-
-          // Hero prompt
-          Semantics(
-            header: true,
-            label: '$_heroPrompt$_accentWord',
-            excludeSemantics: true,
-            child: Text.rich(
-              TextSpan(
-                style: tt.displaySmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  height: 1.1,
-                ),
-                children: [
-                  TextSpan(text: _heroPrompt),
-                  TextSpan(
-                    text: _accentWord,
-                    style: TextStyle(color: cs.primary),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: AppSpacing.sm),
-
-          // Date chip
-          Semantics(
-            button: true,
-            label: 'Change entry date, currently ${_selectedDate != null ? DateFormat('MMM d, yyyy').format(_entryDate) : formatDateLabel(_entryDate)}',
-            excludeSemantics: true,
-            child: InkWell(
-              onTap: _pickDate,
-              borderRadius: AppSpacing.borderRadiusLg,
-              child: Chip(
-                avatar: Icon(Icons.calendar_today, size: 16, color: cs.onSurfaceVariant),
-                label: Text(
-                  _selectedDate != null
-                      ? DateFormat('MMM d, yyyy').format(_entryDate)
-                      : formatDateLabel(_entryDate),
-                  style: tt.labelLarge?.copyWith(color: cs.onSurfaceVariant),
-                ),
-                backgroundColor: cs.surfaceContainerHigh,
-                side: BorderSide(
-                  color: _selectedDate != null
-                      ? cs.primary.withValues(alpha: 0.5)
-                      : cs.outlineVariant.withValues(alpha: 0.3),
-                ),
-                shape: RoundedRectangleBorder(borderRadius: AppSpacing.borderRadiusLg),
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
-              ),
-            ),
-          ),
-
-          const SizedBox(height: AppSpacing.sm),
-          Text(
-            'Brain dump here. Full sentences optional.',
-            style: tt.bodyLarge?.copyWith(color: cs.onSurfaceVariant),
-          ),
-
-          const SizedBox(height: AppSpacing.md),
-
-          // Mood selector (opt-in via settings)
-          if (_settings?.moodEnabled ?? false) ...[
-            MoodSelector(
-              selectedMood: _selectedMood,
-              onChanged: (mood) => setState(() => _selectedMood = mood),
-            ),
-            const SizedBox(height: AppSpacing.md),
-          ],
-
-          // Entry title (optional)
-          if (_settings?.showEntryTitle ?? false) ...[
-            _buildTitleField(cs, tt),
-            const SizedBox(height: AppSpacing.sm),
-          ],
-
-          // Journal input
-          JournalTextArea(
-            controller: _entryController,
-            focusNode: _entryFocus,
-            hint: _isAllDayMode
-                ? dailyJournalPrompt()
-                : _isAm
-                    ? 'How did the morning go?'
-                    : 'How about the rest of the day?',
-            isSaving: _isSaving,
-            onSave: _saveEntry,
-            enterToSave: _settings?.enterToSave ?? false,
-            bulletPoints: _settings?.bulletPointsOnEnter ?? false,
-            topRightWidget: _isAllDayMode
-                ? null
-                : SegmentedPill(
-                    leftLabel: 'AM',
-                    rightLabel: 'PM',
-                    isRightActive: !_isAm,
-                    onTapLeft: () => _switchPeriod(true),
-                    onTapRight: () => _switchPeriod(false),
-                  ),
-          ),
-
-          const SizedBox(height: AppSpacing.lg),
-
-          // Progress bar
-          _buildProgressBar(cs, tt),
-
+          ..._buildJournalContent(cs, tt),
           const SizedBox(height: AppSpacing.navBarClearance),
         ],
       ),
@@ -355,139 +389,44 @@ class _HomeScreenState extends State<HomeScreen>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(height: AppSpacing.xl),
-
-                        // Hero prompt
-                        Semantics(
-                          header: true,
-                          label: '$_heroPrompt$_accentWord',
-                          excludeSemantics: true,
-                          child: Text.rich(
-                            TextSpan(
-                              style: tt.displaySmall?.copyWith(
-                                fontWeight: FontWeight.w700,
-                                height: 1.1,
-                              ),
-                              children: [
-                                TextSpan(text: _heroPrompt),
-                                TextSpan(
-                                  text: _accentWord,
-                                  style: TextStyle(color: cs.primary),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.sm),
-
-                        // Date chip
-                        Semantics(
-                          button: true,
-                          label: 'Change entry date, currently ${_selectedDate != null ? DateFormat('MMM d, yyyy').format(_entryDate) : formatDateLabel(_entryDate)}',
-                          excludeSemantics: true,
-                          child: InkWell(
-                            onTap: _pickDate,
-                            borderRadius: AppSpacing.borderRadiusLg,
-                            child: Chip(
-                              avatar: Icon(Icons.calendar_today, size: 16, color: cs.onSurfaceVariant),
-                              label: Text(
-                                _selectedDate != null
-                                    ? DateFormat('MMM d, yyyy').format(_entryDate)
-                                    : formatDateLabel(_entryDate),
-                                style: tt.labelLarge?.copyWith(color: cs.onSurfaceVariant),
-                              ),
-                              backgroundColor: cs.surfaceContainerHigh,
-                              side: BorderSide(
-                                color: _selectedDate != null
-                                    ? cs.primary.withValues(alpha: 0.5)
-                                    : cs.outlineVariant.withValues(alpha: 0.3),
-                              ),
-                              shape: RoundedRectangleBorder(borderRadius: AppSpacing.borderRadiusLg),
-                              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
-                            ),
-                          ),
-                        ),
-
-                        const SizedBox(height: AppSpacing.sm),
-                        Text(
-                          'Brain dump here. Full sentences optional.',
-                          style: tt.bodyLarge?.copyWith(color: cs.onSurfaceVariant),
-                        ),
-
-                        const SizedBox(height: AppSpacing.md),
-
-                        // Mood selector (opt-in via settings)
-                        if (_settings?.moodEnabled ?? false) ...[
-                          MoodSelector(
-                            selectedMood: _selectedMood,
-                            onChanged: (mood) => setState(() => _selectedMood = mood),
-                          ),
-                          const SizedBox(height: AppSpacing.md),
-                        ],
-
-                        // Entry title (optional)
-                        if (_settings?.showEntryTitle ?? false) ...[
-                          _buildTitleField(cs, tt),
-                          const SizedBox(height: AppSpacing.sm),
-                        ],
-
-                        // Journal input
-                        JournalTextArea(
-                          controller: _entryController,
-                          focusNode: _entryFocus,
-                          hint: _isAllDayMode
-                              ? dailyJournalPrompt()
-                              : _isAm
-                                  ? 'How did the morning go?'
-                                  : 'How about the rest of the day?',
-                          isSaving: _isSaving,
-                          onSave: _saveEntry,
-                          enterToSave: _settings?.enterToSave ?? false,
-                          bulletPoints: _settings?.bulletPointsOnEnter ?? false,
-                          topRightWidget: _isAllDayMode
-                              ? null
-                              : SegmentedPill(
-                                  leftLabel: 'AM',
-                                  rightLabel: 'PM',
-                                  isRightActive: !_isAm,
-                                  onTapLeft: () => _switchPeriod(true),
-                                  onTapRight: () => _switchPeriod(false),
-                                ),
-                        ),
-
-                        const SizedBox(height: AppSpacing.lg),
-
-                        // Progress bar
-                        _buildProgressBar(cs, tt),
+                        ..._buildJournalContent(cs, tt),
 
                         // Recent days
-                        if (_yesterdayEntries.isNotEmpty || _dayBeforeEntries.isNotEmpty) ...[
-                          const SizedBox(height: AppSpacing.xl),
-                          Text(
-                            'Recent',
-                            style: tt.titleSmall?.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: cs.onSurfaceVariant,
+                        const SizedBox(height: AppSpacing.xl),
+                        Text(
+                          'Recent',
+                          style: tt.titleSmall?.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: cs.onSurfaceVariant,
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.sm),
+                        if (_yesterdayEntries.isNotEmpty)
+                          RecentDayCard(
+                            label: (_settings?.askAboutToday ?? true) ? 'Today' : 'Yesterday',
+                            entries: _yesterdayEntries,
+                          ),
+                        if (_dayBeforeEntries.isNotEmpty) ...[
+                          const SizedBox(height: AppSpacing.md),
+                          RecentDayCard(
+                            label: (_settings?.askAboutToday ?? true)
+                                ? 'Yesterday'
+                                : DateFormat('EEEE').format(
+                                    DateTime.now().subtract(const Duration(days: 2)),
+                                  ),
+                            entries: _dayBeforeEntries,
+                          ),
+                        ],
+                        if (_yesterdayEntries.isEmpty && _dayBeforeEntries.isEmpty)
+                          Padding(
+                            padding: const EdgeInsets.only(top: AppSpacing.md),
+                            child: Text(
+                              'Your recent entries will appear here.',
+                              style: tt.bodyMedium?.copyWith(
+                                color: cs.onSurfaceVariant.withValues(alpha: 0.6),
+                              ),
                             ),
                           ),
-                          const SizedBox(height: AppSpacing.sm),
-                          if (_yesterdayEntries.isNotEmpty)
-                            RecentDayCard(
-                              label: (_settings?.askAboutToday ?? true) ? 'Today' : 'Yesterday',
-                              entries: _yesterdayEntries,
-                            ),
-                          if (_dayBeforeEntries.isNotEmpty) ...[
-                            const SizedBox(height: AppSpacing.md),
-                            RecentDayCard(
-                              label: (_settings?.askAboutToday ?? true)
-                                  ? 'Yesterday'
-                                  : DateFormat('EEEE').format(
-                                      DateTime.now().subtract(const Duration(days: 2)),
-                                    ),
-                              entries: _dayBeforeEntries,
-                            ),
-                          ],
-                        ],
 
                         const SizedBox(height: AppSpacing.navBarClearance),
                       ],
@@ -661,8 +600,29 @@ class _HomeScreenState extends State<HomeScreen>
     final hasText = text.isNotEmpty;
     final hasMood = moodEnabled && _selectedMood != null;
 
-    if (!hasText && !(moodOnlyEntries && hasMood)) return;
-    if (moodRequired && !hasMood) return;
+    if (!hasText && !(moodOnlyEntries && hasMood)) {
+      _shakeController.forward(from: 0);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Write something first!'),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: AppSpacing.borderRadiusLg),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+    if (moodRequired && !hasMood) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Pick a mood to save'),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: AppSpacing.borderRadiusLg),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
 
     FocusScope.of(context).unfocus();
     setState(() => _isSaving = true);
@@ -708,8 +668,11 @@ class _HomeScreenState extends State<HomeScreen>
 
     if (!mounted) return;
 
-    final milestone = await _checkMilestone();
+    // Single count fetch used for milestones and review prompt
+    final totalCount = await _entries.getTotalEntryCount();
     if (!mounted) return;
+
+    final milestone = _milestoneForCount(totalCount);
 
     FocusScope.of(context).unfocus();
 
@@ -726,15 +689,23 @@ class _HomeScreenState extends State<HomeScreen>
     _selectedMood = null;
 
     // Check for in-app review prompt (fires once at 5th entry)
-    final totalCount = await _entries.getTotalEntryCount();
     ReviewService.instance.checkAndPrompt(totalCount);
 
     // Refresh home screen widget with latest data
     WidgetService.instance.update();
+
+    // Cancel/reschedule today's reminder so users who already journaled
+    // don't get nagged again.
+    if (_settings != null) {
+      NotificationService.instance.scheduleDailyIfNeeded(
+        hour: _settings!.nudgeHour,
+        minute: _settings!.nudgeMinute,
+        hasEntriesToday: () async => true, // Just saved, so yes
+      );
+    }
   }
 
-  Future<String?> _checkMilestone() async {
-    final count = await _entries.getTotalEntryCount();
+  static String? _milestoneForCount(int count) {
     const milestones = <int, String>{
       1: 'Your very first entry!',
       5: "5 entries! You're off to a great start.",

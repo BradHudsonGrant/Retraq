@@ -4,9 +4,7 @@ import '../providers/settings_provider.dart';
 import '../services/database_service.dart';
 import '../services/settings_repository.dart';
 import '../services/notification_service.dart';
-import '../providers/premium_provider.dart';
 import '../theme/app_spacing.dart';
-import 'paywall_screen.dart';
 import '../utils/adaptive_layout.dart';
 import '../widgets/organisms/nudge_card.dart';
 import '../widgets/organisms/pin_verify_sheet.dart';
@@ -89,18 +87,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     final s = _settings;
 
-    final isPremium = PremiumProvider.of(context);
-
     final content = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: AppSpacing.lg),
-
-        // ── Premium upsell / status ──
-        if (!isPremium) ...[
-          _PremiumBanner(onTap: () => PaywallScreen.show(context)),
-          const SizedBox(height: AppSpacing.xl),
-        ],
 
         AppearanceSection(
           themeMode: widget.themeMode,
@@ -125,6 +115,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
         NudgeCard(
           nudgeHour: s.nudgeHour,
+          nudgeMinute: s.nudgeMinute,
           onChangeTime: () => _showTimePicker(context),
         ),
 
@@ -156,52 +147,3 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 }
 
-class _PremiumBanner extends StatelessWidget {
-  final VoidCallback onTap;
-
-  const _PremiumBanner({required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final tt = Theme.of(context).textTheme;
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        decoration: BoxDecoration(
-          color: cs.primaryContainer,
-          borderRadius: AppSpacing.borderRadiusXl,
-        ),
-        child: Row(
-          children: [
-            Icon(Icons.auto_awesome, color: cs.onPrimaryContainer),
-            const SizedBox(width: AppSpacing.md),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'SinceThen Pro',
-                    style: tt.titleSmall?.copyWith(
-                      fontWeight: FontWeight.w700,
-                      color: cs.onPrimaryContainer,
-                    ),
-                  ),
-                  Text(
-                    'Unlock AI recaps and advanced analytics',
-                    style: tt.bodySmall?.copyWith(
-                      color: cs.onPrimaryContainer.withValues(alpha: 0.8),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Icon(Icons.chevron_right, color: cs.onPrimaryContainer),
-          ],
-        ),
-      ),
-    );
-  }
-}
