@@ -109,7 +109,9 @@ class _HomeScreenState extends State<HomeScreen>
     _weekCountSub = _settingsRepo.watchSettings()
         .where((s) => s != null)
         .cast<UserSettings>()
-        .asyncExpand((s) => _entries.watchWeekEntryCount(weekStartDay: s.weekStartDay))
+        .map((s) => s.weekStartDay)
+        .distinct()
+        .asyncExpand((weekStartDay) => _entries.watchWeekEntryCount(weekStartDay: weekStartDay))
         .handleError((e) => debugPrint('watchWeekEntryCount failed: $e'))
         .listen((count) {
       if (!mounted) return;

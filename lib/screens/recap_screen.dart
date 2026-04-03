@@ -58,7 +58,7 @@ class _RecapScreenState extends State<RecapScreen>
 
   // Subscriptions
   StreamSubscription<List<JournalEntry>>? _weekEntriesSub;
-  StreamSubscription<List<JournalEntry>>? _monthSub;
+  StreamSubscription<Set<int>>? _monthSub;
   StreamSubscription<List<JournalEntry>>? _entrySub;
 
   @override
@@ -102,10 +102,10 @@ class _RecapScreenState extends State<RecapScreen>
 
   void _listenToMonthData() {
     _monthSub?.cancel();
-    _monthSub = _entries.watchMonthEntries(_selectedMonth).listen((entries) {
+    _monthSub = _entries.watchMonthEntryDays(_selectedMonth).listen((days) {
       if (!mounted) return;
       setState(() {
-        _entryDays = entries.map((e) => e.date.day).toSet();
+        _entryDays = days;
       });
     });
   }

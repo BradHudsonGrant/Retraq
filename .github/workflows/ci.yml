@@ -14,9 +14,10 @@ jobs:
   analyze-and-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      # SHA-pinned for supply-chain safety
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
-      - uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@e9ef6381ba5e498e3ae608b2c84539e498e20463 # v2.19.0
         with:
           flutter-version: '3.32.1'
           channel: 'stable'
@@ -48,13 +49,13 @@ jobs:
           fi
           COVERAGE=$((HIT_LINES * 100 / TOTAL_LINES))
           echo "Coverage: ${COVERAGE}% (${HIT_LINES}/${TOTAL_LINES} lines)"
-          if [ "$COVERAGE" -lt 60 ]; then
-            echo "::error::Coverage ${COVERAGE}% is below 60% threshold"
+          if [ "$COVERAGE" -lt 70 ]; then
+            echo "::error::Coverage ${COVERAGE}% is below 70% threshold"
             exit 1
           fi
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@0565863a31f6c34f5a9f4ac1a32bb0b32acc9aca # v4.3.1
         with:
           files: coverage/lcov.info
           fail_ci_if_error: true
@@ -62,7 +63,7 @@ jobs:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Upload coverage artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: coverage-report
           path: coverage/
@@ -71,21 +72,21 @@ jobs:
     runs-on: ubuntu-latest
     needs: analyze-and-test
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4.7.1
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      - uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@e9ef6381ba5e498e3ae608b2c84539e498e20463 # v2.19.0
         with:
           flutter-version: '3.32.1'
           channel: 'stable'
           cache: true
 
       - name: Cache Gradle
-        uses: actions/cache@v4
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
         with:
           path: ~/.gradle/caches
           key: gradle-${{ hashFiles('android/build.gradle.kts', 'pubspec.lock') }}
@@ -128,7 +129,7 @@ jobs:
         run: rm -f release-keystore.jks
 
       - name: Upload AAB artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: android-aab
           path: build/app/outputs/bundle/release/*.aab
@@ -138,9 +139,9 @@ jobs:
     runs-on: macos-latest
     needs: analyze-and-test
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
-      - uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@e9ef6381ba5e498e3ae608b2c84539e498e20463 # v2.19.0
         with:
           flutter-version: '3.32.1'
           channel: 'stable'
@@ -156,7 +157,7 @@ jobs:
         run: flutter build ios --no-codesign --release
 
       - name: Upload iOS build artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: ios-build
           path: build/ios/iphoneos/Runner.app
@@ -168,14 +169,14 @@ jobs:
     runs-on: ubuntu-latest
     needs: analyze-and-test
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4.7.1
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      - uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@e9ef6381ba5e498e3ae608b2c84539e498e20463 # v2.19.0
         with:
           flutter-version: '3.32.1'
           channel: 'stable'
@@ -188,7 +189,7 @@ jobs:
         run: dart run build_runner build --delete-conflicting-outputs
 
       - name: Run integration tests
-        uses: reactivecircus/android-emulator-runner@v2
+        uses: reactivecircus/android-emulator-runner@1dcd0090116d15e7c562f0bc8937c1596852611c # v2.34.0
         with:
           api-level: 34
           arch: x86_64
