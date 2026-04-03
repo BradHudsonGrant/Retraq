@@ -30,7 +30,8 @@ class WidgetService {
   Future<void> update() async {
     try {
       final db = DatabaseService.instance;
-      final stats = await db.stats.getAllStats(weeks: 1);
+      // Use lightweight query instead of full getAllStats().
+      final widgetData = await db.stats.getWidgetData();
 
       // Find the latest entry's mood (if any).
       final entries = await db.entries.getEntriesForDate(DateTime.now());
@@ -40,8 +41,8 @@ class WidgetService {
           : '';
 
       await Future.wait([
-        HomeWidget.saveWidgetData<int>('streak', stats.currentStreak),
-        HomeWidget.saveWidgetData<int>('totalEntries', stats.totalEntries),
+        HomeWidget.saveWidgetData<int>('streak', widgetData.currentStreak),
+        HomeWidget.saveWidgetData<int>('totalEntries', widgetData.totalEntries),
         HomeWidget.saveWidgetData<String>('lastEntryDate', lastDate),
         HomeWidget.saveWidgetData<int>('mood', latestMood),
       ]);

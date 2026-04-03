@@ -300,6 +300,27 @@ class StatsService {
     }
   }
 
+  /// Lightweight data for the home screen widget.
+  ///
+  /// Only queries current streak and total entry count — much cheaper than
+  /// [getAllStats] which computes 9+ metrics. Designed to run quickly in a
+  /// background isolate on mobile.
+  Future<WidgetData> getWidgetData() async {
+    try {
+      final results = await Future.wait([
+        getCurrentStreak(),
+        _getTotalEntryCount(),
+      ]);
+      return WidgetData(
+        currentStreak: results[0],
+        totalEntries: results[1],
+      );
+    } catch (e) {
+      debugPrint('StatsService.getWidgetData failed: $e');
+      return const WidgetData();
+    }
+  }
+
   /// Combined stats snapshot — computes all stats in a single trigger instead
   /// of N independent full-table scans. Use [watchAllStats] for the stream.
   Future<StatsSnapshot> getAllStats({int weeks = 12}) async {
@@ -444,4 +465,15 @@ class StatsSnapshot {
         Object.hashAll(weeklyTrends),
         Object.hashAll(moodDistribution.entries),
       );
+}
+
+/// Lightweight data subset for the home screen widget.
+class WidgetData {
+  final int currentStreak;
+  final int totalEntries;
+
+  const WidgetData({
+    this.currentStreak = 0,
+    this.totalEntries = 0,
+  });
 }
