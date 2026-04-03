@@ -91,7 +91,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 10;
+  int get schemaVersion => 11;
 
   @override
   MigrationStrategy get migration => buildMigrationStrategy(this);
@@ -159,9 +159,12 @@ class DatabaseService {
     final encryptionKey = await _getOrCreateDbKey();
 
     // Clean up stale .bak files from previous migration attempts.
+    // Overwrite with zeros before deleting to prevent data recovery.
     final bakFile = File('${file.path}.bak');
     if (bakFile.existsSync()) {
       try {
+        final bakLength = await bakFile.length();
+        await bakFile.writeAsBytes(Uint8List(bakLength), flush: true);
         await bakFile.delete();
       } catch (_) {}
     }
@@ -264,8 +267,11 @@ class DatabaseService {
       }
     });
 
-    // Migration succeeded — remove backup.
+    // Migration succeeded — securely remove backup.
+    // Overwrite with zeros before deleting to prevent data recovery.
     try {
+      final bakLength = await backupFile.length();
+      await backupFile.writeAsBytes(Uint8List(bakLength), flush: true);
       await backupFile.delete();
     } catch (_) {
       // Non-critical; leave backup if delete fails.

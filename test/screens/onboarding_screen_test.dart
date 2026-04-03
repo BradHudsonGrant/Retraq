@@ -63,7 +63,7 @@ void main() {
 
         await passAgeGate(tester);
 
-        expect(find.text('Your day,\nyour words.'), findsOneWidget);
+        expect(find.text('Capture it\nbefore it\u2019s gone.'), findsOneWidget);
       });
 
       testWidgets('I am under 13 shows persistent block', (tester) async {
@@ -90,8 +90,8 @@ void main() {
 
       await passAgeGate(tester);
 
-      expect(find.text('Your day,\nyour words.'), findsOneWidget);
-      expect(find.text('No templates. No pressure.\nJust jot down the highlights.'), findsOneWidget);
+      expect(find.text('Capture it\nbefore it\u2019s gone.'), findsOneWidget);
+      expect(find.text('Quick thoughts, random ideas, things you\u2019ll\nforget by tomorrow. Just get it down.'), findsOneWidget);
     });
 
     testWidgets('no Skip button after age gate', (tester) async {
@@ -127,7 +127,7 @@ void main() {
       await tester.tap(find.text('Next'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Look back\nwithout stress.'), findsOneWidget);
+      expect(find.text('Your life,\nactually organised.'), findsOneWidget);
     });
 
     testWidgets('shows Get Started on consent page', (tester) async {
@@ -205,7 +205,7 @@ void main() {
       await tester.fling(find.byType(PageView), const Offset(-300, 0), 800);
       await tester.pumpAndSettle();
 
-      expect(find.text('Look back\nwithout stress.'), findsOneWidget);
+      expect(find.text('Your life,\nactually organised.'), findsOneWidget);
     });
 
     testWidgets('all three info pages have correct body text', (tester) async {
@@ -217,17 +217,17 @@ void main() {
       await passAgeGate(tester);
 
       // Page 1
-      expect(find.text('No templates. No pressure.\nJust jot down the highlights.'), findsOneWidget);
+      expect(find.text('Quick thoughts, random ideas, things you\u2019ll\nforget by tomorrow. Just get it down.'), findsOneWidget);
 
       // Page 2
       await tester.tap(find.text('Next'));
       await tester.pumpAndSettle();
-      expect(find.text('A simple calendar shows\nwhat you captured each day.'), findsOneWidget);
+      expect(find.text('Look back on any day, week, or month.\nFull sentences optional \u2014 brain dumps welcome.'), findsOneWidget);
 
       // Page 3
       await tester.tap(find.text('Next'));
       await tester.pumpAndSettle();
-      expect(find.text('Everything stays on your phone.\nNo account needed. Ever.'), findsOneWidget);
+      expect(find.text('Everything stays on your device.\nNo account. No cloud. No compromises.'), findsOneWidget);
     });
 
     testWidgets('consent page shows health disclaimer', (tester) async {

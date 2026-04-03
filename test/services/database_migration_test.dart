@@ -17,6 +17,9 @@ import 'package:sincethen/services/database_service.dart';
 ///   v5 → v6: Added FK constraint from journal_entries.user_id → users.id
 ///   v6 → v7: Replaced is_dark_mode (bool) with theme_mode (int)
 ///   v7 → v8: Added nudge_minute column, created consent_records table
+///   v8 → v9: Fixed FK ON DELETE CASCADE, cleaned orphaned entries
+///   v9 → v10: Added mood column to journal_entries, mood settings
+///   v10 → v11: Added index on mood column (idx_journal_mood)
 void main() {
   late DatabaseService db;
 
@@ -961,10 +964,10 @@ void main() {
       ]));
     });
 
-    test('schema version is 10', () async {
+    test('schema version is 11', () async {
       final result = await db.db.customSelect('PRAGMA user_version').get();
       final version = result.first.data['user_version'] as int;
-      expect(version, 10);
+      expect(version, 11);
     });
   });
 

@@ -13,7 +13,6 @@ import 'onboarding/onboarding_intro_page.dart';
 import 'onboarding/onboarding_page_data.dart';
 
 /// First-launch onboarding — age gate, 3 intro screens, and consent.
-/// Follows the ADHD principle: minimal, warm, zero overwhelm.
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key, required this.onComplete});
 
@@ -40,18 +39,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   static const _pages = [
     OnboardingPageData(
       icon: Icons.edit_note,
-      title: 'Your day,\nyour words.',
-      body: 'No templates. No pressure.\nJust jot down the highlights.',
+      title: 'Capture it\nbefore it\u2019s gone.',
+      body: 'Quick thoughts, random ideas, things you\u2019ll\nforget by tomorrow. Just get it down.',
     ),
     OnboardingPageData(
       icon: Icons.auto_awesome,
-      title: 'Look back\nwithout stress.',
-      body: 'A simple calendar shows\nwhat you captured each day.',
+      title: 'Your life,\nactually organised.',
+      body: 'Look back on any day, week, or month.\nFull sentences optional \u2014 brain dumps welcome.',
     ),
     OnboardingPageData(
       icon: Icons.lock_outline,
-      title: 'Private\nby default.',
-      body: 'Everything stays on your phone.\nNo account needed. Ever.',
+      title: 'Completely\nyours.',
+      body: 'Everything stays on your device.\nNo account. No cloud. No compromises.',
     ),
   ];
 

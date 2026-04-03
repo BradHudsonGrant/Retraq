@@ -173,40 +173,37 @@ class _ConsentCheckbox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () => onChanged(!value),
-      borderRadius: AppSpacing.borderRadiusLg,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 48,
-            height: 48,
-            child: Center(
-              child: Checkbox(
-                value: value,
-                onChanged: onChanged,
-              ),
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 48,
+          height: 48,
+          child: Center(
+            child: Checkbox(
+              value: value,
+              onChanged: onChanged,
             ),
           ),
-          const SizedBox(width: AppSpacing.sm),
-          Expanded(
+        ),
+        const SizedBox(width: AppSpacing.sm),
+        Expanded(
+          child: GestureDetector(
+            onTap: onTapLink,
+            behavior: HitTestBehavior.opaque,
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),
-              child: InkWell(
-                onTap: onTapLink,
-                child: Text(
-                  label,
-                  style: textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.onSurface,
-                    decoration: TextDecoration.underline,
-                  ),
+              child: Text(
+                label,
+                style: textTheme.bodyMedium?.copyWith(
+                  color: colorScheme.onSurface,
+                  decoration: TextDecoration.underline,
                 ),
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

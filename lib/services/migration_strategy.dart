@@ -272,6 +272,13 @@ MigrationStrategy buildMigrationStrategy(AppDatabase db) {
           'ALTER TABLE user_settings_table ADD COLUMN mood_only_entries INTEGER NOT NULL DEFAULT 0',
         );
       }
+      if (from < 11) {
+        // v10→v11: Add index on mood column for getMoodDistribution / getAverageMood.
+        // The date index (idx_journal_date) already exists from v5/v6/v9.
+        await db.customStatement(
+          'CREATE INDEX IF NOT EXISTS idx_journal_mood ON journal_entries(mood)',
+        );
+      }
     },
   );
 }
