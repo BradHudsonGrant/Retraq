@@ -279,6 +279,12 @@ MigrationStrategy buildMigrationStrategy(AppDatabase db) {
           'CREATE INDEX IF NOT EXISTS idx_journal_mood ON journal_entries(mood)',
         );
       }
+      if (from < 12) {
+        // v11→v12: Add bionic_reading_enabled column to user_settings_table.
+        await db.customStatement(
+          'ALTER TABLE user_settings_table ADD COLUMN bionic_reading_enabled INTEGER NOT NULL DEFAULT 0',
+        );
+      }
     },
   );
 }

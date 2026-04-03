@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../models/journal_entry.dart';
+import '../../providers/settings_provider.dart';
 import '../../theme/app_spacing.dart';
 import '../../utils/entry_action_dialogs.dart';
+import '../atoms/bionic_text.dart';
 import '../atoms/sincethen_chip.dart';
 import '../molecules/entry_action_menu.dart';
 
@@ -251,11 +253,12 @@ class _InlineEntry extends StatelessWidget {
 
           // Entry text
           if (entry.entry != null && entry.entry!.isNotEmpty)
-            Text(
-              entry.entry!,
+            BionicText(
+              text: entry.entry!,
               style: tt.bodyMedium?.copyWith(height: 1.5),
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
+              enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
             ),
         ],
       ),

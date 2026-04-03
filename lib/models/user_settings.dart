@@ -23,6 +23,7 @@ class UserSettings {
   final bool moodEnabled;       // Show mood selector on home screen
   final bool moodRequired;      // Require mood before saving entry
   final bool moodOnlyEntries;   // Allow mood-only entries (no text)
+  final bool bionicReadingEnabled; // Bold start of each word for faster reading
 
   UserSettings({
     this.themeMode = 0,
@@ -42,6 +43,7 @@ class UserSettings {
     this.moodEnabled = false,
     this.moodRequired = false,
     this.moodOnlyEntries = false,
+    this.bionicReadingEnabled = false,
   });
 
   static const Object _sentinel = Object();
@@ -64,6 +66,7 @@ class UserSettings {
     bool? moodEnabled,
     bool? moodRequired,
     bool? moodOnlyEntries,
+    bool? bionicReadingEnabled,
   }) {
     return UserSettings(
       themeMode: themeMode ?? this.themeMode,
@@ -83,6 +86,7 @@ class UserSettings {
       moodEnabled: moodEnabled ?? this.moodEnabled,
       moodRequired: moodRequired ?? this.moodRequired,
       moodOnlyEntries: moodOnlyEntries ?? this.moodOnlyEntries,
+      bionicReadingEnabled: bionicReadingEnabled ?? this.bionicReadingEnabled,
     );
   }
 
@@ -106,7 +110,8 @@ class UserSettings {
           amPmCutoffHour == other.amPmCutoffHour &&
           moodEnabled == other.moodEnabled &&
           moodRequired == other.moodRequired &&
-          moodOnlyEntries == other.moodOnlyEntries;
+          moodOnlyEntries == other.moodOnlyEntries &&
+          bionicReadingEnabled == other.bionicReadingEnabled;
 
   @override
   int get hashCode => Object.hash(
@@ -114,6 +119,6 @@ class UserSettings {
         weekStartDay, nudgeHour, nudgeMinute, appLockEnabled,
         pinHash, biometricEnabled, onboardingComplete, enterToSave,
         bulletPointsOnEnter, amPmCutoffHour, moodEnabled,
-        moodRequired, moodOnlyEntries,
+        moodRequired, moodOnlyEntries, bionicReadingEnabled,
       );
 }

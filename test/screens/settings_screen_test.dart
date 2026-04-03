@@ -127,9 +127,9 @@ void main() {
       ));
       await tester.pump(const Duration(milliseconds: 200));
 
-      // Visible: All Day Notes, Opening Prompt, Journal Entry Title, App Lock, Mood Tracking = 5
+      // Visible: All Day Notes, Opening Prompt, Journal Entry Title, Mood Tracking, Bionic Reading, App Lock = 6
       // Hidden in collapsed Advanced: Enter to Save, Bullet Points, Week Starts On
-      expect(find.byType(SettingsRow), findsNWidgets(5));
+      expect(find.byType(SettingsRow), findsNWidgets(6));
       await flushDriftTimers(tester);
     });
 

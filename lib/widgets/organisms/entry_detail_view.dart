@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../models/journal_entry.dart';
+import '../../providers/settings_provider.dart';
 import '../../services/export_service.dart';
 import '../../theme/app_spacing.dart';
 import '../../utils/entry_action_dialogs.dart';
+import '../atoms/bionic_text.dart';
 import '../atoms/sincethen_chip.dart';
 import '../molecules/entry_action_menu.dart';
 import '../molecules/mood_selector.dart';
@@ -165,9 +167,10 @@ class _EntryCard extends StatelessWidget {
 
           // Entry text
           if (entry.entry != null && entry.entry!.isNotEmpty)
-            Text(
-              entry.entry!,
+            BionicText(
+              text: entry.entry!,
               style: tt.bodyLarge?.copyWith(height: 1.6),
+              enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
             ),
         ],
       ),

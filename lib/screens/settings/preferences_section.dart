@@ -125,6 +125,21 @@ class PreferencesSection extends StatelessWidget {
         ],
         const SizedBox(height: AppSpacing.md),
 
+        // Bionic Reading
+        SettingsRow(
+          title: 'Bionic Reading',
+          subtitle: 'Bolds the start of each word for faster reading',
+          trailing: Semantics(
+            label: 'Bionic reading',
+            child: Switch(
+              value: s.bionicReadingEnabled,
+              onChanged: (v) => onSettingsChanged(s.copyWith(bionicReadingEnabled: v)),
+              activeColor: cs.primary,
+            ),
+          ),
+        ),
+        const SizedBox(height: AppSpacing.md),
+
         // Advanced settings
         Theme(
           data: Theme.of(context).copyWith(dividerColor: Colors.transparent),

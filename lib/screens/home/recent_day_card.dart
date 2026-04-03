@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../models/journal_entry.dart';
+import '../../providers/settings_provider.dart';
 import '../../theme/app_spacing.dart';
 import '../../utils/entry_action_dialogs.dart';
+import '../../widgets/atoms/bionic_text.dart';
 import '../../widgets/molecules/entry_action_menu.dart';
 
 /// Compact card showing a recent day's entries on the home screen.
@@ -84,13 +86,14 @@ class RecentDayCard extends StatelessWidget {
                       ),
                     ),
                   Expanded(
-                    child: Text(
-                      entries[i].displayText,
+                    child: BionicText(
+                      text: entries[i].displayText,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: tt.bodySmall?.copyWith(
                         color: cs.onSurface.withValues(alpha: 0.8),
                       ),
+                      enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
                     ),
                   ),
                   EntryActionMenu(

@@ -964,10 +964,10 @@ void main() {
       ]));
     });
 
-    test('schema version is 11', () async {
+    test('schema version is 12', () async {
       final result = await db.db.customSelect('PRAGMA user_version').get();
       final version = result.first.data['user_version'] as int;
-      expect(version, 11);
+      expect(version, 12);
     });
   });
 

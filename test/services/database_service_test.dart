@@ -644,11 +644,11 @@ void main() {
       db = DatabaseService.instance;
     });
 
-    test('schema version is 11 after initInMemory', () async {
+    test('schema version is 12 after initInMemory', () async {
       // Query the Drift schema version via the underlying DB.
       final result = await db.db.customSelect('PRAGMA user_version').get();
       final version = result.first.data['user_version'] as int;
-      expect(version, 11);
+      expect(version, 12);
     });
 
     test('consent_records table exists and accepts inserts', () async {

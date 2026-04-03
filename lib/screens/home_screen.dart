@@ -489,7 +489,10 @@ class _HomeScreenState extends State<HomeScreen>
             fontWeight: FontWeight.w600,
             color: cs.onSurfaceVariant.withValues(alpha: 0.55),
           ),
+          filled: false,
           border: InputBorder.none,
+          enabledBorder: InputBorder.none,
+          focusedBorder: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.lg,
             vertical: AppSpacing.md,

@@ -31,6 +31,7 @@ class SettingsRepository {
       moodEnabled: row.moodEnabled,
       moodRequired: row.moodRequired,
       moodOnlyEntries: row.moodOnlyEntries,
+      bionicReadingEnabled: row.bionicReadingEnabled,
     );
   }
 
@@ -79,6 +80,7 @@ class SettingsRepository {
           moodEnabled: Value(s.moodEnabled),
           moodRequired: Value(s.moodRequired),
           moodOnlyEntries: Value(s.moodOnlyEntries),
+          bionicReadingEnabled: Value(s.bionicReadingEnabled),
         );
 
         if (existing != null) {

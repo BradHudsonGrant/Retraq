@@ -71,6 +71,7 @@ class UserSettingsTable extends Table {
   BoolColumn get moodEnabled => boolean().withDefault(const Constant(false))();
   BoolColumn get moodRequired => boolean().withDefault(const Constant(false))();
   BoolColumn get moodOnlyEntries => boolean().withDefault(const Constant(false))();
+  BoolColumn get bionicReadingEnabled => boolean().withDefault(const Constant(false))();
   IntColumn get userId => integer().nullable()();
 }
 
@@ -91,7 +92,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 11;
+  int get schemaVersion => 12;
 
   @override
   MigrationStrategy get migration => buildMigrationStrategy(this);
