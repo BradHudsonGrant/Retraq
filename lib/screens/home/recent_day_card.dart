@@ -63,7 +63,7 @@ class RecentDayCard extends StatelessWidget {
                 Text(
                   '${entries.length} ${entries.length == 1 ? 'entry' : 'entries'}',
                   style: tt.labelSmall?.copyWith(
-                    color: cs.onSurfaceVariant.withValues(alpha: 0.6),
+                    color: cs.onSurfaceVariant.withValues(alpha: 0.7),
                   ),
                 ),
               ],

@@ -359,7 +359,7 @@ class _HomeScreenState extends State<HomeScreen>
                 child: BionicText(
                   text: 'No recent entries yet.',
                   style: tt.bodyMedium?.copyWith(
-                    color: cs.onSurfaceVariant.withValues(alpha: 0.6),
+                    color: cs.onSurfaceVariant.withValues(alpha: 0.7),
                   ),
                   enabled: _settings?.bionicReadingEnabled ?? false,
                 ),
@@ -428,7 +428,7 @@ class _HomeScreenState extends State<HomeScreen>
                             child: BionicText(
                               text: 'Your recent entries will appear here.',
                               style: tt.bodyMedium?.copyWith(
-                                color: cs.onSurfaceVariant.withValues(alpha: 0.6),
+                                color: cs.onSurfaceVariant.withValues(alpha: 0.7),
                               ),
                               enabled: _settings?.bionicReadingEnabled ?? false,
                             ),

@@ -61,7 +61,7 @@ class RecapWeekView extends StatelessWidget {
                     text: 'Your journal entries will appear here once you start writing.',
                     textAlign: TextAlign.center,
                     style: tt.bodyMedium?.copyWith(
-                      color: cs.onSurfaceVariant.withValues(alpha: 0.6),
+                      color: cs.onSurfaceVariant.withValues(alpha: 0.7),
                     ),
                     enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
                   ),

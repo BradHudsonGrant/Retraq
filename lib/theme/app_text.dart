@@ -74,21 +74,24 @@ class AppText {
             fontWeight: FontWeight.w500,
             fontVariations: [FontVariation('wght', 500)]),
 
-        // Body
+        // Body — w450 via fontVariations for variable font crispness on OLED
         bodyLarge: TextStyle(
             fontFamily: bodyFamily,
             fontSize: 16,
             fontWeight: FontWeight.w400,
+            fontVariations: [FontVariation('wght', 475)],
             height: 1.5),
         bodyMedium: TextStyle(
             fontFamily: bodyFamily,
             fontSize: 14,
             fontWeight: FontWeight.w400,
+            fontVariations: [FontVariation('wght', 475)],
             height: 1.5),
         bodySmall: TextStyle(
             fontFamily: bodyFamily,
             fontSize: 13,
             fontWeight: FontWeight.w400,
+            fontVariations: [FontVariation('wght', 475)],
             height: 1.4),
 
         // Label

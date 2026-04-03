@@ -113,7 +113,7 @@ void main() {
       ));
       await tester.pump(const Duration(milliseconds: 200));
 
-      expect(find.text('SinceThen Version 1.0.0'), findsOneWidget);
+      expect(find.text('SinceThen Version 0.9.0'), findsOneWidget);
       expect(find.text('Privacy Policy'), findsOneWidget);
       expect(find.text('Terms'), findsOneWidget);
       expect(find.text('Health'), findsOneWidget);

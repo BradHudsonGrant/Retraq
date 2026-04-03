@@ -68,6 +68,10 @@ class BionicText extends StatelessWidget {
     final boldWeight = baseFontWeight.index >= FontWeight.w600.index
         ? FontWeight.w800
         : FontWeight.w700;
+    // Use fontVariations for variable fonts (Manrope) — renders crisper
+    final boldVariations = baseFontWeight.index >= FontWeight.w600.index
+        ? const [FontVariation('wght', 800)]
+        : const [FontVariation('wght', 700)];
 
     for (final match in segments) {
       final segment = match.group(0)!;
@@ -107,7 +111,10 @@ class BionicText extends StatelessWidget {
 
       spans.add(TextSpan(
         text: segment.substring(0, splitIndex),
-        style: TextStyle(fontWeight: boldWeight),
+        style: TextStyle(
+          fontWeight: boldWeight,
+          fontVariations: boldVariations,
+        ),
       ));
       spans.add(TextSpan(
         text: segment.substring(splitIndex),
