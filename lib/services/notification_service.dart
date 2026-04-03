@@ -127,7 +127,9 @@ class NotificationService {
   @visibleForTesting
   static String pickMessage(int hour, {bool streakAtRisk = false}) {
     final now = DateTime.now();
-    final day = now.day;
+    // Use day-of-year instead of day-of-month for better distribution across
+    // all message lists (avoids repeating after 28-31 days).
+    final day = now.difference(DateTime(now.year)).inDays;
 
     if (streakAtRisk) {
       return streakAtRiskMessages[day % streakAtRiskMessages.length];

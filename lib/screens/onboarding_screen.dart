@@ -4,13 +4,13 @@ import '../services/database_service.dart';
 import '../services/notification_service.dart';
 import '../services/user_repository.dart';
 import '../theme/app_spacing.dart';
-import '../legal/privacy_policy.dart';
-import '../legal/health_disclaimer.dart';
-import '../legal/terms_of_service.dart';
 import '../widgets/atoms/sincethen_logo.dart';
 import '../widgets/molecules/page_indicator_dots.dart';
-import 'legal_screen.dart';
 import '../utils/app_info.dart' as info;
+import 'onboarding/age_gate_page.dart';
+import 'onboarding/consent_page.dart';
+import 'onboarding/onboarding_intro_page.dart';
+import 'onboarding/onboarding_page_data.dart';
 
 /// First-launch onboarding — age gate, 3 intro screens, and consent.
 /// Follows the ADHD principle: minimal, warm, zero overwhelm.
@@ -38,17 +38,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   static const _ageDeniedKey = 'age_denied';
 
   static const _pages = [
-    _PageData(
+    OnboardingPageData(
       icon: Icons.edit_note,
       title: 'Your day,\nyour words.',
       body: 'No templates. No pressure.\nJust jot down the highlights.',
     ),
-    _PageData(
+    OnboardingPageData(
       icon: Icons.auto_awesome,
       title: 'Look back\nwithout stress.',
       body: 'A simple calendar shows\nwhat you captured each day.',
     ),
-    _PageData(
+    OnboardingPageData(
       icon: Icons.lock_outline,
       title: 'Private\nby default.',
       body: 'Everything stays on your phone.\nNo account needed. Ever.',
@@ -223,17 +223,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     : null,
                 itemBuilder: (_, i) {
                   if (i == 0) {
-                    return _AgeGatePage(
+                    return AgeGatePage(
                       onConfirm: _confirmAge,
                       onDeny: _denyAge,
                       isDenied: _ageDenied,
                     );
                   }
                   if (i <= _pages.length) {
-                    return _OnboardingPage(data: _pages[i - 1]);
+                    return OnboardingIntroPage(data: _pages[i - 1]);
                   }
                   // Last page: consent
-                  return _ConsentPage(
+                  return ConsentPage(
                     privacyAccepted: _privacyAccepted,
                     termsAccepted: _termsAccepted,
                     healthAccepted: _healthAccepted,
@@ -300,358 +300,5 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       return _privacyAccepted && _termsAccepted && _healthAccepted;
     }
     return true;
-  }
-}
-
-class _PageData {
-  const _PageData({
-    required this.icon,
-    required this.title,
-    required this.body,
-  });
-
-  final IconData icon;
-  final String title;
-  final String body;
-}
-
-class _AgeGatePage extends StatelessWidget {
-  const _AgeGatePage({
-    required this.onConfirm,
-    required this.onDeny,
-    required this.isDenied,
-  });
-
-  final VoidCallback onConfirm;
-  final VoidCallback onDeny;
-  final bool isDenied;
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final tt = Theme.of(context).textTheme;
-
-    return Padding(
-      padding: AppSpacing.pagePadding,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 96,
-            height: 96,
-            decoration: BoxDecoration(
-              color: isDenied ? cs.errorContainer : cs.primaryContainer,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              isDenied ? Icons.block : Icons.verified_user,
-              size: 48,
-              color: isDenied ? cs.onErrorContainer : cs.onPrimaryContainer,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.xl),
-          Text(
-            isDenied ? 'Sorry!' : 'Before we begin',
-            textAlign: TextAlign.center,
-            style: tt.displaySmall?.copyWith(
-              fontWeight: FontWeight.w700,
-              height: 1.1,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Text(
-            isDenied
-                ? 'SinceThen requires users to be 13 years or older.\n'
-                    'Please come back when you\'re old enough!'
-                : 'SinceThen is designed for users\naged 13 and older.',
-            textAlign: TextAlign.center,
-            style: tt.bodyLarge?.copyWith(
-              color: cs.onSurfaceVariant,
-              height: 1.6,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.xl),
-          if (!isDenied) ...[
-            FilledButton(
-              onPressed: onConfirm,
-              style: FilledButton.styleFrom(
-                backgroundColor: cs.primary,
-                foregroundColor: cs.onPrimary,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.lg,
-                  vertical: AppSpacing.md,
-                ),
-              ),
-              child: Text(
-                'I am 13 or older',
-                style: tt.labelLarge?.copyWith(
-                  color: cs.onPrimary,
-                ),
-              ),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            TextButton(
-              onPressed: onDeny,
-              child: Text(
-                'I am under 13',
-                style: tt.labelLarge?.copyWith(color: cs.onSurfaceVariant),
-              ),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-class _ConsentPage extends StatelessWidget {
-  const _ConsentPage({
-    required this.privacyAccepted,
-    required this.termsAccepted,
-    required this.healthAccepted,
-    required this.onPrivacyChanged,
-    required this.onTermsChanged,
-    required this.onHealthChanged,
-  });
-
-  final bool privacyAccepted;
-  final bool termsAccepted;
-  final bool healthAccepted;
-  final ValueChanged<bool?> onPrivacyChanged;
-  final ValueChanged<bool?> onTermsChanged;
-  final ValueChanged<bool?> onHealthChanged;
-
-  static const _healthDisclaimer =
-      'SinceThen is a personal journaling app — not a medical or therapeutic '
-      'tool. It does not provide health advice, diagnosis, or treatment. If '
-      'you are in crisis, please contact a mental health professional or call '
-      '988 (Suicide & Crisis Lifeline).';
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final tt = Theme.of(context).textTheme;
-
-    return SingleChildScrollView(
-      padding: AppSpacing.pagePadding,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: AppSpacing.lg),
-          Center(
-            child: Container(
-              width: 72,
-              height: 72,
-              decoration: BoxDecoration(
-                color: cs.primaryContainer,
-                shape: BoxShape.circle,
-              ),
-              child: ExcludeSemantics(child: Icon(Icons.handshake_outlined, size: 36,
-                  color: cs.onPrimaryContainer)),
-            ),
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          Center(
-            child: Text(
-              'Almost there!',
-              style: tt.headlineMedium?.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ),
-          const SizedBox(height: AppSpacing.xl),
-
-          // Health disclaimer info
-          Container(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            decoration: BoxDecoration(
-              color: cs.tertiaryContainer.withValues(alpha: 0.4),
-              borderRadius: AppSpacing.borderRadiusMd,
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ExcludeSemantics(child: Icon(Icons.info_outline, size: 20,
-                    color: cs.onTertiaryContainer)),
-                const SizedBox(width: AppSpacing.sm),
-                Expanded(
-                  child: Text(
-                    _healthDisclaimer,
-                    style: tt.bodySmall?.copyWith(
-                      color: cs.onTertiaryContainer,
-                      height: 1.5,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: AppSpacing.xl),
-
-          // Health disclaimer checkbox
-          _ConsentCheckbox(
-            value: healthAccepted,
-            onChanged: onHealthChanged,
-            label: 'I acknowledge the Health Disclaimer',
-            onTapLink: () => Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (_) => const LegalScreen(
-                  title: 'Health Disclaimer',
-                  content: healthDisclaimerText,
-                ),
-              ),
-            ),
-            colorScheme: cs,
-            textTheme: tt,
-          ),
-
-          const SizedBox(height: AppSpacing.md),
-
-          // Privacy policy checkbox
-          _ConsentCheckbox(
-            value: privacyAccepted,
-            onChanged: onPrivacyChanged,
-            label: 'I have read and agree to the Privacy Policy',
-            onTapLink: () => Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (_) => const LegalScreen(
-                  title: 'Privacy Policy',
-                  content: privacyPolicyText,
-                ),
-              ),
-            ),
-            colorScheme: cs,
-            textTheme: tt,
-          ),
-
-          const SizedBox(height: AppSpacing.md),
-
-          // Terms checkbox
-          _ConsentCheckbox(
-            value: termsAccepted,
-            onChanged: onTermsChanged,
-            label: 'I agree to the Terms of Use',
-            onTapLink: () => Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (_) => const LegalScreen(
-                  title: 'Terms of Use',
-                  content: termsOfServiceText,
-                ),
-              ),
-            ),
-            colorScheme: cs,
-            textTheme: tt,
-          ),
-
-          const SizedBox(height: AppSpacing.xxl),
-        ],
-      ),
-    );
-  }
-}
-
-class _ConsentCheckbox extends StatelessWidget {
-  const _ConsentCheckbox({
-    required this.value,
-    required this.onChanged,
-    required this.label,
-    required this.onTapLink,
-    required this.colorScheme,
-    required this.textTheme,
-  });
-
-  final bool value;
-  final ValueChanged<bool?> onChanged;
-  final String label;
-  final VoidCallback onTapLink;
-  final ColorScheme colorScheme;
-  final TextTheme textTheme;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () => onChanged(!value),
-      borderRadius: AppSpacing.borderRadiusLg,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 48,
-            height: 48,
-            child: Center(
-              child: Checkbox(
-                value: value,
-                onChanged: onChanged,
-              ),
-            ),
-          ),
-          const SizedBox(width: AppSpacing.sm),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              child: InkWell(
-                onTap: onTapLink,
-                child: Text(
-                  label,
-                  style: textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.onSurface,
-                    decoration: TextDecoration.underline,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _OnboardingPage extends StatelessWidget {
-  const _OnboardingPage({required this.data});
-
-  final _PageData data;
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final tt = Theme.of(context).textTheme;
-
-    return Padding(
-      padding: AppSpacing.pagePadding,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 96,
-            height: 96,
-            decoration: BoxDecoration(
-              color: cs.primaryContainer,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(data.icon, size: 48, color: cs.onPrimaryContainer),
-          ),
-          const SizedBox(height: AppSpacing.xl),
-          Text(
-            data.title,
-            textAlign: TextAlign.center,
-            style: tt.displaySmall?.copyWith(
-              fontWeight: FontWeight.w700,
-              height: 1.1,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Text(
-            data.body,
-            textAlign: TextAlign.center,
-            style: tt.bodyLarge?.copyWith(
-              color: cs.onSurfaceVariant,
-              height: 1.6,
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }

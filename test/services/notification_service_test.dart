@@ -73,7 +73,7 @@ void main() {
     });
   });
 
-  group('Day-of-month rotation', () {
+  group('Day-of-year rotation', () {
     test('pickMessage is deterministic for the same day and hour', () {
       // Two calls with the same arguments on the same day should return the same message.
       final msg1 = NotificationService.pickMessage(10);

@@ -6,8 +6,8 @@ import '../services/settings_repository.dart';
 import '../services/notification_service.dart';
 import '../theme/app_spacing.dart';
 import '../utils/adaptive_layout.dart';
+import '../utils/pin_dialogs.dart';
 import '../widgets/organisms/nudge_card.dart';
-import '../widgets/organisms/pin_verify_sheet.dart';
 import 'settings/appearance_section.dart';
 import 'settings/data_section.dart';
 import 'settings/legal_footer.dart';
@@ -39,23 +39,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
     await _settingsRepo.saveSettings(updated);
   }
 
-  Future<bool> _verifyPinIfNeeded(BuildContext context) async {
+  Future<bool> _verifyPinIfNeeded(BuildContext context) {
     final s = _settings;
-    if (!s.appLockEnabled || s.pinHash == null) {
-      return true;
-    }
-    final verified = await showModalBottomSheet<bool>(
-      context: context,
-      isScrollControlled: true,
-      isDismissible: true,
-      enableDrag: false,
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSpacing.radiusXxl)),
-      ),
-      builder: (_) => PinVerifySheet(pinHash: s.pinHash!),
+    return verifyPinIfNeeded(
+      context,
+      appLockEnabled: s.appLockEnabled,
+      pinHash: s.pinHash,
     );
-    return verified == true;
   }
 
   Future<void> _showTimePicker(BuildContext context) async {

@@ -3,6 +3,7 @@ import 'package:local_auth/local_auth.dart';
 import '../../models/user_settings.dart';
 import '../../services/pin_service.dart';
 import '../../theme/app_spacing.dart';
+import '../../utils/pin_dialogs.dart';
 import '../../widgets/molecules/settings_row.dart';
 import '../../widgets/organisms/pin_setup_sheet.dart';
 import '../../widgets/organisms/pin_verify_sheet.dart';
@@ -81,21 +82,13 @@ class _SecuritySectionState extends State<SecuritySection> {
     }
   }
 
-  Future<bool> _verifyPinIfNeeded(BuildContext context) async {
+  Future<bool> _verifyPinIfNeeded(BuildContext context) {
     final s = widget.settings;
-    if (!s.appLockEnabled || s.pinHash == null) return true;
-    final verified = await showModalBottomSheet<bool>(
-      context: context,
-      isScrollControlled: true,
-      isDismissible: true,
-      enableDrag: false,
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSpacing.radiusXxl)),
-      ),
-      builder: (_) => PinVerifySheet(pinHash: s.pinHash!),
+    return verifyPinIfNeeded(
+      context,
+      appLockEnabled: s.appLockEnabled,
+      pinHash: s.pinHash,
     );
-    return verified == true;
   }
 
   @override
