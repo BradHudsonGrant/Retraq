@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../../models/journal_entry.dart';
+import '../../providers/settings_provider.dart';
 import '../../services/recap_service.dart';
 import '../../theme/app_spacing.dart';
+import '../../widgets/atoms/bionic_text.dart';
 import '../../widgets/organisms/week_day_list.dart';
 import 'weekly_summary_card.dart';
 
@@ -55,12 +57,13 @@ class RecapWeekView extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: AppSpacing.xs),
-                  Text(
-                    'Your journal entries will appear here once you start writing.',
+                  BionicText(
+                    text: 'Your journal entries will appear here once you start writing.',
                     textAlign: TextAlign.center,
                     style: tt.bodyMedium?.copyWith(
                       color: cs.onSurfaceVariant.withValues(alpha: 0.6),
                     ),
+                    enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
                   ),
                 ],
               ),

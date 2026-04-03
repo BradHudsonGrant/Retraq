@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import '../../providers/settings_provider.dart';
 import '../../theme/app_spacing.dart';
+import '../../widgets/atoms/bionic_text.dart';
 
 /// Age verification page shown at the start of onboarding.
 class AgeGatePage extends StatelessWidget {
@@ -38,17 +40,18 @@ class AgeGatePage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.xl),
-          Text(
-            isDenied ? 'Sorry!' : 'Before we begin',
+          BionicText(
+            text: isDenied ? 'Sorry!' : 'Before we begin',
             textAlign: TextAlign.center,
             style: tt.displaySmall?.copyWith(
               fontWeight: FontWeight.w700,
               height: 1.1,
             ),
+            enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
           ),
           const SizedBox(height: AppSpacing.md),
-          Text(
-            isDenied
+          BionicText(
+            text: isDenied
                 ? 'SinceThen requires users to be 13 years or older.\n'
                     'Please come back when you\'re old enough!'
                 : 'SinceThen is designed for users\naged 13 and older.',
@@ -57,6 +60,7 @@ class AgeGatePage extends StatelessWidget {
               color: cs.onSurfaceVariant,
               height: 1.6,
             ),
+            enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
           ),
           const SizedBox(height: AppSpacing.xl),
           if (!isDenied) ...[

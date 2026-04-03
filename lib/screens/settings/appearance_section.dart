@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import '../../providers/settings_provider.dart';
 import '../../theme/app_spacing.dart';
+import '../../widgets/atoms/bionic_text.dart';
 import '../../widgets/organisms/theme_card.dart';
 
 class AppearanceSection extends StatelessWidget {
@@ -22,9 +24,10 @@ class AppearanceSection extends StatelessWidget {
       children: [
         Text('Appearance', style: tt.titleLarge),
         const SizedBox(height: AppSpacing.xs),
-        Text(
-          'Choose how SinceThen feels to you.',
+        BionicText(
+          text: 'Choose how SinceThen feels to you.',
           style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant),
+          enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
         ),
         const SizedBox(height: AppSpacing.md),
         Row(

@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../models/journal_entry.dart';
+import '../providers/settings_provider.dart';
 import '../services/database_service.dart';
 import '../services/stats_service.dart';
 import '../theme/app_spacing.dart';
+import '../widgets/atoms/bionic_text.dart';
 import '../utils/adaptive_layout.dart';
 import '../widgets/molecules/mood_selector.dart';
 import '../widgets/molecules/stat_card.dart';
@@ -184,11 +186,12 @@ class _StatsScreenState extends State<StatsScreen>
               const SizedBox(height: AppSpacing.xs),
             ],
             if (preview.isNotEmpty)
-              Text(
-                preview,
+              BionicText(
+                text: preview,
                 style: tt.bodyMedium?.copyWith(
                   color: cs.onTertiaryContainer,
                 ),
+                enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
               ),
           ],
         ),
@@ -304,14 +307,15 @@ class _StatsScreenState extends State<StatsScreen>
             ],
           ),
           const SizedBox(height: AppSpacing.xs),
-          Text(
-            _stats.freezeAvailable ? '1 available' : 'Used this week',
+          BionicText(
+            text: _stats.freezeAvailable ? '1 available' : 'Used this week',
             style: tt.bodyMedium?.copyWith(
               fontWeight: FontWeight.w600,
               color: _stats.freezeAvailable
                   ? cs.primary
                   : cs.onSurfaceVariant,
             ),
+            enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
           ),
         ],
       ),
@@ -328,9 +332,10 @@ class _StatsScreenState extends State<StatsScreen>
         children: [
           Icon(Icons.insights, size: 18, color: cs.onSurfaceVariant),
           const SizedBox(width: AppSpacing.sm),
-          Text(
-            'Most active day: ${_dayNames[_stats.mostActiveWeekday - 1]}',
+          BionicText(
+            text: 'Most active day: ${_dayNames[_stats.mostActiveWeekday - 1]}',
             style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
+            enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
           ),
         ],
       ),
@@ -521,11 +526,12 @@ class _StatsScreenState extends State<StatsScreen>
               ),
             ),
             const SizedBox(height: AppSpacing.xs),
-            Text(
-              'Your journey so far.',
+            BionicText(
+              text: 'Your journey so far.',
               style: tt.bodyLarge?.copyWith(
                 color: cs.onSurfaceVariant,
               ),
+              enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
             ),
 
             const SizedBox(height: AppSpacing.lg),
@@ -557,13 +563,14 @@ class _StatsScreenState extends State<StatsScreen>
                         ),
                       ),
                       const SizedBox(height: AppSpacing.xs),
-                      Text(
-                        'Start journaling to see your patterns and streaks.',
+                      BionicText(
+                        text: 'Start journaling to see your patterns and streaks.',
                         textAlign: TextAlign.center,
                         style: tt.bodyMedium?.copyWith(
                           color: cs.onSurfaceVariant
                               .withValues(alpha: 0.75),
                         ),
+                        enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
                       ),
                     ],
                   ),

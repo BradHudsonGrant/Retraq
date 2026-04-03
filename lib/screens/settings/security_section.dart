@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
 import '../../models/user_settings.dart';
+import '../../providers/settings_provider.dart';
 import '../../services/pin_service.dart';
 import '../../theme/app_spacing.dart';
 import '../../utils/pin_dialogs.dart';
+import '../../widgets/atoms/bionic_text.dart';
 import '../../widgets/molecules/settings_row.dart';
 import '../../widgets/organisms/pin_setup_sheet.dart';
 import '../../widgets/organisms/pin_verify_sheet.dart';
@@ -102,9 +104,10 @@ class _SecuritySectionState extends State<SecuritySection> {
       children: [
         Text('Security', style: tt.titleLarge),
         const SizedBox(height: AppSpacing.xs),
-        Text(
-          'Keep your journal private.',
+        BionicText(
+          text: 'Keep your journal private.',
           style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant),
+          enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
         ),
         const SizedBox(height: AppSpacing.md),
 

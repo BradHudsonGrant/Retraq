@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import '../../providers/settings_provider.dart';
 import '../../theme/app_spacing.dart';
+import '../../widgets/atoms/bionic_text.dart';
 import '../../legal/privacy_policy.dart';
 import '../../legal/health_disclaimer.dart';
 import '../../legal/terms_of_service.dart';
@@ -55,11 +57,12 @@ class ConsentPage extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.lg),
           Center(
-            child: Text(
-              'Almost there!',
+            child: BionicText(
+              text: 'Almost there!',
               style: tt.headlineMedium?.copyWith(
                 fontWeight: FontWeight.w700,
               ),
+              enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
             ),
           ),
           const SizedBox(height: AppSpacing.xl),
@@ -78,12 +81,13 @@ class ConsentPage extends StatelessWidget {
                     color: cs.onTertiaryContainer)),
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
-                  child: Text(
-                    _healthDisclaimer,
+                  child: BionicText(
+                    text: _healthDisclaimer,
                     style: tt.bodySmall?.copyWith(
                       color: cs.onTertiaryContainer,
                       height: 1.5,
                     ),
+                    enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
                   ),
                 ),
               ],

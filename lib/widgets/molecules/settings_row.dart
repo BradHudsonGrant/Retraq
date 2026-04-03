@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import '../../providers/settings_provider.dart';
 import '../../theme/app_spacing.dart';
+import '../atoms/bionic_text.dart';
 
 /// Settings row molecule — label + description on left, control widget on right.
 /// Reusable for toggles, dropdowns, radio groups in Settings.
@@ -32,19 +34,21 @@ class SettingsRow extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
+                BionicText(
+                  text: title,
                   style: tt.titleSmall?.copyWith(
                     fontWeight: FontWeight.w500,
                   ),
+                  enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
                 ),
                 if (subtitle != null) ...[
                   const SizedBox(height: AppSpacing.xxs),
-                  Text(
-                    subtitle!,
+                  BionicText(
+                    text: subtitle!,
                     style: tt.bodySmall?.copyWith(
                       color: cs.onSurfaceVariant,
                     ),
+                    enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
                   ),
                 ],
               ],

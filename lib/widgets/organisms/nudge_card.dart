@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import '../../providers/settings_provider.dart';
 import '../../theme/app_spacing.dart';
+import '../atoms/bionic_text.dart';
 
 class NudgeCard extends StatelessWidget {
   const NudgeCard({
@@ -36,13 +38,14 @@ class NudgeCard extends StatelessWidget {
         children: [
           ExcludeSemantics(child: Icon(Icons.notifications_active, size: 36, color: cs.onPrimary)),
           const SizedBox(height: AppSpacing.md),
-          Text(
-            'Get a quick nudge to drop a breadcrumb before you forget your day.',
+          BionicText(
+            text: 'Get a quick nudge to drop a breadcrumb before you forget your day.',
             style: tt.titleMedium?.copyWith(
               color: cs.onPrimary,
               fontWeight: FontWeight.w500,
               height: 1.3,
             ),
+            enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
           ),
           const SizedBox(height: AppSpacing.md),
           Row(

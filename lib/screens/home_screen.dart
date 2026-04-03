@@ -19,6 +19,7 @@ import '../widgets/molecules/mood_selector.dart';
 import '../widgets/molecules/segmented_pill.dart';
 import '../widgets/organisms/save_success_overlay.dart';
 import 'home/journal_text_area.dart';
+import '../widgets/atoms/bionic_text.dart';
 import 'home/recent_day_card.dart';
 
 /// Home / Journal screen — the entry point of the app.
@@ -243,9 +244,10 @@ class _HomeScreenState extends State<HomeScreen>
       ),
 
       const SizedBox(height: AppSpacing.sm),
-      Text(
-        'Brain dump here. Full sentences optional.',
+      BionicText(
+        text: 'Brain dump here. Full sentences optional.',
         style: tt.bodyLarge?.copyWith(color: cs.onSurfaceVariant),
+        enabled: _settings?.bionicReadingEnabled ?? false,
       ),
 
       const SizedBox(height: AppSpacing.md),
@@ -354,11 +356,12 @@ class _HomeScreenState extends State<HomeScreen>
             Padding(
               padding: const EdgeInsets.only(top: AppSpacing.xxl),
               child: Center(
-                child: Text(
-                  'No recent entries yet.',
+                child: BionicText(
+                  text: 'No recent entries yet.',
                   style: tt.bodyMedium?.copyWith(
                     color: cs.onSurfaceVariant.withValues(alpha: 0.6),
                   ),
+                  enabled: _settings?.bionicReadingEnabled ?? false,
                 ),
               ),
             ),
@@ -422,11 +425,12 @@ class _HomeScreenState extends State<HomeScreen>
                         if (_yesterdayEntries.isEmpty && _dayBeforeEntries.isEmpty)
                           Padding(
                             padding: const EdgeInsets.only(top: AppSpacing.md),
-                            child: Text(
-                              'Your recent entries will appear here.',
+                            child: BionicText(
+                              text: 'Your recent entries will appear here.',
                               style: tt.bodyMedium?.copyWith(
                                 color: cs.onSurfaceVariant.withValues(alpha: 0.6),
                               ),
+                              enabled: _settings?.bionicReadingEnabled ?? false,
                             ),
                           ),
 
@@ -521,13 +525,14 @@ class _HomeScreenState extends State<HomeScreen>
           ),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
-            child: Text(
-              _weekCount == null
+            child: BionicText(
+              text: _weekCount == null
                   ? '' // Loading — avoid flash
                   : _weekCount == 0
                       ? 'Start your first entry above.'
                       : '$_weekCount ${_weekCount == 1 ? 'entry' : 'entries'} this week — keep going!',
               style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant),
+              enabled: _settings?.bionicReadingEnabled ?? false,
             ),
           ),
         ],

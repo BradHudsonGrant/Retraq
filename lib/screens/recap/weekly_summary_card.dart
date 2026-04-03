@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../../providers/settings_provider.dart';
 import '../../services/recap_service.dart';
 import '../../theme/app_spacing.dart';
+import '../../widgets/atoms/bionic_text.dart';
 
 /// Displays the weekly recap summary card.
 class WeeklySummaryCard extends StatelessWidget {
@@ -29,11 +31,12 @@ class WeeklySummaryCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: AppSpacing.sm),
-            Text(
-              summary.observation,
+            BionicText(
+              text: summary.observation,
               style: tt.bodyMedium?.copyWith(
                 color: cs.onPrimaryContainer,
               ),
+              enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
             ),
             if (summary.totalEntries > 0) ...[
               const SizedBox(height: AppSpacing.sm),

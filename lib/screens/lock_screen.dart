@@ -7,7 +7,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user_settings.dart';
 import '../services/database_service.dart';
 import '../services/settings_repository.dart';
+import '../providers/settings_provider.dart';
 import '../theme/app_spacing.dart';
+import '../widgets/atoms/bionic_text.dart';
 import '../widgets/atoms/sincethen_logo.dart';
 import '../widgets/molecules/number_pad.dart';
 import '../widgets/organisms/pin_setup_sheet.dart' show pinLengthPrefKey;
@@ -268,13 +270,14 @@ class _LockScreenState extends State<LockScreen> {
               const SizedBox(height: AppSpacing.sm),
               Semantics(
                 liveRegion: _isError || _isLockedOut,
-                child: Text(
-                  _statusText,
+                child: BionicText(
+                  text: _statusText,
                   style: tt.bodyLarge?.copyWith(
                     color: (_isError || _isLockedOut)
                         ? cs.error
                         : cs.onSurfaceVariant,
                   ),
+                  enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
                 ),
               ),
 

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import '../../providers/settings_provider.dart';
 import '../../theme/app_spacing.dart';
+import '../../widgets/atoms/bionic_text.dart';
 import 'onboarding_page_data.dart';
 
 /// A single intro/feature page shown during onboarding.
@@ -28,22 +30,24 @@ class OnboardingIntroPage extends StatelessWidget {
             child: Icon(data.icon, size: 48, color: cs.onPrimaryContainer),
           ),
           const SizedBox(height: AppSpacing.xl),
-          Text(
-            data.title,
+          BionicText(
+            text: data.title,
             textAlign: TextAlign.center,
             style: tt.displaySmall?.copyWith(
               fontWeight: FontWeight.w700,
               height: 1.1,
             ),
+            enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
           ),
           const SizedBox(height: AppSpacing.md),
-          Text(
-            data.body,
+          BionicText(
+            text: data.body,
             textAlign: TextAlign.center,
             style: tt.bodyLarge?.copyWith(
               color: cs.onSurfaceVariant,
               height: 1.6,
             ),
+            enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
           ),
         ],
       ),
