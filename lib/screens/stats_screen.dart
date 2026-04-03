@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../models/journal_entry.dart';
 import '../services/database_service.dart';
@@ -53,6 +54,32 @@ class _StatsScreenState extends State<StatsScreen>
       });
     });
     _loadOnThisDay();
+  }
+
+  void _onWeekTapped(BuildContext context, int index) {
+    final data = _stats.weeklyTrends;
+    if (index < 0 || index >= data.length) return;
+
+    final now = DateTime.now();
+    final int weeksAgo = data.length - 1 - index;
+    // Monday of that week.
+    final weekStart =
+        now.subtract(Duration(days: weeksAgo * 7 + now.weekday - 1));
+    final weekEnd = weekStart.add(const Duration(days: 6));
+    final fmt = DateFormat.MMMd();
+    final range = '${fmt.format(weekStart)} – ${fmt.format(weekEnd)}';
+    final count = data[index];
+    final entries = count == 1 ? 'entry' : 'entries';
+
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text('$range: $count $entries'),
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 2),
+        ),
+      );
   }
 
   Future<void> _loadOnThisDay() async {
@@ -369,7 +396,10 @@ class _StatsScreenState extends State<StatsScreen>
         _buildHeroStats(),
         const SizedBox(height: AppSpacing.lg),
         if (_stats.weeklyTrends.isNotEmpty)
-          WeeklyTrendChart(data: _stats.weeklyTrends),
+          WeeklyTrendChart(
+            data: _stats.weeklyTrends,
+            onWeekTapped: (i) => _onWeekTapped(context, i),
+          ),
         _buildMostActiveDay(cs, tt),
         _buildMoodSection(cs, tt),
       ],
@@ -393,7 +423,10 @@ class _StatsScreenState extends State<StatsScreen>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (_stats.weeklyTrends.isNotEmpty)
-              WeeklyTrendChart(data: _stats.weeklyTrends),
+              WeeklyTrendChart(
+                data: _stats.weeklyTrends,
+                onWeekTapped: (i) => _onWeekTapped(context, i),
+              ),
           ],
         ),
       ),

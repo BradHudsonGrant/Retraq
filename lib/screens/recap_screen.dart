@@ -51,11 +51,13 @@ class _RecapScreenState extends State<RecapScreen>
   late DateTime _selectedMonth;
   int? _selectedDay;
   Set<int> _entryDays = {};
+  Map<int, int> _dayMoods = {};
   List<JournalEntry> _selectedEntries = [];
 
   // Subscriptions
   StreamSubscription<List<JournalEntry>>? _weekEntriesSub;
   StreamSubscription<Set<int>>? _monthSub;
+  StreamSubscription<Map<int, int>>? _moodSub;
   StreamSubscription<List<JournalEntry>>? _entrySub;
 
   @override
@@ -105,6 +107,14 @@ class _RecapScreenState extends State<RecapScreen>
         _entryDays = days;
       });
     });
+
+    _moodSub?.cancel();
+    _moodSub = _entries.watchMonthEntryMoods(_selectedMonth).listen((moods) {
+      if (!mounted) return;
+      setState(() {
+        _dayMoods = moods;
+      });
+    });
   }
 
   void _onDaySelected(int day) {
@@ -124,6 +134,7 @@ class _RecapScreenState extends State<RecapScreen>
           DateTime(_selectedMonth.year, _selectedMonth.month - 1);
       _selectedDay = null;
       _selectedEntries = [];
+      _dayMoods = {};
     });
     _entrySub?.cancel();
     _listenToMonthData();
@@ -143,6 +154,7 @@ class _RecapScreenState extends State<RecapScreen>
       _selectedMonth = nextMonth;
       _selectedDay = null;
       _selectedEntries = [];
+      _dayMoods = {};
     });
     _entrySub?.cancel();
     _listenToMonthData();
@@ -202,6 +214,7 @@ class _RecapScreenState extends State<RecapScreen>
     _searchController.dispose();
     _weekEntriesSub?.cancel();
     _monthSub?.cancel();
+    _moodSub?.cancel();
     _entrySub?.cancel();
     super.dispose();
   }
@@ -291,6 +304,7 @@ class _RecapScreenState extends State<RecapScreen>
                 RecapMonthView(
                   selectedMonth: _selectedMonth,
                   entryDays: _entryDays,
+                  dayMoods: _dayMoods,
                   selectedDay: _selectedDay,
                   selectedEntries: _selectedEntries,
                   weekStartDay: _settings?.weekStartDay ?? 1,

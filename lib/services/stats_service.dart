@@ -321,33 +321,141 @@ class StatsService {
     }
   }
 
-  /// Combined stats snapshot — computes all stats in a single trigger instead
-  /// of N independent full-table scans. Use [watchAllStats] for the stream.
+  // ---------------------------------------------------------------------------
+  // Batch query helpers — consolidate multiple independent queries into fewer
+  // database round-trips for use by [getAllStats].
+  // ---------------------------------------------------------------------------
+
+  /// Single query returning both total entry count and total distinct days.
+  Future<({int totalEntries, int totalDays})> _getBatchCounts() async {
+    try {
+      final row = await _db.customSelect(
+        "SELECT COUNT(*) AS cnt, "
+        "COUNT(DISTINCT date(date, 'unixepoch', 'localtime')) AS days "
+        "FROM journal_entries",
+        readsFrom: {_db.journalEntries},
+      ).getSingle();
+      return (totalEntries: row.read<int>('cnt'), totalDays: row.read<int>('days'));
+    } catch (e) {
+      debugPrint('StatsService._getBatchCounts failed: $e');
+      return (totalEntries: 0, totalDays: 0);
+    }
+  }
+
+  /// Single query returning mood distribution; average mood is derived in Dart.
+  Future<({double? averageMood, Map<int, int> distribution})> _getBatchMoodStats() async {
+    try {
+      final rows = await _db.customSelect(
+        "SELECT mood, COUNT(*) AS cnt "
+        "FROM journal_entries WHERE mood IS NOT NULL "
+        "GROUP BY mood ORDER BY mood",
+        readsFrom: {_db.journalEntries},
+      ).get();
+      final distribution = <int, int>{};
+      int totalCount = 0;
+      double weightedSum = 0;
+      for (final row in rows) {
+        final mood = row.read<int>('mood');
+        final count = row.read<int>('cnt');
+        distribution[mood] = count;
+        totalCount += count;
+        weightedSum += mood * count;
+      }
+      final averageMood = totalCount > 0 ? weightedSum / totalCount : null;
+      return (averageMood: averageMood, distribution: distribution);
+    } catch (e) {
+      debugPrint('StatsService._getBatchMoodStats failed: $e');
+      return (averageMood: null, distribution: const <int, int>{});
+    }
+  }
+
+  /// Single query returning both all-time longest streak and current-month
+  /// longest streak. Uses two independent grouped sub-CTEs within one
+  /// statement so only one database round-trip is needed.
+  Future<({int longestStreak, int longestStreakThisMonth})> _getBatchStreaks() async {
+    try {
+      final now = DateTime.now();
+      final monthStart =
+          '${now.year}-${now.month.toString().padLeft(2, '0')}-01';
+      final todayStr = _dateStr(now);
+
+      final rows = await _db.customSelect(
+        // All-time streak
+        "WITH all_dates AS ("
+        "  SELECT DISTINCT date(date, 'unixepoch', 'localtime') AS d"
+        "  FROM journal_entries"
+        "), all_grouped AS ("
+        "  SELECT d,"
+        "    date(d, '-' || (ROW_NUMBER() OVER (ORDER BY d) - 1) || ' days') AS grp"
+        "  FROM all_dates"
+        "), "
+        // Month-only streak (bounded to current month)
+        "month_dates AS ("
+        "  SELECT DISTINCT date(date, 'unixepoch', 'localtime') AS d"
+        "  FROM journal_entries"
+        "  WHERE date(date, 'unixepoch', 'localtime') BETWEEN ? AND ?"
+        "), month_grouped AS ("
+        "  SELECT d,"
+        "    date(d, '-' || (ROW_NUMBER() OVER (ORDER BY d) - 1) || ' days') AS grp"
+        "  FROM month_dates"
+        ")"
+        "SELECT"
+        "  COALESCE((SELECT MAX(cnt) FROM (SELECT COUNT(*) AS cnt FROM all_grouped GROUP BY grp)), 0) AS longest,"
+        "  COALESCE((SELECT MAX(cnt) FROM (SELECT COUNT(*) AS cnt FROM month_grouped GROUP BY grp)), 0) AS longest_month",
+        variables: [
+          Variable<String>(monthStart),
+          Variable<String>(todayStr),
+        ],
+        readsFrom: {_db.journalEntries},
+      ).get();
+
+      if (rows.isEmpty) {
+        return (longestStreak: 0, longestStreakThisMonth: 0);
+      }
+
+      return (
+        longestStreak: rows.first.read<int>('longest'),
+        longestStreakThisMonth: rows.first.read<int>('longest_month'),
+      );
+    } catch (e) {
+      debugPrint('StatsService._getBatchStreaks failed: $e');
+      return (longestStreak: 0, longestStreakThisMonth: 0);
+    }
+  }
+
+  /// Combined stats snapshot — computes all stats with consolidated queries
+  /// to reduce database round-trips. Use [watchAllStats] for the stream.
   Future<StatsSnapshot> getAllStats({int weeks = 12}) async {
     try {
-      // One trigger, all queries batched in parallel
+      // 6 parallel queries instead of the original 9:
+      //  _getBatchCounts      = _getTotalEntryCount + getTotalDaysWithEntries
+      //  _getBatchMoodStats   = getAverageMood + getMoodDistribution
+      //  _getBatchStreaks      = getLongestStreak + getLongestStreakThisMonth
+      //  (remaining 3 unchanged)
       final results = await Future.wait([
-        _getTotalEntryCount(),
-        getTotalDaysWithEntries(),
-        getCurrentStreakWithFreezeInfo(),
-        getLongestStreak(),
-        getWeeklyEntryCounts(weeks: weeks),
-        getMostActiveWeekday(),
-        getAverageMood(),
-        getMoodDistribution(),
-        getLongestStreakThisMonth(),
+        _getBatchCounts(),                        // 0
+        getCurrentStreakWithFreezeInfo(),          // 1
+        _getBatchStreaks(),                        // 2
+        getWeeklyEntryCounts(weeks: weeks),       // 3
+        getMostActiveWeekday(),                    // 4
+        _getBatchMoodStats(),                     // 5
       ]);
-      final freezeInfo = results[2] as StreakFreezeInfo;
+
+      final counts = results[0] as ({int totalEntries, int totalDays});
+      final freezeInfo = results[1] as StreakFreezeInfo;
+      final streaks = results[2] as ({int longestStreak, int longestStreakThisMonth});
+      final moodStats = results[5] as ({double? averageMood, Map<int, int> distribution});
+
       return StatsSnapshot(
-        totalEntries: results[0] as int,
-        totalDays: results[1] as int,
+        totalEntries: counts.totalEntries,
+        totalDays: counts.totalDays,
         currentStreak: freezeInfo.streak,
-        longestStreak: results[3] as int,
-        weeklyTrends: results[4] as List<int>,
-        mostActiveWeekday: results[5] as int,
-        averageMood: results[6] as double?,
-        moodDistribution: results[7] as Map<int, int>,
-        longestStreakThisMonth: results[8] as int,
+        longestStreak: streaks.longestStreak,
+        weeklyTrends: results[3] as List<int>,
+        mostActiveWeekday: results[4] as int,
+        averageMood: moodStats.averageMood,
+        moodDistribution: moodStats.distribution,
+        longestStreakThisMonth: streaks.longestStreakThisMonth,
         freezeAvailable: freezeInfo.freezeAvailable,
       );
     } catch (e) {

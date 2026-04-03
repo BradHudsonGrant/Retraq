@@ -301,6 +301,31 @@ class EntryRepository {
     ).watch().map((rows) => rows.map((r) => r.read<int>('d')).toSet());
   }
 
+  /// Stream mapping day number → mood value for a given month.
+  /// When a day has multiple entries with moods, the latest mood wins.
+  /// Days without mood are omitted from the map.
+  Stream<Map<int, int>> watchMonthEntryMoods(DateTime month) {
+    final start = DateTime(month.year, month.month);
+    final end = startOfNextMonth(month);
+    final startEpoch = start.toUtc().millisecondsSinceEpoch ~/ 1000;
+    final endEpoch = end.toUtc().millisecondsSinceEpoch ~/ 1000;
+
+    return _db.customSelect(
+      "SELECT CAST(strftime('%d', date, 'unixepoch', 'localtime') AS INTEGER) as d, "
+      "mood FROM journal_entries "
+      "WHERE date >= ? AND date < ? AND mood IS NOT NULL "
+      "ORDER BY created_at ASC",
+      variables: [Variable.withInt(startEpoch), Variable.withInt(endEpoch)],
+      readsFrom: {_db.journalEntries},
+    ).watch().map((rows) {
+      final map = <int, int>{};
+      for (final row in rows) {
+        map[row.read<int>('d')] = row.read<int>('mood');
+      }
+      return map;
+    });
+  }
+
   /// Delete a journal entry by ID.
   Future<void> deleteEntry(int id) async {
     try {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../../theme/app_colors.dart';
 import '../../theme/app_spacing.dart';
 
 /// Monthly calendar grid with entry dot indicators.
@@ -9,6 +10,7 @@ class CalendarGrid extends StatelessWidget {
     super.key,
     required this.month,
     required this.entryDays,
+    this.dayMoods = const {},
     this.selectedDay,
     this.onDaySelected,
     this.onPreviousMonth,
@@ -18,6 +20,10 @@ class CalendarGrid extends StatelessWidget {
 
   final DateTime month;
   final Set<int> entryDays;
+
+  /// Mood value (1-5) per day number. Used to tint entry dot indicators.
+  final Map<int, int> dayMoods;
+
   final int? selectedDay;
   final ValueChanged<int>? onDaySelected;
   final VoidCallback? onPreviousMonth;
@@ -134,11 +140,14 @@ class CalendarGrid extends StatelessWidget {
     // Current month days
     final now = DateTime.now();
     final isCurrentMonth = month.year == now.year && month.month == now.month;
+    final brightness = Theme.of(context).brightness;
     for (var day = 1; day <= daysInMonth; day++) {
       cells.add(_DayCell(
         day: day,
         isSelected: day == selectedDay,
         hasEntry: entryDays.contains(day),
+        moodValue: dayMoods[day],
+        brightness: brightness,
         isToday: isCurrentMonth && day == now.day,
         onTap: () => onDaySelected?.call(day),
       ));
@@ -173,6 +182,8 @@ class _DayCell extends StatelessWidget {
     required this.day,
     this.isSelected = false,
     this.hasEntry = false,
+    this.moodValue,
+    this.brightness = Brightness.light,
     this.isToday = false,
     this.isDimmed = false,
     this.onTap,
@@ -181,6 +192,13 @@ class _DayCell extends StatelessWidget {
   final int day;
   final bool isSelected;
   final bool hasEntry;
+
+  /// Mood value 1-5 for this day, or null if no mood set.
+  final int? moodValue;
+
+  /// Current brightness, used to pick the right mood color palette.
+  final Brightness brightness;
+
   final bool isToday;
   final bool isDimmed;
   final VoidCallback? onTap;
@@ -237,7 +255,13 @@ class _DayCell extends StatelessWidget {
                     height: 4,
                     margin: const EdgeInsets.only(top: 1),
                     decoration: BoxDecoration(
-                      color: isSelected ? cs.onPrimary : cs.primary,
+                      color: isSelected
+                          ? cs.onPrimary
+                          : moodValue != null &&
+                                  moodValue! >= 1 &&
+                                  moodValue! <= 5
+                              ? AppColors.moodColors(brightness)[moodValue! - 1]
+                              : cs.primary,
                       shape: BoxShape.circle,
                     ),
                   ),

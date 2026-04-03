@@ -22,7 +22,7 @@ class AppText {
         fontSize: 12,
         fontWeight: FontWeight.w500,
         fontVariations: [FontVariation('wght', 500)],
-        letterSpacing: 0.5,
+        letterSpacing: 0.3,
       );
 
   static TextTheme get textTheme => const TextTheme(
@@ -78,15 +78,18 @@ class AppText {
         bodyLarge: TextStyle(
             fontFamily: bodyFamily,
             fontSize: 16,
-            fontWeight: FontWeight.w400),
+            fontWeight: FontWeight.w400,
+            height: 1.5),
         bodyMedium: TextStyle(
             fontFamily: bodyFamily,
             fontSize: 14,
-            fontWeight: FontWeight.w400),
+            fontWeight: FontWeight.w400,
+            height: 1.5),
         bodySmall: TextStyle(
             fontFamily: bodyFamily,
-            fontSize: 12,
-            fontWeight: FontWeight.w400),
+            fontSize: 13,
+            fontWeight: FontWeight.w400,
+            height: 1.4),
 
         // Label
         labelLarge: TextStyle(
@@ -101,9 +104,9 @@ class AppText {
             fontVariations: [FontVariation('wght', 500)]),
         labelSmall: TextStyle(
             fontFamily: headlineFamily,
-            fontSize: 11,
+            fontSize: 12,
             fontWeight: FontWeight.w500,
             fontVariations: [FontVariation('wght', 500)],
-            letterSpacing: 0.5),
+            letterSpacing: 0.3),
       );
 }

@@ -9,11 +9,15 @@ import '../../theme/app_spacing.dart';
 /// Bars animate in with a staggered grow-from-bottom effect. The latest bar
 /// is fully opaque while older bars are slightly muted. Zero-entry weeks
 /// still show a tiny stub so the chart never looks empty.
+///
+/// Each bar column is tappable. When tapped, a brief highlight is shown and
+/// [onWeekTapped] fires with the week index (0 = oldest).
 class WeeklyTrendChart extends StatefulWidget {
   const WeeklyTrendChart({
     super.key,
     required this.data,
     this.height = 120,
+    this.onWeekTapped,
   });
 
   /// Entry counts per week, oldest first. Typically 12 items.
@@ -22,6 +26,9 @@ class WeeklyTrendChart extends StatefulWidget {
   /// Total height of the bar area (excluding labels).
   final double height;
 
+  /// Called when a bar column is tapped, with the week index (0 = oldest).
+  final ValueChanged<int>? onWeekTapped;
+
   @override
   State<WeeklyTrendChart> createState() => _WeeklyTrendChartState();
 }
@@ -29,6 +36,9 @@ class WeeklyTrendChart extends StatefulWidget {
 class _WeeklyTrendChartState extends State<WeeklyTrendChart>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
+
+  /// Index of the bar currently highlighted by a tap, or -1 for none.
+  int _highlightedIndex = -1;
 
   @override
   void initState() {
@@ -54,6 +64,37 @@ class _WeeklyTrendChartState extends State<WeeklyTrendChart>
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  void _onBarTapped(int index) {
+    setState(() => _highlightedIndex = index);
+
+    // Clear highlight after a brief moment.
+    Future<void>.delayed(const Duration(milliseconds: 300), () {
+      if (mounted) setState(() => _highlightedIndex = -1);
+    });
+
+    widget.onWeekTapped?.call(index);
+  }
+
+  /// Build the semantics label for a specific bar.
+  String _barSemanticLabel(int index) {
+    final data = widget.data;
+    final int weeksAgo = data.length - 1 - index;
+    final now = DateTime.now();
+    final weekStart = now.subtract(Duration(days: weeksAgo * 7 + now.weekday - 1));
+    final month = _monthAbbr(weekStart.month);
+    final count = data[index];
+    final entries = count == 1 ? 'entry' : 'entries';
+    return 'Week of $month ${weekStart.day}, $count $entries';
+  }
+
+  static String _monthAbbr(int month) {
+    const months = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+    ];
+    return months[month - 1];
   }
 
   String _buildChartLabel() {
@@ -94,18 +135,35 @@ class _WeeklyTrendChartState extends State<WeeklyTrendChart>
           const SizedBox(height: AppSpacing.md),
           Semantics(
             label: _buildChartLabel(),
-            excludeSemantics: true,
             child: ListenableBuilder(
               listenable: _controller,
               builder: (context, _) {
-                return CustomPaint(
-                  size: Size(double.infinity, widget.height),
-                  painter: _TrendChartPainter(
-                    data: widget.data,
-                    animationValue: _controller.value,
-                    primary: cs.primary,
-                    onSurfaceVariant: cs.onSurfaceVariant,
-                    outline: cs.outlineVariant,
+                return SizedBox(
+                  height: widget.height,
+                  child: Stack(
+                    children: [
+                      // Painted bars and average line.
+                      Positioned.fill(
+                        child: CustomPaint(
+                          painter: _TrendChartPainter(
+                            data: widget.data,
+                            animationValue: _controller.value,
+                            primary: cs.primary,
+                            onSurfaceVariant: cs.onSurfaceVariant,
+                            outline: cs.outlineVariant,
+                            highlightedIndex: _highlightedIndex,
+                          ),
+                        ),
+                      ),
+                      // Invisible tap targets covering the full column height.
+                      Positioned.fill(
+                        child: _BarTapTargets(
+                          count: widget.data.length,
+                          onTap: _onBarTapped,
+                          semanticLabelBuilder: _barSemanticLabel,
+                        ),
+                      ),
+                    ],
                   ),
                 );
               },
@@ -123,7 +181,44 @@ class _WeeklyTrendChartState extends State<WeeklyTrendChart>
 }
 
 // ---------------------------------------------------------------------------
-// CustomPainter — bars, average line, accent glow
+// Tap target row — transparent columns that cover the full bar height
+// ---------------------------------------------------------------------------
+
+class _BarTapTargets extends StatelessWidget {
+  const _BarTapTargets({
+    required this.count,
+    required this.onTap,
+    required this.semanticLabelBuilder,
+  });
+
+  final int count;
+  final ValueChanged<int> onTap;
+  final String Function(int index) semanticLabelBuilder;
+
+  @override
+  Widget build(BuildContext context) {
+    if (count == 0) return const SizedBox.shrink();
+
+    return Row(
+      children: List.generate(count, (i) {
+        return Expanded(
+          child: Semantics(
+            button: true,
+            label: semanticLabelBuilder(i),
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => onTap(i),
+              child: const SizedBox.expand(),
+            ),
+          ),
+        );
+      }),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// CustomPainter — bars, average line, accent glow, highlight
 // ---------------------------------------------------------------------------
 
 class _TrendChartPainter extends CustomPainter {
@@ -133,6 +228,7 @@ class _TrendChartPainter extends CustomPainter {
     required this.primary,
     required this.onSurfaceVariant,
     required this.outline,
+    this.highlightedIndex = -1,
   });
 
   final List<int> data;
@@ -140,6 +236,7 @@ class _TrendChartPainter extends CustomPainter {
   final Color primary;
   final Color onSurfaceVariant;
   final Color outline;
+  final int highlightedIndex;
 
   static const double _gap = 4;
   static const double _barRadius = 4;
@@ -196,6 +293,11 @@ class _TrendChartPainter extends CustomPainter {
         barColor = primary.withValues(alpha: 0.7);
       }
 
+      // Brighten the bar when highlighted.
+      if (i == highlightedIndex) {
+        barColor = Color.lerp(barColor, Colors.white, 0.3)!;
+      }
+
       final RRect rRect = RRect.fromRectAndCorners(
         Rect.fromLTWH(x, size.height - barHeight, barWidth, barHeight),
         topLeft: const Radius.circular(_barRadius),
@@ -249,7 +351,8 @@ class _TrendChartPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _TrendChartPainter oldDelegate) =>
       oldDelegate.animationValue != animationValue ||
-      oldDelegate.data != data;
+      oldDelegate.data != data ||
+      oldDelegate.highlightedIndex != highlightedIndex;
 }
 
 // ---------------------------------------------------------------------------

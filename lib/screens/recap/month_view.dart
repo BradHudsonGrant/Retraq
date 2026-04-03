@@ -12,6 +12,7 @@ class RecapMonthView extends StatelessWidget {
     super.key,
     required this.selectedMonth,
     required this.entryDays,
+    this.dayMoods = const {},
     this.selectedDay,
     required this.selectedEntries,
     required this.weekStartDay,
@@ -22,6 +23,7 @@ class RecapMonthView extends StatelessWidget {
 
   final DateTime selectedMonth;
   final Set<int> entryDays;
+  final Map<int, int> dayMoods;
   final int? selectedDay;
   final List<JournalEntry> selectedEntries;
   final int weekStartDay;
@@ -122,6 +124,7 @@ class RecapMonthView extends StatelessWidget {
     return CalendarGrid(
       month: selectedMonth,
       entryDays: entryDays,
+      dayMoods: dayMoods,
       selectedDay: selectedDay,
       onDaySelected: onDaySelected,
       onPreviousMonth: onPreviousMonth,

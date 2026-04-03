@@ -133,7 +133,10 @@ class _EditEntrySheetState extends State<EditEntrySheet> {
                   hintStyle: tt.titleMedium?.copyWith(
                     color: cs.onSurfaceVariant.withValues(alpha: 0.55),
                   ),
+                  filled: false,
                   border: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
                 ),
               ),
               Divider(color: cs.outlineVariant),
@@ -194,7 +197,10 @@ class _EditEntrySheetState extends State<EditEntrySheet> {
             color: cs.onSurfaceVariant.withValues(alpha: 0.55),
           ),
           contentPadding: const EdgeInsets.all(AppSpacing.md),
+          filled: false,
           border: InputBorder.none,
+          enabledBorder: InputBorder.none,
+          focusedBorder: InputBorder.none,
         ),
       ),
     );
