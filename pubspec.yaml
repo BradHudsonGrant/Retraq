@@ -43,7 +43,7 @@ dependencies:
   path: ^1.9.0
 
   # Fonts & formatting
-  intl: any # Pinned by flutter_localizations SDK — version varies with Flutter
+  intl: 0.20.2 # Pinned by flutter_localizations SDK — version varies with Flutter
 
   # Security
   local_auth: ^2.3.0
