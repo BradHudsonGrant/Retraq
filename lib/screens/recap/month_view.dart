@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../models/journal_entry.dart';
 import '../../theme/app_spacing.dart';
 import '../../utils/adaptive_layout.dart';
+import '../../widgets/atoms/bionic_text.dart';
 import '../../widgets/organisms/calendar_grid.dart';
 import '../../widgets/organisms/entry_detail_view.dart';
 
@@ -14,6 +15,7 @@ class RecapMonthView extends StatelessWidget {
     required this.entryDays,
     this.dayMoods = const {},
     this.selectedDay,
+    required this.monthEntries,
     required this.selectedEntries,
     required this.weekStartDay,
     required this.onDaySelected,
@@ -25,6 +27,7 @@ class RecapMonthView extends StatelessWidget {
   final Set<int> entryDays;
   final Map<int, int> dayMoods;
   final int? selectedDay;
+  final List<JournalEntry> monthEntries;
   final List<JournalEntry> selectedEntries;
   final int weekStartDay;
   final ValueChanged<int> onDaySelected;
@@ -56,28 +59,7 @@ class RecapMonthView extends StatelessWidget {
         ),
         right: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-          child: selectedDay != null && selectedEntries.isNotEmpty
-              ? EntryDetailView(
-                  entries: selectedEntries,
-                  date: DateTime(
-                    selectedMonth.year,
-                    selectedMonth.month,
-                    selectedDay!,
-                  ),
-                )
-              : Padding(
-                  padding: const EdgeInsets.only(top: AppSpacing.xxl),
-                  child: Center(
-                    child: Text(
-                      selectedDay != null
-                          ? 'No entry for this day'
-                          : 'Select a day to view entries',
-                      style: tt.bodyMedium?.copyWith(
-                        color: cs.onSurfaceVariant.withValues(alpha: 0.6),
-                      ),
-                    ),
-                  ),
-                ),
+          child: _buildEntryList(cs, tt),
         ),
       ),
     );
@@ -92,31 +74,57 @@ class RecapMonthView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildCalendarGrid(),
-
-        // Entry detail (when a day is selected)
-        if (selectedDay != null && selectedEntries.isNotEmpty) ...[
-          const SizedBox(height: AppSpacing.md),
-          EntryDetailView(
-            entries: selectedEntries,
-            date: DateTime(
-              selectedMonth.year,
-              selectedMonth.month,
-              selectedDay!,
-            ),
-          ),
-        ] else if (selectedDay != null && selectedEntries.isEmpty)
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppSpacing.xl),
-            child: Center(
-              child: Text(
-                'No entry for this day',
-                style: tt.bodyMedium?.copyWith(
-                  color: cs.onSurfaceVariant.withValues(alpha: 0.6),
-                ),
-              ),
-            ),
-          ),
+        const SizedBox(height: AppSpacing.md),
+        _buildEntryList(cs, tt),
       ],
+    );
+  }
+
+  Widget _buildEntryList(ColorScheme cs, TextTheme tt) {
+    // Day selected — show entries for that day
+    if (selectedDay != null) {
+      if (selectedEntries.isNotEmpty) {
+        return EntryDetailView(
+          entries: selectedEntries,
+          date: DateTime(
+            selectedMonth.year,
+            selectedMonth.month,
+            selectedDay!,
+          ),
+        );
+      }
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.xl),
+        child: Center(
+          child: Text(
+            'No entry for this day',
+            style: tt.bodyMedium?.copyWith(
+              color: cs.onSurfaceVariant.withValues(alpha: 0.7),
+            ),
+          ),
+        ),
+      );
+    }
+
+    // No day selected — show all entries for the month grouped by day
+    if (monthEntries.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.xl),
+        child: Center(
+          child: BionicText(
+            text: 'No entries this month.',
+            style: tt.bodyMedium?.copyWith(
+              color: cs.onSurfaceVariant.withValues(alpha: 0.7),
+            ),
+            enabled: false, // Static empty state
+          ),
+        ),
+      );
+    }
+
+    return _MonthEntryList(
+      entries: monthEntries,
+      selectedMonth: selectedMonth,
     );
   }
 
@@ -130,6 +138,41 @@ class RecapMonthView extends StatelessWidget {
       onPreviousMonth: onPreviousMonth,
       onNextMonth: onNextMonth,
       weekStartDay: weekStartDay,
+    );
+  }
+}
+
+/// Groups month entries by day and renders them with date dividers.
+class _MonthEntryList extends StatelessWidget {
+  const _MonthEntryList({
+    required this.entries,
+    required this.selectedMonth,
+  });
+
+  final List<JournalEntry> entries;
+  final DateTime selectedMonth;
+
+  @override
+  Widget build(BuildContext context) {
+    // Group by day
+    final grouped = <int, List<JournalEntry>>{};
+    for (final entry in entries) {
+      final day = entry.date.day;
+      (grouped[day] ??= []).add(entry);
+    }
+
+    // Sort days descending (newest first)
+    final days = grouped.keys.toList()..sort((a, b) => b.compareTo(a));
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (final day in days)
+          EntryDetailView(
+            entries: grouped[day]!,
+            date: DateTime(selectedMonth.year, selectedMonth.month, day),
+          ),
+      ],
     );
   }
 }

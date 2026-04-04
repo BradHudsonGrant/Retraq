@@ -47,7 +47,7 @@ void main() {
       // "Hello" (5 letters) -> bold "Hel" + normal "lo"
       expect(spans.length, 2);
       expect(spans[0].text, 'Hel');
-      expect(spans[0].style?.fontWeight, FontWeight.w700);
+      expect(spans[0].style?.fontWeight, FontWeight.w900);
       expect(spans[1].text, 'lo');
     });
 
@@ -70,7 +70,7 @@ void main() {
       expect(spans[0].style?.fontWeight, isNull);
 
       // "a" (bold part of "am") should be bold.
-      expect(spans[2].style?.fontWeight, FontWeight.w700);
+      expect(spans[2].style?.fontWeight, FontWeight.w900);
     });
 
     testWidgets('empty string is handled', (tester) async {
@@ -99,7 +99,7 @@ void main() {
       // "hello," has 5 letters -> ceil(5/2) = 3 bold -> "hel" + "lo,"
       expect(spans.length, 2);
       expect(spans[0].text, 'hel');
-      expect(spans[0].style?.fontWeight, FontWeight.w700);
+      expect(spans[0].style?.fontWeight, FontWeight.w900);
       expect(spans[1].text, 'lo,');
     });
 

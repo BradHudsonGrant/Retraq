@@ -64,14 +64,9 @@ class BionicText extends StatelessWidget {
     // Match runs of whitespace or runs of non-whitespace.
     final segments = RegExp(r'\S+|\s+').allMatches(text);
 
-    final baseFontWeight = style?.fontWeight ?? FontWeight.w400;
-    final boldWeight = baseFontWeight.index >= FontWeight.w600.index
-        ? FontWeight.w800
-        : FontWeight.w700;
-    // Use fontVariations for variable fonts (Manrope) — renders crisper
-    final boldVariations = baseFontWeight.index >= FontWeight.w600.index
-        ? const [FontVariation('wght', 800)]
-        : const [FontVariation('wght', 700)];
+    // Max weight (w900/Black) for bold portions — maximum contrast
+    const boldWeight = FontWeight.w900;
+    const boldVariations = [FontVariation('wght', 900)];
 
     for (final match in segments) {
       final segment = match.group(0)!;

@@ -42,23 +42,26 @@ class _RecapScreenState extends State<RecapScreen>
   bool _hasSearched = false;
   bool _showSearch = false;
 
-  // Week entries
+  // Week entries + navigation
   List<JournalEntry> _weekEntries = [];
   UserSettings? _settings;
   WeeklySummary? _weeklySummary;
+  int _weekOffset = 0; // 0 = current week, -1 = last week, etc.
 
   // Calendar state
   late DateTime _selectedMonth;
   int? _selectedDay;
   Set<int> _entryDays = {};
   Map<int, int> _dayMoods = {};
-  List<JournalEntry> _selectedEntries = [];
+  List<JournalEntry> _monthEntries = []; // all entries for the month
+  List<JournalEntry> _selectedEntries = []; // entries for selected day
 
   // Subscriptions
   StreamSubscription<List<JournalEntry>>? _weekEntriesSub;
   StreamSubscription<Set<int>>? _monthSub;
   StreamSubscription<Map<int, int>>? _moodSub;
   StreamSubscription<List<JournalEntry>>? _entrySub;
+  StreamSubscription<List<JournalEntry>>? _monthEntriesSub;
 
   @override
   void initState() {
@@ -77,15 +80,24 @@ class _RecapScreenState extends State<RecapScreen>
       final oldStart = _settings?.weekStartDay;
       _settings = s;
       if (oldStart != s.weekStartDay || _weekEntriesSub == null) {
+        _weekOffset = 0;
         _subscribeWeekEntries(s.weekStartDay);
       }
     }
   }
 
+  /// Calculate the start of the week for a given offset from current week.
+  DateTime _weekStartForOffset(int weekStartDay) {
+    final currentWeekStart = weekStartDate(weekStartDay: weekStartDay);
+    return currentWeekStart.add(Duration(days: _weekOffset * 7));
+  }
+
   void _subscribeWeekEntries(int weekStartDay) {
     _weekEntriesSub?.cancel();
+    final weekStart = _weekStartForOffset(weekStartDay);
+
     _weekEntriesSub =
-        _entries.watchWeekEntries(weekStartDay: weekStartDay).listen((entries) {
+        _entries.watchWeekEntriesFrom(weekStart).listen((entries) {
       if (!mounted) return;
       setState(() => _weekEntries = entries);
       _loadWeeklySummary(weekStartDay);
@@ -93,10 +105,21 @@ class _RecapScreenState extends State<RecapScreen>
   }
 
   Future<void> _loadWeeklySummary(int weekStartDay) async {
-    final weekStart = weekStartDate(weekStartDay: weekStartDay);
+    final weekStart = _weekStartForOffset(weekStartDay);
     final summary = await _recapService.getWeeklySummary(weekStart, weekStartDay);
     if (!mounted) return;
     setState(() => _weeklySummary = summary);
+  }
+
+  void _goToPreviousWeek() {
+    setState(() => _weekOffset -= 1);
+    _subscribeWeekEntries(_settings?.weekStartDay ?? 1);
+  }
+
+  void _goToNextWeek() {
+    if (_weekOffset >= 0) return; // can't go past current week
+    setState(() => _weekOffset += 1);
+    _subscribeWeekEntries(_settings?.weekStartDay ?? 1);
   }
 
   void _listenToMonthData() {
@@ -115,9 +138,25 @@ class _RecapScreenState extends State<RecapScreen>
         _dayMoods = moods;
       });
     });
+
+    _monthEntriesSub?.cancel();
+    _monthEntriesSub = _entries.watchMonthEntries(_selectedMonth).listen((entries) {
+      if (!mounted) return;
+      setState(() => _monthEntries = entries);
+    });
   }
 
   void _onDaySelected(int day) {
+    if (_selectedDay == day) {
+      // Tapping the same day again — deselect and go back to full month
+      setState(() {
+        _selectedDay = null;
+        _selectedEntries = [];
+      });
+      _entrySub?.cancel();
+      return;
+    }
+
     setState(() => _selectedDay = day);
     final date = DateTime(_selectedMonth.year, _selectedMonth.month, day);
 
@@ -134,6 +173,7 @@ class _RecapScreenState extends State<RecapScreen>
           DateTime(_selectedMonth.year, _selectedMonth.month - 1);
       _selectedDay = null;
       _selectedEntries = [];
+      _monthEntries = [];
       _dayMoods = {};
     });
     _entrySub?.cancel();
@@ -154,6 +194,7 @@ class _RecapScreenState extends State<RecapScreen>
       _selectedMonth = nextMonth;
       _selectedDay = null;
       _selectedEntries = [];
+      _monthEntries = [];
       _dayMoods = {};
     });
     _entrySub?.cancel();
@@ -216,6 +257,7 @@ class _RecapScreenState extends State<RecapScreen>
     _monthSub?.cancel();
     _moodSub?.cancel();
     _entrySub?.cancel();
+    _monthEntriesSub?.cancel();
     super.dispose();
   }
 
@@ -223,6 +265,7 @@ class _RecapScreenState extends State<RecapScreen>
   Widget build(BuildContext context) {
     super.build(context);
     final tt = Theme.of(context).textTheme;
+    final weekStartDay = _settings?.weekStartDay ?? 1;
 
     return SafeArea(
       child: SingleChildScrollView(
@@ -283,8 +326,12 @@ class _RecapScreenState extends State<RecapScreen>
               if (_isWeekView)
                 RecapWeekView(
                   weekEntries: _weekEntries,
-                  weekStartDay: _settings?.weekStartDay ?? 1,
+                  weekStartDay: weekStartDay,
                   weeklySummary: _weeklySummary,
+                  weekOffset: _weekOffset,
+                  weekStart: _weekStartForOffset(weekStartDay),
+                  onPreviousWeek: _goToPreviousWeek,
+                  onNextWeek: _weekOffset < 0 ? _goToNextWeek : null,
                   onDaySelected: (date) {
                     // Switch to month view and select the day
                     if (date.month != _selectedMonth.month ||
@@ -306,8 +353,9 @@ class _RecapScreenState extends State<RecapScreen>
                   entryDays: _entryDays,
                   dayMoods: _dayMoods,
                   selectedDay: _selectedDay,
+                  monthEntries: _monthEntries,
                   selectedEntries: _selectedEntries,
-                  weekStartDay: _settings?.weekStartDay ?? 1,
+                  weekStartDay: weekStartDay,
                   onDaySelected: _onDaySelected,
                   onPreviousMonth: _goToPreviousMonth,
                   onNextMonth: _goToNextMonth,

@@ -8,9 +8,8 @@ import '../atoms/bionic_text.dart';
 import '../atoms/sincethen_chip.dart';
 import '../molecules/entry_action_menu.dart';
 
-/// Vertical scrollable list showing each day of the current week
+/// Vertical scrollable list showing each day of a week
 /// with its journal entries listed inline beneath each day header.
-/// No calendar grid, no strip — just a day-by-day feed.
 class WeekDayList extends StatelessWidget {
   const WeekDayList({
     super.key,
@@ -18,12 +17,13 @@ class WeekDayList extends StatelessWidget {
     required this.entries,
     this.selectedDay,
     this.onDaySelected,
+    this.referenceDate,
   });
 
   /// 1 = Monday, 7 = Sunday
   final int weekStartDay;
 
-  /// All entries for the current week (already filtered by caller).
+  /// All entries for the week (already filtered by caller).
   final List<JournalEntry> entries;
 
   /// Currently selected day (full DateTime).
@@ -32,8 +32,14 @@ class WeekDayList extends StatelessWidget {
   /// Called when a day header is tapped.
   final ValueChanged<DateTime>? onDaySelected;
 
-  /// The 7 dates for the current week.
+  /// Start of the week to display. If null, uses the current week.
+  final DateTime? referenceDate;
+
+  /// The 7 dates for the week.
   List<DateTime> _weekDates() {
+    if (referenceDate != null) {
+      return List.generate(7, (i) => referenceDate!.add(Duration(days: i)));
+    }
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     final weekday = today.weekday; // 1=Mon, 7=Sun
@@ -64,15 +70,6 @@ class WeekDayList extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Week header
-        Text(
-          'This week',
-          style: tt.titleMedium?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const SizedBox(height: AppSpacing.md),
-
         // Each day of the week
         ...dates.map((date) {
           final isToday = date == today;

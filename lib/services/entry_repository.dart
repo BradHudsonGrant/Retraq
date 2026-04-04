@@ -187,6 +187,19 @@ class EntryRepository {
         .handleError((e) => DatabaseService.logStreamError('watchWeekEntries', e));
   }
 
+  /// Watch entries for a specific week starting at [weekStart], newest first.
+  Stream<List<JournalEntry>> watchWeekEntriesFrom(DateTime weekStart) {
+    final end = weekStart.add(const Duration(days: 7));
+
+    return (_db.select(_db.journalEntries)
+          ..where((t) => t.date.isBiggerOrEqualValue(weekStart))
+          ..where((t) => t.date.isSmallerThanValue(end))
+          ..orderBy([(t) => OrderingTerm.desc(t.createdAt)]))
+        .watch()
+        .map((rows) => rows.map(rowToEntry).toList())
+        .handleError((e) => DatabaseService.logStreamError('watchWeekEntriesFrom', e));
+  }
+
   /// Count of entries this week, respecting the user's weekStartDay setting.
   Future<int> getWeekEntryCount({required int weekStartDay}) async {
     try {
