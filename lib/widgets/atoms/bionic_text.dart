@@ -124,7 +124,7 @@ class _BionicTextState extends State<BionicText> {
       spans.add(
         TextSpan(
           text: segment.substring(0, splitIndex),
-          style: TextStyle(
+          style: const TextStyle(
             fontWeight: boldWeight,
             fontVariations: boldVariations,
           ),

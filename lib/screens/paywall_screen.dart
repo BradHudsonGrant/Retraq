@@ -96,19 +96,19 @@ class _PaywallScreenState extends State<PaywallScreen> {
               const SizedBox(height: AppSpacing.xl),
 
               // ── Feature list ──
-              _FeatureRow(
+              const _FeatureRow(
                 icon: Icons.insights_rounded,
                 title: 'Advanced Insights',
                 subtitle: 'Deeper analytics and trends over time.',
               ),
               const SizedBox(height: AppSpacing.md),
-              _FeatureRow(
+              const _FeatureRow(
                 icon: Icons.cloud_sync_rounded,
                 title: 'Cloud Backup',
                 subtitle: 'Automatic encrypted backups across devices.',
               ),
               const SizedBox(height: AppSpacing.md),
-              _FeatureRow(
+              const _FeatureRow(
                 icon: Icons.palette_rounded,
                 title: 'Custom Themes',
                 subtitle: 'Personalize your journaling experience.',

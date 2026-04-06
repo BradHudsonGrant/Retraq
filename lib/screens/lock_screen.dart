@@ -91,8 +91,9 @@ class _LockScreenState extends State<LockScreen> {
     if (_settings == null ||
         _lockout.isLockedOut ||
         _isVerifying ||
-        _enteredPin.length >= _pinLength)
+        _enteredPin.length >= _pinLength) {
       return;
+    }
     setState(() {
       _isError = false;
       _enteredPin += '$digit';

@@ -226,16 +226,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         child: Column(
           children: [
             // Header: Logo only (no Skip — consent is required)
-            Padding(
-              padding: const EdgeInsets.only(
+            const Padding(
+              padding: EdgeInsets.only(
                 left: AppSpacing.xl,
                 right: AppSpacing.md,
                 top: AppSpacing.md,
               ),
               child: Row(
-                children: [
-                  const RetraqLogo(size: 32, animate: true, showText: true),
-                ],
+                children: [RetraqLogo(size: 32, animate: true, showText: true)],
               ),
             ),
 

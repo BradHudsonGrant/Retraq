@@ -87,8 +87,8 @@ class AppTheme {
           ),
         ),
       ),
-      bottomSheetTheme: BottomSheetThemeData(
-        shape: const RoundedRectangleBorder(
+      bottomSheetTheme: const BottomSheetThemeData(
+        shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
             top: Radius.circular(AppSpacing.radiusXxl),
           ),

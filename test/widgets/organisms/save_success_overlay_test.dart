@@ -7,9 +7,8 @@ import '../../test_helpers.dart';
 void main() {
   group('SaveSuccessOverlay', () {
     testWidgets('renders checkmark icon', (tester) async {
-      var dismissed = false;
       await tester.pumpWidget(
-        wrapWidget(SaveSuccessOverlay(onDismissed: () => dismissed = true)),
+        wrapWidget(SaveSuccessOverlay(onDismissed: () {})),
       );
 
       await tester.pump();

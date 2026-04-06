@@ -77,8 +77,9 @@ class PinService {
   /// Uses constant-time comparison to prevent timing attacks.
   /// Runs in an isolate via compute() to avoid blocking the UI.
   static Future<bool> verifyPin(String pin, String stored) {
-    if (!useIsolateForPin)
+    if (!useIsolateForPin) {
       return Future.value(_verifyPinIsolate(_PinVerifyArgs(pin, stored)));
+    }
     return compute(_verifyPinIsolate, _PinVerifyArgs(pin, stored));
   }
 

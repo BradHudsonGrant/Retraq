@@ -679,7 +679,7 @@ void main() {
     test('consent_records table exists and accepts inserts', () async {
       // Insert directly via customStatement to verify the table exists.
       await db.db.customStatement(
-        "INSERT INTO consent_records (consent_type, document_version, accepted_at, app_version) "
+        'INSERT INTO consent_records (consent_type, document_version, accepted_at, app_version) '
         "VALUES ('privacy_policy', '2026-03-29', ${DateTime(2026, 3, 29).millisecondsSinceEpoch ~/ 1000}, '1.0.0')",
       );
 
@@ -687,7 +687,7 @@ void main() {
           await db.db
               .customSelect(
                 'SELECT * FROM consent_records WHERE consent_type = ?',
-                variables: [Variable<String>('privacy_policy')],
+                variables: [const Variable<String>('privacy_policy')],
               )
               .get();
       expect(rows, isNotEmpty);

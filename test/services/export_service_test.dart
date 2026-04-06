@@ -370,7 +370,7 @@ void main() {
     });
 
     test('control characters in entry text are detectable', () {
-      final text = 'Normal text\x00with\x01control\x02chars';
+      const text = 'Normal text\x00with\x01control\x02chars';
       // C0 control characters (except newline \x0A) should be sanitized
       final sanitized = text.replaceAll(
         RegExp(r'[\x00-\x09\x0B-\x1F\x7F-\x9F]'),

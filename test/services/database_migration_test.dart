@@ -195,7 +195,7 @@ void main() {
         displayName: 'Default Tier User',
         createdAt: DateTime(2026, 3, 15),
       );
-      final id = await db.userRepo.saveUser(user);
+      await db.userRepo.saveUser(user);
 
       final loaded = await db.userRepo.getUser();
       expect(loaded, isNotNull);
@@ -684,11 +684,11 @@ void main() {
         final date = DateTime(2025, 2, 1).millisecondsSinceEpoch ~/ 1000;
 
         await db.db.customStatement(
-          "INSERT INTO journal_entries (date, entry, label, title, created_at) "
+          'INSERT INTO journal_entries (date, entry, label, title, created_at) '
           "VALUES ($date, 'Raw SQL morning', 'AM', 'Migration Test', $now)",
         );
         await db.db.customStatement(
-          "INSERT INTO journal_entries (date, entry, label, created_at) "
+          'INSERT INTO journal_entries (date, entry, label, created_at) '
           "VALUES ($date, 'Raw SQL evening', 'PM', $now)",
         );
 
@@ -771,7 +771,7 @@ void main() {
     test('raw SQL theme_mode values persist correctly', () async {
       // Simulate what v6→v7 migration leaves behind
       await db.db.customStatement(
-        "UPDATE user_settings_table SET theme_mode = 2 WHERE id = 1",
+        'UPDATE user_settings_table SET theme_mode = 2 WHERE id = 1',
       );
 
       final settings = await db.settings.getSettings();
@@ -977,7 +977,7 @@ void main() {
       final now = DateTime(2026, 3, 1, 8, 0).millisecondsSinceEpoch ~/ 1000;
       final date = DateTime(2026, 3, 1).millisecondsSinceEpoch ~/ 1000;
       await db.db.customStatement(
-        "INSERT INTO journal_entries (date, entry, created_at) "
+        'INSERT INTO journal_entries (date, entry, created_at) '
         "VALUES ($date, 'Pre-mood entry', $now)",
       );
 

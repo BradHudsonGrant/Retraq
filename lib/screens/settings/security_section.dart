@@ -52,7 +52,7 @@ class _SecuritySectionState extends State<SecuritySection> {
       ),
       builder: (_) => const PinSetupSheet(),
     );
-    if (pin != null && mounted) {
+    if (pin != null && context.mounted) {
       // Dismiss any keyboard that might reappear when the sheet closes.
       FocusScope.of(context).unfocus();
       final hash = await PinService.hashPin(pin);
@@ -147,7 +147,7 @@ class _SecuritySectionState extends State<SecuritySection> {
               icon: Icon(Icons.chevron_right, color: cs.onSurfaceVariant),
               onPressed: () async {
                 if (!await _verifyPinIfNeeded(context)) return;
-                if (!mounted) return;
+                if (!context.mounted) return;
                 _showPinSetup(context);
               },
             ),
@@ -189,14 +189,14 @@ class _SecuritySectionState extends State<SecuritySection> {
                               return;
                             }
                             // Require PIN verification before enabling biometrics.
-                            if (!mounted) return;
+                            if (!context.mounted) return;
                             final verified = await _verifyPinIfNeeded(context);
-                            if (!verified || !mounted) return;
+                            if (!verified || !context.mounted) return;
                           }
                           widget.onSettingsChanged(
                             s.copyWith(biometricEnabled: v),
                           );
-                          if (v && mounted) {
+                          if (v && context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(

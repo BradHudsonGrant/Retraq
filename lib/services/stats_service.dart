@@ -187,7 +187,7 @@ class StatsService {
   }
 
   /// Return entry counts per week for the last [weeks] weeks.
-  /// Returns a List<int> of length [weeks], index 0 = oldest week.
+  /// Returns a `List<int>` of length [weeks], index 0 = oldest week.
   Future<List<int>> getWeeklyEntryCounts({int weeks = 12}) async {
     try {
       final now = DateTime.now();
@@ -309,7 +309,7 @@ class StatsService {
   }
 
   /// Distribution of mood values (count per mood level 1-5).
-  /// Returns a Map<int, int> where key=mood (1-5), value=count.
+  /// Returns a `Map<int, int>` where key=mood (1-5), value=count.
   Future<Map<int, int>> getMoodDistribution() async {
     try {
       final rows =
