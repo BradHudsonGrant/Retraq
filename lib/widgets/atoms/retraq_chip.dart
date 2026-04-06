@@ -23,17 +23,18 @@ class RetraqChip extends StatelessWidget {
       label: label,
       excludeSemantics: true,
       child: Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-      decoration: BoxDecoration(
-        color: color ?? cs.surfaceContainer,
-        borderRadius: BorderRadius.circular(9999),
-      ),
-      child: Text(
-        label,
-        style: tt.labelSmall?.copyWith(
-          color: textColor ?? cs.onSurfaceVariant,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+        decoration: BoxDecoration(
+          color: color ?? cs.surfaceContainer,
+          borderRadius: BorderRadius.circular(9999),
+        ),
+        child: Text(
+          label,
+          style: tt.labelSmall?.copyWith(
+            color: textColor ?? cs.onSurfaceVariant,
+          ),
         ),
       ),
-    ));
+    );
   }
 }

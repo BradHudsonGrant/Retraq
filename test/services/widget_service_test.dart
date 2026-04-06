@@ -19,21 +19,21 @@ void _mockHomeWidgetPlugin() {
   const channel = MethodChannel('home_widget');
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
       .setMockMethodCallHandler(channel, (call) async {
-    switch (call.method) {
-      case 'setAppGroupId':
-        return null;
-      case 'saveWidgetData':
-        final key = call.arguments['id'] as String;
-        final value = call.arguments['data'];
-        _savedWidgetData[key] = value;
-        return true;
-      case 'updateWidget':
-        _widgetUpdated = true;
-        return true;
-      default:
-        return null;
-    }
-  });
+        switch (call.method) {
+          case 'setAppGroupId':
+            return null;
+          case 'saveWidgetData':
+            final key = call.arguments['id'] as String;
+            final value = call.arguments['data'];
+            _savedWidgetData[key] = value;
+            return true;
+          case 'updateWidget':
+            _widgetUpdated = true;
+            return true;
+          default:
+            return null;
+        }
+      });
 }
 
 void main() {
@@ -84,12 +84,14 @@ void main() {
       final now = DateTime.now();
       final today = DateTime(now.year, now.month, now.day);
 
-      await db.entries.saveEntry(JournalEntry(
-        date: today,
-        entry: 'Widget test entry',
-        mood: 4,
-        createdAt: now,
-      ));
+      await db.entries.saveEntry(
+        JournalEntry(
+          date: today,
+          entry: 'Widget test entry',
+          mood: 4,
+          createdAt: now,
+        ),
+      );
 
       await WidgetService.instance.update();
 
@@ -103,11 +105,9 @@ void main() {
       final now = DateTime.now();
       final today = DateTime(now.year, now.month, now.day);
 
-      await db.entries.saveEntry(JournalEntry(
-        date: today,
-        entry: 'No mood entry',
-        createdAt: now,
-      ));
+      await db.entries.saveEntry(
+        JournalEntry(date: today, entry: 'No mood entry', createdAt: now),
+      );
 
       await WidgetService.instance.update();
 

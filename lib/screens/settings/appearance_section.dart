@@ -27,7 +27,8 @@ class AppearanceSection extends StatelessWidget {
         BionicText(
           text: 'Choose how Retraq feels to you.',
           style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant),
-          enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
+          enabled:
+              SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
         ),
         const SizedBox(height: AppSpacing.md),
         Row(

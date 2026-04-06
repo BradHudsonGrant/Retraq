@@ -18,7 +18,8 @@ class EnterToSaveFormatter extends TextInputFormatter {
     if (!_firing &&
         newValue.text.contains('\n') &&
         (!oldValue.text.contains('\n') ||
-        newValue.text.split('\n').length > oldValue.text.split('\n').length)) {
+            newValue.text.split('\n').length >
+                oldValue.text.split('\n').length)) {
       _firing = true;
       // Schedule the save after this frame so the formatter returns cleanly.
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -66,11 +67,11 @@ class BulletPointFormatter extends TextInputFormatter {
         }
         // If user deleted the "•" and we're left with "\n " — clean up
         if (newText.substring(
-                    (cursor - 1).clamp(0, newText.length),
-                    (cursor + 1).clamp(0, newText.length)) ==
+                  (cursor - 1).clamp(0, newText.length),
+                  (cursor + 1).clamp(0, newText.length),
+                ) ==
                 '\n ' ||
-            (cursor >= 2 &&
-                newText.substring(cursor - 2, cursor) == '\n•')) {
+            (cursor >= 2 && newText.substring(cursor - 2, cursor) == '\n•')) {
           // Strip the whole bullet prefix: find the \n before cursor
           int nlPos = newText.lastIndexOf('\n', cursor - 1);
           if (nlPos == -1) nlPos = 0;

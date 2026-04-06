@@ -29,50 +29,57 @@ class LegalFooter extends StatelessWidget {
             children: [
               _LegalLink(
                 label: 'Privacy Policy',
-                onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const LegalScreen(
-                      title: 'Privacy Policy',
-                      content: privacyPolicyText,
+                onPressed:
+                    () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (_) => const LegalScreen(
+                              title: 'Privacy Policy',
+                              content: privacyPolicyText,
+                            ),
+                      ),
                     ),
-                  ),
-                ),
               ),
               _dot(cs, tt),
               _LegalLink(
                 label: 'Terms',
-                onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const LegalScreen(
-                      title: 'Terms of Service',
-                      content: termsOfServiceText,
+                onPressed:
+                    () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (_) => const LegalScreen(
+                              title: 'Terms of Service',
+                              content: termsOfServiceText,
+                            ),
+                      ),
                     ),
-                  ),
-                ),
               ),
               _dot(cs, tt),
               _LegalLink(
                 label: 'Health',
-                onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const LegalScreen(
-                      title: 'Health Disclaimer',
-                      content: healthDisclaimerText,
+                onPressed:
+                    () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (_) => const LegalScreen(
+                              title: 'Health Disclaimer',
+                              content: healthDisclaimerText,
+                            ),
+                      ),
                     ),
-                  ),
-                ),
               ),
               _dot(cs, tt),
               _LegalLink(
                 label: 'Licenses',
-                onPressed: () => showLicensePage(
-                  context: context,
-                  applicationName: info.appName,
-                  applicationVersion: info.appVersion,
-                ),
+                onPressed:
+                    () => showLicensePage(
+                      context: context,
+                      applicationName: info.appName,
+                      applicationVersion: info.appVersion,
+                    ),
               ),
             ],
           ),

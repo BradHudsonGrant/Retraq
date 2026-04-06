@@ -67,10 +67,7 @@ class _BionicTextState extends State<BionicText> {
     }
 
     return Text.rich(
-      TextSpan(
-        style: widget.style,
-        children: _getSpans(),
-      ),
+      TextSpan(style: widget.style, children: _getSpans()),
       maxLines: widget.maxLines,
       overflow: widget.overflow,
       textAlign: widget.textAlign,
@@ -124,16 +121,16 @@ class _BionicTextState extends State<BionicText> {
       // last bold letter.
       final splitIndex = letterIndices[boldLetterCount - 1] + 1;
 
-      spans.add(TextSpan(
-        text: segment.substring(0, splitIndex),
-        style: TextStyle(
-          fontWeight: boldWeight,
-          fontVariations: boldVariations,
+      spans.add(
+        TextSpan(
+          text: segment.substring(0, splitIndex),
+          style: TextStyle(
+            fontWeight: boldWeight,
+            fontVariations: boldVariations,
+          ),
         ),
-      ));
-      spans.add(TextSpan(
-        text: segment.substring(splitIndex),
-      ));
+      );
+      spans.add(TextSpan(text: segment.substring(splitIndex)));
     }
 
     return spans;

@@ -37,7 +37,9 @@ class OnboardingIntroPage extends StatelessWidget {
               fontWeight: FontWeight.w700,
               height: 1.1,
             ),
-            enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
+            enabled:
+                SettingsProvider.maybeOf(context)?.bionicReadingEnabled ??
+                false,
           ),
           const SizedBox(height: AppSpacing.md),
           BionicText(
@@ -47,7 +49,9 @@ class OnboardingIntroPage extends StatelessWidget {
               color: cs.onSurfaceVariant,
               height: 1.6,
             ),
-            enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
+            enabled:
+                SettingsProvider.maybeOf(context)?.bionicReadingEnabled ??
+                false,
           ),
         ],
       ),

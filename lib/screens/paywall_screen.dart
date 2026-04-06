@@ -14,8 +14,7 @@ class PaywallScreen extends StatefulWidget {
 }
 
 class _PaywallScreenState extends State<PaywallScreen> {
-  final SubscriptionService _subscriptionService =
-      SubscriptionService.instance;
+  final SubscriptionService _subscriptionService = SubscriptionService.instance;
 
   bool _loading = false;
 
@@ -85,17 +84,13 @@ class _PaywallScreenState extends State<PaywallScreen> {
               const SizedBox(height: AppSpacing.md),
               Text(
                 'Unlock Premium',
-                style: tt.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
+                style: tt.headlineMedium?.copyWith(fontWeight: FontWeight.w700),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: AppSpacing.sm),
               Text(
                 'Get the most out of Retraq with premium features.',
-                style: tt.bodyLarge?.copyWith(
-                  color: cs.onSurfaceVariant,
-                ),
+                style: tt.bodyLarge?.copyWith(color: cs.onSurfaceVariant),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: AppSpacing.xl),
@@ -130,15 +125,14 @@ class _PaywallScreenState extends State<PaywallScreen> {
                     borderRadius: AppSpacing.borderRadiusMd,
                   ),
                 ),
-                child: _loading
-                    ? const SizedBox(
-                        width: 24,
-                        height: 24,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                        ),
-                      )
-                    : const Text('Subscribe'),
+                child:
+                    _loading
+                        ? const SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                        : const Text('Subscribe'),
               ),
               const SizedBox(height: AppSpacing.sm),
               TextButton(

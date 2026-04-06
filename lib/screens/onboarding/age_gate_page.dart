@@ -49,20 +49,25 @@ class AgeGatePage extends StatelessWidget {
               fontWeight: FontWeight.w700,
               height: 1.1,
             ),
-            enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
+            enabled:
+                SettingsProvider.maybeOf(context)?.bionicReadingEnabled ??
+                false,
           ),
           const SizedBox(height: AppSpacing.md),
           BionicText(
-            text: isDenied
-                ? 'Retraq requires users to be 13 years or older.\n'
-                    'Please come back when you\'re old enough!'
-                : 'Retraq is designed for users\naged 13 and older.',
+            text:
+                isDenied
+                    ? 'Retraq requires users to be 13 years or older.\n'
+                        'Please come back when you\'re old enough!'
+                    : 'Retraq is designed for users\naged 13 and older.',
             textAlign: TextAlign.center,
             style: tt.bodyLarge?.copyWith(
               color: cs.onSurfaceVariant,
               height: 1.6,
             ),
-            enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
+            enabled:
+                SettingsProvider.maybeOf(context)?.bionicReadingEnabled ??
+                false,
           ),
           const SizedBox(height: AppSpacing.xl),
           if (!isDenied) ...[
@@ -78,9 +83,7 @@ class AgeGatePage extends StatelessWidget {
               ),
               child: Text(
                 'I am 13 or older',
-                style: tt.labelLarge?.copyWith(
-                  color: cs.onPrimary,
-                ),
+                style: tt.labelLarge?.copyWith(color: cs.onPrimary),
               ),
             ),
             const SizedBox(height: AppSpacing.sm),

@@ -8,7 +8,6 @@ import 'package:retraq/utils/journal_prompts.dart';
 
 import '../test_helpers.dart';
 
-
 void main() {
   setUpAll(() async {
     await initTestDatabase();
@@ -27,8 +26,13 @@ void main() {
       // The hero prompt is a Text.rich with the prompt + accent word (date label).
       // Verify one of the known hero prompt fragments is present.
       final heroPrompts = [
-        'TL;DR of', 'How was', 'What happened',
-        'Sum up', 'What stood', 'Brain dump', 'One thing',
+        'TL;DR of',
+        'How was',
+        'What happened',
+        'Sum up',
+        'What stood',
+        'Brain dump',
+        'One thing',
       ];
       final found = heroPrompts.any(
         (p) => find.textContaining(p).evaluate().isNotEmpty,

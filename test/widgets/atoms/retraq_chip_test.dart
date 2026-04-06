@@ -12,9 +12,9 @@ void main() {
     });
 
     testWidgets('uses custom color when provided', (tester) async {
-      await tester.pumpWidget(wrapWidget(
-        const RetraqChip(label: 'Tag', color: Colors.red),
-      ));
+      await tester.pumpWidget(
+        wrapWidget(const RetraqChip(label: 'Tag', color: Colors.red)),
+      );
 
       final container = tester.widget<Container>(find.byType(Container));
       final decoration = container.decoration as BoxDecoration;
@@ -22,15 +22,17 @@ void main() {
     });
 
     testWidgets('uses custom textColor when provided', (tester) async {
-      await tester.pumpWidget(wrapWidget(
-        const RetraqChip(label: 'Tag', textColor: Colors.blue),
-      ));
+      await tester.pumpWidget(
+        wrapWidget(const RetraqChip(label: 'Tag', textColor: Colors.blue)),
+      );
 
       final text = tester.widget<Text>(find.text('Tag'));
       expect(text.style?.color, Colors.blue);
     });
 
-    testWidgets('uses theme colors when no custom colors given', (tester) async {
+    testWidgets('uses theme colors when no custom colors given', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrapWidget(const RetraqChip(label: 'Default')));
 
       // Should render without error using theme defaults

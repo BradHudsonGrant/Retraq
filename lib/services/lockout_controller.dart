@@ -5,7 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 /// Shared brute-force lockout controller used by LockScreen and PinVerifySheet.
 class LockoutController extends ChangeNotifier {
   LockoutController({FlutterSecureStorage? storage})
-      : _secureStorage = storage ?? const FlutterSecureStorage();
+    : _secureStorage = storage ?? const FlutterSecureStorage();
 
   final FlutterSecureStorage _secureStorage;
 
@@ -37,14 +37,16 @@ class LockoutController extends ChangeNotifier {
   }
 
   Future<void> loadState() async {
-    _failedAttempts = int.tryParse(
-            await _secureStorage.read(key: _prefFailedAttempts) ?? '') ??
+    _failedAttempts =
+        int.tryParse(
+          await _secureStorage.read(key: _prefFailedAttempts) ?? '',
+        ) ??
         0;
-    _lockoutCount = int.tryParse(
-            await _secureStorage.read(key: _prefLockoutCount) ?? '') ??
+    _lockoutCount =
+        int.tryParse(await _secureStorage.read(key: _prefLockoutCount) ?? '') ??
         0;
-    final lockoutEndMs = int.tryParse(
-            await _secureStorage.read(key: _prefLockoutEnd) ?? '') ??
+    final lockoutEndMs =
+        int.tryParse(await _secureStorage.read(key: _prefLockoutEnd) ?? '') ??
         0;
     if (lockoutEndMs > 0) {
       final lockoutEnd = DateTime.fromMillisecondsSinceEpoch(lockoutEndMs);
@@ -113,12 +115,14 @@ class LockoutController extends ChangeNotifier {
 
   Future<void> _persistLockout(DateTime lockoutEnd) async {
     await _secureStorage.write(
-        key: _prefFailedAttempts, value: '$_failedAttempts');
+      key: _prefFailedAttempts,
+      value: '$_failedAttempts',
+    );
+    await _secureStorage.write(key: _prefLockoutCount, value: '$_lockoutCount');
     await _secureStorage.write(
-        key: _prefLockoutCount, value: '$_lockoutCount');
-    await _secureStorage.write(
-        key: _prefLockoutEnd,
-        value: '${lockoutEnd.millisecondsSinceEpoch}');
+      key: _prefLockoutEnd,
+      value: '${lockoutEnd.millisecondsSinceEpoch}',
+    );
   }
 
   Future<void> _clearPersisted() async {

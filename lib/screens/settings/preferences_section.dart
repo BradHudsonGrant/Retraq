@@ -44,13 +44,15 @@ class PreferencesSection extends StatelessWidget {
         // Opening behavior
         SettingsRow(
           title: 'Opening Prompt',
-          subtitle: s.askAboutToday ? 'Asks about today' : 'Asks about yesterday',
+          subtitle:
+              s.askAboutToday ? 'Asks about today' : 'Asks about yesterday',
           trailing: SegmentedPill(
             leftLabel: 'Today',
             rightLabel: 'Yesterday',
             isRightActive: !s.askAboutToday,
             onTapLeft: () => onSettingsChanged(s.copyWith(askAboutToday: true)),
-            onTapRight: () => onSettingsChanged(s.copyWith(askAboutToday: false)),
+            onTapRight:
+                () => onSettingsChanged(s.copyWith(askAboutToday: false)),
           ),
         ),
         const SizedBox(height: AppSpacing.md),
@@ -63,7 +65,8 @@ class PreferencesSection extends StatelessWidget {
             label: 'Journal entry title',
             child: Switch(
               value: s.showEntryTitle,
-              onChanged: (v) => onSettingsChanged(s.copyWith(showEntryTitle: v)),
+              onChanged:
+                  (v) => onSettingsChanged(s.copyWith(showEntryTitle: v)),
               activeColor: cs.primary,
             ),
           ),
@@ -78,12 +81,15 @@ class PreferencesSection extends StatelessWidget {
             label: 'Mood tracking',
             child: Switch(
               value: s.moodEnabled,
-              onChanged: (v) => onSettingsChanged(s.copyWith(
-                moodEnabled: v,
-                // Disable dependent settings when mood is turned off
-                moodRequired: v ? s.moodRequired : false,
-                moodOnlyEntries: v ? s.moodOnlyEntries : false,
-              )),
+              onChanged:
+                  (v) => onSettingsChanged(
+                    s.copyWith(
+                      moodEnabled: v,
+                      // Disable dependent settings when mood is turned off
+                      moodRequired: v ? s.moodRequired : false,
+                      moodOnlyEntries: v ? s.moodOnlyEntries : false,
+                    ),
+                  ),
               activeColor: cs.primary,
             ),
           ),
@@ -100,7 +106,8 @@ class PreferencesSection extends StatelessWidget {
                 label: 'Require mood selection',
                 child: Switch(
                   value: s.moodRequired,
-                  onChanged: (v) => onSettingsChanged(s.copyWith(moodRequired: v)),
+                  onChanged:
+                      (v) => onSettingsChanged(s.copyWith(moodRequired: v)),
                   activeColor: cs.primary,
                 ),
               ),
@@ -116,7 +123,8 @@ class PreferencesSection extends StatelessWidget {
                 label: 'Allow mood-only entries',
                 child: Switch(
                   value: s.moodOnlyEntries,
-                  onChanged: (v) => onSettingsChanged(s.copyWith(moodOnlyEntries: v)),
+                  onChanged:
+                      (v) => onSettingsChanged(s.copyWith(moodOnlyEntries: v)),
                   activeColor: cs.primary,
                 ),
               ),
@@ -133,7 +141,8 @@ class PreferencesSection extends StatelessWidget {
             label: 'Bionic reading',
             child: Switch(
               value: s.bionicReadingEnabled,
-              onChanged: (v) => onSettingsChanged(s.copyWith(bionicReadingEnabled: v)),
+              onChanged:
+                  (v) => onSettingsChanged(s.copyWith(bionicReadingEnabled: v)),
               activeColor: cs.primary,
             ),
           ),
@@ -161,10 +170,14 @@ class PreferencesSection extends StatelessWidget {
                   label: 'Enter to save',
                   child: Switch(
                     value: s.enterToSave,
-                    onChanged: (v) => onSettingsChanged(s.copyWith(
-                      enterToSave: v,
-                      bulletPointsOnEnter: v ? false : s.bulletPointsOnEnter,
-                    )),
+                    onChanged:
+                        (v) => onSettingsChanged(
+                          s.copyWith(
+                            enterToSave: v,
+                            bulletPointsOnEnter:
+                                v ? false : s.bulletPointsOnEnter,
+                          ),
+                        ),
                     activeColor: cs.primary,
                   ),
                 ),
@@ -178,12 +191,15 @@ class PreferencesSection extends StatelessWidget {
                   label: 'Bullet points on enter',
                   child: Switch(
                     value: s.bulletPointsOnEnter,
-                    onChanged: s.enterToSave
-                        ? null
-                        : (v) => onSettingsChanged(s.copyWith(
-                            bulletPointsOnEnter: v,
-                            enterToSave: v ? false : s.enterToSave,
-                          )),
+                    onChanged:
+                        s.enterToSave
+                            ? null
+                            : (v) => onSettingsChanged(
+                              s.copyWith(
+                                bulletPointsOnEnter: v,
+                                enterToSave: v ? false : s.enterToSave,
+                              ),
+                            ),
                     activeColor: cs.primary,
                   ),
                 ),
@@ -196,23 +212,24 @@ class PreferencesSection extends StatelessWidget {
                 trailing: Semantics(
                   label: 'Week starts on ${_dayName(s.weekStartDay)}',
                   child: DropdownButton<int>(
-                  value: s.weekStartDay,
-                  underline: const SizedBox.shrink(),
-                  borderRadius: AppSpacing.borderRadiusLg,
-                  items: const [
-                    DropdownMenuItem(value: 1, child: Text('Monday')),
-                    DropdownMenuItem(value: 2, child: Text('Tuesday')),
-                    DropdownMenuItem(value: 3, child: Text('Wednesday')),
-                    DropdownMenuItem(value: 4, child: Text('Thursday')),
-                    DropdownMenuItem(value: 5, child: Text('Friday')),
-                    DropdownMenuItem(value: 6, child: Text('Saturday')),
-                    DropdownMenuItem(value: 7, child: Text('Sunday')),
-                  ],
-                  onChanged: (v) {
-                    if (v == null) return;
-                    onSettingsChanged(s.copyWith(weekStartDay: v));
-                  },
-                )),
+                    value: s.weekStartDay,
+                    underline: const SizedBox.shrink(),
+                    borderRadius: AppSpacing.borderRadiusLg,
+                    items: const [
+                      DropdownMenuItem(value: 1, child: Text('Monday')),
+                      DropdownMenuItem(value: 2, child: Text('Tuesday')),
+                      DropdownMenuItem(value: 3, child: Text('Wednesday')),
+                      DropdownMenuItem(value: 4, child: Text('Thursday')),
+                      DropdownMenuItem(value: 5, child: Text('Friday')),
+                      DropdownMenuItem(value: 6, child: Text('Saturday')),
+                      DropdownMenuItem(value: 7, child: Text('Sunday')),
+                    ],
+                    onChanged: (v) {
+                      if (v == null) return;
+                      onSettingsChanged(s.copyWith(weekStartDay: v));
+                    },
+                  ),
+                ),
               ),
               const SizedBox(height: AppSpacing.md),
 
@@ -223,21 +240,22 @@ class PreferencesSection extends StatelessWidget {
                   trailing: Semantics(
                     label: 'AM/PM switches at ${formatHour(s.amPmCutoffHour)}',
                     child: DropdownButton<int>(
-                    value: s.amPmCutoffHour,
-                    underline: const SizedBox.shrink(),
-                    borderRadius: AppSpacing.borderRadiusLg,
-                    items: [
-                      for (int h = 10; h <= 18; h++)
-                        DropdownMenuItem(
-                          value: h,
-                          child: Text(formatHour(h)),
-                        ),
-                    ],
-                    onChanged: (v) {
-                      if (v == null) return;
-                      onSettingsChanged(s.copyWith(amPmCutoffHour: v));
-                    },
-                  )),
+                      value: s.amPmCutoffHour,
+                      underline: const SizedBox.shrink(),
+                      borderRadius: AppSpacing.borderRadiusLg,
+                      items: [
+                        for (int h = 10; h <= 18; h++)
+                          DropdownMenuItem(
+                            value: h,
+                            child: Text(formatHour(h)),
+                          ),
+                      ],
+                      onChanged: (v) {
+                        if (v == null) return;
+                        onSettingsChanged(s.copyWith(amPmCutoffHour: v));
+                      },
+                    ),
+                  ),
                 ),
             ],
           ),

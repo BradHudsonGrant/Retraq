@@ -12,25 +12,31 @@ void main() {
     await initTestDatabase(fastPbkdf2: true);
 
     // Seed test entries
-    await DatabaseService.instance.entries.saveEntry(JournalEntry(
-      date: DateTime(2026, 1, 10),
-      entry: 'Morning jog and coffee',
-      label: 'AM',
-      title: 'Good Morning',
-      createdAt: DateTime(2026, 1, 10, 8, 0),
-    ));
-    await DatabaseService.instance.entries.saveEntry(JournalEntry(
-      date: DateTime(2026, 1, 10),
-      entry: 'Read a novel in the evening',
-      label: 'PM',
-      createdAt: DateTime(2026, 1, 10, 20, 0),
-    ));
-    await DatabaseService.instance.entries.saveEntry(JournalEntry(
-      date: DateTime(2026, 1, 11),
-      entry: 'Worked on the Flutter app',
-      title: 'Dev Day',
-      createdAt: DateTime(2026, 1, 11, 14, 0),
-    ));
+    await DatabaseService.instance.entries.saveEntry(
+      JournalEntry(
+        date: DateTime(2026, 1, 10),
+        entry: 'Morning jog and coffee',
+        label: 'AM',
+        title: 'Good Morning',
+        createdAt: DateTime(2026, 1, 10, 8, 0),
+      ),
+    );
+    await DatabaseService.instance.entries.saveEntry(
+      JournalEntry(
+        date: DateTime(2026, 1, 10),
+        entry: 'Read a novel in the evening',
+        label: 'PM',
+        createdAt: DateTime(2026, 1, 10, 20, 0),
+      ),
+    );
+    await DatabaseService.instance.entries.saveEntry(
+      JournalEntry(
+        date: DateTime(2026, 1, 11),
+        entry: 'Worked on the Flutter app',
+        title: 'Dev Day',
+        createdAt: DateTime(2026, 1, 11, 14, 0),
+      ),
+    );
   });
 
   tearDownAll(() {
@@ -48,13 +54,19 @@ void main() {
       // Replicate the export logic to test structure (ExportService uses
       // _shareFile which requires platform channels, so we build the JSON
       // the same way the service does).
-      final data = entries.map((e) => {
-            'date': '${e.date.year}-${e.date.month.toString().padLeft(2, '0')}-${e.date.day.toString().padLeft(2, '0')}',
-            'entry': e.entry,
-            'label': e.label,
-            'title': e.title,
-            'createdAt': e.createdAt.toIso8601String(),
-          }).toList();
+      final data =
+          entries
+              .map(
+                (e) => {
+                  'date':
+                      '${e.date.year}-${e.date.month.toString().padLeft(2, '0')}-${e.date.day.toString().padLeft(2, '0')}',
+                  'entry': e.entry,
+                  'label': e.label,
+                  'title': e.title,
+                  'createdAt': e.createdAt.toIso8601String(),
+                },
+              )
+              .toList();
 
       final jsonMap = {
         'exportedAt': DateTime.now().toIso8601String(),
@@ -77,7 +89,8 @@ void main() {
 
       for (final e in entries) {
         final map = {
-          'date': '${e.date.year}-${e.date.month.toString().padLeft(2, '0')}-${e.date.day.toString().padLeft(2, '0')}',
+          'date':
+              '${e.date.year}-${e.date.month.toString().padLeft(2, '0')}-${e.date.day.toString().padLeft(2, '0')}',
           'entry': e.entry,
           'label': e.label,
           'title': e.title,
@@ -98,13 +111,19 @@ void main() {
         DateTime(2026, 1, 11),
       );
 
-      final data = entries.map((e) => {
-            'date': '${e.date.year}-${e.date.month.toString().padLeft(2, '0')}-${e.date.day.toString().padLeft(2, '0')}',
-            'entry': e.entry,
-            'label': e.label,
-            'title': e.title,
-            'createdAt': e.createdAt.toIso8601String(),
-          }).toList();
+      final data =
+          entries
+              .map(
+                (e) => {
+                  'date':
+                      '${e.date.year}-${e.date.month.toString().padLeft(2, '0')}-${e.date.day.toString().padLeft(2, '0')}',
+                  'entry': e.entry,
+                  'label': e.label,
+                  'title': e.title,
+                  'createdAt': e.createdAt.toIso8601String(),
+                },
+              )
+              .toList();
 
       final jsonStr = const JsonEncoder.withIndent('  ').convert({
         'exportedAt': DateTime.now().toIso8601String(),
@@ -180,42 +199,60 @@ void main() {
       final e = entries.first;
       expect(e.label, isNull);
 
-      final line = e.label != null
-          ? '[${e.label}] ${e.entry ?? ''}'
-          : e.entry ?? '';
+      final line =
+          e.label != null ? '[${e.label}] ${e.entry ?? ''}' : e.entry ?? '';
       expect(line, 'Worked on the Flutter app');
     });
   });
 
   group('Import with duplicates handling', () {
-    test('duplicate detection identifies existing entries by date and createdAt', () async {
-      final db = DatabaseService.instance;
+    test(
+      'duplicate detection identifies existing entries by date and createdAt',
+      () async {
+        final db = DatabaseService.instance;
 
-      // Fetch an existing entry seeded in setUpAll
-      final existing = (await db.entries.getEntriesForDate(DateTime(2026, 1, 10))).first;
+        // Fetch an existing entry seeded in setUpAll
+        final existing =
+            (await db.entries.getEntriesForDate(DateTime(2026, 1, 10))).first;
 
-      // Simulate the import duplicate-check logic from ExportService
-      final entriesForDate = await db.entries.getEntriesForDate(DateTime(2026, 1, 10));
-      final isDuplicate = entriesForDate.any((e) =>
-          e.createdAt.toIso8601String() ==
-          existing.createdAt.toIso8601String());
-      expect(isDuplicate, true, reason: 'Existing entry should be detected as duplicate');
-    });
+        // Simulate the import duplicate-check logic from ExportService
+        final entriesForDate = await db.entries.getEntriesForDate(
+          DateTime(2026, 1, 10),
+        );
+        final isDuplicate = entriesForDate.any(
+          (e) =>
+              e.createdAt.toIso8601String() ==
+              existing.createdAt.toIso8601String(),
+        );
+        expect(
+          isDuplicate,
+          true,
+          reason: 'Existing entry should be detected as duplicate',
+        );
+      },
+    );
 
     test('duplicate detection matches on date and createdAt', () async {
       final db = DatabaseService.instance;
-      final existing = (await db.entries.getEntriesForDate(DateTime(2026, 1, 10))).first;
+      final existing =
+          (await db.entries.getEntriesForDate(DateTime(2026, 1, 10))).first;
 
-      final entriesForDate = await db.entries.getEntriesForDate(DateTime(2026, 1, 10));
-      final isDuplicate = entriesForDate.any((e) =>
-          e.createdAt.toIso8601String() ==
-          existing.createdAt.toIso8601String());
+      final entriesForDate = await db.entries.getEntriesForDate(
+        DateTime(2026, 1, 10),
+      );
+      final isDuplicate = entriesForDate.any(
+        (e) =>
+            e.createdAt.toIso8601String() ==
+            existing.createdAt.toIso8601String(),
+      );
       expect(isDuplicate, true);
 
       // A different createdAt should not be a duplicate
-      final isNotDuplicate = entriesForDate.any((e) =>
-          e.createdAt.toIso8601String() ==
-          DateTime(2099, 1, 1).toIso8601String());
+      final isNotDuplicate = entriesForDate.any(
+        (e) =>
+            e.createdAt.toIso8601String() ==
+            DateTime(2099, 1, 1).toIso8601String(),
+      );
       expect(isNotDuplicate, false);
     });
 
@@ -269,7 +306,10 @@ void main() {
     });
 
     test('entry missing required date field is detected', () {
-      final raw = {'entry': 'no date here', 'createdAt': '2026-01-10T08:00:00.000'};
+      final raw = {
+        'entry': 'no date here',
+        'createdAt': '2026-01-10T08:00:00.000',
+      };
       final dateStr = raw['date'];
       expect(dateStr, isNull);
     });
@@ -332,7 +372,10 @@ void main() {
     test('control characters in entry text are detectable', () {
       final text = 'Normal text\x00with\x01control\x02chars';
       // C0 control characters (except newline \x0A) should be sanitized
-      final sanitized = text.replaceAll(RegExp(r'[\x00-\x09\x0B-\x1F\x7F-\x9F]'), '');
+      final sanitized = text.replaceAll(
+        RegExp(r'[\x00-\x09\x0B-\x1F\x7F-\x9F]'),
+        '',
+      );
       expect(sanitized, 'Normal textwithcontrolchars');
     });
   });

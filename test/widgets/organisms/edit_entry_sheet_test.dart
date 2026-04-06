@@ -26,12 +26,14 @@ void main() {
   Widget buildOpener(JournalEntry entry) {
     return MaterialApp(
       home: Scaffold(
-        body: Builder(builder: (context) {
-          return ElevatedButton(
-            onPressed: () => EditEntrySheet.show(context, entry),
-            child: const Text('Open'),
-          );
-        }),
+        body: Builder(
+          builder: (context) {
+            return ElevatedButton(
+              onPressed: () => EditEntrySheet.show(context, entry),
+              child: const Text('Open'),
+            );
+          },
+        ),
       ),
     );
   }

@@ -43,7 +43,8 @@ class _SegmentedPillState extends State<SegmentedPill>
   void didChangeDependencies() {
     super.didChangeDependencies();
     final reduceMotion = MediaQuery.of(context).disableAnimations;
-    _ctrl.duration = reduceMotion ? Duration.zero : const Duration(milliseconds: 200);
+    _ctrl.duration =
+        reduceMotion ? Duration.zero : const Duration(milliseconds: 200);
   }
 
   @override
@@ -72,7 +73,8 @@ class _SegmentedPillState extends State<SegmentedPill>
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
     final reduceMotion = MediaQuery.of(context).disableAnimations;
-    final textAnimDuration = reduceMotion ? Duration.zero : const Duration(milliseconds: 150);
+    final textAnimDuration =
+        reduceMotion ? Duration.zero : const Duration(milliseconds: 150);
 
     final labelStyle = tt.labelLarge!.copyWith(
       fontWeight: FontWeight.w500,
@@ -102,94 +104,96 @@ class _SegmentedPillState extends State<SegmentedPill>
       label: '${widget.leftLabel} or ${widget.rightLabel}',
       container: true,
       child: Container(
-      padding: const EdgeInsets.all(3),
-      decoration: BoxDecoration(
-        color: cs.surfaceContainerLow,
-        borderRadius: AppSpacing.borderRadiusFull,
-      ),
-      child: Stack(
-        children: [
-          // 1) Sliding highlight (bottom layer)
-          Positioned.fill(
-            child: IgnorePointer(
-              child: AnimatedBuilder(
-                animation: _slide,
-                builder: (context, _) {
-                  return CustomPaint(
-                    painter: _HighlightPainter(
-                      progress: _slide.value,
-                      color: cs.surfaceContainerLowest,
-                      shadowColor: cs.onSurface.withValues(alpha: 0.06),
-                    ),
-                  );
-                },
+        padding: const EdgeInsets.all(3),
+        decoration: BoxDecoration(
+          color: cs.surfaceContainerLow,
+          borderRadius: AppSpacing.borderRadiusFull,
+        ),
+        child: Stack(
+          children: [
+            // 1) Sliding highlight (bottom layer)
+            Positioned.fill(
+              child: IgnorePointer(
+                child: AnimatedBuilder(
+                  animation: _slide,
+                  builder: (context, _) {
+                    return CustomPaint(
+                      painter: _HighlightPainter(
+                        progress: _slide.value,
+                        color: cs.surfaceContainerLowest,
+                        shadowColor: cs.onSurface.withValues(alpha: 0.06),
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
-          ),
 
-          // 2) Labels — each segment has identical width
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Semantics(
-                button: true,
-                label: widget.leftLabel,
-                selected: !widget.isRightActive,
-                child: InkWell(
-                  onTap: widget.onTapLeft,
-                  borderRadius: AppSpacing.borderRadiusFull,
-                  child: SizedBox(
-                    width: segmentWidth,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: _vPad),
-                      child: AnimatedDefaultTextStyle(
-                        duration: textAnimDuration,
-                        style: labelStyle.copyWith(
-                          color: !widget.isRightActive
-                              ? cs.onSurface
-                              : cs.onSurfaceVariant,
-                        ),
-                        child: Text(
-                          widget.leftLabel,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Semantics(
-                button: true,
-                label: widget.rightLabel,
-                selected: widget.isRightActive,
-                child: InkWell(
-                  onTap: widget.onTapRight,
-                  borderRadius: AppSpacing.borderRadiusFull,
-                  child: SizedBox(
-                    width: segmentWidth,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: _vPad),
-                      child: AnimatedDefaultTextStyle(
-                        duration: textAnimDuration,
-                        style: labelStyle.copyWith(
-                          color: widget.isRightActive
-                              ? cs.onSurface
-                              : cs.onSurfaceVariant,
-                        ),
-                        child: Text(
-                          widget.rightLabel,
-                          textAlign: TextAlign.center,
+            // 2) Labels — each segment has identical width
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Semantics(
+                  button: true,
+                  label: widget.leftLabel,
+                  selected: !widget.isRightActive,
+                  child: InkWell(
+                    onTap: widget.onTapLeft,
+                    borderRadius: AppSpacing.borderRadiusFull,
+                    child: SizedBox(
+                      width: segmentWidth,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: _vPad),
+                        child: AnimatedDefaultTextStyle(
+                          duration: textAnimDuration,
+                          style: labelStyle.copyWith(
+                            color:
+                                !widget.isRightActive
+                                    ? cs.onSurface
+                                    : cs.onSurfaceVariant,
+                          ),
+                          child: Text(
+                            widget.leftLabel,
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ],
+                Semantics(
+                  button: true,
+                  label: widget.rightLabel,
+                  selected: widget.isRightActive,
+                  child: InkWell(
+                    onTap: widget.onTapRight,
+                    borderRadius: AppSpacing.borderRadiusFull,
+                    child: SizedBox(
+                      width: segmentWidth,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: _vPad),
+                        child: AnimatedDefaultTextStyle(
+                          duration: textAnimDuration,
+                          style: labelStyle.copyWith(
+                            color:
+                                widget.isRightActive
+                                    ? cs.onSurface
+                                    : cs.onSurfaceVariant,
+                          ),
+                          child: Text(
+                            widget.rightLabel,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
-    ),
     );
   }
 }

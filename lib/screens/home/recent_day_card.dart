@@ -8,11 +8,7 @@ import '../../widgets/molecules/entry_action_menu.dart';
 
 /// Compact card showing a recent day's entries on the home screen.
 class RecentDayCard extends StatelessWidget {
-  const RecentDayCard({
-    super.key,
-    required this.label,
-    required this.entries,
-  });
+  const RecentDayCard({super.key, required this.label, required this.entries});
 
   final String label;
   final List<JournalEntry> entries;
@@ -30,11 +26,12 @@ class RecentDayCard extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
 
-    final entryPreview = entries.isNotEmpty
-        ? entries.first.displayText.length > 60
-            ? '${entries.first.displayText.substring(0, 60)}...'
-            : entries.first.displayText
-        : '';
+    final entryPreview =
+        entries.isNotEmpty
+            ? entries.first.displayText.length > 60
+                ? '${entries.first.displayText.substring(0, 60)}...'
+                : entries.first.displayText
+            : '';
 
     return Semantics(
       container: true,
@@ -50,7 +47,9 @@ class RecentDayCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                ExcludeSemantics(child: Icon(Icons.history, size: 14, color: cs.primary)),
+                ExcludeSemantics(
+                  child: Icon(Icons.history, size: 14, color: cs.primary),
+                ),
                 const SizedBox(width: AppSpacing.xs),
                 Text(
                   label,
@@ -93,7 +92,11 @@ class RecentDayCard extends StatelessWidget {
                       style: tt.bodySmall?.copyWith(
                         color: cs.onSurface.withValues(alpha: 0.8),
                       ),
-                      enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
+                      enabled:
+                          SettingsProvider.maybeOf(
+                            context,
+                          )?.bionicReadingEnabled ??
+                          false,
                     ),
                   ),
                   EntryActionMenu(

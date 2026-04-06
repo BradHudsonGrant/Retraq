@@ -38,16 +38,16 @@ class SettingsRepository {
   /// Load the singleton settings row, or create defaults if first launch.
   Future<UserSettings> getSettings() async {
     try {
-      final row = await (_db.select(_db.userSettingsTable)
-            ..where((t) => t.id.equals(1)))
-          .getSingleOrNull();
+      final row =
+          await (_db.select(_db.userSettingsTable)
+            ..where((t) => t.id.equals(1))).getSingleOrNull();
       if (row != null) return _rowToSettings(row);
 
       // First launch — insert defaults
       final defaults = UserSettings();
-      await _db.into(_db.userSettingsTable).insert(
-            UserSettingsTableCompanion.insert(),
-          );
+      await _db
+          .into(_db.userSettingsTable)
+          .insert(UserSettingsTableCompanion.insert());
       return defaults;
     } catch (e) {
       debugPrint('SettingsRepository.getSettings failed: $e');
@@ -59,8 +59,9 @@ class SettingsRepository {
   Future<void> saveSettings(UserSettings s) async {
     try {
       await _db.transaction(() async {
-        final existing = await (_db.select(_db.userSettingsTable)..limit(1))
-            .getSingleOrNull();
+        final existing =
+            await (_db.select(_db.userSettingsTable)
+              ..limit(1)).getSingleOrNull();
 
         final companion = UserSettingsTableCompanion(
           themeMode: Value(s.themeMode),
@@ -85,8 +86,7 @@ class SettingsRepository {
 
         if (existing != null) {
           await (_db.update(_db.userSettingsTable)
-                ..where((t) => t.id.equals(existing.id)))
-              .write(companion);
+            ..where((t) => t.id.equals(existing.id))).write(companion);
         } else {
           await _db.into(_db.userSettingsTable).insert(companion);
         }

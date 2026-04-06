@@ -43,75 +43,79 @@ class _MarkdownBody extends StatelessWidget {
       if (trimmed.isEmpty) continue;
 
       if (trimmed.startsWith('# ')) {
-        children.add(Padding(
-          padding: const EdgeInsets.only(bottom: AppSpacing.md),
-          child: Text(
-            trimmed.substring(2),
-            style: tt.headlineSmall?.copyWith(
-              fontWeight: FontWeight.w600,
+        children.add(
+          Padding(
+            padding: const EdgeInsets.only(bottom: AppSpacing.md),
+            child: Text(
+              trimmed.substring(2),
+              style: tt.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
             ),
           ),
-        ));
+        );
       } else if (trimmed.startsWith('## ')) {
-        children.add(Padding(
-          padding: const EdgeInsets.only(
-            top: AppSpacing.md,
-            bottom: AppSpacing.sm,
-          ),
-          child: Text(
-            trimmed.substring(3),
-            style: tt.titleLarge?.copyWith(
-              fontWeight: FontWeight.w600,
+        children.add(
+          Padding(
+            padding: const EdgeInsets.only(
+              top: AppSpacing.md,
+              bottom: AppSpacing.sm,
+            ),
+            child: Text(
+              trimmed.substring(3),
+              style: tt.titleLarge?.copyWith(fontWeight: FontWeight.w600),
             ),
           ),
-        ));
+        );
       } else if (trimmed.startsWith('- ')) {
         final lines = trimmed.split('\n');
         for (final line in lines) {
           final text = line.startsWith('- ') ? line.substring(2) : line;
-          children.add(Padding(
-            padding: const EdgeInsets.only(
-              left: AppSpacing.md,
-              bottom: AppSpacing.xs,
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '\u2022  ',
-                  style: tt.bodyMedium?.copyWith(
-                    color: colorScheme.onSurface,
+          children.add(
+            Padding(
+              padding: const EdgeInsets.only(
+                left: AppSpacing.md,
+                bottom: AppSpacing.xs,
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '\u2022  ',
+                    style: tt.bodyMedium?.copyWith(
+                      color: colorScheme.onSurface,
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: _buildRichText(
-                    context,
-                    text.trim(),
-                    tt.bodyMedium?.copyWith(
-                          color: colorScheme.onSurface,
-                          height: 1.5,
-                        ) ??
-                        const TextStyle(),
+                  Expanded(
+                    child: _buildRichText(
+                      context,
+                      text.trim(),
+                      tt.bodyMedium?.copyWith(
+                            color: colorScheme.onSurface,
+                            height: 1.5,
+                          ) ??
+                          const TextStyle(),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ));
+          );
         }
         children.add(const SizedBox(height: AppSpacing.sm));
       } else {
-        children.add(Padding(
-          padding: const EdgeInsets.only(bottom: AppSpacing.md),
-          child: _buildRichText(
-            context,
-            trimmed,
-            tt.bodyMedium?.copyWith(
-                  color: colorScheme.onSurface,
-                  height: 1.5,
-                ) ??
-                const TextStyle(),
+        children.add(
+          Padding(
+            padding: const EdgeInsets.only(bottom: AppSpacing.md),
+            child: _buildRichText(
+              context,
+              trimmed,
+              tt.bodyMedium?.copyWith(
+                    color: colorScheme.onSurface,
+                    height: 1.5,
+                  ) ??
+                  const TextStyle(),
+            ),
           ),
-        ));
+        );
       }
     }
 
@@ -123,14 +127,18 @@ class _MarkdownBody extends StatelessWidget {
 
   // Matches **bold**, URLs (https://..., http://...), and emails (foo@bar.com).
   static final _inlineRegex = RegExp(
-    r'\*\*(.+?)\*\*'             // group 1: bold
+    r'\*\*(.+?)\*\*' // group 1: bold
     r'|'
-    r'(https?://[^\s),]+)'       // group 2: URL
+    r'(https?://[^\s),]+)' // group 2: URL
     r'|'
     r'([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})', // group 3: email
   );
 
-  Widget _buildRichText(BuildContext context, String text, TextStyle baseStyle) {
+  Widget _buildRichText(
+    BuildContext context,
+    String text,
+    TextStyle baseStyle,
+  ) {
     final cs = colorScheme;
     final linkStyle = TextStyle(
       color: cs.primary,
@@ -146,29 +154,40 @@ class _MarkdownBody extends StatelessWidget {
       }
       if (match.group(1) != null) {
         // Bold
-        spans.add(TextSpan(
-          text: match.group(1),
-          style: const TextStyle(fontWeight: FontWeight.w700),
-        ));
+        spans.add(
+          TextSpan(
+            text: match.group(1),
+            style: const TextStyle(fontWeight: FontWeight.w700),
+          ),
+        );
       } else if (match.group(2) != null) {
         // URL
         final url = match.group(2)!;
-        spans.add(TextSpan(
-          text: url,
-          style: linkStyle,
-          recognizer: TapGestureRecognizer()
-            ..onTap = () => launchUrl(Uri.parse(url),
-                mode: LaunchMode.externalApplication),
-        ));
+        spans.add(
+          TextSpan(
+            text: url,
+            style: linkStyle,
+            recognizer:
+                TapGestureRecognizer()
+                  ..onTap =
+                      () => launchUrl(
+                        Uri.parse(url),
+                        mode: LaunchMode.externalApplication,
+                      ),
+          ),
+        );
       } else if (match.group(3) != null) {
         // Email
         final email = match.group(3)!;
-        spans.add(TextSpan(
-          text: email,
-          style: linkStyle,
-          recognizer: TapGestureRecognizer()
-            ..onTap = () => launchUrl(Uri.parse('mailto:$email')),
-        ));
+        spans.add(
+          TextSpan(
+            text: email,
+            style: linkStyle,
+            recognizer:
+                TapGestureRecognizer()
+                  ..onTap = () => launchUrl(Uri.parse('mailto:$email')),
+          ),
+        );
       }
       lastEnd = match.end;
     }
@@ -177,8 +196,6 @@ class _MarkdownBody extends StatelessWidget {
       spans.add(TextSpan(text: text.substring(lastEnd)));
     }
 
-    return RichText(
-      text: TextSpan(style: baseStyle, children: spans),
-    );
+    return RichText(text: TextSpan(style: baseStyle, children: spans));
   }
 }

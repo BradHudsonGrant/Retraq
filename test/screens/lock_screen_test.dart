@@ -17,22 +17,22 @@ void _mockSecureStorage() {
   final storage = <String, String>{};
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
       .setMockMethodCallHandler(channel, (call) async {
-    switch (call.method) {
-      case 'read':
-        return storage[call.arguments['key']];
-      case 'write':
-        storage[call.arguments['key']] = call.arguments['value'] as String;
-        return null;
-      case 'delete':
-        storage.remove(call.arguments['key']);
-        return null;
-      case 'deleteAll':
-        storage.clear();
-        return null;
-      default:
-        return null;
-    }
-  });
+        switch (call.method) {
+          case 'read':
+            return storage[call.arguments['key']];
+          case 'write':
+            storage[call.arguments['key']] = call.arguments['value'] as String;
+            return null;
+          case 'delete':
+            storage.remove(call.arguments['key']);
+            return null;
+          case 'deleteAll':
+            storage.clear();
+            return null;
+          default:
+            return null;
+        }
+      });
 }
 
 void main() {
@@ -61,10 +61,13 @@ void main() {
   }
 
   /// Build lock screen and wait for async init to complete.
-  Future<void> buildLockScreen(WidgetTester tester, {VoidCallback? onUnlocked}) async {
-    await tester.pumpWidget(wrapScreen(
-      LockScreen(onUnlocked: onUnlocked ?? () {}),
-    ));
+  Future<void> buildLockScreen(
+    WidgetTester tester, {
+    VoidCallback? onUnlocked,
+  }) async {
+    await tester.pumpWidget(
+      wrapScreen(LockScreen(onUnlocked: onUnlocked ?? () {})),
+    );
     // Let the async _loadSettings() chain resolve:
     // 1. db.getSettings() resolves -> sets _settings
     // 2. SharedPreferences.getInstance() resolves -> reads lockout state
@@ -79,7 +82,8 @@ void main() {
     await tester.pump();
     // Let any pending compute() isolate work complete.
     await tester.runAsync(
-        () => Future.delayed(const Duration(milliseconds: 200)));
+      () => Future.delayed(const Duration(milliseconds: 200)),
+    );
     await tester.pump();
   }
 

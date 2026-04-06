@@ -26,15 +26,18 @@ class UserRepository {
     try {
       if (user.id != null) {
         await (_db.update(_db.users)
-              ..where((t) => t.id.equals(user.id!)))
-            .write(UsersCompanion(
-          displayName: Value(user.displayName),
-          email: Value(user.email),
-          subscriptionTier: Value(user.subscriptionTier),
-        ));
+          ..where((t) => t.id.equals(user.id!))).write(
+          UsersCompanion(
+            displayName: Value(user.displayName),
+            email: Value(user.email),
+            subscriptionTier: Value(user.subscriptionTier),
+          ),
+        );
         return user.id!;
       } else {
-        return await _db.into(_db.users).insert(
+        return await _db
+            .into(_db.users)
+            .insert(
               UsersCompanion.insert(
                 displayName: Value(user.displayName),
                 email: Value(user.email),
@@ -72,16 +75,16 @@ class UserRepository {
     return (_db.select(_db.users)..limit(1))
         .watchSingleOrNull()
         .map((row) {
-      if (row == null) return null;
-      return User(
-        id: row.id,
-        displayName: row.displayName,
-        email: row.email,
-        subscriptionTier: row.subscriptionTier,
-        createdAt: row.createdAt.toLocal(),
-      );
-    })
-    .handleError((e) => DatabaseService.logStreamError('watchUser', e));
+          if (row == null) return null;
+          return User(
+            id: row.id,
+            displayName: row.displayName,
+            email: row.email,
+            subscriptionTier: row.subscriptionTier,
+            createdAt: row.createdAt.toLocal(),
+          );
+        })
+        .handleError((e) => DatabaseService.logStreamError('watchUser', e));
   }
 
   /// Delete all journal entries, settings, users, consent records,
@@ -94,9 +97,9 @@ class UserRepository {
         await _db.delete(_db.users).go();
         await _db.delete(_db.consentRecords).go();
         // Re-insert default settings row.
-        await _db.into(_db.userSettingsTable).insert(
-              UserSettingsTableCompanion.insert(),
-            );
+        await _db
+            .into(_db.userSettingsTable)
+            .insert(UserSettingsTableCompanion.insert());
       });
       // Clear SharedPreferences keys related to lock and age verification.
       try {
@@ -157,7 +160,9 @@ class UserRepository {
     String? appVersion,
   }) async {
     try {
-      return await _db.into(_db.consentRecords).insert(
+      return await _db
+          .into(_db.consentRecords)
+          .insert(
             ConsentRecordsCompanion.insert(
               consentType: consentType,
               documentVersion: documentVersion,
@@ -193,7 +198,9 @@ class UserRepository {
           hasCurrentHealthDisclaimer = true;
         }
       }
-      return !hasCurrentPrivacy || !hasCurrentTerms || !hasCurrentHealthDisclaimer;
+      return !hasCurrentPrivacy ||
+          !hasCurrentTerms ||
+          !hasCurrentHealthDisclaimer;
     } catch (e) {
       debugPrint('UserRepository.needsReconsent failed: $e');
       return true; // Fail safe: require re-consent if we can't check
@@ -203,9 +210,9 @@ class UserRepository {
   /// Get all consent records, newest first.
   Future<List<ConsentRecordRow>> getConsentRecords() async {
     try {
-      final rows = await (_db.select(_db.consentRecords)
-            ..orderBy([(t) => OrderingTerm.desc(t.acceptedAt)]))
-          .get();
+      final rows =
+          await (_db.select(_db.consentRecords)
+            ..orderBy([(t) => OrderingTerm.desc(t.acceptedAt)])).get();
       return rows;
     } catch (e) {
       debugPrint('UserRepository.getConsentRecords failed: $e');

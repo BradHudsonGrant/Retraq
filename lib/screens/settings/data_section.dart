@@ -5,10 +5,7 @@ import '../../services/export_service.dart';
 import '../../theme/app_spacing.dart';
 
 class DataSection extends StatelessWidget {
-  const DataSection({
-    super.key,
-    required this.verifyPinIfNeeded,
-  });
+  const DataSection({super.key, required this.verifyPinIfNeeded});
 
   /// Callback that returns true if the user verified their PIN (or lock is disabled).
   final Future<bool> Function(BuildContext context) verifyPinIfNeeded;
@@ -136,7 +133,9 @@ class DataSection extends StatelessWidget {
           content: const Text('Export failed. Please try again.'),
           backgroundColor: cs.errorContainer,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: AppSpacing.borderRadiusLg),
+          shape: RoundedRectangleBorder(
+            borderRadius: AppSpacing.borderRadiusLg,
+          ),
         ),
       );
     }
@@ -145,29 +144,30 @@ class DataSection extends StatelessWidget {
   Future<bool?> _showExportScopeDialog(BuildContext context) {
     return showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Export scope'),
-        content: const Text(
-          'Export this week\u2019s entries or all entries?\n\n'
-          'The export will include your journal entries, settings, and any '
-          'profile information you\'ve provided (such as display name or '
-          'email). Keep it somewhere safe.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
+      builder:
+          (ctx) => AlertDialog(
+            title: const Text('Export scope'),
+            content: const Text(
+              'Export this week\u2019s entries or all entries?\n\n'
+              'The export will include your journal entries, settings, and any '
+              'profile information you\'ve provided (such as display name or '
+              'email). Keep it somewhere safe.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: const Text('Cancel'),
+              ),
+              OutlinedButton(
+                onPressed: () => Navigator.pop(ctx, false),
+                child: const Text('This Week'),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.pop(ctx, true),
+                child: const Text('All Entries'),
+              ),
+            ],
           ),
-          OutlinedButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('This Week'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('All Entries'),
-          ),
-        ],
-      ),
     );
   }
 
@@ -188,7 +188,9 @@ class DataSection extends StatelessWidget {
           content: const Text('Could not open file picker. Please try again.'),
           backgroundColor: cs.errorContainer,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: AppSpacing.borderRadiusLg),
+          shape: RoundedRectangleBorder(
+            borderRadius: AppSpacing.borderRadiusLg,
+          ),
         ),
       );
       return;
@@ -215,7 +217,9 @@ class DataSection extends StatelessWidget {
             '${errors > 0 ? ', $errors errors' : ''}',
           ),
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: AppSpacing.borderRadiusLg),
+          shape: RoundedRectangleBorder(
+            borderRadius: AppSpacing.borderRadiusLg,
+          ),
         ),
       );
     } catch (e) {
@@ -223,10 +227,14 @@ class DataSection extends StatelessWidget {
       final cs = Theme.of(context).colorScheme;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Import failed. The file may be corrupted or in the wrong format.'),
+          content: const Text(
+            'Import failed. The file may be corrupted or in the wrong format.',
+          ),
           backgroundColor: cs.errorContainer,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: AppSpacing.borderRadiusLg),
+          shape: RoundedRectangleBorder(
+            borderRadius: AppSpacing.borderRadiusLg,
+          ),
         ),
       );
     }
@@ -235,23 +243,24 @@ class DataSection extends StatelessWidget {
   Future<bool> _confirmImport(BuildContext context, String filename) async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text('Import $filename?'),
-        content: const Text(
-          'This will add entries from this backup to your journal. '
-          'Duplicate entries will be skipped.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Cancel'),
+      builder:
+          (ctx) => AlertDialog(
+            title: Text('Import $filename?'),
+            content: const Text(
+              'This will add entries from this backup to your journal. '
+              'Duplicate entries will be skipped.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, false),
+                child: const Text('Cancel'),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.pop(ctx, true),
+                child: const Text('Import'),
+              ),
+            ],
           ),
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Import'),
-          ),
-        ],
-      ),
     );
     return confirmed == true;
   }
@@ -271,7 +280,9 @@ class DataSection extends StatelessWidget {
         SnackBar(
           content: const Text('All data has been deleted.'),
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: AppSpacing.borderRadiusLg),
+          shape: RoundedRectangleBorder(
+            borderRadius: AppSpacing.borderRadiusLg,
+          ),
         ),
       );
     } catch (e) {
@@ -280,13 +291,15 @@ class DataSection extends StatelessWidget {
         SnackBar(
           content: Text(
             'Failed to delete data. Please try again.',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: cs.onErrorContainer,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: cs.onErrorContainer),
           ),
           backgroundColor: cs.errorContainer,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: AppSpacing.borderRadiusLg),
+          shape: RoundedRectangleBorder(
+            borderRadius: AppSpacing.borderRadiusLg,
+          ),
         ),
       );
     }
@@ -338,9 +351,9 @@ class _DeleteConfirmDialogState extends State<_DeleteConfirmDialog> {
           const SizedBox(height: AppSpacing.md),
           Text(
             'Type DELETE to confirm:',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: cs.onSurfaceVariant,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: cs.onSurfaceVariant),
           ),
           const SizedBox(height: AppSpacing.xs),
           TextField(
@@ -351,9 +364,10 @@ class _DeleteConfirmDialogState extends State<_DeleteConfirmDialog> {
               hintText: 'DELETE',
               border: const OutlineInputBorder(),
               isDense: true,
-              errorText: _controller.text.isNotEmpty && !_isValid
-                  ? 'Type DELETE to confirm'
-                  : null,
+              errorText:
+                  _controller.text.isNotEmpty && !_isValid
+                      ? 'Type DELETE to confirm'
+                      : null,
             ),
           ),
         ],

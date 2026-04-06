@@ -38,7 +38,10 @@ void main() {
       await tester.pump(const Duration(milliseconds: 500));
 
       expect(find.text('No stats yet'), findsOneWidget);
-      expect(find.text('Start journaling to see your patterns and streaks.'), findsOneWidget);
+      expect(
+        find.text('Start journaling to see your patterns and streaks.'),
+        findsOneWidget,
+      );
 
       await flushDriftTimers(tester);
     });

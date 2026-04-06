@@ -20,7 +20,9 @@ class EditEntrySheet extends StatefulWidget {
       isScrollControlled: true,
       useSafeArea: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSpacing.radiusXl)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppSpacing.radiusXl),
+        ),
       ),
       builder: (_) => EditEntrySheet(entry: entry),
     );
@@ -92,18 +94,22 @@ class _EditEntrySheetState extends State<EditEntrySheet> {
                           vertical: 2,
                         ),
                         decoration: BoxDecoration(
-                          color: label == 'AM'
-                              ? cs.primaryContainer
-                              : cs.tertiaryContainer,
-                          borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                          color:
+                              label == 'AM'
+                                  ? cs.primaryContainer
+                                  : cs.tertiaryContainer,
+                          borderRadius: BorderRadius.circular(
+                            AppSpacing.radiusSm,
+                          ),
                         ),
                         child: Text(
                           label,
                           style: tt.labelSmall?.copyWith(
                             fontWeight: FontWeight.w600,
-                            color: label == 'AM'
-                                ? cs.onPrimaryContainer
-                                : cs.onTertiaryContainer,
+                            color:
+                                label == 'AM'
+                                    ? cs.onPrimaryContainer
+                                    : cs.onTertiaryContainer,
                           ),
                         ),
                       ),
@@ -121,26 +127,24 @@ class _EditEntrySheetState extends State<EditEntrySheet> {
 
             // Title field
             TextField(
-                controller: _titleCtrl,
-                textCapitalization: TextCapitalization.sentences,
-                style: tt.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
+              controller: _titleCtrl,
+              textCapitalization: TextCapitalization.sentences,
+              style: tt.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+              decoration: InputDecoration(
+                hintText: 'Title',
+                labelText: 'Title',
+                floatingLabelBehavior: FloatingLabelBehavior.never,
+                hintStyle: tt.titleMedium?.copyWith(
+                  color: cs.onSurfaceVariant.withValues(alpha: 0.55),
                 ),
-                decoration: InputDecoration(
-                  hintText: 'Title',
-                  labelText: 'Title',
-                  floatingLabelBehavior: FloatingLabelBehavior.never,
-                  hintStyle: tt.titleMedium?.copyWith(
-                    color: cs.onSurfaceVariant.withValues(alpha: 0.55),
-                  ),
-                  filled: false,
-                  border: InputBorder.none,
-                  enabledBorder: InputBorder.none,
-                  focusedBorder: InputBorder.none,
-                ),
+                filled: false,
+                border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
               ),
-              Divider(color: cs.outlineVariant),
-              const SizedBox(height: AppSpacing.sm),
+            ),
+            Divider(color: cs.outlineVariant),
+            const SizedBox(height: AppSpacing.sm),
 
             // Mood selector
             if (widget.entry.mood != null || _mood != null)
@@ -215,7 +219,9 @@ class _EditEntrySheetState extends State<EditEntrySheet> {
     // Block saving a completely empty entry (no text, no title, no mood).
     if (titleText.isEmpty && entryText.isEmpty && _mood == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Entry is empty. Add some text, a title, or a mood.')),
+        const SnackBar(
+          content: Text('Entry is empty. Add some text, a title, or a mood.'),
+        ),
       );
       return;
     }
@@ -251,35 +257,40 @@ class _EditEntrySheetState extends State<EditEntrySheet> {
     final cs = Theme.of(context).colorScheme;
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Delete entry?'),
-        content: const Text("This can't be undone."),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Cancel'),
+      builder:
+          (ctx) => AlertDialog(
+            title: const Text('Delete entry?'),
+            content: const Text("This can't be undone."),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () async {
+                  Navigator.of(ctx).pop();
+                  try {
+                    if (widget.entry.id != null) {
+                      await DatabaseService.instance.entries.deleteEntry(
+                        widget.entry.id!,
+                      );
+                    }
+                    if (!mounted) return;
+                    Navigator.of(context).pop(true);
+                  } catch (e) {
+                    debugPrint('EditEntrySheet._confirmDelete failed: $e');
+                    if (!mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Failed to delete. Please try again.'),
+                      ),
+                    );
+                  }
+                },
+                child: Text('Delete', style: TextStyle(color: cs.error)),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () async {
-              Navigator.of(ctx).pop();
-              try {
-                if (widget.entry.id != null) {
-                  await DatabaseService.instance.entries.deleteEntry(widget.entry.id!);
-                }
-                if (!mounted) return;
-                Navigator.of(context).pop(true);
-              } catch (e) {
-                debugPrint('EditEntrySheet._confirmDelete failed: $e');
-                if (!mounted) return;
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Failed to delete. Please try again.')),
-                );
-              }
-            },
-            child: Text('Delete', style: TextStyle(color: cs.error)),
-          ),
-        ],
-      ),
     );
   }
 }

@@ -27,7 +27,9 @@ Widget wrapScreen(Widget child, {UserSettings? settings}) {
 /// Wraps a widget in MaterialApp + Scaffold + SingleChildScrollView.
 /// Use for tall widgets that may overflow the test viewport.
 Widget wrapScrollable(Widget child, {UserSettings? settings}) {
-  Widget app = MaterialApp(home: Scaffold(body: SingleChildScrollView(child: child)));
+  Widget app = MaterialApp(
+    home: Scaffold(body: SingleChildScrollView(child: child)),
+  );
   if (settings != null) {
     app = SettingsProvider(settings: settings, child: app);
   }

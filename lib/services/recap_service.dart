@@ -23,10 +23,7 @@ class RecapService {
     int weekStartDay,
   ) async {
     final weekEnd = weekStart.add(const Duration(days: 6));
-    final entries = await _entries.getEntriesForDateRange(
-      weekStart,
-      weekEnd,
-    );
+    final entries = await _entries.getEntriesForDateRange(weekStart, weekEnd);
 
     // Count entries per weekday
     final entryCountPerDay = <int, int>{};
@@ -40,9 +37,10 @@ class RecapService {
     // Busiest day
     String busiestDay = "";
     if (entryCountPerDay.isNotEmpty) {
-      final busiestWeekday = entryCountPerDay.entries
-          .reduce((a, b) => a.value >= b.value ? a : b)
-          .key;
+      final busiestWeekday =
+          entryCountPerDay.entries
+              .reduce((a, b) => a.value >= b.value ? a : b)
+              .key;
       busiestDay = _dayNames[busiestWeekday] ?? "";
     }
 
@@ -66,10 +64,11 @@ class RecapService {
     }
 
     // Active days (unique days with entries)
-    final activeDaysSet = entries.map((e) {
-      final d = e.date;
-      return DateTime(d.year, d.month, d.day);
-    }).toSet();
+    final activeDaysSet =
+        entries.map((e) {
+          final d = e.date;
+          return DateTime(d.year, d.month, d.day);
+        }).toSet();
     final activeDays = activeDaysSet.length;
 
     // Streak: consecutive days with entries starting from weekStart

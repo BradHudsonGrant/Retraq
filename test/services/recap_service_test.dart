@@ -28,7 +28,10 @@ void main() {
   group('RecapService.getWeeklySummary', () {
     test('returns empty summary when no entries exist', () async {
       final monday = DateTime(2026, 3, 30); // Monday
-      final summary = await recapService.getWeeklySummary(monday, DateTime.monday);
+      final summary = await recapService.getWeeklySummary(
+        monday,
+        DateTime.monday,
+      );
 
       expect(summary.totalEntries, 0);
       expect(summary.activeDays, 0);
@@ -39,13 +42,18 @@ void main() {
 
     test('returns correct summary for one entry', () async {
       final monday = DateTime(2026, 3, 30);
-      await db.entries.saveEntry(JournalEntry(
-        date: monday,
-        entry: 'Test entry',
-        createdAt: DateTime.now(),
-      ));
+      await db.entries.saveEntry(
+        JournalEntry(
+          date: monday,
+          entry: 'Test entry',
+          createdAt: DateTime.now(),
+        ),
+      );
 
-      final summary = await recapService.getWeeklySummary(monday, DateTime.monday);
+      final summary = await recapService.getWeeklySummary(
+        monday,
+        DateTime.monday,
+      );
 
       expect(summary.totalEntries, 1);
       expect(summary.activeDays, 1);
@@ -58,25 +66,34 @@ void main() {
       final tuesday = DateTime(2026, 3, 31);
 
       // One entry Monday, two entries Tuesday
-      await db.entries.saveEntry(JournalEntry(
-        date: monday,
-        entry: 'Monday entry',
-        createdAt: DateTime.now(),
-      ));
-      await db.entries.saveEntry(JournalEntry(
-        date: tuesday,
-        entry: 'Tuesday AM',
-        label: 'AM',
-        createdAt: DateTime.now(),
-      ));
-      await db.entries.saveEntry(JournalEntry(
-        date: tuesday,
-        entry: 'Tuesday PM',
-        label: 'PM',
-        createdAt: DateTime.now(),
-      ));
+      await db.entries.saveEntry(
+        JournalEntry(
+          date: monday,
+          entry: 'Monday entry',
+          createdAt: DateTime.now(),
+        ),
+      );
+      await db.entries.saveEntry(
+        JournalEntry(
+          date: tuesday,
+          entry: 'Tuesday AM',
+          label: 'AM',
+          createdAt: DateTime.now(),
+        ),
+      );
+      await db.entries.saveEntry(
+        JournalEntry(
+          date: tuesday,
+          entry: 'Tuesday PM',
+          label: 'PM',
+          createdAt: DateTime.now(),
+        ),
+      );
 
-      final summary = await recapService.getWeeklySummary(monday, DateTime.monday);
+      final summary = await recapService.getWeeklySummary(
+        monday,
+        DateTime.monday,
+      );
 
       expect(summary.totalEntries, 3);
       expect(summary.activeDays, 2);
@@ -85,41 +102,56 @@ void main() {
 
     test('detects preferred time as morning when all AM', () async {
       final monday = DateTime(2026, 3, 30);
-      await db.entries.saveEntry(JournalEntry(
-        date: monday,
-        entry: 'Morning entry',
-        label: 'AM',
-        createdAt: DateTime.now(),
-      ));
+      await db.entries.saveEntry(
+        JournalEntry(
+          date: monday,
+          entry: 'Morning entry',
+          label: 'AM',
+          createdAt: DateTime.now(),
+        ),
+      );
 
-      final summary = await recapService.getWeeklySummary(monday, DateTime.monday);
+      final summary = await recapService.getWeeklySummary(
+        monday,
+        DateTime.monday,
+      );
       expect(summary.preferredTime, 'morning');
     });
 
     test('detects preferred time as evening when all PM', () async {
       final monday = DateTime(2026, 3, 30);
-      await db.entries.saveEntry(JournalEntry(
-        date: monday,
-        entry: 'Evening entry',
-        label: 'PM',
-        createdAt: DateTime.now(),
-      ));
+      await db.entries.saveEntry(
+        JournalEntry(
+          date: monday,
+          entry: 'Evening entry',
+          label: 'PM',
+          createdAt: DateTime.now(),
+        ),
+      );
 
-      final summary = await recapService.getWeeklySummary(monday, DateTime.monday);
+      final summary = await recapService.getWeeklySummary(
+        monday,
+        DateTime.monday,
+      );
       expect(summary.preferredTime, 'evening');
     });
 
     test('detects every-day journaling', () async {
       final monday = DateTime(2026, 3, 30);
       for (int i = 0; i < 7; i++) {
-        await db.entries.saveEntry(JournalEntry(
-          date: monday.add(Duration(days: i)),
-          entry: 'Day $i',
-          createdAt: DateTime.now(),
-        ));
+        await db.entries.saveEntry(
+          JournalEntry(
+            date: monday.add(Duration(days: i)),
+            entry: 'Day $i',
+            createdAt: DateTime.now(),
+          ),
+        );
       }
 
-      final summary = await recapService.getWeeklySummary(monday, DateTime.monday);
+      final summary = await recapService.getWeeklySummary(
+        monday,
+        DateTime.monday,
+      );
 
       expect(summary.totalEntries, 7);
       expect(summary.activeDays, 7);
@@ -129,14 +161,19 @@ void main() {
     test('detects streak of 3+ days', () async {
       final monday = DateTime(2026, 3, 30);
       for (int i = 0; i < 3; i++) {
-        await db.entries.saveEntry(JournalEntry(
-          date: monday.add(Duration(days: i)),
-          entry: 'Day $i',
-          createdAt: DateTime.now(),
-        ));
+        await db.entries.saveEntry(
+          JournalEntry(
+            date: monday.add(Duration(days: i)),
+            entry: 'Day $i',
+            createdAt: DateTime.now(),
+          ),
+        );
       }
 
-      final summary = await recapService.getWeeklySummary(monday, DateTime.monday);
+      final summary = await recapService.getWeeklySummary(
+        monday,
+        DateTime.monday,
+      );
       expect(summary.streak, 3);
       expect(summary.observation, contains('3-day streak'));
     });

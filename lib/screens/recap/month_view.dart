@@ -54,9 +54,7 @@ class RecapMonthView extends StatelessWidget {
       height: MediaQuery.sizeOf(context).height * 0.7,
       child: AdaptiveTwoPane(
         leftFraction: 0.5,
-        left: SingleChildScrollView(
-          child: _buildCalendarGrid(),
-        ),
+        left: SingleChildScrollView(child: _buildCalendarGrid()),
         right: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
           child: _buildEntryList(cs, tt),
@@ -65,11 +63,7 @@ class RecapMonthView extends StatelessWidget {
     );
   }
 
-  Widget _buildPhoneLayout(
-    BuildContext context,
-    ColorScheme cs,
-    TextTheme tt,
-  ) {
+  Widget _buildPhoneLayout(BuildContext context, ColorScheme cs, TextTheme tt) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -86,11 +80,7 @@ class RecapMonthView extends StatelessWidget {
       if (selectedEntries.isNotEmpty) {
         return EntryDetailView(
           entries: selectedEntries,
-          date: DateTime(
-            selectedMonth.year,
-            selectedMonth.month,
-            selectedDay!,
-          ),
+          date: DateTime(selectedMonth.year, selectedMonth.month, selectedDay!),
         );
       }
       return Padding(
@@ -122,10 +112,7 @@ class RecapMonthView extends StatelessWidget {
       );
     }
 
-    return _MonthEntryList(
-      entries: monthEntries,
-      selectedMonth: selectedMonth,
-    );
+    return _MonthEntryList(entries: monthEntries, selectedMonth: selectedMonth);
   }
 
   CalendarGrid _buildCalendarGrid() {
@@ -144,10 +131,7 @@ class RecapMonthView extends StatelessWidget {
 
 /// Groups month entries by day and renders them with date dividers.
 class _MonthEntryList extends StatelessWidget {
-  const _MonthEntryList({
-    required this.entries,
-    required this.selectedMonth,
-  });
+  const _MonthEntryList({required this.entries, required this.selectedMonth});
 
   final List<JournalEntry> entries;
   final DateTime selectedMonth;

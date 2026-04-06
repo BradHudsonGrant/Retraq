@@ -25,7 +25,8 @@ String _encodeExportPayload(Map<String, dynamic> data) {
     'entries': entryMaps,
     'settings': data['settings'],
     'user': data['user'],
-    if (data['consentRecords'] != null) 'consentRecords': data['consentRecords'],
+    if (data['consentRecords'] != null)
+      'consentRecords': data['consentRecords'],
   };
   return const JsonEncoder.withIndent('  ').convert(payload);
 }
@@ -74,8 +75,7 @@ List<Map<String, dynamic>> _decodeEntriesFromJson(String content) {
     throw const FormatException('Missing "entries" key in JSON');
   }
   if (entriesJson.length > 500000) {
-    throw const FormatException(
-        'Too many entries (max 500,000)');
+    throw const FormatException('Too many entries (max 500,000)');
   }
   // Validate that every element is a Map.
   for (var i = 0; i < entriesJson.length; i++) {
@@ -104,29 +104,37 @@ class ExportService {
   final _readableFmt = DateFormat('EEEE, MMMM d, yyyy');
 
   /// Fetch entries for the given range, or current week by default.
-  Future<List<JournalEntry>> _getEntries({DateTime? start, DateTime? end}) async {
+  Future<List<JournalEntry>> _getEntries({
+    DateTime? start,
+    DateTime? end,
+  }) async {
     if (start != null && end != null) {
       return _entries.getEntriesForDateRange(start, end);
     }
     // Default: current week based on user's weekStartDay setting.
     final settings = await _settingsRepo.getSettings();
-    final weekStart = weekStartDate(
-        weekStartDay: settings.weekStartDay);
+    final weekStart = weekStartDate(weekStartDay: settings.weekStartDay);
     final today = DateTime.now();
     return _entries.getEntriesForDateRange(
-        weekStart, DateTime(today.year, today.month, today.day));
+      weekStart,
+      DateTime(today.year, today.month, today.day),
+    );
   }
 
   /// Convert JournalEntry list to serialisable maps (main isolate, cheap).
   List<Map<String, dynamic>> _entriesToMaps(List<JournalEntry> entries) {
-    return entries.map((e) => <String, dynamic>{
-      'date': _dateFmt.format(e.date),
-      'entry': e.entry,
-      'label': e.label,
-      'title': e.title,
-      'mood': e.mood,
-      'createdAt': e.createdAt.toIso8601String(),
-    }).toList();
+    return entries
+        .map(
+          (e) => <String, dynamic>{
+            'date': _dateFmt.format(e.date),
+            'entry': e.entry,
+            'label': e.label,
+            'title': e.title,
+            'mood': e.mood,
+            'createdAt': e.createdAt.toIso8601String(),
+          },
+        )
+        .toList();
   }
 
   /// Serialise [UserSettings] to a JSON-safe map (excluding sensitive pinHash).
@@ -149,23 +157,29 @@ class ExportService {
   };
 
   /// Serialise [User] to a JSON-safe map, or null.
-  Map<String, dynamic>? _userToMap(User? u) => u == null
-      ? null
-      : {
-          'displayName': u.displayName,
-          'email': u.email,
-          'subscriptionTier': u.subscriptionTier,
-          'createdAt': u.createdAt.toIso8601String(),
-        };
+  Map<String, dynamic>? _userToMap(User? u) =>
+      u == null
+          ? null
+          : {
+            'displayName': u.displayName,
+            'email': u.email,
+            'subscriptionTier': u.subscriptionTier,
+            'createdAt': u.createdAt.toIso8601String(),
+          };
 
   /// Export entries as a JSON file and open the share sheet.
   /// Defaults to current week. Pass start/end for custom range.
   /// Pass exportAll: true to export everything.
-  Future<void> exportAsJson({DateTime? start, DateTime? end, bool exportAll = false}) async {
+  Future<void> exportAsJson({
+    DateTime? start,
+    DateTime? end,
+    bool exportAll = false,
+  }) async {
     try {
-      final entries = exportAll
-          ? await _entries.getAllEntries()
-          : await _getEntries(start: start, end: end);
+      final entries =
+          exportAll
+              ? await _entries.getAllEntries()
+              : await _getEntries(start: start, end: end);
       final maps = _entriesToMaps(entries);
 
       // Fetch settings, user, and consent records on the main isolate.
@@ -177,14 +191,17 @@ class ExportService {
         'entries': maps,
         'settings': _settingsToMap(settings),
         'user': _userToMap(user),
-        'consentRecords': consentRecords
-            .map((r) => {
-                  'consentType': r.consentType,
-                  'documentVersion': r.documentVersion,
-                  'acceptedAt': r.acceptedAt.toIso8601String(),
-                  'appVersion': r.appVersion,
-                })
-            .toList(),
+        'consentRecords':
+            consentRecords
+                .map(
+                  (r) => {
+                    'consentType': r.consentType,
+                    'documentVersion': r.documentVersion,
+                    'acceptedAt': r.acceptedAt.toIso8601String(),
+                    'appVersion': r.appVersion,
+                  },
+                )
+                .toList(),
       };
 
       // Heavy JSON encoding runs off the UI thread.
@@ -200,11 +217,16 @@ class ExportService {
   /// Export entries as readable plain text and open the share sheet.
   /// Defaults to current week. Pass start/end for custom range.
   /// Pass exportAll: true to export everything.
-  Future<void> exportAsText({DateTime? start, DateTime? end, bool exportAll = false}) async {
+  Future<void> exportAsText({
+    DateTime? start,
+    DateTime? end,
+    bool exportAll = false,
+  }) async {
     try {
-      final entries = exportAll
-          ? await _entries.getAllEntries()
-          : await _getEntries(start: start, end: end);
+      final entries =
+          exportAll
+              ? await _entries.getAllEntries()
+              : await _getEntries(start: start, end: end);
       final maps = _entriesToMaps(entries);
 
       // Heavy text formatting runs off the UI thread.
@@ -230,7 +252,10 @@ class ExportService {
   }
 
   /// Share all entries for a given day, concatenated.
-  Future<void> shareDayEntries(List<JournalEntry> entries, DateTime date) async {
+  Future<void> shareDayEntries(
+    List<JournalEntry> entries,
+    DateTime date,
+  ) async {
     if (entries.isEmpty) return;
     try {
       final dateStr = _readableFmt.format(date);
@@ -267,7 +292,9 @@ class ExportService {
     try {
       entryMaps = await compute(_decodeEntriesFromJson, content);
     } catch (e, stack) {
-      debugPrint('ExportService.importFromJson: invalid JSON format: $e\n$stack');
+      debugPrint(
+        'ExportService.importFromJson: invalid JSON format: $e\n$stack',
+      );
       return {'imported': 0, 'skipped': 0, 'errors': 1};
     }
 
@@ -297,7 +324,9 @@ class ExportService {
         }
         final tomorrow = DateTime.now().add(const Duration(days: 1));
         if (date.year < 2000 ||
-            date.isAfter(DateTime(tomorrow.year, tomorrow.month, tomorrow.day))) {
+            date.isAfter(
+              DateTime(tomorrow.year, tomorrow.month, tomorrow.day),
+            )) {
           errors++;
           continue;
         }
@@ -377,7 +406,8 @@ class ExportService {
         existingByDate.putIfAbsent(dateStr, () => []);
         final existing = existingByDate[dateStr]!;
         final isDuplicate = existing.any(
-            (e) => e.createdAt.toIso8601String() == createdAt.toIso8601String());
+          (e) => e.createdAt.toIso8601String() == createdAt.toIso8601String(),
+        );
         if (isDuplicate) {
           skipped++;
           continue;
@@ -395,7 +425,9 @@ class ExportService {
         // Add to cache so subsequent entries for same date detect duplicates.
         existing.add(entry);
       } catch (e, stack) {
-        debugPrint('ExportService.importFromJson: failed to parse entry: $e\n$stack');
+        debugPrint(
+          'ExportService.importFromJson: failed to parse entry: $e\n$stack',
+        );
         errors++;
       }
     }
@@ -406,7 +438,9 @@ class ExportService {
         await _entries.batchSaveEntries(entriesToInsert);
         imported = entriesToInsert.length;
       } catch (e, stack) {
-        debugPrint('ExportService.importFromJson: batch insert failed: $e\n$stack');
+        debugPrint(
+          'ExportService.importFromJson: batch insert failed: $e\n$stack',
+        );
         errors += entriesToInsert.length;
       }
     }
@@ -414,7 +448,11 @@ class ExportService {
     return {'imported': imported, 'skipped': skipped, 'errors': errors};
   }
 
-  Future<void> _shareFile(String content, String filename, String mimeType) async {
+  Future<void> _shareFile(
+    String content,
+    String filename,
+    String mimeType,
+  ) async {
     final dir = await getTemporaryDirectory();
     final file = File('${dir.path}/$filename');
     await file.writeAsString(content);

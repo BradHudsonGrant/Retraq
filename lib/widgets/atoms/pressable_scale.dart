@@ -34,33 +34,42 @@ class _PressableScaleState extends State<PressableScale> {
 
     return FocusableActionDetector(
       enabled: widget.onTap != null,
-      mouseCursor: widget.onTap != null ? SystemMouseCursors.click : MouseCursor.defer,
+      mouseCursor:
+          widget.onTap != null ? SystemMouseCursors.click : MouseCursor.defer,
       onFocusChange: _onFocusChange,
       child: GestureDetector(
-      onTapDown: widget.onTap != null ? (_) => setState(() => _isPressed = true) : null,
-      onTapUp: widget.onTap != null
-          ? (_) {
-              setState(() => _isPressed = false);
-              widget.onTap!();
-            }
-          : null,
-      onTapCancel: widget.onTap != null ? () => setState(() => _isPressed = false) : null,
-      child: AnimatedScale(
-        scale: (_isPressed && !reduceMotion) ? widget.pressScale : 1.0,
-        duration: reduceMotion
-            ? Duration.zero
-            : Duration(milliseconds: _isPressed ? 80 : 150),
-        curve: Curves.easeOut,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            border: _isFocused
-                ? Border.all(color: cs.primary, width: 2)
+        onTapDown:
+            widget.onTap != null
+                ? (_) => setState(() => _isPressed = true)
                 : null,
+        onTapUp:
+            widget.onTap != null
+                ? (_) {
+                  setState(() => _isPressed = false);
+                  widget.onTap!();
+                }
+                : null,
+        onTapCancel:
+            widget.onTap != null
+                ? () => setState(() => _isPressed = false)
+                : null,
+        child: AnimatedScale(
+          scale: (_isPressed && !reduceMotion) ? widget.pressScale : 1.0,
+          duration:
+              reduceMotion
+                  ? Duration.zero
+                  : Duration(milliseconds: _isPressed ? 80 : 150),
+          curve: Curves.easeOut,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              border:
+                  _isFocused ? Border.all(color: cs.primary, width: 2) : null,
+            ),
+            child: widget.child,
           ),
-          child: widget.child,
         ),
       ),
-    ));
+    );
   }
 }

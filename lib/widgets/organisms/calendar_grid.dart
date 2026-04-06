@@ -65,9 +65,7 @@ class CalendarGrid extends StatelessWidget {
             children: [
               Text(
                 'Month at a glance',
-                style: tt.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+                style: tt.titleMedium?.copyWith(fontWeight: FontWeight.w600),
               ),
               Row(
                 children: [
@@ -98,19 +96,22 @@ class CalendarGrid extends StatelessWidget {
 
           // ── Day-of-week labels ──
           Row(
-            children: _dayLabels
-                .map((d) => Expanded(
-                      child: Center(
-                        child: Text(
-                          d,
-                          style: tt.labelSmall?.copyWith(
-                            color: cs.onSurfaceVariant,
-                            fontWeight: FontWeight.w600,
+            children:
+                _dayLabels
+                    .map(
+                      (d) => Expanded(
+                        child: Center(
+                          child: Text(
+                            d,
+                            style: tt.labelSmall?.copyWith(
+                              color: cs.onSurfaceVariant,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                       ),
-                    ))
-                .toList(),
+                    )
+                    .toList(),
           ),
 
           const SizedBox(height: AppSpacing.sm),
@@ -142,15 +143,17 @@ class CalendarGrid extends StatelessWidget {
     final isCurrentMonth = month.year == now.year && month.month == now.month;
     final brightness = Theme.of(context).brightness;
     for (var day = 1; day <= daysInMonth; day++) {
-      cells.add(_DayCell(
-        day: day,
-        isSelected: day == selectedDay,
-        hasEntry: entryDays.contains(day),
-        moodValue: dayMoods[day],
-        brightness: brightness,
-        isToday: isCurrentMonth && day == now.day,
-        onTap: () => onDaySelected?.call(day),
-      ));
+      cells.add(
+        _DayCell(
+          day: day,
+          isSelected: day == selectedDay,
+          hasEntry: entryDays.contains(day),
+          moodValue: dayMoods[day],
+          brightness: brightness,
+          isToday: isCurrentMonth && day == now.day,
+          onTap: () => onDaySelected?.call(day),
+        ),
+      );
     }
 
     // Next month padding
@@ -162,15 +165,15 @@ class CalendarGrid extends StatelessWidget {
     // Chunk into rows of 7
     final weeks = <Widget>[];
     for (var i = 0; i < cells.length; i += 7) {
-      weeks.add(Padding(
-        padding: const EdgeInsets.symmetric(vertical: 2),
-        child: Row(
-          children: cells
-              .sublist(i, i + 7)
-              .map((c) => Expanded(child: c))
-              .toList(),
+      weeks.add(
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 2),
+          child: Row(
+            children:
+                cells.sublist(i, i + 7).map((c) => Expanded(child: c)).toList(),
+          ),
         ),
-      ));
+      );
     }
 
     return weeks;
@@ -210,67 +213,69 @@ class _DayCell extends StatelessWidget {
 
     return Semantics(
       button: !isDimmed,
-      label: 'Day $day${isToday ? ', today' : ''}${hasEntry ? ', has entries' : ''}${isSelected ? ', selected' : ''}',
+      label:
+          'Day $day${isToday ? ', today' : ''}${hasEntry ? ', has entries' : ''}${isSelected ? ', selected' : ''}',
       child: InkWell(
-      onTap: isDimmed ? null : onTap,
-      borderRadius: BorderRadius.circular(26),
-      child: SizedBox(
-        height: 52,
-        child: Center(
-          child: Container(
-            width: 44,
-            height: 44,
-            decoration: isSelected
-                ? BoxDecoration(
-                    color: cs.primary,
-                    shape: BoxShape.circle,
-                  )
-                : isToday
-                    ? BoxDecoration(
+        onTap: isDimmed ? null : onTap,
+        borderRadius: BorderRadius.circular(26),
+        child: SizedBox(
+          height: 52,
+          child: Center(
+            child: Container(
+              width: 44,
+              height: 44,
+              decoration:
+                  isSelected
+                      ? BoxDecoration(color: cs.primary, shape: BoxShape.circle)
+                      : isToday
+                      ? BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(
                           color: cs.primary.withValues(alpha: 0.5),
                           width: 1.5,
                         ),
                       )
-                    : null,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  '$day',
-                  style: tt.bodySmall?.copyWith(
-                    color: isDimmed
-                        ? cs.onSurfaceVariant.withValues(alpha: 0.65)
-                        : isSelected
-                            ? cs.onPrimary
-                            : cs.onSurface,
-                    fontWeight:
-                        isSelected ? FontWeight.w700 : FontWeight.w400,
-                  ),
-                ),
-                if (hasEntry && !isDimmed)
-                  Container(
-                    width: 4,
-                    height: 4,
-                    margin: const EdgeInsets.only(top: 1),
-                    decoration: BoxDecoration(
-                      color: isSelected
-                          ? cs.onPrimary
-                          : moodValue != null &&
-                                  moodValue! >= 1 &&
-                                  moodValue! <= 5
-                              ? AppColors.moodColors(brightness)[moodValue! - 1]
-                              : cs.primary,
-                      shape: BoxShape.circle,
+                      : null,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    '$day',
+                    style: tt.bodySmall?.copyWith(
+                      color:
+                          isDimmed
+                              ? cs.onSurfaceVariant.withValues(alpha: 0.65)
+                              : isSelected
+                              ? cs.onPrimary
+                              : cs.onSurface,
+                      fontWeight:
+                          isSelected ? FontWeight.w700 : FontWeight.w400,
                     ),
                   ),
-              ],
+                  if (hasEntry && !isDimmed)
+                    Container(
+                      width: 4,
+                      height: 4,
+                      margin: const EdgeInsets.only(top: 1),
+                      decoration: BoxDecoration(
+                        color:
+                            isSelected
+                                ? cs.onPrimary
+                                : moodValue != null &&
+                                    moodValue! >= 1 &&
+                                    moodValue! <= 5
+                                ? AppColors.moodColors(brightness)[moodValue! -
+                                    1]
+                                : cs.primary,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                ],
+              ),
             ),
           ),
         ),
       ),
-    ),
     );
   }
 }

@@ -36,16 +36,25 @@ class NudgeCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ExcludeSemantics(child: Icon(Icons.notifications_active, size: 36, color: cs.onPrimary)),
+          ExcludeSemantics(
+            child: Icon(
+              Icons.notifications_active,
+              size: 36,
+              color: cs.onPrimary,
+            ),
+          ),
           const SizedBox(height: AppSpacing.md),
           BionicText(
-            text: 'Get a quick nudge to drop a breadcrumb before you forget your day.',
+            text:
+                'Get a quick nudge to drop a breadcrumb before you forget your day.',
             style: tt.titleMedium?.copyWith(
               color: cs.onPrimary,
               fontWeight: FontWeight.w500,
               height: 1.3,
             ),
-            enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
+            enabled:
+                SettingsProvider.maybeOf(context)?.bionicReadingEnabled ??
+                false,
           ),
           const SizedBox(height: AppSpacing.md),
           Row(
@@ -53,9 +62,7 @@ class NudgeCard extends StatelessWidget {
             children: [
               Text(
                 'Daily at ${_formatTime(nudgeHour, nudgeMinute)}',
-                style: tt.bodySmall?.copyWith(
-                  color: cs.onPrimary,
-                ),
+                style: tt.bodySmall?.copyWith(color: cs.onPrimary),
               ),
               FilledButton(
                 onPressed: onChangeTime,

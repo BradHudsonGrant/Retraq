@@ -9,14 +9,16 @@ void main() {
   final testDate = DateTime(2026, 3, 15);
 
   group('EntryDetailView', () {
-    testWidgets('renders formatted date label once for multiple entries', (tester) async {
+    testWidgets('renders formatted date label once for multiple entries', (
+      tester,
+    ) async {
       final entries = [
         JournalEntry(date: testDate, entry: 'Entry one', createdAt: testDate),
         JournalEntry(date: testDate, entry: 'Entry two', createdAt: testDate),
       ];
-      await tester.pumpWidget(wrapScrollable(
-        EntryDetailView(entries: entries, date: testDate),
-      ));
+      await tester.pumpWidget(
+        wrapScrollable(EntryDetailView(entries: entries, date: testDate)),
+      );
 
       // Date divider shown once
       expect(find.textContaining('MARCH 15'), findsOneWidget);
@@ -31,9 +33,9 @@ void main() {
         entry: 'Had a productive day',
         createdAt: testDate,
       );
-      await tester.pumpWidget(wrapScrollable(
-        EntryDetailView(entries: [entry], date: testDate),
-      ));
+      await tester.pumpWidget(
+        wrapScrollable(EntryDetailView(entries: [entry], date: testDate)),
+      );
 
       expect(find.text('Had a productive day'), findsOneWidget);
     });
@@ -45,9 +47,9 @@ void main() {
         label: 'AM',
         createdAt: testDate,
       );
-      await tester.pumpWidget(wrapScrollable(
-        EntryDetailView(entries: [entry], date: testDate),
-      ));
+      await tester.pumpWidget(
+        wrapScrollable(EntryDetailView(entries: [entry], date: testDate)),
+      );
 
       expect(find.text('AM'), findsOneWidget);
       expect(find.text('Good morning workout'), findsOneWidget);
@@ -60,9 +62,9 @@ void main() {
         label: 'PM',
         createdAt: testDate,
       );
-      await tester.pumpWidget(wrapScrollable(
-        EntryDetailView(entries: [entry], date: testDate),
-      ));
+      await tester.pumpWidget(
+        wrapScrollable(EntryDetailView(entries: [entry], date: testDate)),
+      );
 
       expect(find.text('PM'), findsOneWidget);
       expect(find.text('Relaxed in the evening'), findsOneWidget);
@@ -74,9 +76,9 @@ void main() {
         entry: 'Shareable content',
         createdAt: testDate,
       );
-      await tester.pumpWidget(wrapScrollable(
-        EntryDetailView(entries: [entry], date: testDate),
-      ));
+      await tester.pumpWidget(
+        wrapScrollable(EntryDetailView(entries: [entry], date: testDate)),
+      );
 
       expect(find.byIcon(Icons.share_outlined), findsOneWidget);
     });
@@ -96,9 +98,9 @@ void main() {
           createdAt: DateTime(2026, 3, 15, 20, 0),
         ),
       ];
-      await tester.pumpWidget(wrapScrollable(
-        EntryDetailView(entries: entries, date: testDate),
-      ));
+      await tester.pumpWidget(
+        wrapScrollable(EntryDetailView(entries: entries, date: testDate)),
+      );
 
       expect(find.text('AM'), findsOneWidget);
       expect(find.text('Morning text'), findsOneWidget);
@@ -112,9 +114,9 @@ void main() {
         entry: 'Test',
         createdAt: DateTime(2026, 3, 15, 14, 30),
       );
-      await tester.pumpWidget(wrapScrollable(
-        EntryDetailView(entries: [entry], date: testDate),
-      ));
+      await tester.pumpWidget(
+        wrapScrollable(EntryDetailView(entries: [entry], date: testDate)),
+      );
 
       expect(find.text('2:30 PM'), findsOneWidget);
     });

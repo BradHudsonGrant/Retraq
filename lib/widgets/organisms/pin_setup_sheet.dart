@@ -27,15 +27,37 @@ class PinSetupSheetState extends State<PinSetupSheet> {
   bool _isDenylisted = false;
 
   static const _denylist4 = {
-    '0000', '1111', '2222', '3333', '4444',
-    '5555', '6666', '7777', '8888', '9999',
-    '1234', '4321', '1230', '0123', '2580',
+    '0000',
+    '1111',
+    '2222',
+    '3333',
+    '4444',
+    '5555',
+    '6666',
+    '7777',
+    '8888',
+    '9999',
+    '1234',
+    '4321',
+    '1230',
+    '0123',
+    '2580',
   };
 
   static const _denylist6 = {
-    '000000', '111111', '222222', '333333', '444444',
-    '555555', '666666', '777777', '888888', '999999',
-    '123456', '654321', '012345',
+    '000000',
+    '111111',
+    '222222',
+    '333333',
+    '444444',
+    '555555',
+    '666666',
+    '777777',
+    '888888',
+    '999999',
+    '123456',
+    '654321',
+    '012345',
   };
 
   Set<String> get _denylist => _pinLength == 6 ? _denylist6 : _denylist4;
@@ -131,9 +153,7 @@ class PinSetupSheetState extends State<PinSetupSheet> {
 
             Text(
               _title,
-              style: tt.headlineSmall?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+              style: tt.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: AppSpacing.sm),
             Semantics(
@@ -141,7 +161,10 @@ class PinSetupSheetState extends State<PinSetupSheet> {
               child: Text(
                 _subtitle,
                 style: tt.bodyMedium?.copyWith(
-                  color: (_isError || _isDenylisted) ? cs.error : cs.onSurfaceVariant,
+                  color:
+                      (_isError || _isDenylisted)
+                          ? cs.error
+                          : cs.onSurfaceVariant,
                 ),
               ),
             ),
@@ -183,10 +206,7 @@ class PinSetupSheetState extends State<PinSetupSheet> {
             const SizedBox(height: AppSpacing.xl),
 
             // Number pad
-            NumberPad(
-              onDigit: _onDigit,
-              onDelete: _onDelete,
-            ),
+            NumberPad(onDigit: _onDigit, onDelete: _onDelete),
 
             const SizedBox(height: AppSpacing.md),
 

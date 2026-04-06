@@ -16,8 +16,14 @@ MigrationStrategy buildMigrationStrategy(AppDatabase db) {
         );
       }
       if (from < 3) {
-        await migrator.addColumn(db.userSettingsTable, db.userSettingsTable.enterToSave);
-        await migrator.addColumn(db.userSettingsTable, db.userSettingsTable.bulletPointsOnEnter);
+        await migrator.addColumn(
+          db.userSettingsTable,
+          db.userSettingsTable.enterToSave,
+        );
+        await migrator.addColumn(
+          db.userSettingsTable,
+          db.userSettingsTable.bulletPointsOnEnter,
+        );
       }
       if (from < 4) {
         // v3→v4: Schema overhaul

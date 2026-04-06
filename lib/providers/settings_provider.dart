@@ -13,13 +13,16 @@ class SettingsProvider extends InheritedWidget {
   final UserSettings settings;
 
   static UserSettings of(BuildContext context) {
-    final provider = context.dependOnInheritedWidgetOfExactType<SettingsProvider>();
+    final provider =
+        context.dependOnInheritedWidgetOfExactType<SettingsProvider>();
     assert(provider != null, 'No SettingsProvider found in context');
     return provider!.settings;
   }
 
   static UserSettings? maybeOf(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<SettingsProvider>()?.settings;
+    return context
+        .dependOnInheritedWidgetOfExactType<SettingsProvider>()
+        ?.settings;
   }
 
   @override

@@ -10,19 +10,19 @@ class UserSettings {
   final bool isAllDayMode;
   final bool askAboutToday;
   final bool showEntryTitle;
-  final int weekStartDay;       // 1 = Monday, 7 = Sunday
-  final int nudgeHour;          // 24h format, default 8 PM
-  final int nudgeMinute;        // 0-59, default 0
+  final int weekStartDay; // 1 = Monday, 7 = Sunday
+  final int nudgeHour; // 24h format, default 8 PM
+  final int nudgeMinute; // 0-59, default 0
   final bool appLockEnabled;
-  final String? pinHash;        // Stored as "salt:hash" or "v2:salt:hash" (PBKDF2)
+  final String? pinHash; // Stored as "salt:hash" or "v2:salt:hash" (PBKDF2)
   final bool biometricEnabled;
   final bool onboardingComplete;
   final bool enterToSave;
   final bool bulletPointsOnEnter;
-  final int amPmCutoffHour;     // 24h format, default 14 (2 PM)
-  final bool moodEnabled;       // Show mood selector on home screen
-  final bool moodRequired;      // Require mood before saving entry
-  final bool moodOnlyEntries;   // Allow mood-only entries (no text)
+  final int amPmCutoffHour; // 24h format, default 14 (2 PM)
+  final bool moodEnabled; // Show mood selector on home screen
+  final bool moodRequired; // Require mood before saving entry
+  final bool moodOnlyEntries; // Allow mood-only entries (no text)
   final bool bionicReadingEnabled; // Bold start of each word for faster reading
 
   UserSettings({
@@ -115,10 +115,23 @@ class UserSettings {
 
   @override
   int get hashCode => Object.hash(
-        themeMode, isAllDayMode, askAboutToday, showEntryTitle,
-        weekStartDay, nudgeHour, nudgeMinute, appLockEnabled,
-        pinHash, biometricEnabled, onboardingComplete, enterToSave,
-        bulletPointsOnEnter, amPmCutoffHour, moodEnabled,
-        moodRequired, moodOnlyEntries, bionicReadingEnabled,
-      );
+    themeMode,
+    isAllDayMode,
+    askAboutToday,
+    showEntryTitle,
+    weekStartDay,
+    nudgeHour,
+    nudgeMinute,
+    appLockEnabled,
+    pinHash,
+    biometricEnabled,
+    onboardingComplete,
+    enterToSave,
+    bulletPointsOnEnter,
+    amPmCutoffHour,
+    moodEnabled,
+    moodRequired,
+    moodOnlyEntries,
+    bionicReadingEnabled,
+  );
 }

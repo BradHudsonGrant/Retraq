@@ -46,7 +46,9 @@ class _SecuritySectionState extends State<SecuritySection> {
       enableDrag: false,
       backgroundColor: Theme.of(context).colorScheme.surface,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSpacing.radiusXxl)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppSpacing.radiusXxl),
+        ),
       ),
       builder: (_) => const PinSetupSheet(),
     );
@@ -69,7 +71,9 @@ class _SecuritySectionState extends State<SecuritySection> {
       enableDrag: false,
       backgroundColor: Theme.of(context).colorScheme.surface,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSpacing.radiusXxl)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppSpacing.radiusXxl),
+        ),
       ),
       builder: (_) => PinVerifySheet(pinHash: widget.settings.pinHash!),
     );
@@ -107,15 +111,17 @@ class _SecuritySectionState extends State<SecuritySection> {
         BionicText(
           text: 'Keep your journal private.',
           style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant),
-          enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
+          enabled:
+              SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
         ),
         const SizedBox(height: AppSpacing.md),
 
         SettingsRow(
           title: 'App Lock',
-          subtitle: s.appLockEnabled
-              ? 'PIN required to open Retraq'
-              : 'No lock — anyone can open the app',
+          subtitle:
+              s.appLockEnabled
+                  ? 'PIN required to open Retraq'
+                  : 'No lock — anyone can open the app',
           trailing: Semantics(
             label: 'App lock',
             child: Switch(
@@ -154,55 +160,60 @@ class _SecuritySectionState extends State<SecuritySection> {
               label: 'Biometric unlock',
               child: Switch(
                 value: s.biometricEnabled,
-                onChanged: _checkingBiometric
-                    ? null
-                    : (v) async {
-                        if (v) {
-                          setState(() => _checkingBiometric = true);
-                          final messenger = ScaffoldMessenger.of(context);
-                          final canAuth = await _checkBiometrics();
-                          if (!mounted) return;
-                          setState(() => _checkingBiometric = false);
-                          if (!canAuth) {
-                            messenger.showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  'Biometrics not available on this device',
-                                  style: tt.bodyMedium?.copyWith(
-                                    color: cs.onErrorContainer,
+                onChanged:
+                    _checkingBiometric
+                        ? null
+                        : (v) async {
+                          if (v) {
+                            setState(() => _checkingBiometric = true);
+                            final messenger = ScaffoldMessenger.of(context);
+                            final canAuth = await _checkBiometrics();
+                            if (!mounted) return;
+                            setState(() => _checkingBiometric = false);
+                            if (!canAuth) {
+                              messenger.showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    'Biometrics not available on this device',
+                                    style: tt.bodyMedium?.copyWith(
+                                      color: cs.onErrorContainer,
+                                    ),
+                                  ),
+                                  backgroundColor: cs.errorContainer,
+                                  behavior: SnackBarBehavior.floating,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: AppSpacing.borderRadiusLg,
                                   ),
                                 ),
-                                backgroundColor: cs.errorContainer,
+                              );
+                              return;
+                            }
+                            // Require PIN verification before enabling biometrics.
+                            if (!mounted) return;
+                            final verified = await _verifyPinIfNeeded(context);
+                            if (!verified || !mounted) return;
+                          }
+                          widget.onSettingsChanged(
+                            s.copyWith(biometricEnabled: v),
+                          );
+                          if (v && mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'Biometric unlock enabled — you\u2019ll be prompted next time you open Retraq',
+                                  style: tt.bodyMedium?.copyWith(
+                                    color: cs.onPrimaryContainer,
+                                  ),
+                                ),
+                                backgroundColor: cs.primaryContainer,
                                 behavior: SnackBarBehavior.floating,
                                 shape: RoundedRectangleBorder(
-                                    borderRadius: AppSpacing.borderRadiusLg),
-                              ),
-                            );
-                            return;
-                          }
-                          // Require PIN verification before enabling biometrics.
-                          if (!mounted) return;
-                          final verified = await _verifyPinIfNeeded(context);
-                          if (!verified || !mounted) return;
-                        }
-                        widget.onSettingsChanged(s.copyWith(biometricEnabled: v));
-                        if (v && mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'Biometric unlock enabled — you\u2019ll be prompted next time you open Retraq',
-                                style: tt.bodyMedium?.copyWith(
-                                  color: cs.onPrimaryContainer,
+                                  borderRadius: AppSpacing.borderRadiusLg,
                                 ),
                               ),
-                              backgroundColor: cs.primaryContainer,
-                              behavior: SnackBarBehavior.floating,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: AppSpacing.borderRadiusLg),
-                            ),
-                          );
-                        }
-                      },
+                            );
+                          }
+                        },
                 activeColor: cs.primary,
               ),
             ),

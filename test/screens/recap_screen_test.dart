@@ -34,7 +34,9 @@ void main() {
       await flushDriftTimers(tester);
     });
 
-    testWidgets('defaults to week view with empty state (no entries)', (tester) async {
+    testWidgets('defaults to week view with empty state (no entries)', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrapWidget(const RecapScreen()));
       await tester.pump(const Duration(milliseconds: 200));
 
@@ -58,25 +60,27 @@ void main() {
       await flushDriftTimers(tester);
     });
 
-    testWidgets('shows "No entry for this day" when selecting empty day in month view',
-        (tester) async {
-      await tester.pumpWidget(wrapWidget(const RecapScreen()));
-      await tester.pump(const Duration(milliseconds: 200));
-
-      // Switch to month view
-      await tester.tap(find.text('Month'));
-      await tester.pump(const Duration(milliseconds: 300));
-
-      // Tap day 1
-      final dayOne = find.text('1');
-      if (dayOne.evaluate().isNotEmpty) {
-        await tester.tap(dayOne.first);
+    testWidgets(
+      'shows "No entry for this day" when selecting empty day in month view',
+      (tester) async {
+        await tester.pumpWidget(wrapWidget(const RecapScreen()));
         await tester.pump(const Duration(milliseconds: 200));
 
-        expect(find.text('No entry for this day'), findsOneWidget);
-      }
-      await flushDriftTimers(tester);
-    });
+        // Switch to month view
+        await tester.tap(find.text('Month'));
+        await tester.pump(const Duration(milliseconds: 300));
+
+        // Tap day 1
+        final dayOne = find.text('1');
+        if (dayOne.evaluate().isNotEmpty) {
+          await tester.tap(dayOne.first);
+          await tester.pump(const Duration(milliseconds: 200));
+
+          expect(find.text('No entry for this day'), findsOneWidget);
+        }
+        await flushDriftTimers(tester);
+      },
+    );
 
     testWidgets('shows search icon button', (tester) async {
       await tester.pumpWidget(wrapWidget(const RecapScreen()));

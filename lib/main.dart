@@ -137,7 +137,10 @@ class _RetraqAppState extends State<RetraqApp> with WidgetsBindingObserver {
     });
     _updateFlagSecure(settings.appLockEnabled);
     try {
-      await NotificationService.instance.scheduleDaily(settings.nudgeHour, minute: settings.nudgeMinute);
+      await NotificationService.instance.scheduleDaily(
+        settings.nudgeHour,
+        minute: settings.nudgeMinute,
+      );
     } catch (e) {
       debugPrint('Notification schedule failed (non-fatal): $e');
     }
@@ -146,7 +149,9 @@ class _RetraqAppState extends State<RetraqApp> with WidgetsBindingObserver {
   Future<void> _completeOnboarding() async {
     try {
       final settings = await _db.settings.getSettings();
-      await _db.settings.saveSettings(settings.copyWith(onboardingComplete: true));
+      await _db.settings.saveSettings(
+        settings.copyWith(onboardingComplete: true),
+      );
     } catch (e) {
       debugPrint('Onboarding completion failed: $e');
       // Still transition past onboarding — user shouldn't get stuck.
@@ -157,9 +162,12 @@ class _RetraqAppState extends State<RetraqApp> with WidgetsBindingObserver {
 
   static ThemeMode _intToThemeMode(int mode) {
     switch (mode) {
-      case 1: return ThemeMode.light;
-      case 2: return ThemeMode.dark;
-      default: return ThemeMode.system;
+      case 1:
+        return ThemeMode.light;
+      case 2:
+        return ThemeMode.dark;
+      default:
+        return ThemeMode.system;
     }
   }
 
@@ -194,10 +202,7 @@ class _RetraqAppState extends State<RetraqApp> with WidgetsBindingObserver {
       );
     }
     if (_isLocked) {
-      return LockScreen(
-        key: const ValueKey('lock'),
-        onUnlocked: _unlock,
-      );
+      return LockScreen(key: const ValueKey('lock'), onUnlocked: _unlock);
     }
     return AppShell(
       key: const ValueKey('app'),
@@ -223,7 +228,10 @@ class _RetraqAppState extends State<RetraqApp> with WidgetsBindingObserver {
           builder: (ctx) {
             final reduceMotion = MediaQuery.of(ctx).disableAnimations;
             return AnimatedSwitcher(
-              duration: reduceMotion ? Duration.zero : const Duration(milliseconds: 300),
+              duration:
+                  reduceMotion
+                      ? Duration.zero
+                      : const Duration(milliseconds: 300),
               switchInCurve: Curves.easeOut,
               switchOutCurve: Curves.easeIn,
               child: _buildCurrentScreen(),

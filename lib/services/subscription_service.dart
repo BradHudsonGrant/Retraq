@@ -59,8 +59,7 @@ class SubscriptionService {
 
   void _updatePremiumStatus(CustomerInfo info) {
     final wasPremium = _isPremium;
-    _isPremium =
-        info.entitlements.all[_entitlementId]?.isActive == true;
+    _isPremium = info.entitlements.all[_entitlementId]?.isActive == true;
     if (_isPremium != wasPremium) {
       _premiumController.add(_isPremium);
     }

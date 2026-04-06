@@ -15,11 +15,7 @@ class SplashScreen extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const RetraqLogo(
-              size: 72,
-              animate: true,
-              showText: true,
-            ),
+            const RetraqLogo(size: 72, animate: true, showText: true),
             const SizedBox(height: 32),
             SizedBox(
               width: 24,

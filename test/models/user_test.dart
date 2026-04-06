@@ -19,14 +19,8 @@ void main() {
       final user = User();
       final after = DateTime.now();
 
-      expect(
-        user.createdAt.isAfter(before) || user.createdAt == before,
-        true,
-      );
-      expect(
-        user.createdAt.isBefore(after) || user.createdAt == after,
-        true,
-      );
+      expect(user.createdAt.isAfter(before) || user.createdAt == before, true);
+      expect(user.createdAt.isBefore(after) || user.createdAt == after, true);
     });
 
     test('createdAt uses provided value when given', () {

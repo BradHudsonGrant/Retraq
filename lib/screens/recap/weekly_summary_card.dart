@@ -33,10 +33,10 @@ class WeeklySummaryCard extends StatelessWidget {
             const SizedBox(height: AppSpacing.sm),
             BionicText(
               text: summary.observation,
-              style: tt.bodyMedium?.copyWith(
-                color: cs.onPrimaryContainer,
-              ),
-              enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
+              style: tt.bodyMedium?.copyWith(color: cs.onPrimaryContainer),
+              enabled:
+                  SettingsProvider.maybeOf(context)?.bionicReadingEnabled ??
+                  false,
             ),
             if (summary.totalEntries > 0) ...[
               const SizedBox(height: AppSpacing.sm),

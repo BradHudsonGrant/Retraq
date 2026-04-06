@@ -32,62 +32,68 @@ class ThemeCard extends StatelessWidget {
         onTap: onTap,
         borderRadius: AppSpacing.borderRadiusLg,
         child: AnimatedContainer(
-        duration: reduceMotion ? Duration.zero : const Duration(milliseconds: 300),
-        padding: const EdgeInsets.all(AppSpacing.sm),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? cs.surfaceContainerLowest
-              : cs.surfaceContainerLow,
-          borderRadius: AppSpacing.borderRadiusLg,
-          border: isSelected
-              ? Border.all(color: cs.primary, width: 2)
-              : null,
-          boxShadow: isSelected
-              ? [
-                  BoxShadow(
-                    color: cs.onSurface.withValues(alpha: 0.06),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  )
-                ]
-              : null,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(
-              height: 72,
-              child: isDark == null
-                  ? _buildSystemPreview(cs)
-                  : _buildThemePreview(cs, effectiveDark),
-            ),
-            const SizedBox(height: AppSpacing.xs),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Flexible(
-                  child: Text(
-                    label,
-                    style: tt.titleSmall,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                if (isSelected)
-                  ExcludeSemantics(child: Icon(Icons.check_circle, color: cs.primary, size: 18))
-                else
-                  Container(
-                    width: 18,
-                    height: 18,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: cs.outlineVariant),
+          duration:
+              reduceMotion ? Duration.zero : const Duration(milliseconds: 300),
+          padding: const EdgeInsets.all(AppSpacing.sm),
+          decoration: BoxDecoration(
+            color:
+                isSelected ? cs.surfaceContainerLowest : cs.surfaceContainerLow,
+            borderRadius: AppSpacing.borderRadiusLg,
+            border: isSelected ? Border.all(color: cs.primary, width: 2) : null,
+            boxShadow:
+                isSelected
+                    ? [
+                      BoxShadow(
+                        color: cs.onSurface.withValues(alpha: 0.06),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                    ]
+                    : null,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                height: 72,
+                child:
+                    isDark == null
+                        ? _buildSystemPreview(cs)
+                        : _buildThemePreview(cs, effectiveDark),
+              ),
+              const SizedBox(height: AppSpacing.xs),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Flexible(
+                    child: Text(
+                      label,
+                      style: tt.titleSmall,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
-              ],
-            ),
-          ],
+                  if (isSelected)
+                    ExcludeSemantics(
+                      child: Icon(
+                        Icons.check_circle,
+                        color: cs.primary,
+                        size: 18,
+                      ),
+                    )
+                  else
+                    Container(
+                      width: 18,
+                      height: 18,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: cs.outlineVariant),
+                      ),
+                    ),
+                ],
+              ),
+            ],
+          ),
         ),
-      ),
       ),
     );
   }
@@ -138,7 +144,9 @@ class ThemeCard extends StatelessWidget {
                     height: 5,
                     width: 24,
                     decoration: BoxDecoration(
-                      color: AppColors.darkScheme.onSurface.withValues(alpha: 0.2),
+                      color: AppColors.darkScheme.onSurface.withValues(
+                        alpha: 0.2,
+                      ),
                       borderRadius: AppSpacing.borderRadiusFull,
                     ),
                   ),
@@ -163,7 +171,10 @@ class ThemeCard extends StatelessWidget {
   Widget _buildThemePreview(ColorScheme cs, bool dark) {
     return Container(
       decoration: BoxDecoration(
-        color: dark ? AppColors.darkScheme.surfaceContainerLowest : cs.surfaceContainerLow,
+        color:
+            dark
+                ? AppColors.darkScheme.surfaceContainerLowest
+                : cs.surfaceContainerLow,
         borderRadius: AppSpacing.borderRadiusMd,
       ),
       padding: const EdgeInsets.all(AppSpacing.sm),
@@ -175,7 +186,9 @@ class ThemeCard extends StatelessWidget {
             height: 5,
             width: 40,
             decoration: BoxDecoration(
-              color: (dark ? AppColors.darkScheme.onSurface : cs.onSurfaceVariant)
+              color: (dark
+                      ? AppColors.darkScheme.onSurface
+                      : cs.onSurfaceVariant)
                   .withValues(alpha: 0.2),
               borderRadius: AppSpacing.borderRadiusFull,
             ),
@@ -184,13 +197,16 @@ class ThemeCard extends StatelessWidget {
           Container(
             height: 20,
             decoration: BoxDecoration(
-              color: dark ? AppColors.darkScheme.surfaceContainer : AppColors.lightScheme.surfaceContainerLowest,
+              color:
+                  dark
+                      ? AppColors.darkScheme.surfaceContainer
+                      : AppColors.lightScheme.surfaceContainerLowest,
               borderRadius: AppSpacing.borderRadiusSm,
               boxShadow: [
                 BoxShadow(
                   color: cs.shadow.withValues(alpha: 0.05),
                   blurRadius: 4,
-                )
+                ),
               ],
             ),
           ),
@@ -199,7 +215,9 @@ class ThemeCard extends StatelessWidget {
             height: 5,
             width: 60,
             decoration: BoxDecoration(
-              color: (dark ? AppColors.darkScheme.onSurface : cs.onSurfaceVariant)
+              color: (dark
+                      ? AppColors.darkScheme.onSurface
+                      : cs.onSurfaceVariant)
                   .withValues(alpha: 0.1),
               borderRadius: AppSpacing.borderRadiusFull,
             ),

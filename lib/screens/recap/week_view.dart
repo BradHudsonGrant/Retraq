@@ -79,14 +79,19 @@ class RecapWeekView extends StatelessWidget {
                   ),
                   const SizedBox(height: AppSpacing.xs),
                   BionicText(
-                    text: weekOffset == 0
-                        ? 'Your journal entries will appear here once you start writing.'
-                        : 'No entries for this week.',
+                    text:
+                        weekOffset == 0
+                            ? 'Your journal entries will appear here once you start writing.'
+                            : 'No entries for this week.',
                     textAlign: TextAlign.center,
                     style: tt.bodyMedium?.copyWith(
                       color: cs.onSurfaceVariant.withValues(alpha: 0.7),
                     ),
-                    enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
+                    enabled:
+                        SettingsProvider.maybeOf(
+                          context,
+                        )?.bionicReadingEnabled ??
+                        false,
                   ),
                 ],
               ),
@@ -125,9 +130,10 @@ class _WeekNavigationHeader extends StatelessWidget {
     final tt = Theme.of(context).textTheme;
 
     final startLabel = DateFormat('MMM d').format(weekStart);
-    final endLabel = weekStart.month == weekEnd.month
-        ? DateFormat('d').format(weekEnd)
-        : DateFormat('MMM d').format(weekEnd);
+    final endLabel =
+        weekStart.month == weekEnd.month
+            ? DateFormat('d').format(weekEnd)
+            : DateFormat('MMM d').format(weekEnd);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -157,9 +163,7 @@ class _WeekNavigationHeader extends StatelessWidget {
             else
               Text(
                 '$startLabel – $endLabel',
-                style: tt.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+                style: tt.titleSmall?.copyWith(fontWeight: FontWeight.w600),
               ),
             if (!isCurrentWeek)
               Text(
@@ -177,12 +181,14 @@ class _WeekNavigationHeader extends StatelessWidget {
           icon: const Icon(Icons.chevron_right),
           tooltip: isCurrentWeek ? 'Current week' : 'Next week',
           style: IconButton.styleFrom(
-            backgroundColor: onNext != null
-                ? cs.surfaceContainerHigh
-                : cs.surfaceContainerHigh.withValues(alpha: 0.3),
-            foregroundColor: onNext != null
-                ? cs.onSurface
-                : cs.onSurface.withValues(alpha: 0.3),
+            backgroundColor:
+                onNext != null
+                    ? cs.surfaceContainerHigh
+                    : cs.surfaceContainerHigh.withValues(alpha: 0.3),
+            foregroundColor:
+                onNext != null
+                    ? cs.onSurface
+                    : cs.onSurface.withValues(alpha: 0.3),
           ),
         ),
       ],

@@ -42,15 +42,16 @@ class RecapSearchView extends StatelessWidget {
           decoration: InputDecoration(
             hintText: 'Search entries...',
             prefixIcon: const Icon(Icons.search),
-            suffixIcon: searchController.text.isNotEmpty
-                ? IconButton(
-                    icon: const Icon(Icons.clear),
-                    onPressed: () {
-                      searchController.clear();
-                      onSearchChanged('');
-                    },
-                  )
-                : null,
+            suffixIcon:
+                searchController.text.isNotEmpty
+                    ? IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () {
+                        searchController.clear();
+                        onSearchChanged('');
+                      },
+                    )
+                    : null,
             border: OutlineInputBorder(
               borderRadius: AppSpacing.borderRadiusLg,
               borderSide: BorderSide(
@@ -144,8 +145,7 @@ class RecapSearchView extends StatelessWidget {
                         _highlightText(
                           entry.title!,
                           searchController.text.trim(),
-                          tt.titleSmall
-                              ?.copyWith(fontWeight: FontWeight.w600),
+                          tt.titleSmall?.copyWith(fontWeight: FontWeight.w600),
                           cs,
                         ),
                       ],
@@ -197,14 +197,16 @@ class RecapSearchView extends StatelessWidget {
       if (idx > start) {
         spans.add(TextSpan(text: text.substring(start, idx)));
       }
-      spans.add(TextSpan(
-        text: text.substring(idx, idx + query.length),
-        style: TextStyle(
-          backgroundColor: cs.primaryContainer,
-          color: cs.onPrimaryContainer,
-          fontWeight: FontWeight.w600,
+      spans.add(
+        TextSpan(
+          text: text.substring(idx, idx + query.length),
+          style: TextStyle(
+            backgroundColor: cs.primaryContainer,
+            color: cs.onPrimaryContainer,
+            fontWeight: FontWeight.w600,
+          ),
         ),
-      ));
+      );
       start = idx + query.length;
     }
 

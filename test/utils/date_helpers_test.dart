@@ -54,22 +54,35 @@ void main() {
       final threeDaysAgo = DateTime.now().subtract(const Duration(days: 3));
       final label = formatDateLabel(threeDaysAgo);
       // Should be a capitalized day name like "Monday", "Tuesday", etc.
-      expect(
-        ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-        contains(label),
-      );
+      expect([
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday',
+        'Sunday',
+      ], contains(label));
     });
 
-    test('returns day name as-is when capitalize is false (intl already capitalizes)', () {
-      final twoDaysAgo = DateTime.now().subtract(const Duration(days: 2));
-      final label = formatDateLabel(twoDaysAgo, capitalize: false);
-      // intl returns day names already capitalized (e.g., "Sunday"),
-      // and capitalize:false only skips the explicit uppercasing step
-      expect(
-        ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-        contains(label),
-      );
-    });
+    test(
+      'returns day name as-is when capitalize is false (intl already capitalizes)',
+      () {
+        final twoDaysAgo = DateTime.now().subtract(const Duration(days: 2));
+        final label = formatDateLabel(twoDaysAgo, capitalize: false);
+        // intl returns day names already capitalized (e.g., "Sunday"),
+        // and capitalize:false only skips the explicit uppercasing step
+        expect([
+          'Monday',
+          'Tuesday',
+          'Wednesday',
+          'Thursday',
+          'Friday',
+          'Saturday',
+          'Sunday',
+        ], contains(label));
+      },
+    );
 
     test('returns "MMM d" format for dates 7+ days ago', () {
       final twoWeeksAgo = DateTime.now().subtract(const Duration(days: 14));
@@ -115,7 +128,7 @@ void main() {
     test('returns consistent label for same week', () {
       // Mon and Fri of the same week should match
       final mon = DateTime(2026, 3, 30); // Monday
-      final fri = DateTime(2026, 4, 3);  // Friday
+      final fri = DateTime(2026, 4, 3); // Friday
       expect(strftimeYW(mon), strftimeYW(fri));
     });
   });
@@ -129,7 +142,13 @@ void main() {
     test('returns today or earlier', () {
       final result = weekStartDate(weekStartDay: DateTime.monday);
       final today = DateTime.now();
-      expect(result.isBefore(today) || result.isAtSameMomentAs(DateTime(today.year, today.month, today.day)), true);
+      expect(
+        result.isBefore(today) ||
+            result.isAtSameMomentAs(
+              DateTime(today.year, today.month, today.day),
+            ),
+        true,
+      );
     });
 
     test('respects Sunday as week start', () {

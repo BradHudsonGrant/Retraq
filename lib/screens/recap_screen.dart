@@ -94,8 +94,9 @@ class _RecapScreenState extends State<RecapScreen>
     _weekEntriesSub?.cancel();
     final weekStart = _weekStartForOffset(weekStartDay);
 
-    _weekEntriesSub =
-        _entries.watchWeekEntriesFrom(weekStart).listen((entries) {
+    _weekEntriesSub = _entries.watchWeekEntriesFrom(weekStart).listen((
+      entries,
+    ) {
       if (!mounted) return;
       setState(() => _weekEntries = entries);
       _loadWeeklySummary(weekStartDay);
@@ -104,7 +105,10 @@ class _RecapScreenState extends State<RecapScreen>
 
   Future<void> _loadWeeklySummary(int weekStartDay) async {
     final weekStart = _weekStartForOffset(weekStartDay);
-    final summary = await _recapService.getWeeklySummary(weekStart, weekStartDay);
+    final summary = await _recapService.getWeeklySummary(
+      weekStart,
+      weekStartDay,
+    );
     if (!mounted) return;
     setState(() => _weeklySummary = summary);
   }
@@ -122,8 +126,9 @@ class _RecapScreenState extends State<RecapScreen>
 
   void _listenToMonthData() {
     _monthEntriesSub?.cancel();
-    _monthEntriesSub =
-        _entries.watchMonthEntries(_selectedMonth).listen((entries) {
+    _monthEntriesSub = _entries.watchMonthEntries(_selectedMonth).listen((
+      entries,
+    ) {
       if (!mounted) return;
 
       // Derive entry days and mood map from the full entries list,
@@ -170,8 +175,7 @@ class _RecapScreenState extends State<RecapScreen>
 
   void _goToPreviousMonth() {
     setState(() {
-      _selectedMonth =
-          DateTime(_selectedMonth.year, _selectedMonth.month - 1);
+      _selectedMonth = DateTime(_selectedMonth.year, _selectedMonth.month - 1);
       _selectedDay = null;
       _selectedEntries = [];
       _monthEntries = [];
@@ -183,12 +187,14 @@ class _RecapScreenState extends State<RecapScreen>
 
   void _goToNextMonth() {
     final now = DateTime.now();
-    final nextMonth = (_selectedMonth.month == 12)
-        ? DateTime(_selectedMonth.year + 1, 1)
-        : DateTime(_selectedMonth.year, _selectedMonth.month + 1);
-    final currentMonthEnd = (now.month == 12)
-        ? DateTime(now.year + 1, 1)
-        : DateTime(now.year, now.month + 1);
+    final nextMonth =
+        (_selectedMonth.month == 12)
+            ? DateTime(_selectedMonth.year + 1, 1)
+            : DateTime(_selectedMonth.year, _selectedMonth.month + 1);
+    final currentMonthEnd =
+        (now.month == 12)
+            ? DateTime(now.year + 1, 1)
+            : DateTime(now.year, now.month + 1);
     if (nextMonth.isAfter(currentMonthEnd)) return;
 
     setState(() {
@@ -280,9 +286,7 @@ class _RecapScreenState extends State<RecapScreen>
               children: [
                 Text(
                   'Recap',
-                  style: tt.displaySmall?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
+                  style: tt.displaySmall?.copyWith(fontWeight: FontWeight.w700),
                 ),
                 IconButton(
                   icon: Icon(_showSearch ? Icons.close : Icons.search),

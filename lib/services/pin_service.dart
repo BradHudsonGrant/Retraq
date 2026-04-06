@@ -77,7 +77,8 @@ class PinService {
   /// Uses constant-time comparison to prevent timing attacks.
   /// Runs in an isolate via compute() to avoid blocking the UI.
   static Future<bool> verifyPin(String pin, String stored) {
-    if (!useIsolateForPin) return Future.value(_verifyPinIsolate(_PinVerifyArgs(pin, stored)));
+    if (!useIsolateForPin)
+      return Future.value(_verifyPinIsolate(_PinVerifyArgs(pin, stored)));
     return compute(_verifyPinIsolate, _PinVerifyArgs(pin, stored));
   }
 
@@ -111,15 +112,15 @@ class PinService {
       if (parts.length != 2) return false;
       final saltStr = parts[0];
       final expectedHash = parts[1];
-      final hash = sha256.convert(utf8.encode('$saltStr:${args.pin}')).toString();
+      final hash =
+          sha256.convert(utf8.encode('$saltStr:${args.pin}')).toString();
       return _constantTimeEquals(hash, expectedHash);
     }
   }
 
   /// Check if a stored hash uses a legacy format (SHA-256 or v2 PBKDF2 with 600K).
   /// Used to trigger auto-upgrade on successful unlock.
-  static bool isLegacyPinHash(String stored) =>
-      !stored.startsWith('v3:');
+  static bool isLegacyPinHash(String stored) => !stored.startsWith('v3:');
 
   /// Constant-time string comparison to prevent timing attacks.
   static bool _constantTimeEquals(String a, String b) {

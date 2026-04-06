@@ -12,16 +12,16 @@ void _mockInAppReview({bool available = true}) {
   const channel = MethodChannel('dev.britannio.in_app_review');
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
       .setMockMethodCallHandler(channel, (call) async {
-    switch (call.method) {
-      case 'isAvailable':
-        return available;
-      case 'requestReview':
-        _reviewRequested = true;
-        return null;
-      default:
-        return null;
-    }
-  });
+        switch (call.method) {
+          case 'isAvailable':
+            return available;
+          case 'requestReview':
+            _reviewRequested = true;
+            return null;
+          default:
+            return null;
+        }
+      });
 }
 
 void main() {

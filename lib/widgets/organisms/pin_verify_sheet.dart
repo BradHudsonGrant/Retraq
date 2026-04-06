@@ -45,9 +45,10 @@ class _PinVerifySheetState extends State<PinVerifySheet> {
 
   Future<void> _loadState() async {
     // Read configured PIN length (4 or 6, default 4) from secure storage.
-    final storedPinLength = int.tryParse(
-            await const FlutterSecureStorage().read(key: pinLengthPrefKey) ??
-                '') ??
+    final storedPinLength =
+        int.tryParse(
+          await const FlutterSecureStorage().read(key: pinLengthPrefKey) ?? '',
+        ) ??
         4;
     if (mounted) {
       setState(() => _pinLength = (storedPinLength == 6) ? 6 : 4);

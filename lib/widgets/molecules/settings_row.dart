@@ -36,19 +36,21 @@ class SettingsRow extends StatelessWidget {
               children: [
                 BionicText(
                   text: title,
-                  style: tt.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w500,
-                  ),
-                  enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
+                  style: tt.titleSmall?.copyWith(fontWeight: FontWeight.w500),
+                  enabled:
+                      SettingsProvider.maybeOf(context)?.bionicReadingEnabled ??
+                      false,
                 ),
                 if (subtitle != null) ...[
                   const SizedBox(height: AppSpacing.xxs),
                   BionicText(
                     text: subtitle!,
-                    style: tt.bodySmall?.copyWith(
-                      color: cs.onSurfaceVariant,
-                    ),
-                    enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
+                    style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant),
+                    enabled:
+                        SettingsProvider.maybeOf(
+                          context,
+                        )?.bionicReadingEnabled ??
+                        false,
                   ),
                 ],
               ],

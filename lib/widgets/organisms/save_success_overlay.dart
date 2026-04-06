@@ -72,10 +72,7 @@ class _SaveSuccessOverlayState extends State<SaveSuccessOverlay>
     });
 
     // Pre-build CurvedAnimations (avoids allocation in build)
-    _exitCurve = CurvedAnimation(
-      parent: _exitCtrl,
-      curve: Curves.easeInCubic,
-    );
+    _exitCurve = CurvedAnimation(parent: _exitCtrl, curve: Curves.easeInCubic);
     _entryElastic = CurvedAnimation(
       parent: _entryCtrl,
       curve: Curves.elasticOut,
@@ -160,10 +157,7 @@ class _SaveSuccessOverlayState extends State<SaveSuccessOverlay>
         final exitT = _exitCurve.value;
         return Opacity(
           opacity: 1.0 - exitT,
-          child: Transform.scale(
-            scale: 1.0 + exitT * 0.05,
-            child: child,
-          ),
+          child: Transform.scale(scale: 1.0 + exitT * 0.05, child: child),
         );
       },
       child: Semantics(
@@ -178,173 +172,177 @@ class _SaveSuccessOverlayState extends State<SaveSuccessOverlay>
             widget.onDismissed();
           },
           child: Container(
-          color: cs.surface,
-          child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Checkmark + particles
-                SizedBox(
-                  width: 220,
-                  height: 220,
-                  child: AnimatedBuilder(
-                    animation: Listenable.merge([_entryCtrl, _particleCtrl]),
-                    builder: (context, _) {
-                      final entryT = _entryElastic.value;
-                      final fadeIn = _entryFadeIn.value;
+            color: cs.surface,
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Checkmark + particles
+                  SizedBox(
+                    width: 220,
+                    height: 220,
+                    child: AnimatedBuilder(
+                      animation: Listenable.merge([_entryCtrl, _particleCtrl]),
+                      builder: (context, _) {
+                        final entryT = _entryElastic.value;
+                        final fadeIn = _entryFadeIn.value;
 
-                      return Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          // Ring pulse
-                          Transform.scale(
-                            scale: 0.8 + entryT * 0.6,
-                            child: Opacity(
-                              opacity: (fadeIn * (1.0 - (entryT - 0.7).clamp(0.0, 1.0) * 3))
-                                  .clamp(0.0, 1.0),
-                              child: Container(
-                                width: 100,
-                                height: 100,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: cs.primary.withValues(alpha: 0.15),
-                                    width: 3,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-
-                          // Particles
-                          ..._particles.map((p) {
-                            final rawT = ((_particleCtrl.value - p.delay) /
-                                    (1 - p.delay))
-                                .clamp(0.0, 1.0);
-                            final ease =
-                                Curves.easeOutCubic.transform(rawT);
-                            final fadeOut =
-                                rawT > 0.5 ? (rawT - 0.5) / 0.5 : 0.0;
-                            final dx = cos(p.angle) * p.distance * ease;
-                            final dy = sin(p.angle) * p.distance * ease;
-
-                            return Transform.translate(
-                              offset: Offset(dx, dy),
+                        return Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            // Ring pulse
+                            Transform.scale(
+                              scale: 0.8 + entryT * 0.6,
                               child: Opacity(
-                                opacity: ((1.0 - fadeOut) * fadeIn)
+                                opacity: (fadeIn *
+                                        (1.0 -
+                                            (entryT - 0.7).clamp(0.0, 1.0) * 3))
                                     .clamp(0.0, 1.0),
                                 child: Container(
-                                  width: p.size,
-                                  height: p.size,
+                                  width: 100,
+                                  height: 100,
                                   decoration: BoxDecoration(
-                                    color: cs.primary.withValues(
-                                      alpha: 0.6 + 0.3 * (1.0 - ease),
-                                    ),
                                     shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: cs.primary.withValues(alpha: 0.15),
+                                      width: 3,
+                                    ),
                                   ),
                                 ),
                               ),
-                            );
-                          }),
+                            ),
 
-                          // Main circle + check
-                          Transform.scale(
-                            scale: entryT.clamp(0.0, 1.3),
-                            child: Opacity(
-                              opacity: fadeIn,
-                              child: Container(
-                                width: 88,
-                                height: 88,
-                                decoration: BoxDecoration(
-                                  color: cs.primaryContainer,
-                                  shape: BoxShape.circle,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color:
-                                          cs.primary.withValues(alpha: 0.25),
-                                      blurRadius: 24,
-                                      spreadRadius: 6,
+                            // Particles
+                            ..._particles.map((p) {
+                              final rawT = ((_particleCtrl.value - p.delay) /
+                                      (1 - p.delay))
+                                  .clamp(0.0, 1.0);
+                              final ease = Curves.easeOutCubic.transform(rawT);
+                              final fadeOut =
+                                  rawT > 0.5 ? (rawT - 0.5) / 0.5 : 0.0;
+                              final dx = cos(p.angle) * p.distance * ease;
+                              final dy = sin(p.angle) * p.distance * ease;
+
+                              return Transform.translate(
+                                offset: Offset(dx, dy),
+                                child: Opacity(
+                                  opacity: ((1.0 - fadeOut) * fadeIn).clamp(
+                                    0.0,
+                                    1.0,
+                                  ),
+                                  child: Container(
+                                    width: p.size,
+                                    height: p.size,
+                                    decoration: BoxDecoration(
+                                      color: cs.primary.withValues(
+                                        alpha: 0.6 + 0.3 * (1.0 - ease),
+                                      ),
+                                      shape: BoxShape.circle,
                                     ),
-                                  ],
+                                  ),
                                 ),
-                                child: Icon(
-                                  Icons.check_rounded,
-                                  size: 44,
-                                  color: cs.onPrimaryContainer,
+                              );
+                            }),
+
+                            // Main circle + check
+                            Transform.scale(
+                              scale: entryT.clamp(0.0, 1.3),
+                              child: Opacity(
+                                opacity: fadeIn,
+                                child: Container(
+                                  width: 88,
+                                  height: 88,
+                                  decoration: BoxDecoration(
+                                    color: cs.primaryContainer,
+                                    shape: BoxShape.circle,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: cs.primary.withValues(
+                                          alpha: 0.25,
+                                        ),
+                                        blurRadius: 24,
+                                        spreadRadius: 6,
+                                      ),
+                                    ],
+                                  ),
+                                  child: Icon(
+                                    Icons.check_rounded,
+                                    size: 44,
+                                    color: cs.onPrimaryContainer,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+
+                  const SizedBox(height: AppSpacing.xl),
+
+                  // "Saved" text slides up
+                  AnimatedBuilder(
+                    animation: _entryCtrl,
+                    builder: (context, child) {
+                      final t = _entryTextSlide.value;
+                      return Opacity(
+                        opacity: t,
+                        child: Transform.translate(
+                          offset: Offset(0, 12 * (1 - t)),
+                          child: child,
+                        ),
                       );
                     },
-                  ),
-                ),
-
-                const SizedBox(height: AppSpacing.xl),
-
-                // "Saved" text slides up
-                AnimatedBuilder(
-                  animation: _entryCtrl,
-                  builder: (context, child) {
-                    final t = _entryTextSlide.value;
-                    return Opacity(
-                      opacity: t,
-                      child: Transform.translate(
-                        offset: Offset(0, 12 * (1 - t)),
-                        child: child,
-                      ),
-                    );
-                  },
-                  child: Semantics(
-                    liveRegion: true,
-                    label: 'Entry saved',
-                    child: Text(
-                      'Entry saved',
-                      style: tt.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: cs.primary,
+                    child: Semantics(
+                      liveRegion: true,
+                      label: 'Entry saved',
+                      child: Text(
+                        'Entry saved',
+                        style: tt.titleLarge?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: cs.primary,
+                        ),
                       ),
                     ),
                   ),
-                ),
 
-                const SizedBox(height: AppSpacing.sm),
+                  const SizedBox(height: AppSpacing.sm),
 
-                // Subtle secondary text — show milestone or default
-                AnimatedBuilder(
-                  animation: _entryCtrl,
-                  builder: (context, child) {
-                    final t = _entrySubtextFade.value;
-                    return Opacity(opacity: t, child: child);
-                  },
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (widget.milestoneMessage != null) ...[
-                        Text(
-                          widget.milestoneMessage!,
-                          style: tt.titleSmall?.copyWith(
-                            fontWeight: FontWeight.w500,
-                            color: cs.primary.withValues(alpha: 0.85),
+                  // Subtle secondary text — show milestone or default
+                  AnimatedBuilder(
+                    animation: _entryCtrl,
+                    builder: (context, child) {
+                      final t = _entrySubtextFade.value;
+                      return Opacity(opacity: t, child: child);
+                    },
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (widget.milestoneMessage != null) ...[
+                          Text(
+                            widget.milestoneMessage!,
+                            style: tt.titleSmall?.copyWith(
+                              fontWeight: FontWeight.w500,
+                              color: cs.primary.withValues(alpha: 0.85),
+                            ),
+                            textAlign: TextAlign.center,
                           ),
-                          textAlign: TextAlign.center,
+                          const SizedBox(height: AppSpacing.xs),
+                        ],
+                        Text(
+                          'Nice one ✓',
+                          style: tt.bodyMedium?.copyWith(
+                            color: cs.onSurfaceVariant.withValues(alpha: 0.6),
+                          ),
                         ),
-                        const SizedBox(height: AppSpacing.xs),
                       ],
-                      Text(
-                        'Nice one ✓',
-                        style: tt.bodyMedium?.copyWith(
-                          color: cs.onSurfaceVariant.withValues(alpha: 0.6),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
         ),
       ),
     );

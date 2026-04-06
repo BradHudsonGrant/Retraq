@@ -7,36 +7,34 @@ import '../../test_helpers.dart';
 void main() {
   group('EntryCard', () {
     testWidgets('renders dateLabel and text', (tester) async {
-      await tester.pumpWidget(wrapWidget(
-        const EntryCard(
-          dateLabel: 'Yesterday',
-          text: 'Had a productive day',
+      await tester.pumpWidget(
+        wrapWidget(
+          const EntryCard(dateLabel: 'Yesterday', text: 'Had a productive day'),
         ),
-      ));
+      );
 
       expect(find.text('Yesterday'), findsOneWidget);
       expect(find.text('Had a productive day'), findsOneWidget);
     });
 
     testWidgets('shows title when provided', (tester) async {
-      await tester.pumpWidget(wrapWidget(
-        const EntryCard(
-          dateLabel: 'Today',
-          text: 'Some text',
-          title: 'My Title',
+      await tester.pumpWidget(
+        wrapWidget(
+          const EntryCard(
+            dateLabel: 'Today',
+            text: 'Some text',
+            title: 'My Title',
+          ),
         ),
-      ));
+      );
 
       expect(find.text('My Title'), findsOneWidget);
     });
 
     testWidgets('hides title when null', (tester) async {
-      await tester.pumpWidget(wrapWidget(
-        const EntryCard(
-          dateLabel: 'Today',
-          text: 'Some text',
-        ),
-      ));
+      await tester.pumpWidget(
+        wrapWidget(const EntryCard(dateLabel: 'Today', text: 'Some text')),
+      );
 
       // Only dateLabel and text should be present
       expect(find.text('Today'), findsOneWidget);
@@ -44,13 +42,11 @@ void main() {
     });
 
     testWidgets('hides title when empty string', (tester) async {
-      await tester.pumpWidget(wrapWidget(
-        const EntryCard(
-          dateLabel: 'Today',
-          text: 'Some text',
-          title: '',
+      await tester.pumpWidget(
+        wrapWidget(
+          const EntryCard(dateLabel: 'Today', text: 'Some text', title: ''),
         ),
-      ));
+      );
 
       // Empty title should not render title widget
       expect(find.text(''), findsNothing);
@@ -58,13 +54,15 @@ void main() {
 
     testWidgets('fires onTap callback', (tester) async {
       var tapped = false;
-      await tester.pumpWidget(wrapWidget(
-        EntryCard(
-          dateLabel: 'Today',
-          text: 'Tap me',
-          onTap: () => tapped = true,
+      await tester.pumpWidget(
+        wrapWidget(
+          EntryCard(
+            dateLabel: 'Today',
+            text: 'Tap me',
+            onTap: () => tapped = true,
+          ),
         ),
-      ));
+      );
 
       await tester.tap(find.text('Tap me'));
       await tester.pump();
@@ -72,9 +70,9 @@ void main() {
     });
 
     testWidgets('shows more_horiz icon', (tester) async {
-      await tester.pumpWidget(wrapWidget(
-        const EntryCard(dateLabel: 'Today', text: 'Content'),
-      ));
+      await tester.pumpWidget(
+        wrapWidget(const EntryCard(dateLabel: 'Today', text: 'Content')),
+      );
 
       expect(find.byIcon(Icons.more_horiz), findsOneWidget);
     });

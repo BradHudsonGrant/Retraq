@@ -38,12 +38,14 @@ void main() {
     test('has all expected columns', () async {
       // Verify all v5 columns exist by inserting a row that uses every column
       // First create a user so FK constraint is satisfied
-      final userId = await db.userRepo.saveUser(User(
-        displayName: 'Test User',
-        email: 'test@test.com',
-        subscriptionTier: 'free',
-        createdAt: DateTime(2026, 3, 15),
-      ));
+      final userId = await db.userRepo.saveUser(
+        User(
+          displayName: 'Test User',
+          email: 'test@test.com',
+          subscriptionTier: 'free',
+          createdAt: DateTime(2026, 3, 15),
+        ),
+      );
       final entry = JournalEntry(
         date: DateTime(2026, 3, 15),
         entry: 'Schema test entry',
@@ -66,65 +68,77 @@ void main() {
     });
 
     test('entry column is nullable (v4 addition)', () async {
-      final id = await db.entries.saveEntry(JournalEntry(
-        date: DateTime(2026, 3, 16),
-        entry: null,
-        createdAt: DateTime(2026, 3, 16, 8, 0),
-      ));
+      final id = await db.entries.saveEntry(
+        JournalEntry(
+          date: DateTime(2026, 3, 16),
+          entry: null,
+          createdAt: DateTime(2026, 3, 16, 8, 0),
+        ),
+      );
       final entries = await db.entries.getEntriesForDate(DateTime(2026, 3, 16));
       final saved = entries.firstWhere((e) => e.id == id);
       expect(saved.entry, isNull);
     });
 
     test('label column is nullable (v4 addition)', () async {
-      final id = await db.entries.saveEntry(JournalEntry(
-        date: DateTime(2026, 3, 17),
-        entry: 'No label',
-        label: null,
-        createdAt: DateTime(2026, 3, 17, 8, 0),
-      ));
+      final id = await db.entries.saveEntry(
+        JournalEntry(
+          date: DateTime(2026, 3, 17),
+          entry: 'No label',
+          label: null,
+          createdAt: DateTime(2026, 3, 17, 8, 0),
+        ),
+      );
       final entries = await db.entries.getEntriesForDate(DateTime(2026, 3, 17));
       final saved = entries.firstWhere((e) => e.id == id);
       expect(saved.label, isNull);
     });
 
     test('title column is nullable (v2 addition)', () async {
-      final id = await db.entries.saveEntry(JournalEntry(
-        date: DateTime(2026, 3, 18),
-        entry: 'No title',
-        title: null,
-        createdAt: DateTime(2026, 3, 18, 8, 0),
-      ));
+      final id = await db.entries.saveEntry(
+        JournalEntry(
+          date: DateTime(2026, 3, 18),
+          entry: 'No title',
+          title: null,
+          createdAt: DateTime(2026, 3, 18, 8, 0),
+        ),
+      );
       final entries = await db.entries.getEntriesForDate(DateTime(2026, 3, 18));
       final saved = entries.firstWhere((e) => e.id == id);
       expect(saved.title, isNull);
     });
 
     test('userId column is nullable (v4 addition)', () async {
-      final id = await db.entries.saveEntry(JournalEntry(
-        date: DateTime(2026, 3, 19),
-        entry: 'No user',
-        userId: null,
-        createdAt: DateTime(2026, 3, 19, 8, 0),
-      ));
+      final id = await db.entries.saveEntry(
+        JournalEntry(
+          date: DateTime(2026, 3, 19),
+          entry: 'No user',
+          userId: null,
+          createdAt: DateTime(2026, 3, 19, 8, 0),
+        ),
+      );
       final entries = await db.entries.getEntriesForDate(DateTime(2026, 3, 19));
       final saved = entries.firstWhere((e) => e.id == id);
       expect(saved.userId, isNull);
     });
 
     test('label supports AM/PM values (v4 migration split)', () async {
-      final amId = await db.entries.saveEntry(JournalEntry(
-        date: DateTime(2026, 3, 20),
-        entry: 'Morning entry',
-        label: 'AM',
-        createdAt: DateTime(2026, 3, 20, 8, 0),
-      ));
-      final pmId = await db.entries.saveEntry(JournalEntry(
-        date: DateTime(2026, 3, 20),
-        entry: 'Evening entry',
-        label: 'PM',
-        createdAt: DateTime(2026, 3, 20, 20, 0),
-      ));
+      final amId = await db.entries.saveEntry(
+        JournalEntry(
+          date: DateTime(2026, 3, 20),
+          entry: 'Morning entry',
+          label: 'AM',
+          createdAt: DateTime(2026, 3, 20, 8, 0),
+        ),
+      );
+      final pmId = await db.entries.saveEntry(
+        JournalEntry(
+          date: DateTime(2026, 3, 20),
+          entry: 'Evening entry',
+          label: 'PM',
+          createdAt: DateTime(2026, 3, 20, 20, 0),
+        ),
+      );
 
       final entries = await db.entries.getEntriesForDate(DateTime(2026, 3, 20));
       expect(entries.length, 2);
@@ -140,11 +154,13 @@ void main() {
     test('date index exists and queries by date work efficiently', () async {
       // Insert entries across multiple dates
       for (int day = 1; day <= 10; day++) {
-        await db.entries.saveEntry(JournalEntry(
-          date: DateTime(2026, 6, day),
-          entry: 'Entry for day $day',
-          createdAt: DateTime(2026, 6, day, 12, 0),
-        ));
+        await db.entries.saveEntry(
+          JournalEntry(
+            date: DateTime(2026, 6, day),
+            entry: 'Entry for day $day',
+            createdAt: DateTime(2026, 6, day, 12, 0),
+          ),
+        );
       }
 
       // Query a specific date — the index should make this efficient
@@ -258,7 +274,9 @@ void main() {
 
     test('bulletPointsOnEnter persists correctly (v3 addition)', () async {
       final settings = await db.settings.getSettings();
-      await db.settings.saveSettings(settings.copyWith(bulletPointsOnEnter: true));
+      await db.settings.saveSettings(
+        settings.copyWith(bulletPointsOnEnter: true),
+      );
 
       final reloaded = await db.settings.getSettings();
       expect(reloaded.bulletPointsOnEnter, true);
@@ -321,16 +339,20 @@ void main() {
       // The v5 migration deletes existing whitespace-only entries.
       // On a fresh DB, we verify that entries with real content survive
       // and that the schema supports the cleanup query.
-      await db.entries.saveEntry(JournalEntry(
-        date: DateTime(2026, 7, 1),
-        entry: 'Real content',
-        createdAt: DateTime(2026, 7, 1, 8, 0),
-      ));
-      await db.entries.saveEntry(JournalEntry(
-        date: DateTime(2026, 7, 2),
-        entry: '   Valid content with spaces   ',
-        createdAt: DateTime(2026, 7, 2, 8, 0),
-      ));
+      await db.entries.saveEntry(
+        JournalEntry(
+          date: DateTime(2026, 7, 1),
+          entry: 'Real content',
+          createdAt: DateTime(2026, 7, 1, 8, 0),
+        ),
+      );
+      await db.entries.saveEntry(
+        JournalEntry(
+          date: DateTime(2026, 7, 2),
+          entry: '   Valid content with spaces   ',
+          createdAt: DateTime(2026, 7, 2, 8, 0),
+        ),
+      );
 
       final all = await db.entries.getEntriesForDateRange(
         DateTime(2026, 7, 1),
@@ -344,59 +366,74 @@ void main() {
 
   group('Cross-table relationships (v4 schema)', () {
     test('journal entry can reference a user via userId', () async {
-      final userId = await db.userRepo.saveUser(User(
-        displayName: 'Journal Owner',
-        createdAt: DateTime(2026, 3, 15),
-      ));
+      final userId = await db.userRepo.saveUser(
+        User(displayName: 'Journal Owner', createdAt: DateTime(2026, 3, 15)),
+      );
 
-      final entryId = await db.entries.saveEntry(JournalEntry(
-        date: DateTime(2026, 3, 15),
-        entry: 'Entry with user reference',
-        userId: userId,
-        createdAt: DateTime(2026, 3, 15, 10, 0),
-      ));
+      final entryId = await db.entries.saveEntry(
+        JournalEntry(
+          date: DateTime(2026, 3, 15),
+          entry: 'Entry with user reference',
+          userId: userId,
+          createdAt: DateTime(2026, 3, 15, 10, 0),
+        ),
+      );
 
       final entries = await db.entries.getEntriesForDate(DateTime(2026, 3, 15));
       final saved = entries.firstWhere((e) => e.id == entryId);
       expect(saved.userId, userId);
     });
 
-    test('multiple entries can belong to different labels on same date', () async {
-      await db.entries.saveEntry(JournalEntry(
-        date: DateTime(2026, 8, 1),
-        entry: 'Morning thought',
-        label: 'AM',
-        createdAt: DateTime(2026, 8, 1, 8, 0),
-      ));
-      await db.entries.saveEntry(JournalEntry(
-        date: DateTime(2026, 8, 1),
-        entry: 'Evening reflection',
-        label: 'PM',
-        createdAt: DateTime(2026, 8, 1, 20, 0),
-      ));
-      await db.entries.saveEntry(JournalEntry(
-        date: DateTime(2026, 8, 1),
-        entry: 'All day note',
-        label: null,
-        createdAt: DateTime(2026, 8, 1, 12, 0),
-      ));
+    test(
+      'multiple entries can belong to different labels on same date',
+      () async {
+        await db.entries.saveEntry(
+          JournalEntry(
+            date: DateTime(2026, 8, 1),
+            entry: 'Morning thought',
+            label: 'AM',
+            createdAt: DateTime(2026, 8, 1, 8, 0),
+          ),
+        );
+        await db.entries.saveEntry(
+          JournalEntry(
+            date: DateTime(2026, 8, 1),
+            entry: 'Evening reflection',
+            label: 'PM',
+            createdAt: DateTime(2026, 8, 1, 20, 0),
+          ),
+        );
+        await db.entries.saveEntry(
+          JournalEntry(
+            date: DateTime(2026, 8, 1),
+            entry: 'All day note',
+            label: null,
+            createdAt: DateTime(2026, 8, 1, 12, 0),
+          ),
+        );
 
-      final entries = await db.entries.getEntriesForDate(DateTime(2026, 8, 1));
-      expect(entries.length, 3);
+        final entries = await db.entries.getEntriesForDate(
+          DateTime(2026, 8, 1),
+        );
+        expect(entries.length, 3);
 
-      final labels = entries.map((e) => e.label).toSet();
-      expect(labels, containsAll(['AM', 'PM', null]));
-    });
+        final labels = entries.map((e) => e.label).toSet();
+        expect(labels, containsAll(['AM', 'PM', null]));
+      },
+    );
   });
 
   // ── Database lifecycle ────────────────────────────────────
 
   group('Database lifecycle', () {
-    test('initInMemory creates a usable database with correct schema', () async {
-      // The setUp already called initInMemory — verify basic operations work
-      final count = await db.entries.getTotalEntryCount();
-      expect(count, isA<int>());
-    });
+    test(
+      'initInMemory creates a usable database with correct schema',
+      () async {
+        // The setUp already called initInMemory — verify basic operations work
+        final count = await db.entries.getTotalEntryCount();
+        expect(count, isA<int>());
+      },
+    );
 
     test('getSettings returns defaults on fresh database', () async {
       final settings = await db.settings.getSettings();
@@ -405,37 +442,46 @@ void main() {
       expect(settings.themeMode, 0);
     });
 
-    test('deleteAllData resets entries but preserves settings structure', () async {
-      // Add some data
-      await db.entries.saveEntry(JournalEntry(
-        date: DateTime(2026, 9, 1),
-        entry: 'To be wiped',
-        createdAt: DateTime(2026, 9, 1, 8, 0),
-      ));
-      await db.settings.saveSettings(UserSettings(nudgeHour: 10));
+    test(
+      'deleteAllData resets entries but preserves settings structure',
+      () async {
+        // Add some data
+        await db.entries.saveEntry(
+          JournalEntry(
+            date: DateTime(2026, 9, 1),
+            entry: 'To be wiped',
+            createdAt: DateTime(2026, 9, 1, 8, 0),
+          ),
+        );
+        await db.settings.saveSettings(UserSettings(nudgeHour: 10));
 
-      // Wipe
-      await db.userRepo.deleteAllData();
+        // Wipe
+        await db.userRepo.deleteAllData();
 
-      // Entries gone
-      final entries = await db.entries.getEntriesForDate(DateTime(2026, 9, 1));
-      expect(entries, isEmpty);
+        // Entries gone
+        final entries = await db.entries.getEntriesForDate(
+          DateTime(2026, 9, 1),
+        );
+        expect(entries, isEmpty);
 
-      // Settings reset to defaults
-      final settings = await db.settings.getSettings();
-      expect(settings.nudgeHour, 20); // default, not 10
-    });
+        // Settings reset to defaults
+        final settings = await db.settings.getSettings();
+        expect(settings.nudgeHour, 20); // default, not 10
+      },
+    );
   });
 
   // ── Search uses correct column names (v4 schema) ──────────
 
   group('Search after migration (v4+ schema)', () {
     test('search finds entries by entry text', () async {
-      await db.entries.saveEntry(JournalEntry(
-        date: DateTime(2026, 10, 1),
-        entry: 'Unique searchable migration test phrase',
-        createdAt: DateTime(2026, 10, 1, 8, 0),
-      ));
+      await db.entries.saveEntry(
+        JournalEntry(
+          date: DateTime(2026, 10, 1),
+          entry: 'Unique searchable migration test phrase',
+          createdAt: DateTime(2026, 10, 1, 8, 0),
+        ),
+      );
 
       final results = await db.entries.searchEntries('migration test phrase');
       expect(results, isNotEmpty);
@@ -443,12 +489,14 @@ void main() {
     });
 
     test('search finds entries by title', () async {
-      await db.entries.saveEntry(JournalEntry(
-        date: DateTime(2026, 10, 2),
-        entry: 'Some content',
-        title: 'Unique Migration Title XYZ',
-        createdAt: DateTime(2026, 10, 2, 8, 0),
-      ));
+      await db.entries.saveEntry(
+        JournalEntry(
+          date: DateTime(2026, 10, 2),
+          entry: 'Some content',
+          title: 'Unique Migration Title XYZ',
+          createdAt: DateTime(2026, 10, 2, 8, 0),
+        ),
+      );
 
       final results = await db.entries.searchEntries('Migration Title XYZ');
       expect(results, isNotEmpty);
@@ -461,11 +509,13 @@ void main() {
   group('Edge cases for migration-affected columns', () {
     test('entry can store long text', () async {
       final longText = 'A' * 10000;
-      final id = await db.entries.saveEntry(JournalEntry(
-        date: DateTime(2026, 11, 1),
-        entry: longText,
-        createdAt: DateTime(2026, 11, 1, 8, 0),
-      ));
+      final id = await db.entries.saveEntry(
+        JournalEntry(
+          date: DateTime(2026, 11, 1),
+          entry: longText,
+          createdAt: DateTime(2026, 11, 1, 8, 0),
+        ),
+      );
 
       final entries = await db.entries.getEntriesForDate(DateTime(2026, 11, 1));
       final saved = entries.firstWhere((e) => e.id == id);
@@ -473,12 +523,14 @@ void main() {
     });
 
     test('title can store unicode text (v2 column)', () async {
-      final id = await db.entries.saveEntry(JournalEntry(
-        date: DateTime(2026, 11, 2),
-        entry: 'Unicode test',
-        title: 'Emoji and CJK: 日本語テスト',
-        createdAt: DateTime(2026, 11, 2, 8, 0),
-      ));
+      final id = await db.entries.saveEntry(
+        JournalEntry(
+          date: DateTime(2026, 11, 2),
+          entry: 'Unicode test',
+          title: 'Emoji and CJK: 日本語テスト',
+          createdAt: DateTime(2026, 11, 2, 8, 0),
+        ),
+      );
 
       final entries = await db.entries.getEntriesForDate(DateTime(2026, 11, 2));
       final saved = entries.firstWhere((e) => e.id == id);
@@ -526,12 +578,14 @@ void main() {
 
     test('AM label entry represents migrated morning entry', () async {
       // After v3→v4, morning_entry becomes entry with label='AM'
-      final id = await db.entries.saveEntry(JournalEntry(
-        date: DateTime(2025, 1, 15),
-        entry: 'Had coffee and went for a run',
-        label: 'AM',
-        createdAt: DateTime(2025, 1, 15, 7, 0),
-      ));
+      final id = await db.entries.saveEntry(
+        JournalEntry(
+          date: DateTime(2025, 1, 15),
+          entry: 'Had coffee and went for a run',
+          label: 'AM',
+          createdAt: DateTime(2025, 1, 15, 7, 0),
+        ),
+      );
 
       final entries = await db.entries.getEntriesForDate(DateTime(2025, 1, 15));
       final saved = entries.firstWhere((e) => e.id == id);
@@ -541,12 +595,14 @@ void main() {
 
     test('PM label entry represents migrated evening entry', () async {
       // After v3→v4, evening_entry becomes entry with label='PM'
-      final id = await db.entries.saveEntry(JournalEntry(
-        date: DateTime(2025, 1, 15),
-        entry: 'Read a book before bed',
-        label: 'PM',
-        createdAt: DateTime(2025, 1, 15, 21, 0),
-      ));
+      final id = await db.entries.saveEntry(
+        JournalEntry(
+          date: DateTime(2025, 1, 15),
+          entry: 'Read a book before bed',
+          label: 'PM',
+          createdAt: DateTime(2025, 1, 15, 21, 0),
+        ),
+      );
 
       final entries = await db.entries.getEntriesForDate(DateTime(2025, 1, 15));
       final saved = entries.firstWhere((e) => e.id == id);
@@ -556,12 +612,14 @@ void main() {
 
     test('null label entry represents migrated all-day entry', () async {
       // After v3→v4, all_day_entry becomes entry with label=NULL
-      final id = await db.entries.saveEntry(JournalEntry(
-        date: DateTime(2025, 1, 16),
-        entry: 'Spent the whole day at the park',
-        label: null,
-        createdAt: DateTime(2025, 1, 16, 12, 0),
-      ));
+      final id = await db.entries.saveEntry(
+        JournalEntry(
+          date: DateTime(2025, 1, 16),
+          entry: 'Spent the whole day at the park',
+          label: null,
+          createdAt: DateTime(2025, 1, 16, 12, 0),
+        ),
+      );
 
       final entries = await db.entries.getEntriesForDate(DateTime(2025, 1, 16));
       final saved = entries.firstWhere((e) => e.id == id);
@@ -569,65 +627,83 @@ void main() {
       expect(saved.label, isNull);
     });
 
-    test('both AM and PM entries on same date (split morning+evening)', () async {
-      // v3→v4 splits a row with both morning and evening into two rows
-      final amId = await db.entries.saveEntry(JournalEntry(
-        date: DateTime(2025, 1, 17),
-        entry: 'Morning jog in the park',
-        label: 'AM',
-        createdAt: DateTime(2025, 1, 17, 7, 0),
-      ));
-      final pmId = await db.entries.saveEntry(JournalEntry(
-        date: DateTime(2025, 1, 17),
-        entry: 'Dinner with friends',
-        label: 'PM',
-        createdAt: DateTime(2025, 1, 17, 19, 0),
-      ));
+    test(
+      'both AM and PM entries on same date (split morning+evening)',
+      () async {
+        // v3→v4 splits a row with both morning and evening into two rows
+        final amId = await db.entries.saveEntry(
+          JournalEntry(
+            date: DateTime(2025, 1, 17),
+            entry: 'Morning jog in the park',
+            label: 'AM',
+            createdAt: DateTime(2025, 1, 17, 7, 0),
+          ),
+        );
+        final pmId = await db.entries.saveEntry(
+          JournalEntry(
+            date: DateTime(2025, 1, 17),
+            entry: 'Dinner with friends',
+            label: 'PM',
+            createdAt: DateTime(2025, 1, 17, 19, 0),
+          ),
+        );
 
-      final entries = await db.entries.getEntriesForDate(DateTime(2025, 1, 17));
-      expect(entries.length, 2);
-      expect(entries.firstWhere((e) => e.id == amId).label, 'AM');
-      expect(entries.firstWhere((e) => e.id == pmId).label, 'PM');
-    });
+        final entries = await db.entries.getEntriesForDate(
+          DateTime(2025, 1, 17),
+        );
+        expect(entries.length, 2);
+        expect(entries.firstWhere((e) => e.id == amId).label, 'AM');
+        expect(entries.firstWhere((e) => e.id == pmId).label, 'PM');
+      },
+    );
 
     test('v4 migration created users table referenced by entries', () async {
       // v3→v4 created the users table and added user_id FK to entries
-      final userId = await db.userRepo.saveUser(User(
-        displayName: 'Migration User',
-        createdAt: DateTime(2025, 1, 15),
-      ));
-      final entryId = await db.entries.saveEntry(JournalEntry(
-        date: DateTime(2025, 1, 18),
-        entry: 'Entry with user FK',
-        userId: userId,
-        createdAt: DateTime(2025, 1, 18, 10, 0),
-      ));
+      final userId = await db.userRepo.saveUser(
+        User(displayName: 'Migration User', createdAt: DateTime(2025, 1, 15)),
+      );
+      final entryId = await db.entries.saveEntry(
+        JournalEntry(
+          date: DateTime(2025, 1, 18),
+          entry: 'Entry with user FK',
+          userId: userId,
+          createdAt: DateTime(2025, 1, 18, 10, 0),
+        ),
+      );
 
       final entries = await db.entries.getEntriesForDate(DateTime(2025, 1, 18));
       expect(entries.firstWhere((e) => e.id == entryId).userId, userId);
     });
 
-    test('raw SQL insert with AM/PM pattern matches v4 migration output', () async {
-      // Simulate what the v3→v4 migration SQL would produce:
-      // INSERT rows with entry, label, title, created_at
-      final now = DateTime(2025, 2, 1, 8, 0).millisecondsSinceEpoch ~/ 1000;
-      final date = DateTime(2025, 2, 1).millisecondsSinceEpoch ~/ 1000;
+    test(
+      'raw SQL insert with AM/PM pattern matches v4 migration output',
+      () async {
+        // Simulate what the v3→v4 migration SQL would produce:
+        // INSERT rows with entry, label, title, created_at
+        final now = DateTime(2025, 2, 1, 8, 0).millisecondsSinceEpoch ~/ 1000;
+        final date = DateTime(2025, 2, 1).millisecondsSinceEpoch ~/ 1000;
 
-      await db.db.customStatement(
-        "INSERT INTO journal_entries (date, entry, label, title, created_at) "
-        "VALUES ($date, 'Raw SQL morning', 'AM', 'Migration Test', $now)",
-      );
-      await db.db.customStatement(
-        "INSERT INTO journal_entries (date, entry, label, created_at) "
-        "VALUES ($date, 'Raw SQL evening', 'PM', $now)",
-      );
+        await db.db.customStatement(
+          "INSERT INTO journal_entries (date, entry, label, title, created_at) "
+          "VALUES ($date, 'Raw SQL morning', 'AM', 'Migration Test', $now)",
+        );
+        await db.db.customStatement(
+          "INSERT INTO journal_entries (date, entry, label, created_at) "
+          "VALUES ($date, 'Raw SQL evening', 'PM', $now)",
+        );
 
-      // Verify these are accessible through the repository
-      final entries = await db.entries.getEntriesForDate(DateTime(2025, 2, 1));
-      expect(entries.length, 2);
-      expect(entries.any((e) => e.label == 'AM' && e.title == 'Migration Test'), true);
-      expect(entries.any((e) => e.label == 'PM' && e.title == null), true);
-    });
+        // Verify these are accessible through the repository
+        final entries = await db.entries.getEntriesForDate(
+          DateTime(2025, 2, 1),
+        );
+        expect(entries.length, 2);
+        expect(
+          entries.any((e) => e.label == 'AM' && e.title == 'Migration Test'),
+          true,
+        );
+        expect(entries.any((e) => e.label == 'PM' && e.title == null), true);
+      },
+    );
   });
 
   group('Migration path: v6→v7 (isDarkMode bool → themeMode int)', () {
@@ -653,29 +729,40 @@ void main() {
       expect(settings.themeMode, 0);
     });
 
-    test('themeMode=1 represents light (migrated from isDarkMode=false)', () async {
-      // After v6→v7, isDarkMode=0 maps to themeMode=1
-      final settings = await db.settings.getSettings();
-      await db.settings.saveSettings(settings.copyWith(themeMode: UserSettings.themeModeLight));
+    test(
+      'themeMode=1 represents light (migrated from isDarkMode=false)',
+      () async {
+        // After v6→v7, isDarkMode=0 maps to themeMode=1
+        final settings = await db.settings.getSettings();
+        await db.settings.saveSettings(
+          settings.copyWith(themeMode: UserSettings.themeModeLight),
+        );
 
-      final reloaded = await db.settings.getSettings();
-      expect(reloaded.themeMode, 1);
-    });
+        final reloaded = await db.settings.getSettings();
+        expect(reloaded.themeMode, 1);
+      },
+    );
 
-    test('themeMode=2 represents dark (migrated from isDarkMode=true)', () async {
-      // After v6→v7, isDarkMode=1 maps to themeMode=2
-      final settings = await db.settings.getSettings();
-      await db.settings.saveSettings(settings.copyWith(themeMode: UserSettings.themeModeDark));
+    test(
+      'themeMode=2 represents dark (migrated from isDarkMode=true)',
+      () async {
+        // After v6→v7, isDarkMode=1 maps to themeMode=2
+        final settings = await db.settings.getSettings();
+        await db.settings.saveSettings(
+          settings.copyWith(themeMode: UserSettings.themeModeDark),
+        );
 
-      final reloaded = await db.settings.getSettings();
-      expect(reloaded.themeMode, 2);
-    });
+        final reloaded = await db.settings.getSettings();
+        expect(reloaded.themeMode, 2);
+      },
+    );
 
     test('settings table has no is_dark_mode column after v7', () async {
       // Verify the old column was removed during table recreation
-      final columns = await db.db
-          .customSelect("PRAGMA table_info('user_settings_table')")
-          .get();
+      final columns =
+          await db.db
+              .customSelect("PRAGMA table_info('user_settings_table')")
+              .get();
       final columnNames = columns.map((r) => r.data['name'] as String).toList();
       expect(columnNames, isNot(contains('is_dark_mode')));
       expect(columnNames, contains('theme_mode'));
@@ -696,7 +783,11 @@ void main() {
         final settings = await db.settings.getSettings();
         await db.settings.saveSettings(settings.copyWith(themeMode: mode));
         final reloaded = await db.settings.getSettings();
-        expect(reloaded.themeMode, mode, reason: 'themeMode=$mode failed to round-trip');
+        expect(
+          reloaded.themeMode,
+          mode,
+          reason: 'themeMode=$mode failed to round-trip',
+        );
       }
     });
   });
@@ -718,16 +809,17 @@ void main() {
 
     test('user_id FK has ON DELETE CASCADE after v9', () async {
       // Create a user and an entry referencing them
-      final userId = await db.userRepo.saveUser(User(
-        displayName: 'Cascade Test User',
-        createdAt: DateTime(2026, 1, 1),
-      ));
-      await db.entries.saveEntry(JournalEntry(
-        date: DateTime(2026, 1, 1),
-        entry: 'Entry for cascade test',
-        userId: userId,
-        createdAt: DateTime(2026, 1, 1, 10, 0),
-      ));
+      final userId = await db.userRepo.saveUser(
+        User(displayName: 'Cascade Test User', createdAt: DateTime(2026, 1, 1)),
+      );
+      await db.entries.saveEntry(
+        JournalEntry(
+          date: DateTime(2026, 1, 1),
+          entry: 'Entry for cascade test',
+          userId: userId,
+          createdAt: DateTime(2026, 1, 1, 10, 0),
+        ),
+      );
 
       // Verify entry exists
       var entries = await db.entries.getEntriesForDate(DateTime(2026, 1, 1));
@@ -737,38 +829,49 @@ void main() {
       await db.db.customStatement('DELETE FROM users WHERE id = $userId');
 
       entries = await db.entries.getEntriesForDate(DateTime(2026, 1, 1));
-      expect(entries.any((e) => e.entry == 'Entry for cascade test'), false,
-          reason: 'ON DELETE CASCADE should have removed the entry');
+      expect(
+        entries.any((e) => e.entry == 'Entry for cascade test'),
+        false,
+        reason: 'ON DELETE CASCADE should have removed the entry',
+      );
     });
 
-    test('entries with NULL user_id survive user deletion (no cascade)', () async {
-      // Entries without a user_id should not be affected by user deletion
-      final userId = await db.userRepo.saveUser(User(
-        displayName: 'Other User',
-        createdAt: DateTime(2026, 1, 2),
-      ));
-      await db.entries.saveEntry(JournalEntry(
-        date: DateTime(2026, 1, 2),
-        entry: 'Entry without user',
-        userId: null,
-        createdAt: DateTime(2026, 1, 2, 10, 0),
-      ));
+    test(
+      'entries with NULL user_id survive user deletion (no cascade)',
+      () async {
+        // Entries without a user_id should not be affected by user deletion
+        final userId = await db.userRepo.saveUser(
+          User(displayName: 'Other User', createdAt: DateTime(2026, 1, 2)),
+        );
+        await db.entries.saveEntry(
+          JournalEntry(
+            date: DateTime(2026, 1, 2),
+            entry: 'Entry without user',
+            userId: null,
+            createdAt: DateTime(2026, 1, 2, 10, 0),
+          ),
+        );
 
-      await db.db.customStatement('DELETE FROM users WHERE id = $userId');
+        await db.db.customStatement('DELETE FROM users WHERE id = $userId');
 
-      final entries = await db.entries.getEntriesForDate(DateTime(2026, 1, 2));
-      expect(entries.any((e) => e.entry == 'Entry without user'), true);
-    });
+        final entries = await db.entries.getEntriesForDate(
+          DateTime(2026, 1, 2),
+        );
+        expect(entries.any((e) => e.entry == 'Entry without user'), true);
+      },
+    );
 
     test('date-based queries work after v9 table recreation', () async {
       // v8→v9 recreates journal_entries; verify date queries still work correctly.
       // (The idx_journal_date index only exists on migrated DBs, not fresh ones,
       // but the date column and queries must function regardless.)
-      await db.entries.saveEntry(JournalEntry(
-        date: DateTime(2026, 3, 5),
-        entry: 'Index test entry',
-        createdAt: DateTime(2026, 3, 5, 12, 0),
-      ));
+      await db.entries.saveEntry(
+        JournalEntry(
+          date: DateTime(2026, 3, 5),
+          entry: 'Index test entry',
+          createdAt: DateTime(2026, 3, 5, 12, 0),
+        ),
+      );
 
       final entries = await db.entries.getEntriesForDate(DateTime(2026, 3, 5));
       expect(entries, isNotEmpty);
@@ -780,36 +883,53 @@ void main() {
     });
 
     test('all columns preserved after v9 table recreation', () async {
-      final columns = await db.db
-          .customSelect("PRAGMA table_info('journal_entries')")
-          .get();
+      final columns =
+          await db.db
+              .customSelect("PRAGMA table_info('journal_entries')")
+              .get();
       final columnNames = columns.map((r) => r.data['name'] as String).toSet();
-      expect(columnNames, containsAll([
-        'id', 'date', 'entry', 'label', 'title', 'created_at', 'user_id', 'mood',
-      ]));
+      expect(
+        columnNames,
+        containsAll([
+          'id',
+          'date',
+          'entry',
+          'label',
+          'title',
+          'created_at',
+          'user_id',
+          'mood',
+        ]),
+      );
     });
 
     test('data integrity preserved through table recreation', () async {
       // Insert entries with various field combinations before v9 would run
-      final userId = await db.userRepo.saveUser(User(
-        displayName: 'Data Integrity User',
-        createdAt: DateTime(2026, 2, 1),
-      ));
+      final userId = await db.userRepo.saveUser(
+        User(
+          displayName: 'Data Integrity User',
+          createdAt: DateTime(2026, 2, 1),
+        ),
+      );
 
-      await db.entries.saveEntry(JournalEntry(
-        date: DateTime(2026, 2, 1),
-        entry: 'Full entry',
-        label: 'AM',
-        title: 'Test Title',
-        userId: userId,
-        mood: 4,
-        createdAt: DateTime(2026, 2, 1, 8, 0),
-      ));
-      await db.entries.saveEntry(JournalEntry(
-        date: DateTime(2026, 2, 1),
-        entry: 'Minimal entry',
-        createdAt: DateTime(2026, 2, 1, 12, 0),
-      ));
+      await db.entries.saveEntry(
+        JournalEntry(
+          date: DateTime(2026, 2, 1),
+          entry: 'Full entry',
+          label: 'AM',
+          title: 'Test Title',
+          userId: userId,
+          mood: 4,
+          createdAt: DateTime(2026, 2, 1, 8, 0),
+        ),
+      );
+      await db.entries.saveEntry(
+        JournalEntry(
+          date: DateTime(2026, 2, 1),
+          entry: 'Minimal entry',
+          createdAt: DateTime(2026, 2, 1, 12, 0),
+        ),
+      );
 
       final entries = await db.entries.getEntriesForDate(DateTime(2026, 2, 1));
       expect(entries.length, 2);
@@ -843,9 +963,10 @@ void main() {
     });
 
     test('mood column exists on journal_entries', () async {
-      final columns = await db.db
-          .customSelect("PRAGMA table_info('journal_entries')")
-          .get();
+      final columns =
+          await db.db
+              .customSelect("PRAGMA table_info('journal_entries')")
+              .get();
       final columnNames = columns.map((r) => r.data['name'] as String).toList();
       expect(columnNames, contains('mood'));
     });
@@ -867,26 +988,32 @@ void main() {
 
     test('mood values 1-5 round-trip correctly', () async {
       for (final mood in [1, 2, 3, 4, 5]) {
-        final id = await db.entries.saveEntry(JournalEntry(
-          date: DateTime(2026, 3, 10 + mood),
-          entry: 'Mood $mood entry',
-          mood: mood,
-          createdAt: DateTime(2026, 3, 10 + mood, 8, 0),
-        ));
+        final id = await db.entries.saveEntry(
+          JournalEntry(
+            date: DateTime(2026, 3, 10 + mood),
+            entry: 'Mood $mood entry',
+            mood: mood,
+            createdAt: DateTime(2026, 3, 10 + mood, 8, 0),
+          ),
+        );
 
-        final entries = await db.entries.getEntriesForDate(DateTime(2026, 3, 10 + mood));
+        final entries = await db.entries.getEntriesForDate(
+          DateTime(2026, 3, 10 + mood),
+        );
         final saved = entries.firstWhere((e) => e.id == id);
         expect(saved.mood, mood, reason: 'mood=$mood failed to round-trip');
       }
     });
 
     test('mood can be updated from NULL to a value', () async {
-      final id = await db.entries.saveEntry(JournalEntry(
-        date: DateTime(2026, 3, 20),
-        entry: 'Initially no mood',
-        mood: null,
-        createdAt: DateTime(2026, 3, 20, 8, 0),
-      ));
+      final id = await db.entries.saveEntry(
+        JournalEntry(
+          date: DateTime(2026, 3, 20),
+          entry: 'Initially no mood',
+          mood: null,
+          createdAt: DateTime(2026, 3, 20, 8, 0),
+        ),
+      );
 
       var entries = await db.entries.getEntriesForDate(DateTime(2026, 3, 20));
       var saved = entries.firstWhere((e) => e.id == id);
@@ -900,12 +1027,14 @@ void main() {
     });
 
     test('mood can be cleared (set back to NULL)', () async {
-      final id = await db.entries.saveEntry(JournalEntry(
-        date: DateTime(2026, 3, 21),
-        entry: 'Has mood then cleared',
-        mood: 5,
-        createdAt: DateTime(2026, 3, 21, 8, 0),
-      ));
+      final id = await db.entries.saveEntry(
+        JournalEntry(
+          date: DateTime(2026, 3, 21),
+          entry: 'Has mood then cleared',
+          mood: 5,
+          createdAt: DateTime(2026, 3, 21, 8, 0),
+        ),
+      );
 
       var entries = await db.entries.getEntriesForDate(DateTime(2026, 3, 21));
       var saved = entries.firstWhere((e) => e.id == id);
@@ -918,20 +1047,27 @@ void main() {
       expect(saved.mood, isNull);
     });
 
-    test('mood-only entry (no text, just mood) works with moodOnlyEntries', () async {
-      // v10 adds mood_only_entries setting to allow entries with mood but no text
-      final id = await db.entries.saveEntry(JournalEntry(
-        date: DateTime(2026, 3, 22),
-        entry: null,
-        mood: 4,
-        createdAt: DateTime(2026, 3, 22, 8, 0),
-      ));
+    test(
+      'mood-only entry (no text, just mood) works with moodOnlyEntries',
+      () async {
+        // v10 adds mood_only_entries setting to allow entries with mood but no text
+        final id = await db.entries.saveEntry(
+          JournalEntry(
+            date: DateTime(2026, 3, 22),
+            entry: null,
+            mood: 4,
+            createdAt: DateTime(2026, 3, 22, 8, 0),
+          ),
+        );
 
-      final entries = await db.entries.getEntriesForDate(DateTime(2026, 3, 22));
-      final saved = entries.firstWhere((e) => e.id == id);
-      expect(saved.entry, isNull);
-      expect(saved.mood, 4);
-    });
+        final entries = await db.entries.getEntriesForDate(
+          DateTime(2026, 3, 22),
+        );
+        final saved = entries.firstWhere((e) => e.id == id);
+        expect(saved.entry, isNull);
+        expect(saved.mood, 4);
+      },
+    );
 
     test('mood settings columns exist with correct defaults', () async {
       final settings = await db.settings.getSettings();
@@ -942,11 +1078,13 @@ void main() {
 
     test('mood settings round-trip correctly', () async {
       final settings = await db.settings.getSettings();
-      await db.settings.saveSettings(settings.copyWith(
-        moodEnabled: true,
-        moodRequired: true,
-        moodOnlyEntries: true,
-      ));
+      await db.settings.saveSettings(
+        settings.copyWith(
+          moodEnabled: true,
+          moodRequired: true,
+          moodOnlyEntries: true,
+        ),
+      );
 
       final reloaded = await db.settings.getSettings();
       expect(reloaded.moodEnabled, true);
@@ -955,13 +1093,15 @@ void main() {
     });
 
     test('mood setting columns exist in raw schema', () async {
-      final columns = await db.db
-          .customSelect("PRAGMA table_info('user_settings_table')")
-          .get();
+      final columns =
+          await db.db
+              .customSelect("PRAGMA table_info('user_settings_table')")
+              .get();
       final columnNames = columns.map((r) => r.data['name'] as String).toSet();
-      expect(columnNames, containsAll([
-        'mood_enabled', 'mood_required', 'mood_only_entries',
-      ]));
+      expect(
+        columnNames,
+        containsAll(['mood_enabled', 'mood_required', 'mood_only_entries']),
+      );
     });
 
     test('schema version is 13', () async {
@@ -986,79 +1126,119 @@ void main() {
     });
 
     test('all tables exist after full migration', () async {
-      final tables = await db.db
-          .customSelect(
-            "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'",
-          )
-          .get();
+      final tables =
+          await db.db
+              .customSelect(
+                "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'",
+              )
+              .get();
       final tableNames = tables.map((r) => r.data['name'] as String).toSet();
-      expect(tableNames, containsAll([
-        'journal_entries',
-        'users',
-        'user_settings_table',
-        'consent_records',
-      ]));
+      expect(
+        tableNames,
+        containsAll([
+          'journal_entries',
+          'users',
+          'user_settings_table',
+          'consent_records',
+        ]),
+      );
     });
 
     test('journal_entries has all v10 columns', () async {
-      final columns = await db.db
-          .customSelect("PRAGMA table_info('journal_entries')")
-          .get();
+      final columns =
+          await db.db
+              .customSelect("PRAGMA table_info('journal_entries')")
+              .get();
       final columnNames = columns.map((r) => r.data['name'] as String).toSet();
-      expect(columnNames, equals({
-        'id', 'date', 'entry', 'label', 'title', 'created_at', 'user_id', 'mood',
-      }));
+      expect(
+        columnNames,
+        equals({
+          'id',
+          'date',
+          'entry',
+          'label',
+          'title',
+          'created_at',
+          'user_id',
+          'mood',
+        }),
+      );
     });
 
     test('user_settings_table has all v10 columns', () async {
-      final columns = await db.db
-          .customSelect("PRAGMA table_info('user_settings_table')")
-          .get();
+      final columns =
+          await db.db
+              .customSelect("PRAGMA table_info('user_settings_table')")
+              .get();
       final columnNames = columns.map((r) => r.data['name'] as String).toSet();
-      expect(columnNames, containsAll([
-        'id', 'theme_mode', 'is_all_day_mode', 'ask_about_today',
-        'show_entry_title', 'week_start_day', 'nudge_hour', 'nudge_minute',
-        'app_lock_enabled', 'pin_hash', 'biometric_enabled',
-        'onboarding_complete', 'enter_to_save', 'bullet_points_on_enter',
-        'am_pm_cutoff_hour', 'user_id', 'mood_enabled', 'mood_required',
-        'mood_only_entries',
-      ]));
+      expect(
+        columnNames,
+        containsAll([
+          'id',
+          'theme_mode',
+          'is_all_day_mode',
+          'ask_about_today',
+          'show_entry_title',
+          'week_start_day',
+          'nudge_hour',
+          'nudge_minute',
+          'app_lock_enabled',
+          'pin_hash',
+          'biometric_enabled',
+          'onboarding_complete',
+          'enter_to_save',
+          'bullet_points_on_enter',
+          'am_pm_cutoff_hour',
+          'user_id',
+          'mood_enabled',
+          'mood_required',
+          'mood_only_entries',
+        ]),
+      );
     });
 
     test('no legacy columns remain after full migration', () async {
       // These columns should have been removed by v4 and v7 migrations
-      final jeColumns = await db.db
-          .customSelect("PRAGMA table_info('journal_entries')")
-          .get();
-      final jeColumnNames = jeColumns.map((r) => r.data['name'] as String).toSet();
+      final jeColumns =
+          await db.db
+              .customSelect("PRAGMA table_info('journal_entries')")
+              .get();
+      final jeColumnNames =
+          jeColumns.map((r) => r.data['name'] as String).toSet();
       expect(jeColumnNames, isNot(contains('morning_entry')));
       expect(jeColumnNames, isNot(contains('evening_entry')));
       expect(jeColumnNames, isNot(contains('all_day_entry')));
 
-      final settingsColumns = await db.db
-          .customSelect("PRAGMA table_info('user_settings_table')")
-          .get();
-      final settingsColumnNames = settingsColumns.map((r) => r.data['name'] as String).toSet();
+      final settingsColumns =
+          await db.db
+              .customSelect("PRAGMA table_info('user_settings_table')")
+              .get();
+      final settingsColumnNames =
+          settingsColumns.map((r) => r.data['name'] as String).toSet();
       expect(settingsColumnNames, isNot(contains('is_dark_mode')));
     });
 
     test('end-to-end: entry with all fields persists and reads back', () async {
-      final userId = await db.userRepo.saveUser(User(
-        displayName: 'E2E User',
-        email: 'e2e@test.com',
-        subscriptionTier: 'premium',
-        createdAt: DateTime(2026, 1, 1),
-      ));
+      final userId = await db.userRepo.saveUser(
+        User(
+          displayName: 'E2E User',
+          email: 'e2e@test.com',
+          subscriptionTier: 'premium',
+          createdAt: DateTime(2026, 1, 1),
+        ),
+      );
 
-      final id = await db.entries.saveEntry(JournalEntry(
-        date: DateTime(2026, 4, 1),
-        entry: 'End-to-end migration test',
-        label: 'PM',
-        title: 'E2E Title',
-        mood: 5,
-        userId: userId,
-        createdAt: DateTime(2026, 4, 1, 20, 0),
-      ));
+      final id = await db.entries.saveEntry(
+        JournalEntry(
+          date: DateTime(2026, 4, 1),
+          entry: 'End-to-end migration test',
+          label: 'PM',
+          title: 'E2E Title',
+          mood: 5,
+          userId: userId,
+          createdAt: DateTime(2026, 4, 1, 20, 0),
+        ),
+      );
 
       final entries = await db.entries.getEntriesForDate(DateTime(2026, 4, 1));
       final saved = entries.firstWhere((e) => e.id == id);

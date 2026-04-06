@@ -42,17 +42,11 @@ class _AppShellState extends State<AppShell>
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
-    _headerFade = CurvedAnimation(
-      parent: _headerAnim,
-      curve: Curves.easeOut,
-    );
+    _headerFade = CurvedAnimation(parent: _headerAnim, curve: Curves.easeOut);
     _headerSlide = Tween<Offset>(
       begin: const Offset(-0.05, 0),
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _headerAnim,
-      curve: Curves.easeOutCubic,
-    ));
+    ).animate(CurvedAnimation(parent: _headerAnim, curve: Curves.easeOutCubic));
   }
 
   @override
@@ -67,7 +61,9 @@ class _AppShellState extends State<AppShell>
       } else if (!_headerAnim.isCompleted) {
         _headerAnim.forward();
       }
-    } else if (!_reduceMotion && !_headerAnim.isAnimating && !_headerAnim.isCompleted) {
+    } else if (!_reduceMotion &&
+        !_headerAnim.isAnimating &&
+        !_headerAnim.isCompleted) {
       _headerAnim.forward();
     }
   }
@@ -88,7 +84,8 @@ class _AppShellState extends State<AppShell>
   void _onTabSelected(int index) {
     _pageController.animateToPage(
       index,
-      duration: _reduceMotion ? Duration.zero : const Duration(milliseconds: 300),
+      duration:
+          _reduceMotion ? Duration.zero : const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
     );
   }
@@ -115,17 +112,11 @@ class _AppShellState extends State<AppShell>
                   excludeSemantics: true,
                   child: RichText(
                     text: TextSpan(
-                      style: tt.headlineSmall?.copyWith(
-                        color: cs.primary,
-                      ),
+                      style: tt.headlineSmall?.copyWith(color: cs.primary),
                       children: const [
                         TextSpan(
-                          text: 'Since',
+                          text: 'Retraq',
                           style: TextStyle(fontWeight: FontWeight.w700),
-                        ),
-                        TextSpan(
-                          text: 'Then',
-                          style: TextStyle(fontWeight: FontWeight.w400),
                         ),
                       ],
                     ),
@@ -165,9 +156,7 @@ class _AppShellState extends State<AppShell>
             ),
           ),
           child: ClipRRect(
-            borderRadius: const BorderRadius.vertical(
-              top: Radius.circular(24),
-            ),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
             child: NavigationBar(
               selectedIndex: _currentIndex,
               onDestinationSelected: _onTabSelected,

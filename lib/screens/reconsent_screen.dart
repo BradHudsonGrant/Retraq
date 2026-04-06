@@ -54,7 +54,9 @@ class _ReconsentScreenState extends State<ReconsentScreen> {
       debugPrint('Failed to save consent records: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to save consent. Please try again.')),
+          const SnackBar(
+            content: Text('Failed to save consent. Please try again.'),
+          ),
         );
       }
     }
@@ -74,11 +76,7 @@ class _ReconsentScreenState extends State<ReconsentScreen> {
             children: [
               const SizedBox(height: AppSpacing.xxl),
               Center(
-                child: Icon(
-                  Icons.policy_outlined,
-                  size: 64,
-                  color: cs.primary,
-                ),
+                child: Icon(Icons.policy_outlined, size: 64, color: cs.primary),
               ),
               const SizedBox(height: AppSpacing.lg),
               Center(
@@ -107,49 +105,58 @@ class _ReconsentScreenState extends State<ReconsentScreen> {
                 value: _privacyAccepted,
                 onChanged: (v) => setState(() => _privacyAccepted = v ?? false),
                 label: 'I have read and agree to the Privacy Policy',
-                onTapLink: () => Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                    builder: (_) => const LegalScreen(
-                      title: 'Privacy Policy',
-                      content: privacyPolicyText,
+                onTapLink:
+                    () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder:
+                            (_) => const LegalScreen(
+                              title: 'Privacy Policy',
+                              content: privacyPolicyText,
+                            ),
+                      ),
                     ),
-                  ),
-                ),
               ),
               const SizedBox(height: AppSpacing.md),
               _ReconsentCheckbox(
                 value: _termsAccepted,
                 onChanged: (v) => setState(() => _termsAccepted = v ?? false),
                 label: 'I agree to the Terms of Use',
-                onTapLink: () => Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                    builder: (_) => const LegalScreen(
-                      title: 'Terms of Use',
-                      content: termsOfServiceText,
+                onTapLink:
+                    () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder:
+                            (_) => const LegalScreen(
+                              title: 'Terms of Use',
+                              content: termsOfServiceText,
+                            ),
+                      ),
                     ),
-                  ),
-                ),
               ),
               const SizedBox(height: AppSpacing.md),
               _ReconsentCheckbox(
                 value: _healthDisclaimerAccepted,
-                onChanged: (v) =>
-                    setState(() => _healthDisclaimerAccepted = v ?? false),
+                onChanged:
+                    (v) =>
+                        setState(() => _healthDisclaimerAccepted = v ?? false),
                 label: 'I have read and accept the Health Disclaimer',
-                onTapLink: () => Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                    builder: (_) => const LegalScreen(
-                      title: 'Health & Wellness Disclaimer',
-                      content: healthDisclaimerText,
+                onTapLink:
+                    () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder:
+                            (_) => const LegalScreen(
+                              title: 'Health & Wellness Disclaimer',
+                              content: healthDisclaimerText,
+                            ),
+                      ),
                     ),
-                  ),
-                ),
               ),
               const SizedBox(height: AppSpacing.xl),
               Center(
                 child: FilledButton(
                   onPressed:
-                      _privacyAccepted && _termsAccepted && _healthDisclaimerAccepted
+                      _privacyAccepted &&
+                              _termsAccepted &&
+                              _healthDisclaimerAccepted
                           ? _submit
                           : null,
                   style: FilledButton.styleFrom(
@@ -158,10 +165,7 @@ class _ReconsentScreenState extends State<ReconsentScreen> {
                       vertical: AppSpacing.md,
                     ),
                   ),
-                  child: Text(
-                    'Continue',
-                    style: tt.labelLarge,
-                  ),
+                  child: Text('Continue', style: tt.labelLarge),
                 ),
               ),
             ],
@@ -199,9 +203,7 @@ class _ReconsentCheckbox extends StatelessWidget {
           SizedBox(
             width: 48,
             height: 48,
-            child: Center(
-              child: Checkbox(value: value, onChanged: onChanged),
-            ),
+            child: Center(child: Checkbox(value: value, onChanged: onChanged)),
           ),
           const SizedBox(width: AppSpacing.sm),
           Expanded(

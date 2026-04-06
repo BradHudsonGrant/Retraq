@@ -34,31 +34,38 @@ void main() {
   group('OnboardingScreen', () {
     group('age gate', () {
       testWidgets('renders age gate as first page', (tester) async {
-        await tester.pumpWidget(wrapScreen(
-          OnboardingScreen(onComplete: () {}),
-        ));
+        await tester.pumpWidget(
+          wrapScreen(OnboardingScreen(onComplete: () {})),
+        );
         await tester.pumpAndSettle();
 
         expect(find.text('Before we begin'), findsOneWidget);
-        expect(find.text('Retraq is designed for users\naged 13 and older.'), findsOneWidget);
+        expect(
+          find.text('Retraq is designed for users\naged 13 and older.'),
+          findsOneWidget,
+        );
         expect(find.text('I am 13 or older'), findsOneWidget);
         expect(find.text('I am under 13'), findsOneWidget);
       });
 
-      testWidgets('hides dots and Next button on age gate page', (tester) async {
-        await tester.pumpWidget(wrapScreen(
-          OnboardingScreen(onComplete: () {}),
-        ));
+      testWidgets('hides dots and Next button on age gate page', (
+        tester,
+      ) async {
+        await tester.pumpWidget(
+          wrapScreen(OnboardingScreen(onComplete: () {})),
+        );
         await tester.pumpAndSettle();
 
         expect(find.text('Next'), findsNothing);
         expect(find.text('Skip'), findsNothing);
       });
 
-      testWidgets('I am 13 or older advances to first info page', (tester) async {
-        await tester.pumpWidget(wrapScreen(
-          OnboardingScreen(onComplete: () {}),
-        ));
+      testWidgets('I am 13 or older advances to first info page', (
+        tester,
+      ) async {
+        await tester.pumpWidget(
+          wrapScreen(OnboardingScreen(onComplete: () {})),
+        );
         await tester.pumpAndSettle();
 
         await passAgeGate(tester);
@@ -67,9 +74,9 @@ void main() {
       });
 
       testWidgets('I am under 13 shows persistent block', (tester) async {
-        await tester.pumpWidget(wrapScreen(
-          OnboardingScreen(onComplete: () {}),
-        ));
+        await tester.pumpWidget(
+          wrapScreen(OnboardingScreen(onComplete: () {})),
+        );
         await tester.pumpAndSettle();
 
         await tester.tap(find.text('I am under 13'));
@@ -83,21 +90,22 @@ void main() {
     });
 
     testWidgets('renders first page content', (tester) async {
-      await tester.pumpWidget(wrapScreen(
-        OnboardingScreen(onComplete: () {}),
-      ));
+      await tester.pumpWidget(wrapScreen(OnboardingScreen(onComplete: () {})));
       await tester.pumpAndSettle();
 
       await passAgeGate(tester);
 
       expect(find.text('Capture it\nbefore it\u2019s gone.'), findsOneWidget);
-      expect(find.text('Quick thoughts, random ideas, things you\u2019ll\nforget by tomorrow. Just get it down.'), findsOneWidget);
+      expect(
+        find.text(
+          'Quick thoughts, random ideas, things you\u2019ll\nforget by tomorrow. Just get it down.',
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('no Skip button after age gate', (tester) async {
-      await tester.pumpWidget(wrapScreen(
-        OnboardingScreen(onComplete: () {}),
-      ));
+      await tester.pumpWidget(wrapScreen(OnboardingScreen(onComplete: () {})));
       await tester.pumpAndSettle();
 
       await passAgeGate(tester);
@@ -106,9 +114,7 @@ void main() {
     });
 
     testWidgets('shows Next button on first page', (tester) async {
-      await tester.pumpWidget(wrapScreen(
-        OnboardingScreen(onComplete: () {}),
-      ));
+      await tester.pumpWidget(wrapScreen(OnboardingScreen(onComplete: () {})));
       await tester.pumpAndSettle();
 
       await passAgeGate(tester);
@@ -117,9 +123,7 @@ void main() {
     });
 
     testWidgets('Next advances to second page', (tester) async {
-      await tester.pumpWidget(wrapScreen(
-        OnboardingScreen(onComplete: () {}),
-      ));
+      await tester.pumpWidget(wrapScreen(OnboardingScreen(onComplete: () {})));
       await tester.pumpAndSettle();
 
       await passAgeGate(tester);
@@ -131,9 +135,7 @@ void main() {
     });
 
     testWidgets('shows Get Started on consent page', (tester) async {
-      await tester.pumpWidget(wrapScreen(
-        OnboardingScreen(onComplete: () {}),
-      ));
+      await tester.pumpWidget(wrapScreen(OnboardingScreen(onComplete: () {})));
       await tester.pumpAndSettle();
 
       await navigateToConsentPage(tester);
@@ -142,11 +144,13 @@ void main() {
       expect(find.text('Almost there!'), findsOneWidget);
     });
 
-    testWidgets('Get Started disabled until consent checkboxes checked', (tester) async {
+    testWidgets('Get Started disabled until consent checkboxes checked', (
+      tester,
+    ) async {
       var completed = false;
-      await tester.pumpWidget(wrapScreen(
-        OnboardingScreen(onComplete: () => completed = true),
-      ));
+      await tester.pumpWidget(
+        wrapScreen(OnboardingScreen(onComplete: () => completed = true)),
+      );
       await tester.pumpAndSettle();
 
       await navigateToConsentPage(tester);
@@ -179,9 +183,7 @@ void main() {
     });
 
     testWidgets('has 4 page indicator dots', (tester) async {
-      await tester.pumpWidget(wrapScreen(
-        OnboardingScreen(onComplete: () {}),
-      ));
+      await tester.pumpWidget(wrapScreen(OnboardingScreen(onComplete: () {})));
       await tester.pumpAndSettle();
 
       await passAgeGate(tester);
@@ -194,9 +196,7 @@ void main() {
     });
 
     testWidgets('Next button advances pages', (tester) async {
-      await tester.pumpWidget(wrapScreen(
-        OnboardingScreen(onComplete: () {}),
-      ));
+      await tester.pumpWidget(wrapScreen(OnboardingScreen(onComplete: () {})));
       await tester.pumpAndSettle();
 
       await passAgeGate(tester);
@@ -209,57 +209,72 @@ void main() {
     });
 
     testWidgets('all three info pages have correct body text', (tester) async {
-      await tester.pumpWidget(wrapScreen(
-        OnboardingScreen(onComplete: () {}),
-      ));
+      await tester.pumpWidget(wrapScreen(OnboardingScreen(onComplete: () {})));
       await tester.pumpAndSettle();
 
       await passAgeGate(tester);
 
       // Page 1
-      expect(find.text('Quick thoughts, random ideas, things you\u2019ll\nforget by tomorrow. Just get it down.'), findsOneWidget);
+      expect(
+        find.text(
+          'Quick thoughts, random ideas, things you\u2019ll\nforget by tomorrow. Just get it down.',
+        ),
+        findsOneWidget,
+      );
 
       // Page 2
       await tester.tap(find.text('Next'));
       await tester.pumpAndSettle();
-      expect(find.text('Look back on any day, week, or month.\nFull sentences optional \u2014 brain dumps welcome.'), findsOneWidget);
+      expect(
+        find.text(
+          'Look back on any day, week, or month.\nFull sentences optional \u2014 brain dumps welcome.',
+        ),
+        findsOneWidget,
+      );
 
       // Page 3
       await tester.tap(find.text('Next'));
       await tester.pumpAndSettle();
-      expect(find.text('Everything stays on your device.\nNo account. No cloud. No compromises.'), findsOneWidget);
+      expect(
+        find.text(
+          'Everything stays on your device.\nNo account. No cloud. No compromises.',
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('consent page shows health disclaimer', (tester) async {
-      await tester.pumpWidget(wrapScreen(
-        OnboardingScreen(onComplete: () {}),
-      ));
+      await tester.pumpWidget(wrapScreen(OnboardingScreen(onComplete: () {})));
       await tester.pumpAndSettle();
 
       await navigateToConsentPage(tester);
 
-      expect(find.textContaining('not a medical or therapeutic tool'), findsOneWidget);
+      expect(
+        find.textContaining('not a medical or therapeutic tool'),
+        findsOneWidget,
+      );
       expect(find.textContaining('988'), findsOneWidget);
     });
 
-    testWidgets('consent page shows privacy and terms checkboxes', (tester) async {
-      await tester.pumpWidget(wrapScreen(
-        OnboardingScreen(onComplete: () {}),
-      ));
+    testWidgets('consent page shows privacy and terms checkboxes', (
+      tester,
+    ) async {
+      await tester.pumpWidget(wrapScreen(OnboardingScreen(onComplete: () {})));
       await tester.pumpAndSettle();
 
       await navigateToConsentPage(tester);
 
       expect(find.byType(Checkbox), findsNWidgets(3));
       expect(find.text('I acknowledge the Health Disclaimer'), findsOneWidget);
-      expect(find.text('I have read and agree to the Privacy Policy'), findsOneWidget);
+      expect(
+        find.text('I have read and agree to the Privacy Policy'),
+        findsOneWidget,
+      );
       expect(find.text('I agree to the Terms of Use'), findsOneWidget);
     });
 
     testWidgets('renders logo SVG', (tester) async {
-      await tester.pumpWidget(wrapScreen(
-        OnboardingScreen(onComplete: () {}),
-      ));
+      await tester.pumpWidget(wrapScreen(OnboardingScreen(onComplete: () {})));
       await tester.pumpAndSettle();
 
       expect(find.byType(SvgPicture), findsOneWidget);

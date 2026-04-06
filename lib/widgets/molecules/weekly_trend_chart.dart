@@ -82,7 +82,9 @@ class _WeeklyTrendChartState extends State<WeeklyTrendChart>
     final data = widget.data;
     final int weeksAgo = data.length - 1 - index;
     final now = DateTime.now();
-    final weekStart = now.subtract(Duration(days: weeksAgo * 7 + now.weekday - 1));
+    final weekStart = now.subtract(
+      Duration(days: weeksAgo * 7 + now.weekday - 1),
+    );
     final month = _monthAbbr(weekStart.month);
     final count = data[index];
     final entries = count == 1 ? 'entry' : 'entries';
@@ -91,8 +93,18 @@ class _WeeklyTrendChartState extends State<WeeklyTrendChart>
 
   static String _monthAbbr(int month) {
     const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
     return months[month - 1];
   }
@@ -247,16 +259,14 @@ class _TrendChartPainter extends CustomPainter {
     if (data.isEmpty) return;
 
     final int count = data.length;
-    final double barWidth =
-        (size.width - _gap * (count - 1)) / count;
+    final double barWidth = (size.width - _gap * (count - 1)) / count;
     final int maxVal = data.reduce(math.max);
     final double avg =
         data.isEmpty ? 0 : data.reduce((a, b) => a + b) / data.length;
 
     // ── Average dashed line ──
     if (maxVal > 0) {
-      final double avgY =
-          size.height - (avg / maxVal) * size.height;
+      final double avgY = size.height - (avg / maxVal) * size.height;
       _drawDashedLine(canvas, size.width, avgY);
     }
 
@@ -265,8 +275,11 @@ class _TrendChartPainter extends CustomPainter {
       // Staggered interval per bar.
       final double start = i / (count * 2);
       final double end = start + (1.0 - start);
-      final double t = Interval(start, end, curve: Curves.easeOutCubic)
-          .transform(animationValue);
+      final double t = Interval(
+        start,
+        end,
+        curve: Curves.easeOutCubic,
+      ).transform(animationValue);
 
       final double x = i * (barWidth + _gap);
       final bool isLast = i == count - 1;
@@ -333,9 +346,10 @@ class _TrendChartPainter extends CustomPainter {
   void _drawDashedLine(Canvas canvas, double width, double y) {
     const double dashWidth = 4;
     const double dashGap = 4;
-    final paint = Paint()
-      ..color = outline.withValues(alpha: 0.45)
-      ..strokeWidth = 1;
+    final paint =
+        Paint()
+          ..color = outline.withValues(alpha: 0.45)
+          ..strokeWidth = 1;
 
     double x = 0;
     while (x < width) {
@@ -368,9 +382,9 @@ class _Labels extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final style = Theme.of(context).textTheme.labelSmall?.copyWith(
-          color: onSurfaceVariant.withValues(alpha: 0.7),
-          fontSize: 12,
-        );
+      color: onSurfaceVariant.withValues(alpha: 0.7),
+      fontSize: 12,
+    );
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -381,17 +395,13 @@ class _Labels extends StatelessWidget {
         // Show label for every 3rd position (from the end) plus "Now".
         final bool show = isLast || (weeksAgo > 0 && weeksAgo % 3 == 0);
 
-        final String label =
-            isLast ? 'Now' : '${weeksAgo}w';
+        final String label = isLast ? 'Now' : '${weeksAgo}w';
 
         return Expanded(
-          child: show
-              ? Text(
-                  label,
-                  textAlign: TextAlign.center,
-                  style: style,
-                )
-              : const SizedBox.shrink(),
+          child:
+              show
+                  ? Text(label, textAlign: TextAlign.center, style: style)
+                  : const SizedBox.shrink(),
         );
       }),
     );

@@ -47,39 +47,40 @@ class EntryActionMenu extends StatelessWidget {
               onDelete();
           }
         },
-        itemBuilder: (_) => [
-          const PopupMenuItem(
-            value: 'edit',
-            child: Row(
-              children: [
-                Icon(Icons.edit_outlined, size: 18),
-                SizedBox(width: AppSpacing.sm),
-                Text('Edit'),
-              ],
-            ),
-          ),
-          if (onShare != null)
-            const PopupMenuItem(
-              value: 'share',
-              child: Row(
-                children: [
-                  Icon(Icons.share_outlined, size: 18),
-                  SizedBox(width: AppSpacing.sm),
-                  Text('Share'),
-                ],
+        itemBuilder:
+            (_) => [
+              const PopupMenuItem(
+                value: 'edit',
+                child: Row(
+                  children: [
+                    Icon(Icons.edit_outlined, size: 18),
+                    SizedBox(width: AppSpacing.sm),
+                    Text('Edit'),
+                  ],
+                ),
               ),
-            ),
-          const PopupMenuItem(
-            value: 'delete',
-            child: Row(
-              children: [
-                Icon(Icons.delete_outline, size: 18),
-                SizedBox(width: AppSpacing.sm),
-                Text('Delete'),
-              ],
-            ),
-          ),
-        ],
+              if (onShare != null)
+                const PopupMenuItem(
+                  value: 'share',
+                  child: Row(
+                    children: [
+                      Icon(Icons.share_outlined, size: 18),
+                      SizedBox(width: AppSpacing.sm),
+                      Text('Share'),
+                    ],
+                  ),
+                ),
+              const PopupMenuItem(
+                value: 'delete',
+                child: Row(
+                  children: [
+                    Icon(Icons.delete_outline, size: 18),
+                    SizedBox(width: AppSpacing.sm),
+                    Text('Delete'),
+                  ],
+                ),
+              ),
+            ],
       ),
     );
   }

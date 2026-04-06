@@ -49,46 +49,62 @@ class _MoodBlobState extends State<MoodBlob>
     // Goopy squish: aggressively widen + compress, then wobble back.
     _scaleX = TweenSequence<double>([
       TweenSequenceItem(
-        tween: Tween(begin: 1.0, end: 1.45)
-            .chain(CurveTween(curve: Curves.easeOut)),
+        tween: Tween(
+          begin: 1.0,
+          end: 1.45,
+        ).chain(CurveTween(curve: Curves.easeOut)),
         weight: 15,
       ),
       TweenSequenceItem(
-        tween: Tween(begin: 1.45, end: 0.85)
-            .chain(CurveTween(curve: Curves.easeInOut)),
+        tween: Tween(
+          begin: 1.45,
+          end: 0.85,
+        ).chain(CurveTween(curve: Curves.easeInOut)),
         weight: 20,
       ),
       TweenSequenceItem(
-        tween: Tween(begin: 0.85, end: 1.12)
-            .chain(CurveTween(curve: Curves.easeOut)),
+        tween: Tween(
+          begin: 0.85,
+          end: 1.12,
+        ).chain(CurveTween(curve: Curves.easeOut)),
         weight: 25,
       ),
       TweenSequenceItem(
-        tween: Tween(begin: 1.12, end: 1.0)
-            .chain(CurveTween(curve: Curves.elasticOut)),
+        tween: Tween(
+          begin: 1.12,
+          end: 1.0,
+        ).chain(CurveTween(curve: Curves.elasticOut)),
         weight: 40,
       ),
     ]).animate(_controller);
 
     _scaleY = TweenSequence<double>([
       TweenSequenceItem(
-        tween: Tween(begin: 1.0, end: 0.6)
-            .chain(CurveTween(curve: Curves.easeOut)),
+        tween: Tween(
+          begin: 1.0,
+          end: 0.6,
+        ).chain(CurveTween(curve: Curves.easeOut)),
         weight: 15,
       ),
       TweenSequenceItem(
-        tween: Tween(begin: 0.6, end: 1.25)
-            .chain(CurveTween(curve: Curves.easeInOut)),
+        tween: Tween(
+          begin: 0.6,
+          end: 1.25,
+        ).chain(CurveTween(curve: Curves.easeInOut)),
         weight: 20,
       ),
       TweenSequenceItem(
-        tween: Tween(begin: 1.25, end: 0.92)
-            .chain(CurveTween(curve: Curves.easeOut)),
+        tween: Tween(
+          begin: 1.25,
+          end: 0.92,
+        ).chain(CurveTween(curve: Curves.easeOut)),
         weight: 25,
       ),
       TweenSequenceItem(
-        tween: Tween(begin: 0.92, end: 1.0)
-            .chain(CurveTween(curve: Curves.elasticOut)),
+        tween: Tween(
+          begin: 0.92,
+          end: 1.0,
+        ).chain(CurveTween(curve: Curves.elasticOut)),
         weight: 40,
       ),
     ]).animate(_controller);
@@ -120,8 +136,7 @@ class _MoodBlobState extends State<MoodBlob>
       builder: (context, child) {
         return Transform(
           alignment: Alignment.center,
-          transform: Matrix4.identity()
-            ..scale(_scaleX.value, _scaleY.value),
+          transform: Matrix4.identity()..scale(_scaleX.value, _scaleY.value),
           child: child,
         );
       },

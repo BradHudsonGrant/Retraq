@@ -42,15 +42,16 @@ class _RetraqCardState extends State<RetraqCard> {
       decoration: BoxDecoration(
         color: widget.color ?? cs.surfaceContainerLowest,
         borderRadius: widget.borderRadius ?? AppSpacing.borderRadiusXl,
-        boxShadow: widget.elevation > 0
-            ? [
-                BoxShadow(
-                  color: cs.onSurface.withValues(alpha: 0.06),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-              ]
-            : null,
+        boxShadow:
+            widget.elevation > 0
+                ? [
+                  BoxShadow(
+                    color: cs.onSurface.withValues(alpha: 0.06),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ]
+                : null,
       ),
       child: widget.child,
     );
@@ -64,29 +65,33 @@ class _RetraqCardState extends State<RetraqCard> {
         child: FocusableActionDetector(
           actions: <Type, Action<Intent>>{
             ActivateIntent: CallbackAction<ActivateIntent>(
-              onInvoke: (_) { widget.onTap!(); return null; },
+              onInvoke: (_) {
+                widget.onTap!();
+                return null;
+              },
             ),
           },
-          child: reduceMotion
-              ? GestureDetector(
-                  onTap: widget.onTap,
-                  behavior: HitTestBehavior.opaque,
-                  child: card,
-                )
-              : GestureDetector(
-                  onTapDown: (_) => setState(() => _isPressed = true),
-                  onTapUp: (_) {
-                    setState(() => _isPressed = false);
-                    widget.onTap!();
-                  },
-                  onTapCancel: () => setState(() => _isPressed = false),
-                  child: AnimatedScale(
-                    scale: _isPressed ? 0.97 : 1.0,
-                    duration: Duration(milliseconds: _isPressed ? 80 : 150),
-                    curve: Curves.easeOut,
+          child:
+              reduceMotion
+                  ? GestureDetector(
+                    onTap: widget.onTap,
+                    behavior: HitTestBehavior.opaque,
                     child: card,
+                  )
+                  : GestureDetector(
+                    onTapDown: (_) => setState(() => _isPressed = true),
+                    onTapUp: (_) {
+                      setState(() => _isPressed = false);
+                      widget.onTap!();
+                    },
+                    onTapCancel: () => setState(() => _isPressed = false),
+                    child: AnimatedScale(
+                      scale: _isPressed ? 0.97 : 1.0,
+                      duration: Duration(milliseconds: _isPressed ? 80 : 150),
+                      curve: Curves.easeOut,
+                      child: card,
+                    ),
                   ),
-                ),
         ),
       );
     }

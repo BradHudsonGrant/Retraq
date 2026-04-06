@@ -69,7 +69,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
     if (picked != null && mounted) {
       _save(s.copyWith(nudgeHour: picked.hour, nudgeMinute: picked.minute));
       await NotificationService.instance.requestPermission();
-      await NotificationService.instance.scheduleDaily(picked.hour, minute: picked.minute);
+      await NotificationService.instance.scheduleDaily(
+        picked.hour,
+        minute: picked.minute,
+      );
     }
   }
 
@@ -89,17 +92,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
         const SizedBox(height: AppSpacing.xl),
 
-        PreferencesSection(
-          settings: s,
-          onSettingsChanged: _save,
-        ),
+        PreferencesSection(settings: s, onSettingsChanged: _save),
 
         const SizedBox(height: AppSpacing.xl),
 
-        SecuritySection(
-          settings: s,
-          onSettingsChanged: _save,
-        ),
+        SecuritySection(settings: s, onSettingsChanged: _save),
 
         const SizedBox(height: AppSpacing.xl),
 
@@ -124,16 +121,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return SafeArea(
       child: SingleChildScrollView(
         padding: AppSpacing.pagePadding,
-        child: isTablet(context)
-            ? Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 600),
-                  child: content,
-                ),
-              )
-            : content,
+        child:
+            isTablet(context)
+                ? Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 600),
+                    child: content,
+                  ),
+                )
+                : content,
       ),
     );
   }
 }
-

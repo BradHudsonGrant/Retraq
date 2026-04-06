@@ -18,8 +18,9 @@ Future<bool> verifyPinIfNeeded(
     enableDrag: false,
     backgroundColor: Theme.of(context).colorScheme.surface,
     shape: const RoundedRectangleBorder(
-      borderRadius:
-          BorderRadius.vertical(top: Radius.circular(AppSpacing.radiusXxl)),
+      borderRadius: BorderRadius.vertical(
+        top: Radius.circular(AppSpacing.radiusXxl),
+      ),
     ),
     builder: (_) => PinVerifySheet(pinHash: pinHash),
   );

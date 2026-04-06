@@ -49,9 +49,10 @@ class _LockScreenState extends State<LockScreen> {
     if (!mounted) return;
 
     // Read configured PIN length (4 or 6, default 4) from secure storage.
-    final storedPinLength = int.tryParse(
-            await const FlutterSecureStorage().read(key: pinLengthPrefKey) ??
-                '') ??
+    final storedPinLength =
+        int.tryParse(
+          await const FlutterSecureStorage().read(key: pinLengthPrefKey) ?? '',
+        ) ??
         4;
 
     setState(() {
@@ -90,7 +91,8 @@ class _LockScreenState extends State<LockScreen> {
     if (_settings == null ||
         _lockout.isLockedOut ||
         _isVerifying ||
-        _enteredPin.length >= _pinLength) return;
+        _enteredPin.length >= _pinLength)
+      return;
     setState(() {
       _isError = false;
       _enteredPin += '$digit';
@@ -161,26 +163,27 @@ class _LockScreenState extends State<LockScreen> {
     final cs = Theme.of(context).colorScheme;
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Forgot PIN?'),
-        content: const Text(
-          "If you've forgotten your PIN, you can reset the app. "
-          'This will permanently delete all your journal entries and data.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Cancel'),
+      builder:
+          (ctx) => AlertDialog(
+            title: const Text('Forgot PIN?'),
+            content: const Text(
+              "If you've forgotten your PIN, you can reset the app. "
+              'This will permanently delete all your journal entries and data.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(ctx).pop();
+                  _showDeleteConfirmation();
+                },
+                child: Text('Reset App', style: TextStyle(color: cs.error)),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(ctx).pop();
-              _showDeleteConfirmation();
-            },
-            child: Text('Reset App', style: TextStyle(color: cs.error)),
-          ),
-        ],
-      ),
     );
   }
 
@@ -189,46 +192,55 @@ class _LockScreenState extends State<LockScreen> {
     final controller = TextEditingController();
     showDialog(
       context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setDialogState) => AlertDialog(
-          title:
-              Text('Type DELETE to confirm', style: TextStyle(color: cs.error)),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                  'This action cannot be undone. All data will be permanently erased.'),
-              const SizedBox(height: 16),
-              TextField(
-                controller: controller,
-                autofocus: true,
-                decoration: const InputDecoration(
-                  hintText: 'Type DELETE',
+      builder:
+          (ctx) => StatefulBuilder(
+            builder:
+                (ctx, setDialogState) => AlertDialog(
+                  title: Text(
+                    'Type DELETE to confirm',
+                    style: TextStyle(color: cs.error),
+                  ),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text(
+                        'This action cannot be undone. All data will be permanently erased.',
+                      ),
+                      const SizedBox(height: 16),
+                      TextField(
+                        controller: controller,
+                        autofocus: true,
+                        decoration: const InputDecoration(
+                          hintText: 'Type DELETE',
+                        ),
+                        onChanged: (_) => setDialogState(() {}),
+                      ),
+                    ],
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(ctx).pop(),
+                      child: const Text('Cancel'),
+                    ),
+                    TextButton(
+                      onPressed:
+                          controller.text == 'DELETE'
+                              ? () {
+                                Navigator.of(ctx).pop();
+                                DatabaseService.instance.userRepo
+                                    .deleteAllData();
+                              }
+                              : null,
+                      child: Text(
+                        'Delete Everything',
+                        style: TextStyle(
+                          color: controller.text == 'DELETE' ? cs.error : null,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                onChanged: (_) => setDialogState(() {}),
-              ),
-            ],
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(ctx).pop(),
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: controller.text == 'DELETE'
-                  ? () {
-                      Navigator.of(ctx).pop();
-                      DatabaseService.instance.userRepo.deleteAllData();
-                    }
-                  : null,
-              child: Text('Delete Everything',
-                  style: TextStyle(
-                      color:
-                          controller.text == 'DELETE' ? cs.error : null)),
-            ),
-          ],
-        ),
-      ),
     );
   }
 
@@ -253,12 +265,13 @@ class _LockScreenState extends State<LockScreen> {
                 child: BionicText(
                   text: _statusText,
                   style: tt.bodyLarge?.copyWith(
-                    color: (_isError || _lockout.isLockedOut)
-                        ? cs.error
-                        : cs.onSurfaceVariant,
+                    color:
+                        (_isError || _lockout.isLockedOut)
+                            ? cs.error
+                            : cs.onSurfaceVariant,
                   ),
-                  enabled: SettingsProvider.maybeOf(context)
-                          ?.bionicReadingEnabled ??
+                  enabled:
+                      SettingsProvider.maybeOf(context)?.bionicReadingEnabled ??
                       false,
                 ),
               ),
@@ -277,9 +290,8 @@ class _LockScreenState extends State<LockScreen> {
               NumberPad(
                 onDigit: _onDigit,
                 onDelete: _onDelete,
-                onBiometric: _settings?.biometricEnabled == true
-                    ? _tryBiometric
-                    : null,
+                onBiometric:
+                    _settings?.biometricEnabled == true ? _tryBiometric : null,
                 isDisabled: _lockout.isLockedOut,
               ),
 
@@ -328,9 +340,10 @@ class _AnimatedLogoState extends State<_AnimatedLogo>
       duration: const Duration(seconds: 3),
     );
 
-    _scaleAnim = Tween<double>(begin: 0.96, end: 1.04).animate(
-      CurvedAnimation(parent: _ctrl, curve: Curves.easeInOutSine),
-    );
+    _scaleAnim = Tween<double>(
+      begin: 0.96,
+      end: 1.04,
+    ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeInOutSine));
   }
 
   @override

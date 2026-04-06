@@ -35,9 +35,12 @@ class JournalEntries extends Table {
   TextColumn get title => text().nullable()();
   DateTimeColumn get createdAt => dateTime()();
   IntColumn get mood => integer().nullable()(); // 1-5 scale, null = no mood
-  IntColumn get userId => integer()
-      .nullable()
-      .references(Users, #id, onDelete: KeyAction.cascade)();
+  IntColumn get userId =>
+      integer().nullable().references(
+        Users,
+        #id,
+        onDelete: KeyAction.cascade,
+      )();
 }
 
 /// SQLite table for users.
@@ -54,24 +57,32 @@ class Users extends Table {
 /// SQLite table for user settings (singleton row, id always = 1).
 class UserSettingsTable extends Table {
   IntColumn get id => integer().autoIncrement()();
-  IntColumn get themeMode => integer().withDefault(const Constant(0))(); // 0=system, 1=light, 2=dark
+  IntColumn get themeMode =>
+      integer().withDefault(const Constant(0))(); // 0=system, 1=light, 2=dark
   BoolColumn get isAllDayMode => boolean().withDefault(const Constant(true))();
   BoolColumn get askAboutToday => boolean().withDefault(const Constant(true))();
-  BoolColumn get showEntryTitle => boolean().withDefault(const Constant(false))();
+  BoolColumn get showEntryTitle =>
+      boolean().withDefault(const Constant(false))();
   IntColumn get weekStartDay => integer().withDefault(const Constant(1))();
   IntColumn get nudgeHour => integer().withDefault(const Constant(20))();
   IntColumn get nudgeMinute => integer().withDefault(const Constant(0))();
-  BoolColumn get appLockEnabled => boolean().withDefault(const Constant(false))();
+  BoolColumn get appLockEnabled =>
+      boolean().withDefault(const Constant(false))();
   TextColumn get pinHash => text().nullable()();
-  BoolColumn get biometricEnabled => boolean().withDefault(const Constant(false))();
-  BoolColumn get onboardingComplete => boolean().withDefault(const Constant(false))();
+  BoolColumn get biometricEnabled =>
+      boolean().withDefault(const Constant(false))();
+  BoolColumn get onboardingComplete =>
+      boolean().withDefault(const Constant(false))();
   BoolColumn get enterToSave => boolean().withDefault(const Constant(false))();
-  BoolColumn get bulletPointsOnEnter => boolean().withDefault(const Constant(false))();
+  BoolColumn get bulletPointsOnEnter =>
+      boolean().withDefault(const Constant(false))();
   IntColumn get amPmCutoffHour => integer().withDefault(const Constant(14))();
   BoolColumn get moodEnabled => boolean().withDefault(const Constant(false))();
   BoolColumn get moodRequired => boolean().withDefault(const Constant(false))();
-  BoolColumn get moodOnlyEntries => boolean().withDefault(const Constant(false))();
-  BoolColumn get bionicReadingEnabled => boolean().withDefault(const Constant(false))();
+  BoolColumn get moodOnlyEntries =>
+      boolean().withDefault(const Constant(false))();
+  BoolColumn get bionicReadingEnabled =>
+      boolean().withDefault(const Constant(false))();
   IntColumn get userId => integer().nullable()();
 }
 
@@ -79,7 +90,8 @@ class UserSettingsTable extends Table {
 @DataClassName('ConsentRecordRow')
 class ConsentRecords extends Table {
   IntColumn get id => integer().autoIncrement()();
-  TextColumn get consentType => text()(); // 'privacy_policy' or 'terms_of_service'
+  TextColumn get consentType =>
+      text()(); // 'privacy_policy' or 'terms_of_service'
   TextColumn get documentVersion => text()(); // date string like '2026-03-29'
   DateTimeColumn get acceptedAt => dateTime()();
   TextColumn get appVersion => text().nullable()();
@@ -87,7 +99,9 @@ class ConsentRecords extends Table {
 
 // ── Drift database class ─────────────────────────────────
 
-@DriftDatabase(tables: [JournalEntries, Users, UserSettingsTable, ConsentRecords])
+@DriftDatabase(
+  tables: [JournalEntries, Users, UserSettingsTable, ConsentRecords],
+)
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
@@ -173,10 +187,9 @@ class DatabaseService {
     if (file.existsSync()) {
       // Try opening with encryption first; if it fails, migrate.
       try {
-        final testDb = AppDatabase(NativeDatabase(
-          file,
-          setup: (db) => _setupDb(db, encryptionKey),
-        ));
+        final testDb = AppDatabase(
+          NativeDatabase(file, setup: (db) => _setupDb(db, encryptionKey)),
+        );
         // Test that we can actually read from it.
         await testDb.customSelect('SELECT count(*) FROM sqlite_master').get();
         _db = testDb;
@@ -185,18 +198,19 @@ class DatabaseService {
         await _migrateToEncrypted(file, encryptionKey);
       }
     } else {
-      _db = AppDatabase(NativeDatabase(
-        file,
-        setup: (db) => _setupDb(db, encryptionKey),
-      ));
+      _db = AppDatabase(
+        NativeDatabase(file, setup: (db) => _setupDb(db, encryptionKey)),
+      );
     }
 
     _initRepositories();
 
     // Verify foreign keys are enforced — catches silent PRAGMA failures.
     final fkResult = await _db.customSelect('PRAGMA foreign_keys').getSingle();
-    assert(fkResult.data.values.first == 1,
-        'PRAGMA foreign_keys is not ON after database init');
+    assert(
+      fkResult.data.values.first == 1,
+      'PRAGMA foreign_keys is not ON after database init',
+    );
 
     // Ensure settings defaults exist so watchSettings() emits immediately.
     await settings.getSettings();
@@ -215,56 +229,67 @@ class DatabaseService {
     final backupFile = File('${file.path}.bak');
     await file.rename(backupFile.path);
 
-    _db = AppDatabase(NativeDatabase(
-      file,
-      setup: (db) => _setupDb(db, encryptionKey),
-    ));
+    _db = AppDatabase(
+      NativeDatabase(file, setup: (db) => _setupDb(db, encryptionKey)),
+    );
 
     await _db.batch((batch) {
       for (final row in entryRows) {
-        batch.insert(_db.journalEntries, JournalEntriesCompanion.insert(
-          date: row.date,
-          entry: Value(row.entry),
-          label: Value(row.label),
-          title: Value(row.title),
-          createdAt: row.createdAt,
-          mood: Value(row.mood),
-          userId: Value(row.userId),
-        ));
+        batch.insert(
+          _db.journalEntries,
+          JournalEntriesCompanion.insert(
+            date: row.date,
+            entry: Value(row.entry),
+            label: Value(row.label),
+            title: Value(row.title),
+            createdAt: row.createdAt,
+            mood: Value(row.mood),
+            userId: Value(row.userId),
+          ),
+        );
       }
       for (final row in userRows) {
-        batch.insert(_db.users, UsersCompanion.insert(
-          displayName: Value(row.displayName),
-          email: Value(row.email),
-          subscriptionTier: Value(row.subscriptionTier),
-          createdAt: row.createdAt,
-        ));
+        batch.insert(
+          _db.users,
+          UsersCompanion.insert(
+            displayName: Value(row.displayName),
+            email: Value(row.email),
+            subscriptionTier: Value(row.subscriptionTier),
+            createdAt: row.createdAt,
+          ),
+        );
       }
       for (final row in settingsRows) {
-        batch.insert(_db.userSettingsTable, UserSettingsTableCompanion(
-          themeMode: Value(row.themeMode),
-          isAllDayMode: Value(row.isAllDayMode),
-          askAboutToday: Value(row.askAboutToday),
-          showEntryTitle: Value(row.showEntryTitle),
-          weekStartDay: Value(row.weekStartDay),
-          nudgeHour: Value(row.nudgeHour),
-          nudgeMinute: Value(row.nudgeMinute),
-          appLockEnabled: Value(row.appLockEnabled),
-          pinHash: Value(row.pinHash),
-          biometricEnabled: Value(row.biometricEnabled),
-          onboardingComplete: Value(row.onboardingComplete),
-          enterToSave: Value(row.enterToSave),
-          bulletPointsOnEnter: Value(row.bulletPointsOnEnter),
-          amPmCutoffHour: Value(row.amPmCutoffHour),
-        ));
+        batch.insert(
+          _db.userSettingsTable,
+          UserSettingsTableCompanion(
+            themeMode: Value(row.themeMode),
+            isAllDayMode: Value(row.isAllDayMode),
+            askAboutToday: Value(row.askAboutToday),
+            showEntryTitle: Value(row.showEntryTitle),
+            weekStartDay: Value(row.weekStartDay),
+            nudgeHour: Value(row.nudgeHour),
+            nudgeMinute: Value(row.nudgeMinute),
+            appLockEnabled: Value(row.appLockEnabled),
+            pinHash: Value(row.pinHash),
+            biometricEnabled: Value(row.biometricEnabled),
+            onboardingComplete: Value(row.onboardingComplete),
+            enterToSave: Value(row.enterToSave),
+            bulletPointsOnEnter: Value(row.bulletPointsOnEnter),
+            amPmCutoffHour: Value(row.amPmCutoffHour),
+          ),
+        );
       }
       for (final row in consentRows) {
-        batch.insert(_db.consentRecords, ConsentRecordsCompanion.insert(
-          consentType: row.consentType,
-          documentVersion: row.documentVersion,
-          acceptedAt: row.acceptedAt,
-          appVersion: Value(row.appVersion),
-        ));
+        batch.insert(
+          _db.consentRecords,
+          ConsentRecordsCompanion.insert(
+            consentType: row.consentType,
+            documentVersion: row.documentVersion,
+            acceptedAt: row.acceptedAt,
+            appVersion: Value(row.appVersion),
+          ),
+        );
       }
     });
 
@@ -282,11 +307,13 @@ class DatabaseService {
   /// Initialize with an in-memory database (for tests).
   @visibleForTesting
   Future<void> initInMemory() async {
-    _db = AppDatabase(NativeDatabase.memory(
-      setup: (db) {
-        db.execute('PRAGMA foreign_keys = ON');
-      },
-    ));
+    _db = AppDatabase(
+      NativeDatabase.memory(
+        setup: (db) {
+          db.execute('PRAGMA foreign_keys = ON');
+        },
+      ),
+    );
 
     _initRepositories();
 
@@ -305,5 +332,4 @@ class DatabaseService {
   Future<void> dispose() async {
     await _db.close();
   }
-
 }

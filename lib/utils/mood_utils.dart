@@ -22,7 +22,13 @@ Color moodColorFor(int mood, Brightness brightness) {
 
 /// Get the emoji for a mood value (1-5).
 String moodEmoji(int mood) {
-  const emojis = ['\u{1F622}', '\u{1F614}', '\u{1F610}', '\u{1F60A}', '\u{1F929}'];
+  const emojis = [
+    '\u{1F622}',
+    '\u{1F614}',
+    '\u{1F610}',
+    '\u{1F60A}',
+    '\u{1F929}',
+  ];
   if (mood < 1 || mood > 5) return '';
   return emojis[mood - 1];
 }

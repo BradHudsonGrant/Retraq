@@ -75,14 +75,17 @@ class WeekDayList extends StatelessWidget {
           final isToday = date == today;
           final isFuture = date.isAfter(today);
           final dayEntries = grouped[date] ?? [];
-          final dayLabel = DateFormat('EEEE').format(date); // Monday, Tuesday...
+          final dayLabel = DateFormat(
+            'EEEE',
+          ).format(date); // Monday, Tuesday...
           final dateLabel = DateFormat('MMM d').format(date); // Mar 26
 
           return Padding(
             padding: const EdgeInsets.only(bottom: AppSpacing.sm),
             child: Semantics(
               button: !isFuture,
-              label: '${isToday ? 'Today' : dayLabel}, $dateLabel'
+              label:
+                  '${isToday ? 'Today' : dayLabel}, $dateLabel'
                   '${dayEntries.isEmpty && !isFuture ? ', no entries' : ''}'
                   '${dayEntries.isNotEmpty ? ', ${dayEntries.length} ${dayEntries.length == 1 ? 'entry' : 'entries'}' : ''}',
               enabled: !isFuture,
@@ -90,72 +93,83 @@ class WeekDayList extends StatelessWidget {
                 onTap: isFuture ? null : () => onDaySelected?.call(date),
                 borderRadius: AppSpacing.borderRadiusXl,
                 child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(AppSpacing.lg),
-                decoration: BoxDecoration(
-                  color: cs.surfaceContainerLow,
-                  borderRadius: AppSpacing.borderRadiusXl,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Day header row
-                    Row(
-                      children: [
-                        Text(
-                          isToday ? 'Today' : dayLabel,
-                          style: tt.titleSmall?.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: isFuture
-                                ? cs.onSurfaceVariant.withValues(alpha: 0.75)
-                                : isToday
-                                    ? cs.primary
-                                    : cs.onSurface,
-                          ),
-                        ),
-                        const SizedBox(width: AppSpacing.sm),
-                        Text(
-                          dateLabel,
-                          style: tt.labelMedium?.copyWith(
-                            color: isFuture
-                                ? cs.onSurfaceVariant.withValues(alpha: 0.75)
-                                : cs.onSurfaceVariant.withValues(alpha: 0.7),
-                          ),
-                        ),
-                        const Spacer(),
-                        if (dayEntries.isNotEmpty)
-                          Container(
-                            width: 6,
-                            height: 6,
-                            decoration: BoxDecoration(
-                              color: cs.primary,
-                              shape: BoxShape.circle,
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(AppSpacing.lg),
+                  decoration: BoxDecoration(
+                    color: cs.surfaceContainerLow,
+                    borderRadius: AppSpacing.borderRadiusXl,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Day header row
+                      Row(
+                        children: [
+                          Text(
+                            isToday ? 'Today' : dayLabel,
+                            style: tt.titleSmall?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color:
+                                  isFuture
+                                      ? cs.onSurfaceVariant.withValues(
+                                        alpha: 0.75,
+                                      )
+                                      : isToday
+                                      ? cs.primary
+                                      : cs.onSurface,
                             ),
                           ),
-                      ],
-                    ),
-
-                    // Entries for this day
-                    if (dayEntries.isNotEmpty) ...[
-                      const SizedBox(height: AppSpacing.md),
-                      ...dayEntries.map((entry) => Padding(
-                            padding:
-                                const EdgeInsets.only(bottom: AppSpacing.sm),
-                            child: _InlineEntry(entry: entry),
-                          )),
-                    ] else if (!isFuture) ...[
-                      const SizedBox(height: AppSpacing.sm),
-                      Text(
-                        'No entries',
-                        style: tt.bodySmall?.copyWith(
-                          color: cs.onSurfaceVariant.withValues(alpha: 0.6),
-                          fontStyle: FontStyle.italic,
-                        ),
+                          const SizedBox(width: AppSpacing.sm),
+                          Text(
+                            dateLabel,
+                            style: tt.labelMedium?.copyWith(
+                              color:
+                                  isFuture
+                                      ? cs.onSurfaceVariant.withValues(
+                                        alpha: 0.75,
+                                      )
+                                      : cs.onSurfaceVariant.withValues(
+                                        alpha: 0.7,
+                                      ),
+                            ),
+                          ),
+                          const Spacer(),
+                          if (dayEntries.isNotEmpty)
+                            Container(
+                              width: 6,
+                              height: 6,
+                              decoration: BoxDecoration(
+                                color: cs.primary,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                        ],
                       ),
+
+                      // Entries for this day
+                      if (dayEntries.isNotEmpty) ...[
+                        const SizedBox(height: AppSpacing.md),
+                        ...dayEntries.map(
+                          (entry) => Padding(
+                            padding: const EdgeInsets.only(
+                              bottom: AppSpacing.sm,
+                            ),
+                            child: _InlineEntry(entry: entry),
+                          ),
+                        ),
+                      ] else if (!isFuture) ...[
+                        const SizedBox(height: AppSpacing.sm),
+                        Text(
+                          'No entries',
+                          style: tt.bodySmall?.copyWith(
+                            color: cs.onSurfaceVariant.withValues(alpha: 0.6),
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
-              ),
               ),
             ),
           );
@@ -208,12 +222,14 @@ class _InlineEntry extends StatelessWidget {
                 const SizedBox(width: AppSpacing.sm),
                 RetraqChip(
                   label: entry.label!,
-                  color: entry.label == 'AM'
-                      ? cs.primaryContainer
-                      : cs.tertiaryContainer,
-                  textColor: entry.label == 'AM'
-                      ? cs.onPrimaryContainer
-                      : cs.onTertiaryContainer,
+                  color:
+                      entry.label == 'AM'
+                          ? cs.primaryContainer
+                          : cs.tertiaryContainer,
+                  textColor:
+                      entry.label == 'AM'
+                          ? cs.onPrimaryContainer
+                          : cs.onTertiaryContainer,
                 ),
               ],
               if (entry.title != null && entry.title!.isNotEmpty) ...[
@@ -236,8 +252,7 @@ class _InlineEntry extends StatelessWidget {
                   ),
                 ),
               ],
-              if (entry.title == null || entry.title!.isEmpty)
-                const Spacer(),
+              if (entry.title == null || entry.title!.isEmpty) const Spacer(),
               EntryActionMenu(
                 entry: entry,
                 onEdit: () => _confirmEdit(context),
@@ -255,7 +270,9 @@ class _InlineEntry extends StatelessWidget {
               style: tt.bodyMedium?.copyWith(height: 1.5),
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
-              enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
+              enabled:
+                  SettingsProvider.maybeOf(context)?.bionicReadingEnabled ??
+                  false,
             ),
         ],
       ),

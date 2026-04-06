@@ -18,26 +18,34 @@ void main() {
   });
 
   Widget wrapShell() => MaterialApp(
-        home: AppShell(
-          onThemeModeChanged: (_) async {},
-          themeMode: ThemeMode.system,
-        ),
-      );
+    home: AppShell(
+      onThemeModeChanged: (_) async {},
+      themeMode: ThemeMode.system,
+    ),
+  );
 
-  testWidgets('AppShell renders Top Bar and four tabs',
-      (WidgetTester tester) async {
+  testWidgets('AppShell renders Top Bar and four tabs', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(wrapShell());
     await tester.pump(const Duration(milliseconds: 100));
 
     // Header uses RichText with separate "Ret" + "raq" spans
-    expect(find.byWidgetPredicate((w) =>
-        w is RichText &&
-        w.text is TextSpan &&
-        (w.text as TextSpan).children != null &&
-        (w.text as TextSpan).children!.any(
-            (s) => s is TextSpan && s.text == 'Ret') &&
-        (w.text as TextSpan).children!.any(
-            (s) => s is TextSpan && s.text == 'raq')), findsOneWidget);
+    expect(
+      find.byWidgetPredicate(
+        (w) =>
+            w is RichText &&
+            w.text is TextSpan &&
+            (w.text as TextSpan).children != null &&
+            (w.text as TextSpan).children!.any(
+              (s) => s is TextSpan && s.text == 'Ret',
+            ) &&
+            (w.text as TextSpan).children!.any(
+              (s) => s is TextSpan && s.text == 'raq',
+            ),
+      ),
+      findsOneWidget,
+    );
     expect(find.byType(SvgPicture), findsWidgets);
     expect(find.byType(AppBar), findsOneWidget);
 

@@ -65,8 +65,9 @@ class _StatsScreenState extends State<StatsScreen>
     final now = DateTime.now();
     final int weeksAgo = data.length - 1 - index;
     // Monday of that week.
-    final weekStart =
-        now.subtract(Duration(days: weeksAgo * 7 + now.weekday - 1));
+    final weekStart = now.subtract(
+      Duration(days: weeksAgo * 7 + now.weekday - 1),
+    );
     final weekEnd = weekStart.add(const Duration(days: 6));
     final fmt = DateFormat.MMMd();
     final range = '${fmt.format(weekStart)} – ${fmt.format(weekEnd)}';
@@ -87,8 +88,9 @@ class _StatsScreenState extends State<StatsScreen>
   Future<void> _loadOnThisDay() async {
     final now = DateTime.now();
     final lastYear = DateTime(now.year - 1, now.month, now.day);
-    final entries =
-        await DatabaseService.instance.entries.getEntriesForDate(lastYear);
+    final entries = await DatabaseService.instance.entries.getEntriesForDate(
+      lastYear,
+    );
     if (!mounted) return;
     if (entries.isNotEmpty) {
       setState(() => _onThisDayEntry = entries.first);
@@ -148,8 +150,7 @@ class _StatsScreenState extends State<StatsScreen>
     if (entry == null) return const SizedBox.shrink();
 
     final text = entry.displayText;
-    final preview =
-        text.length > 150 ? '${text.substring(0, 150)}...' : text;
+    final preview = text.length > 150 ? '${text.substring(0, 150)}...' : text;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.lg),
@@ -165,8 +166,11 @@ class _StatsScreenState extends State<StatsScreen>
           children: [
             Row(
               children: [
-                Icon(Icons.auto_awesome,
-                    size: 18, color: cs.onTertiaryContainer),
+                Icon(
+                  Icons.auto_awesome,
+                  size: 18,
+                  color: cs.onTertiaryContainer,
+                ),
                 const SizedBox(width: AppSpacing.sm),
                 Text(
                   'On this day last year...',
@@ -188,10 +192,10 @@ class _StatsScreenState extends State<StatsScreen>
             if (preview.isNotEmpty)
               BionicText(
                 text: preview,
-                style: tt.bodyMedium?.copyWith(
-                  color: cs.onTertiaryContainer,
-                ),
-                enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
+                style: tt.bodyMedium?.copyWith(color: cs.onTertiaryContainer),
+                enabled:
+                    SettingsProvider.maybeOf(context)?.bionicReadingEnabled ??
+                    false,
               ),
           ],
         ),
@@ -303,17 +307,14 @@ class _StatsScreenState extends State<StatsScreen>
               Icon(
                 Icons.shield,
                 size: 16,
-                color: _stats.freezeAvailable
-                    ? cs.primary
-                    : cs.onSurfaceVariant,
+                color:
+                    _stats.freezeAvailable ? cs.primary : cs.onSurfaceVariant,
               ),
               const SizedBox(width: AppSpacing.xs),
               Flexible(
                 child: Text(
                   'Streak Freeze',
-                  style: tt.labelMedium?.copyWith(
-                    color: cs.onSurfaceVariant,
-                  ),
+                  style: tt.labelMedium?.copyWith(color: cs.onSurfaceVariant),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
@@ -324,11 +325,11 @@ class _StatsScreenState extends State<StatsScreen>
             text: _stats.freezeAvailable ? '1 available' : 'Used this week',
             style: tt.bodyMedium?.copyWith(
               fontWeight: FontWeight.w600,
-              color: _stats.freezeAvailable
-                  ? cs.primary
-                  : cs.onSurfaceVariant,
+              color: _stats.freezeAvailable ? cs.primary : cs.onSurfaceVariant,
             ),
-            enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
+            enabled:
+                SettingsProvider.maybeOf(context)?.bionicReadingEnabled ??
+                false,
           ),
         ],
       ),
@@ -348,7 +349,9 @@ class _StatsScreenState extends State<StatsScreen>
           BionicText(
             text: 'Most active day: ${_dayNames[_stats.mostActiveWeekday - 1]}',
             style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
-            enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
+            enabled:
+                SettingsProvider.maybeOf(context)?.bionicReadingEnabled ??
+                false,
           ),
         ],
       ),
@@ -387,7 +390,9 @@ class _StatsScreenState extends State<StatsScreen>
                 children: [
                   Text(
                     'Average: ${_stats.averageMood!.toStringAsFixed(1)}',
-                    style: tt.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                    style: tt.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                   Text(
                     moodLabel(_stats.averageMood!.round()),
@@ -543,17 +548,15 @@ class _StatsScreenState extends State<StatsScreen>
             // ── Header ──
             Text(
               'Stats',
-              style: tt.displaySmall?.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
+              style: tt.displaySmall?.copyWith(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: AppSpacing.xs),
             BionicText(
               text: 'Your journey so far.',
-              style: tt.bodyLarge?.copyWith(
-                color: cs.onSurfaceVariant,
-              ),
-              enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
+              style: tt.bodyLarge?.copyWith(color: cs.onSurfaceVariant),
+              enabled:
+                  SettingsProvider.maybeOf(context)?.bionicReadingEnabled ??
+                  false,
             ),
 
             const SizedBox(height: AppSpacing.lg),
@@ -561,20 +564,17 @@ class _StatsScreenState extends State<StatsScreen>
             // ── Loading skeleton ──
             if (_isLoading)
               _buildLoadingSkeleton(cs)
-
             // ── Empty state ──
             else if (_stats.totalEntries == 0) ...[
               Padding(
-                padding: const EdgeInsets.symmetric(
-                    vertical: AppSpacing.xxl),
+                padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxl),
                 child: Center(
                   child: Column(
                     children: [
                       Icon(
                         Icons.bar_chart,
                         size: 48,
-                        color: cs.onSurfaceVariant
-                            .withValues(alpha: 0.75),
+                        color: cs.onSurfaceVariant.withValues(alpha: 0.75),
                       ),
                       const SizedBox(height: AppSpacing.md),
                       Text(
@@ -586,28 +586,29 @@ class _StatsScreenState extends State<StatsScreen>
                       ),
                       const SizedBox(height: AppSpacing.xs),
                       BionicText(
-                        text: 'Start journaling to see your patterns and streaks.',
+                        text:
+                            'Start journaling to see your patterns and streaks.',
                         textAlign: TextAlign.center,
                         style: tt.bodyMedium?.copyWith(
-                          color: cs.onSurfaceVariant
-                              .withValues(alpha: 0.75),
+                          color: cs.onSurfaceVariant.withValues(alpha: 0.75),
                         ),
-                        enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
+                        enabled:
+                            SettingsProvider.maybeOf(
+                              context,
+                            )?.bionicReadingEnabled ??
+                            false,
                       ),
                     ],
                   ),
                 ),
               ),
-            ]
-
-            else ...[
+            ] else ...[
               _buildOnThisDayCard(cs, tt),
               if (isTablet(context))
                 _buildTabletStats(cs, tt)
               else
                 _buildPhoneStats(cs, tt),
             ], // end stats content
-
             // ── Bottom padding for nav bar ──
             const SizedBox(height: AppSpacing.navBarClearance),
           ],
@@ -649,10 +650,9 @@ class _SkeletonShimmerState extends State<_SkeletonShimmer>
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: _controller,
-      builder: (context, child) => Opacity(
-        opacity: 0.3 + 0.4 * _controller.value,
-        child: child,
-      ),
+      builder:
+          (context, child) =>
+              Opacity(opacity: 0.3 + 0.4 * _controller.value, child: child),
       child: widget.child,
     );
   }

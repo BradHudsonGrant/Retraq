@@ -16,10 +16,15 @@ void main() {
 
   group('SettingsScreen', () {
     testWidgets('renders Appearance section', (tester) async {
-      await tester.pumpWidget(wrapWidget(
-        SettingsScreen(onThemeModeChanged: (_) async {}, themeMode: ThemeMode.system),
-        settings: UserSettings(),
-      ));
+      await tester.pumpWidget(
+        wrapWidget(
+          SettingsScreen(
+            onThemeModeChanged: (_) async {},
+            themeMode: ThemeMode.system,
+          ),
+          settings: UserSettings(),
+        ),
+      );
       await tester.pump(const Duration(milliseconds: 200));
 
       expect(find.text('Appearance'), findsOneWidget);
@@ -28,10 +33,15 @@ void main() {
     });
 
     testWidgets('renders System, Day and Night theme cards', (tester) async {
-      await tester.pumpWidget(wrapWidget(
-        SettingsScreen(onThemeModeChanged: (_) async {}, themeMode: ThemeMode.system),
-        settings: UserSettings(),
-      ));
+      await tester.pumpWidget(
+        wrapWidget(
+          SettingsScreen(
+            onThemeModeChanged: (_) async {},
+            themeMode: ThemeMode.system,
+          ),
+          settings: UserSettings(),
+        ),
+      );
       await tester.pump(const Duration(milliseconds: 200));
 
       expect(find.text('System'), findsOneWidget);
@@ -41,10 +51,15 @@ void main() {
     });
 
     testWidgets('renders Preferences section', (tester) async {
-      await tester.pumpWidget(wrapWidget(
-        SettingsScreen(onThemeModeChanged: (_) async {}, themeMode: ThemeMode.system),
-        settings: UserSettings(),
-      ));
+      await tester.pumpWidget(
+        wrapWidget(
+          SettingsScreen(
+            onThemeModeChanged: (_) async {},
+            themeMode: ThemeMode.system,
+          ),
+          settings: UserSettings(),
+        ),
+      );
       await tester.pump(const Duration(milliseconds: 200));
 
       expect(find.text('Preferences'), findsOneWidget);
@@ -57,10 +72,15 @@ void main() {
     });
 
     testWidgets('renders Security section', (tester) async {
-      await tester.pumpWidget(wrapWidget(
-        SettingsScreen(onThemeModeChanged: (_) async {}, themeMode: ThemeMode.system),
-        settings: UserSettings(),
-      ));
+      await tester.pumpWidget(
+        wrapWidget(
+          SettingsScreen(
+            onThemeModeChanged: (_) async {},
+            themeMode: ThemeMode.system,
+          ),
+          settings: UserSettings(),
+        ),
+      );
       await tester.pump(const Duration(milliseconds: 200));
 
       expect(find.text('Security'), findsOneWidget);
@@ -69,10 +89,15 @@ void main() {
     });
 
     testWidgets('renders Nudge card', (tester) async {
-      await tester.pumpWidget(wrapWidget(
-        SettingsScreen(onThemeModeChanged: (_) async {}, themeMode: ThemeMode.system),
-        settings: UserSettings(),
-      ));
+      await tester.pumpWidget(
+        wrapWidget(
+          SettingsScreen(
+            onThemeModeChanged: (_) async {},
+            themeMode: ThemeMode.system,
+          ),
+          settings: UserSettings(),
+        ),
+      );
       await tester.pump(const Duration(milliseconds: 200));
 
       expect(find.textContaining('nudge'), findsOneWidget);
@@ -81,10 +106,15 @@ void main() {
     });
 
     testWidgets('renders Your Data section', (tester) async {
-      await tester.pumpWidget(wrapWidget(
-        SettingsScreen(onThemeModeChanged: (_) async {}, themeMode: ThemeMode.system),
-        settings: UserSettings(),
-      ));
+      await tester.pumpWidget(
+        wrapWidget(
+          SettingsScreen(
+            onThemeModeChanged: (_) async {},
+            themeMode: ThemeMode.system,
+          ),
+          settings: UserSettings(),
+        ),
+      );
       await tester.pump(const Duration(milliseconds: 200));
 
       // Your Data is a collapsed ExpansionTile — scroll to it first
@@ -107,10 +137,15 @@ void main() {
     });
 
     testWidgets('renders version and privacy link', (tester) async {
-      await tester.pumpWidget(wrapWidget(
-        SettingsScreen(onThemeModeChanged: (_) async {}, themeMode: ThemeMode.system),
-        settings: UserSettings(),
-      ));
+      await tester.pumpWidget(
+        wrapWidget(
+          SettingsScreen(
+            onThemeModeChanged: (_) async {},
+            themeMode: ThemeMode.system,
+          ),
+          settings: UserSettings(),
+        ),
+      );
       await tester.pump(const Duration(milliseconds: 200));
 
       expect(find.text('Retraq Version 0.9.0'), findsOneWidget);
@@ -120,11 +155,18 @@ void main() {
       await flushDriftTimers(tester);
     });
 
-    testWidgets('has correct number of visible SettingsRow widgets', (tester) async {
-      await tester.pumpWidget(wrapWidget(
-        SettingsScreen(onThemeModeChanged: (_) async {}, themeMode: ThemeMode.system),
-        settings: UserSettings(),
-      ));
+    testWidgets('has correct number of visible SettingsRow widgets', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        wrapWidget(
+          SettingsScreen(
+            onThemeModeChanged: (_) async {},
+            themeMode: ThemeMode.system,
+          ),
+          settings: UserSettings(),
+        ),
+      );
       await tester.pump(const Duration(milliseconds: 200));
 
       // Visible: All Day Notes, Opening Prompt, Journal Entry Title, Mood Tracking, Bionic Reading, App Lock = 6
@@ -135,13 +177,15 @@ void main() {
 
     testWidgets('theme toggle callback fires', (tester) async {
       int? selectedMode;
-      await tester.pumpWidget(wrapWidget(
-        SettingsScreen(
-          onThemeModeChanged: (v) async => selectedMode = v,
-          themeMode: ThemeMode.system,
+      await tester.pumpWidget(
+        wrapWidget(
+          SettingsScreen(
+            onThemeModeChanged: (v) async => selectedMode = v,
+            themeMode: ThemeMode.system,
+          ),
+          settings: UserSettings(),
         ),
-        settings: UserSettings(),
-      ));
+      );
       await tester.pump(const Duration(milliseconds: 200));
 
       // Tap "Night" theme card
@@ -153,10 +197,15 @@ void main() {
     });
 
     testWidgets('shows check on selected theme card', (tester) async {
-      await tester.pumpWidget(wrapWidget(
-        SettingsScreen(onThemeModeChanged: (_) async {}, themeMode: ThemeMode.system),
-        settings: UserSettings(),
-      ));
+      await tester.pumpWidget(
+        wrapWidget(
+          SettingsScreen(
+            onThemeModeChanged: (_) async {},
+            themeMode: ThemeMode.system,
+          ),
+          settings: UserSettings(),
+        ),
+      );
       await tester.pump(const Duration(milliseconds: 200));
 
       // System is selected, should show check_circle

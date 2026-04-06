@@ -92,23 +92,29 @@ void main() {
       db = DatabaseService.instance;
 
       // Seed test entries
-      await db.entries.saveEntry(JournalEntry(
-        date: DateTime(2026, 3, 1),
-        entry: 'Had a great morning run today',
-        label: 'AM',
-        createdAt: DateTime(2026, 3, 1, 8),
-      ));
-      await db.entries.saveEntry(JournalEntry(
-        date: DateTime(2026, 3, 2),
-        entry: 'Finished the Flutter project',
-        title: 'Project Update',
-        createdAt: DateTime(2026, 3, 2, 14),
-      ));
-      await db.entries.saveEntry(JournalEntry(
-        date: DateTime(2026, 3, 3),
-        entry: 'Relaxed and read a book',
-        createdAt: DateTime(2026, 3, 3, 20),
-      ));
+      await db.entries.saveEntry(
+        JournalEntry(
+          date: DateTime(2026, 3, 1),
+          entry: 'Had a great morning run today',
+          label: 'AM',
+          createdAt: DateTime(2026, 3, 1, 8),
+        ),
+      );
+      await db.entries.saveEntry(
+        JournalEntry(
+          date: DateTime(2026, 3, 2),
+          entry: 'Finished the Flutter project',
+          title: 'Project Update',
+          createdAt: DateTime(2026, 3, 2, 14),
+        ),
+      );
+      await db.entries.saveEntry(
+        JournalEntry(
+          date: DateTime(2026, 3, 3),
+          entry: 'Relaxed and read a book',
+          createdAt: DateTime(2026, 3, 3, 20),
+        ),
+      );
     });
 
     test('searchEntries finds matching entry text', () async {
@@ -174,8 +180,13 @@ void main() {
     test('returns today or earlier', () {
       final start = weekStartDate(weekStartDay: 1);
       final today = DateTime.now();
-      expect(start.isBefore(today) || start.isAtSameMomentAs(
-          DateTime(today.year, today.month, today.day)), true);
+      expect(
+        start.isBefore(today) ||
+            start.isAtSameMomentAs(
+              DateTime(today.year, today.month, today.day),
+            ),
+        true,
+      );
     });
   });
 
@@ -211,11 +222,13 @@ void main() {
 
     test('getEntriesForDate retrieves saved entries', () async {
       // Save a known entry
-      await db.entries.saveEntry(JournalEntry(
-        date: DateTime(2026, 4, 2),
-        entry: 'Entry for April 2',
-        createdAt: DateTime(2026, 4, 2, 10, 0),
-      ));
+      await db.entries.saveEntry(
+        JournalEntry(
+          date: DateTime(2026, 4, 2),
+          entry: 'Entry for April 2',
+          createdAt: DateTime(2026, 4, 2, 10, 0),
+        ),
+      );
 
       final entries = await db.entries.getEntriesForDate(DateTime(2026, 4, 2));
       expect(entries, isNotEmpty);
@@ -223,16 +236,20 @@ void main() {
     });
 
     test('getEntriesForDate returns empty for date with no entries', () async {
-      final entries = await db.entries.getEntriesForDate(DateTime(2099, 12, 31));
+      final entries = await db.entries.getEntriesForDate(
+        DateTime(2099, 12, 31),
+      );
       expect(entries, isEmpty);
     });
 
     test('deleteEntry removes the entry', () async {
-      final id = await db.entries.saveEntry(JournalEntry(
-        date: DateTime(2026, 4, 3),
-        entry: 'To be deleted',
-        createdAt: DateTime(2026, 4, 3, 12, 0),
-      ));
+      final id = await db.entries.saveEntry(
+        JournalEntry(
+          date: DateTime(2026, 4, 3),
+          entry: 'To be deleted',
+          createdAt: DateTime(2026, 4, 3, 12, 0),
+        ),
+      );
 
       // Verify it exists
       var entries = await db.entries.getEntriesForDate(DateTime(2026, 4, 3));
@@ -247,11 +264,13 @@ void main() {
     });
 
     test('saveEntry with existing id updates the entry', () async {
-      final id = await db.entries.saveEntry(JournalEntry(
-        date: DateTime(2026, 4, 4),
-        entry: 'Original text',
-        createdAt: DateTime(2026, 4, 4, 9, 0),
-      ));
+      final id = await db.entries.saveEntry(
+        JournalEntry(
+          date: DateTime(2026, 4, 4),
+          entry: 'Original text',
+          createdAt: DateTime(2026, 4, 4, 9, 0),
+        ),
+      );
 
       // Retrieve, modify, and save again
       final entries = await db.entries.getEntriesForDate(DateTime(2026, 4, 4));
@@ -308,15 +327,20 @@ void main() {
     });
 
     test('batchSaveEntries inserts multiple entries', () async {
-      final entries = List.generate(3, (i) => JournalEntry(
-        date: DateTime(2026, 6, 10 + i),
-        entry: 'Batch entry $i',
-        createdAt: DateTime(2026, 6, 10 + i, 8, 0),
-      ));
+      final entries = List.generate(
+        3,
+        (i) => JournalEntry(
+          date: DateTime(2026, 6, 10 + i),
+          entry: 'Batch entry $i',
+          createdAt: DateTime(2026, 6, 10 + i, 8, 0),
+        ),
+      );
       await db.entries.batchSaveEntries(entries);
 
       for (int i = 0; i < 3; i++) {
-        final found = await db.entries.getEntriesForDate(DateTime(2026, 6, 10 + i));
+        final found = await db.entries.getEntriesForDate(
+          DateTime(2026, 6, 10 + i),
+        );
         expect(found.any((e) => e.entry == 'Batch entry $i'), true);
       }
     });
@@ -336,11 +360,13 @@ void main() {
 
     test('watchEntriesForDate emits current entries', () async {
       final date = DateTime(2026, 5, 1);
-      await db.entries.saveEntry(JournalEntry(
-        date: date,
-        entry: 'Watch test initial',
-        createdAt: DateTime(2026, 5, 1, 8, 0),
-      ));
+      await db.entries.saveEntry(
+        JournalEntry(
+          date: date,
+          entry: 'Watch test initial',
+          createdAt: DateTime(2026, 5, 1, 8, 0),
+        ),
+      );
 
       final stream = db.entries.watchEntriesForDate(date);
       final first = await stream.first;
@@ -358,11 +384,13 @@ void main() {
       final initialCount = firstEmission.length;
 
       // Save a new entry
-      await db.entries.saveEntry(JournalEntry(
-        date: date,
-        entry: 'Watch test added',
-        createdAt: DateTime(2026, 5, 2, 10, 0),
-      ));
+      await db.entries.saveEntry(
+        JournalEntry(
+          date: date,
+          entry: 'Watch test added',
+          createdAt: DateTime(2026, 5, 2, 10, 0),
+        ),
+      );
 
       // Next emission should include the new entry
       final updated = await db.entries.watchEntriesForDate(date).first;
@@ -383,11 +411,13 @@ void main() {
     test('initInMemory() creates a usable database', () async {
       // DB was already initialised in the top-level setUpAll.
       // Verify it is usable by performing a simple write + read.
-      final id = await db.entries.saveEntry(JournalEntry(
-        date: DateTime(2026, 7, 1),
-        entry: 'Init test entry',
-        createdAt: DateTime(2026, 7, 1, 9, 0),
-      ));
+      final id = await db.entries.saveEntry(
+        JournalEntry(
+          date: DateTime(2026, 7, 1),
+          entry: 'Init test entry',
+          createdAt: DateTime(2026, 7, 1, 9, 0),
+        ),
+      );
       expect(id, greaterThan(0));
 
       final entries = await db.entries.getEntriesForDate(DateTime(2026, 7, 1));
@@ -410,10 +440,7 @@ void main() {
 
     test('double initInMemory() does not throw', () async {
       // Re-initialising should not throw; it replaces the internal DB.
-      await expectLater(
-        DatabaseService.instance.initInMemory(),
-        completes,
-      );
+      await expectLater(DatabaseService.instance.initInMemory(), completes);
     });
 
     test('PRAGMA foreign_keys is enforced on user_id FK', () async {
@@ -429,10 +456,7 @@ void main() {
         userId: 99999, // non-existent user
       );
       // Drift surfaces SQLite FK violations as exceptions.
-      expect(
-        () async => await db.entries.saveEntry(entry),
-        throwsA(anything),
-      );
+      expect(() async => await db.entries.saveEntry(entry), throwsA(anything));
     });
   });
 
@@ -517,7 +541,8 @@ void main() {
       final bytes = List<int>.generate(32, (i) => i);
       final base64Key = base64Encode(bytes);
       final decoded = base64Decode(base64Key);
-      final hex = decoded.map((b) => b.toRadixString(16).padLeft(2, '0')).join();
+      final hex =
+          decoded.map((b) => b.toRadixString(16).padLeft(2, '0')).join();
 
       // Should be 64 hex chars (32 bytes * 2 hex chars each)
       expect(hex.length, 64);
@@ -658,34 +683,43 @@ void main() {
         "VALUES ('privacy_policy', '2026-03-29', ${DateTime(2026, 3, 29).millisecondsSinceEpoch ~/ 1000}, '1.0.0')",
       );
 
-      final rows = await db.db
-          .customSelect('SELECT * FROM consent_records WHERE consent_type = ?',
-              variables: [Variable<String>('privacy_policy')])
-          .get();
+      final rows =
+          await db.db
+              .customSelect(
+                'SELECT * FROM consent_records WHERE consent_type = ?',
+                variables: [Variable<String>('privacy_policy')],
+              )
+              .get();
       expect(rows, isNotEmpty);
       expect(rows.first.data['document_version'], '2026-03-29');
     });
 
     test('journal_entries has user_id FK column', () async {
       // Verify the column exists by querying table_info.
-      final columns = await db.db
-          .customSelect("PRAGMA table_info('journal_entries')")
-          .get();
+      final columns =
+          await db.db
+              .customSelect("PRAGMA table_info('journal_entries')")
+              .get();
       final columnNames = columns.map((r) => r.data['name'] as String).toList();
       expect(columnNames, contains('user_id'));
     });
 
     test('batch operations preserve all entries', () async {
-      final batchEntries = List.generate(10, (i) => JournalEntry(
-        date: DateTime(2026, 8, 1 + i),
-        entry: 'Migration batch entry $i',
-        createdAt: DateTime(2026, 8, 1 + i, 12, 0),
-      ));
+      final batchEntries = List.generate(
+        10,
+        (i) => JournalEntry(
+          date: DateTime(2026, 8, 1 + i),
+          entry: 'Migration batch entry $i',
+          createdAt: DateTime(2026, 8, 1 + i, 12, 0),
+        ),
+      );
       await db.entries.batchSaveEntries(batchEntries);
 
       // Verify all 10 entries are present.
       for (int i = 0; i < 10; i++) {
-        final found = await db.entries.getEntriesForDate(DateTime(2026, 8, 1 + i));
+        final found = await db.entries.getEntriesForDate(
+          DateTime(2026, 8, 1 + i),
+        );
         expect(
           found.any((e) => e.entry == 'Migration batch entry $i'),
           true,

@@ -14,12 +14,8 @@ void main() {
   // to avoid overflow in the 600×800 test viewport.
 
   Widget wrap() => const MaterialApp(
-        home: Scaffold(
-          body: SingleChildScrollView(
-            child: PinSetupSheet(),
-          ),
-        ),
-      );
+    home: Scaffold(body: SingleChildScrollView(child: PinSetupSheet())),
+  );
 
   group('PinSetupSheet', () {
     testWidgets('shows "Set a PIN" title', (tester) async {

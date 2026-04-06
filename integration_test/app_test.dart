@@ -8,8 +8,7 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   group('Retraq E2E Test', () {
-    testWidgets('Verify Universal Header and App Navigation',
-        (tester) async {
+    testWidgets('Verify Universal Header and App Navigation', (tester) async {
       // Launch the app
       app.main();
       await tester.pumpAndSettle();
@@ -23,7 +22,7 @@ void main() {
 
       // 1. Check for the SVG Logo in the persistent AppBar
       expect(find.byType(SvgPicture), findsWidgets);
-      
+
       // 2. We should start on the Journal tab
       expect(find.textContaining('TL;DR'), findsWidgets);
 

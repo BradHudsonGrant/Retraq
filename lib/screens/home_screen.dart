@@ -32,7 +32,10 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen>
-    with AutomaticKeepAliveClientMixin, WidgetsBindingObserver, TickerProviderStateMixin {
+    with
+        AutomaticKeepAliveClientMixin,
+        WidgetsBindingObserver,
+        TickerProviderStateMixin {
   @override
   bool get wantKeepAlive => true;
 
@@ -83,7 +86,9 @@ class _HomeScreenState extends State<HomeScreen>
       final now = DateTime.now();
       final today = DateTime(now.year, now.month, now.day);
       final lastDay = DateTime(
-        _lastInitDate.year, _lastInitDate.month, _lastInitDate.day,
+        _lastInitDate.year,
+        _lastInitDate.month,
+        _lastInitDate.day,
       );
       if (today != lastDay) _initStreams();
     }
@@ -107,17 +112,21 @@ class _HomeScreenState extends State<HomeScreen>
     _lastInitDate = DateTime.now();
 
     _weekCountSub?.cancel();
-    _weekCountSub = _settingsRepo.watchSettings()
+    _weekCountSub = _settingsRepo
+        .watchSettings()
         .where((s) => s != null)
         .cast<UserSettings>()
         .map((s) => s.weekStartDay)
         .distinct()
-        .asyncExpand((weekStartDay) => _entries.watchWeekEntryCount(weekStartDay: weekStartDay))
+        .asyncExpand(
+          (weekStartDay) =>
+              _entries.watchWeekEntryCount(weekStartDay: weekStartDay),
+        )
         .handleError((e) => debugPrint('watchWeekEntryCount failed: $e'))
         .listen((count) {
-      if (!mounted) return;
-      setState(() => _weekCount = count);
-    });
+          if (!mounted) return;
+          setState(() => _weekCount = count);
+        });
 
     _subscribeRecentDays();
   }
@@ -127,12 +136,12 @@ class _HomeScreenState extends State<HomeScreen>
     final today = DateTime(now.year, now.month, now.day);
     final askAboutToday = _settings?.askAboutToday ?? true;
 
-    final recentDay1 = askAboutToday
-        ? today
-        : today.subtract(const Duration(days: 1));
-    final recentDay2 = askAboutToday
-        ? today.subtract(const Duration(days: 1))
-        : today.subtract(const Duration(days: 2));
+    final recentDay1 =
+        askAboutToday ? today : today.subtract(const Duration(days: 1));
+    final recentDay2 =
+        askAboutToday
+            ? today.subtract(const Duration(days: 1))
+            : today.subtract(const Duration(days: 2));
 
     _yesterdaySub?.cancel();
     _yesterdaySub = _entries.watchEntriesForDate(recentDay1).listen((entries) {
@@ -169,7 +178,8 @@ class _HomeScreenState extends State<HomeScreen>
 
   DateTime get _entryDate => _selectedDate ?? _defaultDate;
   bool get _isAllDayMode => _settings?.isAllDayMode ?? true;
-  String get _accentWord => '${formatDateLabel(_entryDate, capitalize: false)}?';
+  String get _accentWord =>
+      '${formatDateLabel(_entryDate, capitalize: false)}?';
 
   static const _heroPrompts = [
     'What\'s the\nTL;DR of ',
@@ -205,10 +215,7 @@ class _HomeScreenState extends State<HomeScreen>
             ),
             children: [
               TextSpan(text: _heroPrompt),
-              TextSpan(
-                text: _accentWord,
-                style: TextStyle(color: cs.primary),
-              ),
+              TextSpan(text: _accentWord, style: TextStyle(color: cs.primary)),
             ],
           ),
         ),
@@ -218,13 +225,18 @@ class _HomeScreenState extends State<HomeScreen>
       // Date chip
       Semantics(
         button: true,
-        label: 'Change entry date, currently ${_selectedDate != null ? DateFormat('MMM d, yyyy').format(_entryDate) : formatDateLabel(_entryDate)}',
+        label:
+            'Change entry date, currently ${_selectedDate != null ? DateFormat('MMM d, yyyy').format(_entryDate) : formatDateLabel(_entryDate)}',
         excludeSemantics: true,
         child: InkWell(
           onTap: _pickDate,
           borderRadius: AppSpacing.borderRadiusLg,
           child: Chip(
-            avatar: Icon(Icons.calendar_today, size: 16, color: cs.onSurfaceVariant),
+            avatar: Icon(
+              Icons.calendar_today,
+              size: 16,
+              color: cs.onSurfaceVariant,
+            ),
             label: Text(
               _selectedDate != null
                   ? DateFormat('MMM d, yyyy').format(_entryDate)
@@ -233,11 +245,14 @@ class _HomeScreenState extends State<HomeScreen>
             ),
             backgroundColor: cs.surfaceContainerHigh,
             side: BorderSide(
-              color: _selectedDate != null
-                  ? cs.primary.withValues(alpha: 0.5)
-                  : cs.outlineVariant.withValues(alpha: 0.3),
+              color:
+                  _selectedDate != null
+                      ? cs.primary.withValues(alpha: 0.5)
+                      : cs.outlineVariant.withValues(alpha: 0.3),
             ),
-            shape: RoundedRectangleBorder(borderRadius: AppSpacing.borderRadiusLg),
+            shape: RoundedRectangleBorder(
+              borderRadius: AppSpacing.borderRadiusLg,
+            ),
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
           ),
         ),
@@ -272,32 +287,31 @@ class _HomeScreenState extends State<HomeScreen>
         animation: _shakeController,
         builder: (context, child) {
           final dx = _shakeAnimation.value;
-          return Transform.translate(
-            offset: Offset(dx, 0),
-            child: child,
-          );
+          return Transform.translate(offset: Offset(dx, 0), child: child);
         },
         child: JournalTextArea(
           controller: _entryController,
           focusNode: _entryFocus,
-          hint: _isAllDayMode
-              ? dailyJournalPrompt()
-              : _isAm
+          hint:
+              _isAllDayMode
+                  ? dailyJournalPrompt()
+                  : _isAm
                   ? 'How did the morning go?'
                   : 'How about the rest of the day?',
           isSaving: _isSaving,
           onSave: _saveEntry,
           enterToSave: _settings?.enterToSave ?? false,
           bulletPoints: _settings?.bulletPointsOnEnter ?? false,
-          topRightWidget: _isAllDayMode
-              ? null
-              : SegmentedPill(
-                  leftLabel: 'AM',
-                  rightLabel: 'PM',
-                  isRightActive: !_isAm,
-                  onTapLeft: () => _switchPeriod(true),
-                  onTapRight: () => _switchPeriod(false),
-                ),
+          topRightWidget:
+              _isAllDayMode
+                  ? null
+                  : SegmentedPill(
+                    leftLabel: 'AM',
+                    rightLabel: 'PM',
+                    isRightActive: !_isAm,
+                    onTapLeft: () => _switchPeriod(true),
+                    onTapRight: () => _switchPeriod(false),
+                  ),
         ),
       ),
 
@@ -344,11 +358,12 @@ class _HomeScreenState extends State<HomeScreen>
           if (_dayBeforeEntries.isNotEmpty) ...[
             const SizedBox(height: AppSpacing.md),
             RecentDayCard(
-              label: (_settings?.askAboutToday ?? true)
-                  ? 'Yesterday'
-                  : DateFormat('EEEE').format(
-                      DateTime.now().subtract(const Duration(days: 2)),
-                    ),
+              label:
+                  (_settings?.askAboutToday ?? true)
+                      ? 'Yesterday'
+                      : DateFormat('EEEE').format(
+                        DateTime.now().subtract(const Duration(days: 2)),
+                      ),
               entries: _dayBeforeEntries,
             ),
           ],
@@ -384,60 +399,73 @@ class _HomeScreenState extends State<HomeScreen>
         children: [
           FocusTraversalGroup(
             policy: OrderedTraversalPolicy(),
-            child: tablet
-                ? AdaptiveTwoPane(
-                    left: _buildJournalPane(cs, tt),
-                    right: _buildRecentPane(cs, tt),
-                  )
-                : SingleChildScrollView(
-                    padding: AppSpacing.pagePadding,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ..._buildJournalContent(cs, tt),
+            child:
+                tablet
+                    ? AdaptiveTwoPane(
+                      left: _buildJournalPane(cs, tt),
+                      right: _buildRecentPane(cs, tt),
+                    )
+                    : SingleChildScrollView(
+                      padding: AppSpacing.pagePadding,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ..._buildJournalContent(cs, tt),
 
-                        // Recent days
-                        const SizedBox(height: AppSpacing.xl),
-                        Text(
-                          'Recent',
-                          style: tt.titleSmall?.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: cs.onSurfaceVariant,
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.sm),
-                        if (_yesterdayEntries.isNotEmpty)
-                          RecentDayCard(
-                            label: (_settings?.askAboutToday ?? true) ? 'Today' : 'Yesterday',
-                            entries: _yesterdayEntries,
-                          ),
-                        if (_dayBeforeEntries.isNotEmpty) ...[
-                          const SizedBox(height: AppSpacing.md),
-                          RecentDayCard(
-                            label: (_settings?.askAboutToday ?? true)
-                                ? 'Yesterday'
-                                : DateFormat('EEEE').format(
-                                    DateTime.now().subtract(const Duration(days: 2)),
-                                  ),
-                            entries: _dayBeforeEntries,
-                          ),
-                        ],
-                        if (_yesterdayEntries.isEmpty && _dayBeforeEntries.isEmpty)
-                          Padding(
-                            padding: const EdgeInsets.only(top: AppSpacing.md),
-                            child: BionicText(
-                              text: 'Your recent entries will appear here.',
-                              style: tt.bodyMedium?.copyWith(
-                                color: cs.onSurfaceVariant.withValues(alpha: 0.7),
-                              ),
-                              enabled: _settings?.bionicReadingEnabled ?? false,
+                          // Recent days
+                          const SizedBox(height: AppSpacing.xl),
+                          Text(
+                            'Recent',
+                            style: tt.titleSmall?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: cs.onSurfaceVariant,
                             ),
                           ),
+                          const SizedBox(height: AppSpacing.sm),
+                          if (_yesterdayEntries.isNotEmpty)
+                            RecentDayCard(
+                              label:
+                                  (_settings?.askAboutToday ?? true)
+                                      ? 'Today'
+                                      : 'Yesterday',
+                              entries: _yesterdayEntries,
+                            ),
+                          if (_dayBeforeEntries.isNotEmpty) ...[
+                            const SizedBox(height: AppSpacing.md),
+                            RecentDayCard(
+                              label:
+                                  (_settings?.askAboutToday ?? true)
+                                      ? 'Yesterday'
+                                      : DateFormat('EEEE').format(
+                                        DateTime.now().subtract(
+                                          const Duration(days: 2),
+                                        ),
+                                      ),
+                              entries: _dayBeforeEntries,
+                            ),
+                          ],
+                          if (_yesterdayEntries.isEmpty &&
+                              _dayBeforeEntries.isEmpty)
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                top: AppSpacing.md,
+                              ),
+                              child: BionicText(
+                                text: 'Your recent entries will appear here.',
+                                style: tt.bodyMedium?.copyWith(
+                                  color: cs.onSurfaceVariant.withValues(
+                                    alpha: 0.7,
+                                  ),
+                                ),
+                                enabled:
+                                    _settings?.bionicReadingEnabled ?? false,
+                              ),
+                            ),
 
-                        const SizedBox(height: AppSpacing.navBarClearance),
-                      ],
+                          const SizedBox(height: AppSpacing.navBarClearance),
+                        ],
+                      ),
                     ),
-                  ),
           ),
 
           if (_showSaveSuccess)
@@ -457,7 +485,9 @@ class _HomeScreenState extends State<HomeScreen>
                       SnackBar(
                         content: const Text('Entry saved'),
                         behavior: SnackBarBehavior.floating,
-                        shape: RoundedRectangleBorder(borderRadius: AppSpacing.borderRadiusLg),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: AppSpacing.borderRadiusLg,
+                        ),
                         duration: const Duration(seconds: 4),
                         action: SnackBarAction(
                           label: 'Undo',
@@ -519,16 +549,19 @@ class _HomeScreenState extends State<HomeScreen>
       child: Row(
         children: [
           Icon(
-            (_weekCount ?? 0) > 0 ? Icons.local_fire_department : Icons.edit_note,
+            (_weekCount ?? 0) > 0
+                ? Icons.local_fire_department
+                : Icons.edit_note,
             size: 18,
             color: cs.primary,
           ),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: BionicText(
-              text: _weekCount == null
-                  ? '' // Loading — avoid flash
-                  : _weekCount == 0
+              text:
+                  _weekCount == null
+                      ? '' // Loading — avoid flash
+                      : _weekCount == 0
                       ? 'Start your first entry above.'
                       : '$_weekCount ${_weekCount == 1 ? 'entry' : 'entries'} this week — keep going!',
               style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant),
@@ -563,23 +596,24 @@ class _HomeScreenState extends State<HomeScreen>
     if (hasText) {
       final confirmed = await showDialog<bool>(
         context: context,
-        builder: (ctx) => AlertDialog(
-          title: const Text('Save and switch?'),
-          content: Text(
-            'Your ${_isAm ? 'AM' : 'PM'} entry will be saved before '
-            'switching to ${isAm ? 'AM' : 'PM'}.',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx, false),
-              child: const Text('Cancel'),
+        builder:
+            (ctx) => AlertDialog(
+              title: const Text('Save and switch?'),
+              content: Text(
+                'Your ${_isAm ? 'AM' : 'PM'} entry will be saved before '
+                'switching to ${isAm ? 'AM' : 'PM'}.',
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(ctx, false),
+                  child: const Text('Cancel'),
+                ),
+                FilledButton(
+                  onPressed: () => Navigator.pop(ctx, true),
+                  child: const Text('Save & Switch'),
+                ),
+              ],
             ),
-            FilledButton(
-              onPressed: () => Navigator.pop(ctx, true),
-              child: const Text('Save & Switch'),
-            ),
-          ],
-        ),
       );
       if (confirmed != true || !mounted) return;
       await _saveEntry();
@@ -592,10 +626,12 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   String _cleanText(String raw) {
-    final lines = raw.split('\n')
-        .map((l) => l.trim())
-        .where((l) => l != '•' && l != '')
-        .toList();
+    final lines =
+        raw
+            .split('\n')
+            .map((l) => l.trim())
+            .where((l) => l != '•' && l != '')
+            .toList();
     return lines.join('\n').trim();
   }
 
@@ -616,7 +652,9 @@ class _HomeScreenState extends State<HomeScreen>
         SnackBar(
           content: const Text('Write something first!'),
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: AppSpacing.borderRadiusLg),
+          shape: RoundedRectangleBorder(
+            borderRadius: AppSpacing.borderRadiusLg,
+          ),
           duration: const Duration(seconds: 2),
         ),
       );
@@ -627,7 +665,9 @@ class _HomeScreenState extends State<HomeScreen>
         SnackBar(
           content: const Text('Pick a mood to save'),
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: AppSpacing.borderRadiusLg),
+          shape: RoundedRectangleBorder(
+            borderRadius: AppSpacing.borderRadiusLg,
+          ),
           duration: const Duration(seconds: 2),
         ),
       );
@@ -670,7 +710,9 @@ class _HomeScreenState extends State<HomeScreen>
           ),
           backgroundColor: Theme.of(context).colorScheme.errorContainer,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: AppSpacing.borderRadiusLg),
+          shape: RoundedRectangleBorder(
+            borderRadius: AppSpacing.borderRadiusLg,
+          ),
         ),
       );
       return;

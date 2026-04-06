@@ -17,15 +17,17 @@ This is a paragraph.
 ''';
 
   Widget wrap(Widget child) => MaterialApp(
-        home: Builder(
-          builder: (context) => ElevatedButton(
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => child),
-            ),
+    home: Builder(
+      builder:
+          (context) => ElevatedButton(
+            onPressed:
+                () => Navigator.of(
+                  context,
+                ).push(MaterialPageRoute(builder: (_) => child)),
             child: const Text('Go'),
           ),
-        ),
-      );
+    ),
+  );
 
   bool richTextContains(Widget widget, String text) {
     if (widget is RichText) {
@@ -36,9 +38,9 @@ This is a paragraph.
 
   group('LegalScreen', () {
     testWidgets('renders the title in app bar', (tester) async {
-      await tester.pumpWidget(wrap(
-        const LegalScreen(title: 'My Legal Page', content: testContent),
-      ));
+      await tester.pumpWidget(
+        wrap(const LegalScreen(title: 'My Legal Page', content: testContent)),
+      );
       await tester.tap(find.text('Go'));
       await tester.pumpAndSettle();
 
@@ -46,9 +48,9 @@ This is a paragraph.
     });
 
     testWidgets('renders body content text', (tester) async {
-      await tester.pumpWidget(wrap(
-        const LegalScreen(title: 'Legal', content: testContent),
-      ));
+      await tester.pumpWidget(
+        wrap(const LegalScreen(title: 'Legal', content: testContent)),
+      );
       await tester.tap(find.text('Go'));
       await tester.pumpAndSettle();
 
@@ -61,9 +63,9 @@ This is a paragraph.
     });
 
     testWidgets('renders headings from markdown', (tester) async {
-      await tester.pumpWidget(wrap(
-        const LegalScreen(title: 'Legal', content: testContent),
-      ));
+      await tester.pumpWidget(
+        wrap(const LegalScreen(title: 'Legal', content: testContent)),
+      );
       await tester.tap(find.text('Go'));
       await tester.pumpAndSettle();
 
@@ -74,9 +76,9 @@ This is a paragraph.
     });
 
     testWidgets('renders bullet list items', (tester) async {
-      await tester.pumpWidget(wrap(
-        const LegalScreen(title: 'Legal', content: testContent),
-      ));
+      await tester.pumpWidget(
+        wrap(const LegalScreen(title: 'Legal', content: testContent)),
+      );
       await tester.tap(find.text('Go'));
       await tester.pumpAndSettle();
 
@@ -93,9 +95,9 @@ This is a paragraph.
     });
 
     testWidgets('shows back button in app bar', (tester) async {
-      await tester.pumpWidget(wrap(
-        const LegalScreen(title: 'Legal', content: testContent),
-      ));
+      await tester.pumpWidget(
+        wrap(const LegalScreen(title: 'Legal', content: testContent)),
+      );
       await tester.tap(find.text('Go'));
       await tester.pumpAndSettle();
 

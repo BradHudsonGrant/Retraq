@@ -7,28 +7,23 @@ import '../../test_helpers.dart';
 void main() {
   group('NumberPad', () {
     testWidgets('renders digits 0-9', (tester) async {
-      await tester.pumpWidget(wrapWidget(
-        NumberPad(
-          onDigit: (_) {},
-          onDelete: () {},
-        ),
-      ));
+      await tester.pumpWidget(
+        wrapWidget(NumberPad(onDigit: (_) {}, onDelete: () {})),
+      );
 
       for (var i = 0; i <= 9; i++) {
         expect(find.text('$i'), findsOneWidget);
       }
     });
 
-    testWidgets('tapping a digit calls onDigit with correct value',
-        (tester) async {
+    testWidgets('tapping a digit calls onDigit with correct value', (
+      tester,
+    ) async {
       final digits = <int>[];
 
-      await tester.pumpWidget(wrapWidget(
-        NumberPad(
-          onDigit: (d) => digits.add(d),
-          onDelete: () {},
-        ),
-      ));
+      await tester.pumpWidget(
+        wrapWidget(NumberPad(onDigit: (d) => digits.add(d), onDelete: () {})),
+      );
 
       await tester.tap(find.text('1'));
       await tester.tap(find.text('5'));
@@ -39,12 +34,9 @@ void main() {
     testWidgets('delete button calls onDelete', (tester) async {
       var deleted = false;
 
-      await tester.pumpWidget(wrapWidget(
-        NumberPad(
-          onDigit: (_) {},
-          onDelete: () => deleted = true,
-        ),
-      ));
+      await tester.pumpWidget(
+        wrapWidget(NumberPad(onDigit: (_) {}, onDelete: () => deleted = true)),
+      );
 
       await tester.tap(find.byIcon(Icons.backspace_outlined));
       expect(deleted, isTrue);
@@ -54,70 +46,75 @@ void main() {
       final digits = <int>[];
       var deleted = false;
 
-      await tester.pumpWidget(wrapWidget(
-        NumberPad(
-          onDigit: (d) => digits.add(d),
-          onDelete: () => deleted = true,
-          isDisabled: true,
+      await tester.pumpWidget(
+        wrapWidget(
+          NumberPad(
+            onDigit: (d) => digits.add(d),
+            onDelete: () => deleted = true,
+            isDisabled: true,
+          ),
         ),
-      ));
+      );
 
       // IgnorePointer should block taps
       await tester.tap(find.text('5'), warnIfMissed: false);
-      await tester.tap(find.byIcon(Icons.backspace_outlined), warnIfMissed: false);
+      await tester.tap(
+        find.byIcon(Icons.backspace_outlined),
+        warnIfMissed: false,
+      );
       expect(digits, isEmpty);
       expect(deleted, isFalse);
     });
 
     testWidgets('disabled state has reduced opacity', (tester) async {
-      await tester.pumpWidget(wrapWidget(
-        NumberPad(
-          onDigit: (_) {},
-          onDelete: () {},
-          isDisabled: true,
+      await tester.pumpWidget(
+        wrapWidget(
+          NumberPad(onDigit: (_) {}, onDelete: () {}, isDisabled: true),
         ),
-      ));
+      );
 
       final opacity = tester.widget<Opacity>(find.byType(Opacity));
       expect(opacity.opacity, 0.3);
     });
 
-    testWidgets('shows biometric button when onBiometric is provided',
-        (tester) async {
+    testWidgets('shows biometric button when onBiometric is provided', (
+      tester,
+    ) async {
       var biometricTapped = false;
 
-      await tester.pumpWidget(wrapWidget(
-        NumberPad(
-          onDigit: (_) {},
-          onDelete: () {},
-          onBiometric: () => biometricTapped = true,
+      await tester.pumpWidget(
+        wrapWidget(
+          NumberPad(
+            onDigit: (_) {},
+            onDelete: () {},
+            onBiometric: () => biometricTapped = true,
+          ),
         ),
-      ));
+      );
 
       expect(find.byIcon(Icons.fingerprint), findsOneWidget);
       await tester.tap(find.byIcon(Icons.fingerprint));
       expect(biometricTapped, isTrue);
     });
 
-    testWidgets('hides biometric button when onBiometric is null',
-        (tester) async {
-      await tester.pumpWidget(wrapWidget(
-        NumberPad(
-          onDigit: (_) {},
-          onDelete: () {},
-        ),
-      ));
+    testWidgets('hides biometric button when onBiometric is null', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        wrapWidget(NumberPad(onDigit: (_) {}, onDelete: () {})),
+      );
 
       expect(find.byIcon(Icons.fingerprint), findsNothing);
     });
   });
 
   group('PinDots', () {
-    testWidgets('shows correct number of filled and empty dots',
-        (tester) async {
-      await tester.pumpWidget(wrapWidget(
-        const PinDots(length: 3, maxLength: 6),
-      ));
+    testWidgets('shows correct number of filled and empty dots', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        wrapWidget(const PinDots(length: 3, maxLength: 6)),
+      );
 
       // Should have 6 AnimatedContainers total (one per dot)
       final containers = tester.widgetList<AnimatedContainer>(
@@ -127,9 +124,9 @@ void main() {
     });
 
     testWidgets('zero length shows all empty dots', (tester) async {
-      await tester.pumpWidget(wrapWidget(
-        const PinDots(length: 0, maxLength: 4),
-      ));
+      await tester.pumpWidget(
+        wrapWidget(const PinDots(length: 0, maxLength: 4)),
+      );
 
       final containers = tester.widgetList<AnimatedContainer>(
         find.byType(AnimatedContainer),
@@ -144,9 +141,9 @@ void main() {
     });
 
     testWidgets('full length shows all filled dots', (tester) async {
-      await tester.pumpWidget(wrapWidget(
-        const PinDots(length: 4, maxLength: 4),
-      ));
+      await tester.pumpWidget(
+        wrapWidget(const PinDots(length: 4, maxLength: 4)),
+      );
 
       final containers = tester.widgetList<AnimatedContainer>(
         find.byType(AnimatedContainer),
@@ -161,9 +158,9 @@ void main() {
     });
 
     testWidgets('error state uses error color', (tester) async {
-      await tester.pumpWidget(wrapWidget(
-        const PinDots(length: 4, maxLength: 4, isError: true),
-      ));
+      await tester.pumpWidget(
+        wrapWidget(const PinDots(length: 4, maxLength: 4, isError: true)),
+      );
 
       final containers = tester.widgetList<AnimatedContainer>(
         find.byType(AnimatedContainer),
@@ -178,20 +175,17 @@ void main() {
     });
 
     testWidgets('semantics label describes digit count', (tester) async {
-      await tester.pumpWidget(wrapWidget(
-        const PinDots(length: 2, maxLength: 6),
-      ));
-
-      expect(
-        find.bySemanticsLabel('2 of 6 digits entered'),
-        findsOneWidget,
+      await tester.pumpWidget(
+        wrapWidget(const PinDots(length: 2, maxLength: 6)),
       );
+
+      expect(find.bySemanticsLabel('2 of 6 digits entered'), findsOneWidget);
     });
 
     testWidgets('error semantics label includes error', (tester) async {
-      await tester.pumpWidget(wrapWidget(
-        const PinDots(length: 4, maxLength: 4, isError: true),
-      ));
+      await tester.pumpWidget(
+        wrapWidget(const PinDots(length: 4, maxLength: 4, isError: true)),
+      );
 
       expect(
         find.bySemanticsLabel('4 of 4 digits entered, error'),

@@ -21,7 +21,10 @@ void main() {
       final entry = JournalEntry(date: DateTime(2026, 1, 1));
       final after = DateTime.now();
 
-      expect(entry.createdAt.isAfter(before) || entry.createdAt == before, true);
+      expect(
+        entry.createdAt.isAfter(before) || entry.createdAt == before,
+        true,
+      );
       expect(entry.createdAt.isBefore(after) || entry.createdAt == after, true);
     });
 
@@ -53,10 +56,7 @@ void main() {
       });
 
       test('returns true when entry is empty string', () {
-        final entry = JournalEntry(
-          date: DateTime(2026, 1, 1),
-          entry: '',
-        );
+        final entry = JournalEntry(date: DateTime(2026, 1, 1), entry: '');
         expect(entry.isEmpty, true);
       });
 
@@ -70,13 +70,24 @@ void main() {
     });
 
     test('label stores AM/PM/null correctly', () {
-      final am = JournalEntry(date: DateTime(2026, 1, 1), entry: 'Morning', label: 'AM');
+      final am = JournalEntry(
+        date: DateTime(2026, 1, 1),
+        entry: 'Morning',
+        label: 'AM',
+      );
       expect(am.label, 'AM');
 
-      final pm = JournalEntry(date: DateTime(2026, 1, 1), entry: 'Evening', label: 'PM');
+      final pm = JournalEntry(
+        date: DateTime(2026, 1, 1),
+        entry: 'Evening',
+        label: 'PM',
+      );
       expect(pm.label, 'PM');
 
-      final allDay = JournalEntry(date: DateTime(2026, 1, 1), entry: 'Full day');
+      final allDay = JournalEntry(
+        date: DateTime(2026, 1, 1),
+        entry: 'Full day',
+      );
       expect(allDay.label, isNull);
     });
 

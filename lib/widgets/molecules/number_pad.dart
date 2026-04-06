@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../theme/app_spacing.dart';
+
 /// Reusable 3×4 number pad with optional biometric button.
 /// Used by LockScreen and PIN setup dialog.
 class NumberPad extends StatelessWidget {
@@ -24,53 +25,51 @@ class NumberPad extends StatelessWidget {
     return Semantics(
       label: isDisabled ? 'Number pad, disabled' : null,
       child: Opacity(
-      opacity: isDisabled ? 0.3 : 1.0,
-      child: IgnorePointer(
-        ignoring: isDisabled,
-        child: Column(
-          children: [
-            for (final row in [
-              [1, 2, 3],
-              [4, 5, 6],
-              [7, 8, 9],
-            ])
-              Padding(
-                padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: row
-                      .map((d) => PadButton(
-                            label: '$d',
-                            onTap: () => onDigit(d),
-                          ))
-                      .toList(),
+        opacity: isDisabled ? 0.3 : 1.0,
+        child: IgnorePointer(
+          ignoring: isDisabled,
+          child: Column(
+            children: [
+              for (final row in [
+                [1, 2, 3],
+                [4, 5, 6],
+                [7, 8, 9],
+              ])
+                Padding(
+                  padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children:
+                        row
+                            .map(
+                              (d) => PadButton(
+                                label: '$d',
+                                onTap: () => onDigit(d),
+                              ),
+                            )
+                            .toList(),
+                  ),
                 ),
-              ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                if (onBiometric != null)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  if (onBiometric != null)
+                    PadButton(icon: Icons.fingerprint, onTap: onBiometric!)
+                  else
+                    const SizedBox(width: 72),
+                  PadButton(label: '0', onTap: () => onDigit(0)),
                   PadButton(
-                    icon: Icons.fingerprint,
-                    onTap: onBiometric!,
-                  )
-                else
-                  const SizedBox(width: 72),
-                PadButton(
-                  label: '0',
-                  onTap: () => onDigit(0),
-                ),
-                PadButton(
-                  icon: Icons.backspace_outlined,
-                  onTap: onDelete,
-                  color: cs.onSurfaceVariant,
-                ),
-              ],
-            ),
-          ],
+                    icon: Icons.backspace_outlined,
+                    onTap: onDelete,
+                    color: cs.onSurfaceVariant,
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
-    ));
+    );
   }
 }
 
@@ -96,7 +95,8 @@ class PadButton extends StatelessWidget {
 
     return Semantics(
       button: true,
-      label: label ?? (icon == Icons.backspace_outlined ? 'Delete' : 'Biometric'),
+      label:
+          label ?? (icon == Icons.backspace_outlined ? 'Delete' : 'Biometric'),
       child: Material(
         color: cs.surfaceContainerLow,
         shape: const CircleBorder(),
@@ -110,15 +110,16 @@ class PadButton extends StatelessWidget {
             width: 72,
             height: 72,
             child: Center(
-              child: label != null
-                  ? Text(
-                      label!,
-                      style: tt.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: color ?? cs.onSurface,
-                      ),
-                    )
-                  : Icon(icon, size: 28, color: color ?? cs.onSurface),
+              child:
+                  label != null
+                      ? Text(
+                        label!,
+                        style: tt.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: color ?? cs.onSurface,
+                        ),
+                      )
+                      : Icon(icon, size: 28, color: color ?? cs.onSurface),
             ),
           ),
         ),
@@ -148,30 +149,29 @@ class PinDots extends StatelessWidget {
       liveRegion: true,
       label: '$length of $maxLength digits entered${isError ? ', error' : ''}',
       child: Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(maxLength, (i) {
-        final filled = i < length;
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            width: 16,
-            height: 16,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: isError
-                  ? cs.error
-                  : filled
-                      ? cs.primary
-                      : cs.surfaceContainerHigh,
-              border: filled
-                  ? null
-                  : Border.all(color: cs.outlineVariant),
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: List.generate(maxLength, (i) {
+          final filled = i < length;
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              width: 16,
+              height: 16,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color:
+                    isError
+                        ? cs.error
+                        : filled
+                        ? cs.primary
+                        : cs.surfaceContainerHigh,
+                border: filled ? null : Border.all(color: cs.outlineVariant),
+              ),
             ),
-          ),
-        );
-      }),
-    ),
+          );
+        }),
+      ),
     );
   }
 }

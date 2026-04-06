@@ -37,17 +37,17 @@ void main() {
       final today = DateTime.now();
       final todayNorm = DateTime(today.year, today.month, today.day);
 
-      await db.entries.saveEntry(JournalEntry(
-        date: todayNorm,
-        entry: 'Entry 1',
-        createdAt: today,
-      ));
-      await db.entries.saveEntry(JournalEntry(
-        date: todayNorm,
-        entry: 'Entry 2',
-        label: 'PM',
-        createdAt: today,
-      ));
+      await db.entries.saveEntry(
+        JournalEntry(date: todayNorm, entry: 'Entry 1', createdAt: today),
+      );
+      await db.entries.saveEntry(
+        JournalEntry(
+          date: todayNorm,
+          entry: 'Entry 2',
+          label: 'PM',
+          createdAt: today,
+        ),
+      );
 
       final stats = await db.stats.getAllStats();
       expect(stats.totalEntries, 2);
@@ -152,11 +152,9 @@ void main() {
       final today = DateTime(now.year, now.month, now.day);
 
       // Add some data
-      await db.entries.saveEntry(JournalEntry(
-        date: today,
-        entry: 'Test entry',
-        createdAt: now,
-      ));
+      await db.entries.saveEntry(
+        JournalEntry(date: today, entry: 'Test entry', createdAt: now),
+      );
 
       // Verify data exists
       var entries = await db.entries.getAllEntries();

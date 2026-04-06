@@ -8,9 +8,9 @@ void main() {
   group('SaveSuccessOverlay', () {
     testWidgets('renders checkmark icon', (tester) async {
       var dismissed = false;
-      await tester.pumpWidget(wrapWidget(
-        SaveSuccessOverlay(onDismissed: () => dismissed = true),
-      ));
+      await tester.pumpWidget(
+        wrapWidget(SaveSuccessOverlay(onDismissed: () => dismissed = true)),
+      );
 
       await tester.pump();
       expect(find.byIcon(Icons.check_rounded), findsOneWidget);
@@ -20,9 +20,9 @@ void main() {
     });
 
     testWidgets('shows "Entry saved" text', (tester) async {
-      await tester.pumpWidget(wrapWidget(
-        SaveSuccessOverlay(onDismissed: () {}),
-      ));
+      await tester.pumpWidget(
+        wrapWidget(SaveSuccessOverlay(onDismissed: () {})),
+      );
 
       await tester.pump();
       expect(find.text('Entry saved'), findsOneWidget);
@@ -31,9 +31,9 @@ void main() {
     });
 
     testWidgets('shows "Nice one" confirmation text', (tester) async {
-      await tester.pumpWidget(wrapWidget(
-        SaveSuccessOverlay(onDismissed: () {}),
-      ));
+      await tester.pumpWidget(
+        wrapWidget(SaveSuccessOverlay(onDismissed: () {})),
+      );
 
       await tester.pump();
       expect(find.textContaining('Nice one'), findsOneWidget);
@@ -42,12 +42,14 @@ void main() {
     });
 
     testWidgets('shows milestone message when provided', (tester) async {
-      await tester.pumpWidget(wrapWidget(
-        SaveSuccessOverlay(
-          onDismissed: () {},
-          milestoneMessage: 'Your very first entry!',
+      await tester.pumpWidget(
+        wrapWidget(
+          SaveSuccessOverlay(
+            onDismissed: () {},
+            milestoneMessage: 'Your very first entry!',
+          ),
         ),
-      ));
+      );
 
       await tester.pump();
       expect(find.text('Your very first entry!'), findsOneWidget);
@@ -56,9 +58,9 @@ void main() {
     });
 
     testWidgets('does not show milestone message when null', (tester) async {
-      await tester.pumpWidget(wrapWidget(
-        SaveSuccessOverlay(onDismissed: () {}),
-      ));
+      await tester.pumpWidget(
+        wrapWidget(SaveSuccessOverlay(onDismissed: () {})),
+      );
 
       await tester.pump();
       expect(find.text('Your very first entry!'), findsNothing);
@@ -69,9 +71,9 @@ void main() {
     testWidgets('onDismissed fires after animation completes', (tester) async {
       var dismissed = false;
 
-      await tester.pumpWidget(wrapWidget(
-        SaveSuccessOverlay(onDismissed: () => dismissed = true),
-      ));
+      await tester.pumpWidget(
+        wrapWidget(SaveSuccessOverlay(onDismissed: () => dismissed = true)),
+      );
 
       // Pump through the full animation sequence:
       // 150ms haptic delay + 1000ms hold + 400ms exit
@@ -87,11 +89,12 @@ void main() {
       await tester.pumpAndSettle(const Duration(seconds: 1));
     });
 
-    testWidgets('GestureDetector is present for tap-to-dismiss',
-        (tester) async {
-      await tester.pumpWidget(wrapWidget(
-        SaveSuccessOverlay(onDismissed: () {}),
-      ));
+    testWidgets('GestureDetector is present for tap-to-dismiss', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        wrapWidget(SaveSuccessOverlay(onDismissed: () {})),
+      );
 
       await tester.pump();
 
@@ -105,8 +108,7 @@ void main() {
       await tester.pumpAndSettle(const Duration(seconds: 3));
     });
 
-    testWidgets('respects reduceMotion — jumps to final state',
-        (tester) async {
+    testWidgets('respects reduceMotion — jumps to final state', (tester) async {
       var dismissed = false;
 
       await tester.pumpWidget(
@@ -114,9 +116,7 @@ void main() {
           home: MediaQuery(
             data: const MediaQueryData(disableAnimations: true),
             child: Scaffold(
-              body: SaveSuccessOverlay(
-                onDismissed: () => dismissed = true,
-              ),
+              body: SaveSuccessOverlay(onDismissed: () => dismissed = true),
             ),
           ),
         ),

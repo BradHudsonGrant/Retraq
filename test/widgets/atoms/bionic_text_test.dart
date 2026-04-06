@@ -22,25 +22,20 @@ List<TextSpan> _bionicSpans(WidgetTester tester) {
 void main() {
   group('BionicText', () {
     testWidgets('renders plain text when enabled is false', (tester) async {
-      await tester.pumpWidget(wrapWidget(
-        const BionicText(
-          text: 'Hello world',
-          enabled: false,
-        ),
-      ));
+      await tester.pumpWidget(
+        wrapWidget(const BionicText(text: 'Hello world', enabled: false)),
+      );
 
       // When disabled, BionicText builds a plain Text(data) widget.
       expect(find.text('Hello world'), findsOneWidget);
     });
 
-    testWidgets('renders bionic bold spans when enabled is true',
-        (tester) async {
-      await tester.pumpWidget(wrapWidget(
-        const BionicText(
-          text: 'Hello',
-          enabled: true,
-        ),
-      ));
+    testWidgets('renders bionic bold spans when enabled is true', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        wrapWidget(const BionicText(text: 'Hello', enabled: true)),
+      );
 
       final spans = _bionicSpans(tester);
 
@@ -52,12 +47,9 @@ void main() {
     });
 
     testWidgets('single character words are not bolded', (tester) async {
-      await tester.pumpWidget(wrapWidget(
-        const BionicText(
-          text: 'I am a test',
-          enabled: true,
-        ),
-      ));
+      await tester.pumpWidget(
+        wrapWidget(const BionicText(text: 'I am a test', enabled: true)),
+      );
 
       final spans = _bionicSpans(tester);
       final texts = spans.map((s) => s.text).toList();
@@ -74,25 +66,20 @@ void main() {
     });
 
     testWidgets('empty string is handled', (tester) async {
-      await tester.pumpWidget(wrapWidget(
-        const BionicText(
-          text: '',
-          enabled: true,
-        ),
-      ));
+      await tester.pumpWidget(
+        wrapWidget(const BionicText(text: '', enabled: true)),
+      );
 
       // Empty string triggers early return -> plain Text widget.
       expect(find.text(''), findsOneWidget);
     });
 
-    testWidgets('punctuation does not count toward bold length',
-        (tester) async {
-      await tester.pumpWidget(wrapWidget(
-        const BionicText(
-          text: 'hello,',
-          enabled: true,
-        ),
-      ));
+    testWidgets('punctuation does not count toward bold length', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        wrapWidget(const BionicText(text: 'hello,', enabled: true)),
+      );
 
       final spans = _bionicSpans(tester);
 
@@ -104,14 +91,16 @@ void main() {
     });
 
     testWidgets('passes through maxLines and overflow', (tester) async {
-      await tester.pumpWidget(wrapWidget(
-        const BionicText(
-          text: 'Some text here',
-          enabled: true,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
+      await tester.pumpWidget(
+        wrapWidget(
+          const BionicText(
+            text: 'Some text here',
+            enabled: true,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
-      ));
+      );
 
       final textFinder = find.descendant(
         of: find.byType(BionicText),
@@ -123,12 +112,9 @@ void main() {
     });
 
     testWidgets('preserves whitespace between words', (tester) async {
-      await tester.pumpWidget(wrapWidget(
-        const BionicText(
-          text: 'hi  there',
-          enabled: true,
-        ),
-      ));
+      await tester.pumpWidget(
+        wrapWidget(const BionicText(text: 'hi  there', enabled: true)),
+      );
 
       final spans = _bionicSpans(tester);
       final texts = spans.map((s) => s.text).toList();

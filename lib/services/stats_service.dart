@@ -31,13 +31,16 @@ class StatsService {
       final todayStr = _dateStr(now);
 
       // Fetch all distinct entry dates, newest first
-      final rows = await _db.customSelect(
-        "SELECT DISTINCT date(date, 'unixepoch', 'localtime') AS d "
-        "FROM journal_entries WHERE date(date, 'unixepoch', 'localtime') <= ? "
-        "ORDER BY d DESC LIMIT 1100",
-        variables: [Variable<String>(todayStr)],
-        readsFrom: {_db.journalEntries},
-      ).get();
+      final rows =
+          await _db
+              .customSelect(
+                "SELECT DISTINCT date(date, 'unixepoch', 'localtime') AS d "
+                "FROM journal_entries WHERE date(date, 'unixepoch', 'localtime') <= ? "
+                "ORDER BY d DESC LIMIT 1100",
+                variables: [Variable<String>(todayStr)],
+                readsFrom: {_db.journalEntries},
+              )
+              .get();
 
       if (rows.isEmpty) {
         return const StreakFreezeInfo(streak: 0, freezeAvailable: true);
@@ -119,24 +122,27 @@ class StatsService {
           '${now.year}-${now.month.toString().padLeft(2, '0')}-01';
       final todayStr = _dateStr(now);
 
-      final rows = await _db.customSelect(
-        "WITH dates AS ("
-        "  SELECT DISTINCT date(date, 'unixepoch', 'localtime') AS d"
-        "  FROM journal_entries"
-        "  WHERE date(date, 'unixepoch', 'localtime') BETWEEN ? AND ?"
-        "), grouped AS ("
-        "  SELECT d, date(d, '-' || (ROW_NUMBER() OVER (ORDER BY d) - 1) || ' days') AS grp"
-        "  FROM dates"
-        ")"
-        "SELECT COALESCE(MAX(cnt), 0) AS longest FROM ("
-        "  SELECT COUNT(*) AS cnt FROM grouped GROUP BY grp"
-        ")",
-        variables: [
-          Variable<String>(monthStart),
-          Variable<String>(todayStr),
-        ],
-        readsFrom: {_db.journalEntries},
-      ).get();
+      final rows =
+          await _db
+              .customSelect(
+                "WITH dates AS ("
+                "  SELECT DISTINCT date(date, 'unixepoch', 'localtime') AS d"
+                "  FROM journal_entries"
+                "  WHERE date(date, 'unixepoch', 'localtime') BETWEEN ? AND ?"
+                "), grouped AS ("
+                "  SELECT d, date(d, '-' || (ROW_NUMBER() OVER (ORDER BY d) - 1) || ' days') AS grp"
+                "  FROM dates"
+                ")"
+                "SELECT COALESCE(MAX(cnt), 0) AS longest FROM ("
+                "  SELECT COUNT(*) AS cnt FROM grouped GROUP BY grp"
+                ")",
+                variables: [
+                  Variable<String>(monthStart),
+                  Variable<String>(todayStr),
+                ],
+                readsFrom: {_db.journalEntries},
+              )
+              .get();
 
       return rows.first.read<int>('longest');
     } catch (e) {
@@ -153,22 +159,25 @@ class StatsService {
   /// Uses SQL window functions to compute entirely in the database.
   Future<int> getLongestStreak() async {
     try {
-      final rows = await _db.customSelect(
-        // Group consecutive dates: subtract row_number days from each date.
-        // Dates in the same consecutive run will produce the same group key.
-        // Then count each group and take the max.
-        "WITH dates AS ("
-        "  SELECT DISTINCT date(date, 'unixepoch', 'localtime') AS d"
-        "  FROM journal_entries"
-        "), grouped AS ("
-        "  SELECT d, date(d, '-' || (ROW_NUMBER() OVER (ORDER BY d) - 1) || ' days') AS grp"
-        "  FROM dates"
-        ")"
-        "SELECT COALESCE(MAX(cnt), 0) AS longest FROM ("
-        "  SELECT COUNT(*) AS cnt FROM grouped GROUP BY grp"
-        ")",
-        readsFrom: {_db.journalEntries},
-      ).get();
+      final rows =
+          await _db
+              .customSelect(
+                // Group consecutive dates: subtract row_number days from each date.
+                // Dates in the same consecutive run will produce the same group key.
+                // Then count each group and take the max.
+                "WITH dates AS ("
+                "  SELECT DISTINCT date(date, 'unixepoch', 'localtime') AS d"
+                "  FROM journal_entries"
+                "), grouped AS ("
+                "  SELECT d, date(d, '-' || (ROW_NUMBER() OVER (ORDER BY d) - 1) || ' days') AS grp"
+                "  FROM dates"
+                ")"
+                "SELECT COALESCE(MAX(cnt), 0) AS longest FROM ("
+                "  SELECT COUNT(*) AS cnt FROM grouped GROUP BY grp"
+                ")",
+                readsFrom: {_db.journalEntries},
+              )
+              .get();
 
       return rows.first.read<int>('longest');
     } catch (e) {
@@ -182,17 +191,23 @@ class StatsService {
   Future<List<int>> getWeeklyEntryCounts({int weeks = 12}) async {
     try {
       final now = DateTime.now();
-      final cutoff = DateTime(now.year, now.month, now.day)
-          .subtract(Duration(days: weeks * 7));
+      final cutoff = DateTime(
+        now.year,
+        now.month,
+        now.day,
+      ).subtract(Duration(days: weeks * 7));
       final cutoffEpoch = cutoff.toUtc().millisecondsSinceEpoch ~/ 1000;
 
-      final rows = await _db.customSelect(
-        "SELECT strftime('%Y-%W', date, 'unixepoch', 'localtime') as week, "
-        "COUNT(*) as cnt FROM journal_entries "
-        "WHERE date >= ? GROUP BY week ORDER BY week ASC",
-        variables: [Variable.withInt(cutoffEpoch)],
-        readsFrom: {_db.journalEntries},
-      ).get();
+      final rows =
+          await _db
+              .customSelect(
+                "SELECT strftime('%Y-%W', date, 'unixepoch', 'localtime') as week, "
+                "COUNT(*) as cnt FROM journal_entries "
+                "WHERE date >= ? GROUP BY week ORDER BY week ASC",
+                variables: [Variable.withInt(cutoffEpoch)],
+                readsFrom: {_db.journalEntries},
+              )
+              .get();
 
       // Build a map of week-label → count
       final weekCounts = <String, int>{};
@@ -203,8 +218,11 @@ class StatsService {
       // Generate expected week labels for each of the N weeks
       final result = <int>[];
       for (var i = weeks - 1; i >= 0; i--) {
-        final weekStart = DateTime(now.year, now.month, now.day)
-            .subtract(Duration(days: i * 7));
+        final weekStart = DateTime(
+          now.year,
+          now.month,
+          now.day,
+        ).subtract(Duration(days: i * 7));
         final label = strftimeYW(weekStart);
         result.add(weekCounts[label] ?? 0);
       }
@@ -219,11 +237,14 @@ class StatsService {
   /// Returns 0 if no entries exist.
   Future<int> getMostActiveWeekday() async {
     try {
-      final rows = await _db.customSelect(
-        "SELECT CAST(strftime('%w', date, 'unixepoch', 'localtime') AS INTEGER) as dow, "
-        "COUNT(*) as cnt FROM journal_entries GROUP BY dow ORDER BY cnt DESC LIMIT 1",
-        readsFrom: {_db.journalEntries},
-      ).get();
+      final rows =
+          await _db
+              .customSelect(
+                "SELECT CAST(strftime('%w', date, 'unixepoch', 'localtime') AS INTEGER) as dow, "
+                "COUNT(*) as cnt FROM journal_entries GROUP BY dow ORDER BY cnt DESC LIMIT 1",
+                readsFrom: {_db.journalEntries},
+              )
+              .get();
 
       if (rows.isEmpty) return 0;
 
@@ -242,10 +263,13 @@ class StatsService {
   /// time-of-day differences in the stored unix epoch timestamps.
   Future<int> getTotalDaysWithEntries() async {
     try {
-      final result = await _db.customSelect(
-        "SELECT COUNT(DISTINCT date(date, 'unixepoch', 'localtime')) as cnt FROM journal_entries",
-        readsFrom: {_db.journalEntries},
-      ).getSingle();
+      final result =
+          await _db
+              .customSelect(
+                "SELECT COUNT(DISTINCT date(date, 'unixepoch', 'localtime')) as cnt FROM journal_entries",
+                readsFrom: {_db.journalEntries},
+              )
+              .getSingle();
       return result.read<int>('cnt');
     } catch (e) {
       debugPrint('StatsService.getTotalDaysWithEntries failed: $e');
@@ -269,10 +293,13 @@ class StatsService {
   /// Average mood across all entries with mood set (1.0-5.0), or null.
   Future<double?> getAverageMood() async {
     try {
-      final rows = await _db.customSelect(
-        "SELECT AVG(CAST(mood AS REAL)) as avg_mood FROM journal_entries WHERE mood IS NOT NULL",
-        readsFrom: {_db.journalEntries},
-      ).get();
+      final rows =
+          await _db
+              .customSelect(
+                "SELECT AVG(CAST(mood AS REAL)) as avg_mood FROM journal_entries WHERE mood IS NOT NULL",
+                readsFrom: {_db.journalEntries},
+              )
+              .get();
       final val = rows.first.readNullable<double>('avg_mood');
       return val;
     } catch (e) {
@@ -285,10 +312,13 @@ class StatsService {
   /// Returns a Map<int, int> where key=mood (1-5), value=count.
   Future<Map<int, int>> getMoodDistribution() async {
     try {
-      final rows = await _db.customSelect(
-        "SELECT mood, COUNT(*) as cnt FROM journal_entries WHERE mood IS NOT NULL GROUP BY mood ORDER BY mood",
-        readsFrom: {_db.journalEntries},
-      ).get();
+      final rows =
+          await _db
+              .customSelect(
+                "SELECT mood, COUNT(*) as cnt FROM journal_entries WHERE mood IS NOT NULL GROUP BY mood ORDER BY mood",
+                readsFrom: {_db.journalEntries},
+              )
+              .get();
       final result = <int, int>{};
       for (final row in rows) {
         result[row.read<int>('mood')] = row.read<int>('cnt');
@@ -311,10 +341,7 @@ class StatsService {
         getCurrentStreak(),
         _getTotalEntryCount(),
       ]);
-      return WidgetData(
-        currentStreak: results[0],
-        totalEntries: results[1],
-      );
+      return WidgetData(currentStreak: results[0], totalEntries: results[1]);
     } catch (e) {
       debugPrint('StatsService.getWidgetData failed: $e');
       return const WidgetData();
@@ -329,13 +356,19 @@ class StatsService {
   /// Single query returning both total entry count and total distinct days.
   Future<({int totalEntries, int totalDays})> _getBatchCounts() async {
     try {
-      final row = await _db.customSelect(
-        "SELECT COUNT(*) AS cnt, "
-        "COUNT(DISTINCT date(date, 'unixepoch', 'localtime')) AS days "
-        "FROM journal_entries",
-        readsFrom: {_db.journalEntries},
-      ).getSingle();
-      return (totalEntries: row.read<int>('cnt'), totalDays: row.read<int>('days'));
+      final row =
+          await _db
+              .customSelect(
+                "SELECT COUNT(*) AS cnt, "
+                "COUNT(DISTINCT date(date, 'unixepoch', 'localtime')) AS days "
+                "FROM journal_entries",
+                readsFrom: {_db.journalEntries},
+              )
+              .getSingle();
+      return (
+        totalEntries: row.read<int>('cnt'),
+        totalDays: row.read<int>('days'),
+      );
     } catch (e) {
       debugPrint('StatsService._getBatchCounts failed: $e');
       return (totalEntries: 0, totalDays: 0);
@@ -343,14 +376,18 @@ class StatsService {
   }
 
   /// Single query returning mood distribution; average mood is derived in Dart.
-  Future<({double? averageMood, Map<int, int> distribution})> _getBatchMoodStats() async {
+  Future<({double? averageMood, Map<int, int> distribution})>
+  _getBatchMoodStats() async {
     try {
-      final rows = await _db.customSelect(
-        "SELECT mood, COUNT(*) AS cnt "
-        "FROM journal_entries WHERE mood IS NOT NULL "
-        "GROUP BY mood ORDER BY mood",
-        readsFrom: {_db.journalEntries},
-      ).get();
+      final rows =
+          await _db
+              .customSelect(
+                "SELECT mood, COUNT(*) AS cnt "
+                "FROM journal_entries WHERE mood IS NOT NULL "
+                "GROUP BY mood ORDER BY mood",
+                readsFrom: {_db.journalEntries},
+              )
+              .get();
       final distribution = <int, int>{};
       int totalCount = 0;
       double weightedSum = 0;
@@ -372,42 +409,46 @@ class StatsService {
   /// Single query returning both all-time longest streak and current-month
   /// longest streak. Uses two independent grouped sub-CTEs within one
   /// statement so only one database round-trip is needed.
-  Future<({int longestStreak, int longestStreakThisMonth})> _getBatchStreaks() async {
+  Future<({int longestStreak, int longestStreakThisMonth})>
+  _getBatchStreaks() async {
     try {
       final now = DateTime.now();
       final monthStart =
           '${now.year}-${now.month.toString().padLeft(2, '0')}-01';
       final todayStr = _dateStr(now);
 
-      final rows = await _db.customSelect(
-        // All-time streak
-        "WITH all_dates AS ("
-        "  SELECT DISTINCT date(date, 'unixepoch', 'localtime') AS d"
-        "  FROM journal_entries"
-        "), all_grouped AS ("
-        "  SELECT d,"
-        "    date(d, '-' || (ROW_NUMBER() OVER (ORDER BY d) - 1) || ' days') AS grp"
-        "  FROM all_dates"
-        "), "
-        // Month-only streak (bounded to current month)
-        "month_dates AS ("
-        "  SELECT DISTINCT date(date, 'unixepoch', 'localtime') AS d"
-        "  FROM journal_entries"
-        "  WHERE date(date, 'unixepoch', 'localtime') BETWEEN ? AND ?"
-        "), month_grouped AS ("
-        "  SELECT d,"
-        "    date(d, '-' || (ROW_NUMBER() OVER (ORDER BY d) - 1) || ' days') AS grp"
-        "  FROM month_dates"
-        ")"
-        "SELECT"
-        "  COALESCE((SELECT MAX(cnt) FROM (SELECT COUNT(*) AS cnt FROM all_grouped GROUP BY grp)), 0) AS longest,"
-        "  COALESCE((SELECT MAX(cnt) FROM (SELECT COUNT(*) AS cnt FROM month_grouped GROUP BY grp)), 0) AS longest_month",
-        variables: [
-          Variable<String>(monthStart),
-          Variable<String>(todayStr),
-        ],
-        readsFrom: {_db.journalEntries},
-      ).get();
+      final rows =
+          await _db
+              .customSelect(
+                // All-time streak
+                "WITH all_dates AS ("
+                "  SELECT DISTINCT date(date, 'unixepoch', 'localtime') AS d"
+                "  FROM journal_entries"
+                "), all_grouped AS ("
+                "  SELECT d,"
+                "    date(d, '-' || (ROW_NUMBER() OVER (ORDER BY d) - 1) || ' days') AS grp"
+                "  FROM all_dates"
+                "), "
+                // Month-only streak (bounded to current month)
+                "month_dates AS ("
+                "  SELECT DISTINCT date(date, 'unixepoch', 'localtime') AS d"
+                "  FROM journal_entries"
+                "  WHERE date(date, 'unixepoch', 'localtime') BETWEEN ? AND ?"
+                "), month_grouped AS ("
+                "  SELECT d,"
+                "    date(d, '-' || (ROW_NUMBER() OVER (ORDER BY d) - 1) || ' days') AS grp"
+                "  FROM month_dates"
+                ")"
+                "SELECT"
+                "  COALESCE((SELECT MAX(cnt) FROM (SELECT COUNT(*) AS cnt FROM all_grouped GROUP BY grp)), 0) AS longest,"
+                "  COALESCE((SELECT MAX(cnt) FROM (SELECT COUNT(*) AS cnt FROM month_grouped GROUP BY grp)), 0) AS longest_month",
+                variables: [
+                  Variable<String>(monthStart),
+                  Variable<String>(todayStr),
+                ],
+                readsFrom: {_db.journalEntries},
+              )
+              .get();
 
       if (rows.isEmpty) {
         return (longestStreak: 0, longestStreakThisMonth: 0);
@@ -433,18 +474,20 @@ class StatsService {
       //  _getBatchStreaks      = getLongestStreak + getLongestStreakThisMonth
       //  (remaining 3 unchanged)
       final results = await Future.wait([
-        _getBatchCounts(),                        // 0
-        getCurrentStreakWithFreezeInfo(),          // 1
-        _getBatchStreaks(),                        // 2
-        getWeeklyEntryCounts(weeks: weeks),       // 3
-        getMostActiveWeekday(),                    // 4
-        _getBatchMoodStats(),                     // 5
+        _getBatchCounts(), // 0
+        getCurrentStreakWithFreezeInfo(), // 1
+        _getBatchStreaks(), // 2
+        getWeeklyEntryCounts(weeks: weeks), // 3
+        getMostActiveWeekday(), // 4
+        _getBatchMoodStats(), // 5
       ]);
 
       final counts = results[0] as ({int totalEntries, int totalDays});
       final freezeInfo = results[1] as StreakFreezeInfo;
-      final streaks = results[2] as ({int longestStreak, int longestStreakThisMonth});
-      final moodStats = results[5] as ({double? averageMood, Map<int, int> distribution});
+      final streaks =
+          results[2] as ({int longestStreak, int longestStreakThisMonth});
+      final moodStats =
+          results[5] as ({double? averageMood, Map<int, int> distribution});
 
       return StatsSnapshot(
         totalEntries: counts.totalEntries,
@@ -467,7 +510,12 @@ class StatsService {
   /// Single stream that recomputes all stats when journal_entries changes.
   /// Replaces 4+ independent watch streams with one trigger.
   Stream<StatsSnapshot> watchAllStats({int weeks = 12}) {
-    return _db.customSelect('SELECT COUNT(*) AS c FROM journal_entries', readsFrom: {_db.journalEntries}).watch()
+    return _db
+        .customSelect(
+          'SELECT COUNT(*) AS c FROM journal_entries',
+          readsFrom: {_db.journalEntries},
+        )
+        .watch()
         .transform(_debounce(const Duration(milliseconds: 300)))
         .asyncMap((_) => getAllStats(weeks: weeks))
         .distinct()
@@ -479,9 +527,7 @@ class StatsService {
   static StreamTransformer<T, T> _debounce<T>(Duration duration) {
     return StreamTransformer<T, T>((stream, cancelOnError) {
       Timer? timer;
-      final controller = StreamController<T>(
-        onCancel: () => timer?.cancel(),
-      );
+      final controller = StreamController<T>(onCancel: () => timer?.cancel());
       final sub = stream.listen(
         (data) {
           timer?.cancel();
@@ -562,17 +608,17 @@ class StatsSnapshot {
 
   @override
   int get hashCode => Object.hash(
-        totalEntries,
-        totalDays,
-        currentStreak,
-        longestStreak,
-        longestStreakThisMonth,
-        freezeAvailable,
-        mostActiveWeekday,
-        averageMood,
-        Object.hashAll(weeklyTrends),
-        Object.hashAll(moodDistribution.entries),
-      );
+    totalEntries,
+    totalDays,
+    currentStreak,
+    longestStreak,
+    longestStreakThisMonth,
+    freezeAvailable,
+    mostActiveWeekday,
+    averageMood,
+    Object.hashAll(weeklyTrends),
+    Object.hashAll(moodDistribution.entries),
+  );
 }
 
 /// Lightweight data subset for the home screen widget.
@@ -580,8 +626,5 @@ class WidgetData {
   final int currentStreak;
   final int totalEntries;
 
-  const WidgetData({
-    this.currentStreak = 0,
-    this.totalEntries = 0,
-  });
+  const WidgetData({this.currentStreak = 0, this.totalEntries = 0});
 }

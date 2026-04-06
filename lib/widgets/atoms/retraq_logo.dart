@@ -39,8 +39,7 @@ class RetraqLogo extends StatefulWidget {
   State<RetraqLogo> createState() => _RetraqLogoState();
 }
 
-class _RetraqLogoState extends State<RetraqLogo>
-    with TickerProviderStateMixin {
+class _RetraqLogoState extends State<RetraqLogo> with TickerProviderStateMixin {
   late final AnimationController _entranceController;
   late final Animation<double> _fadeIn;
   late final Animation<double> _scaleIn;
@@ -75,10 +74,7 @@ class _RetraqLogoState extends State<RetraqLogo>
         duration: const Duration(milliseconds: 2400),
       );
       _breatheScale = Tween<double>(begin: 1.0, end: 1.06).animate(
-        CurvedAnimation(
-          parent: _breatheController!,
-          curve: Curves.easeInOut,
-        ),
+        CurvedAnimation(parent: _breatheController!, curve: Curves.easeInOut),
       );
     }
   }
@@ -90,7 +86,9 @@ class _RetraqLogoState extends State<RetraqLogo>
     if (shouldReduce != _reduceMotion) {
       _reduceMotion = shouldReduce;
       _applyMotionPreference();
-    } else if (!_reduceMotion && !_entranceController.isAnimating && !_entranceController.isCompleted) {
+    } else if (!_reduceMotion &&
+        !_entranceController.isAnimating &&
+        !_entranceController.isCompleted) {
       // First frame — kick off animations.
       _applyMotionPreference();
     }
@@ -118,7 +116,9 @@ class _RetraqLogoState extends State<RetraqLogo>
         _entranceController.value = 1.0;
       }
       // Breathing
-      if (widget.breathe && _breatheController != null && !_breatheController!.isAnimating) {
+      if (widget.breathe &&
+          _breatheController != null &&
+          !_breatheController!.isAnimating) {
         _breatheController!.repeat(reverse: true);
       }
     }
@@ -176,10 +176,7 @@ class _RetraqLogoState extends State<RetraqLogo>
     // Wrap in entrance animation
     return FadeTransition(
       opacity: _fadeIn,
-      child: ScaleTransition(
-        scale: _scaleIn,
-        child: content,
-      ),
+      child: ScaleTransition(scale: _scaleIn, child: content),
     );
   }
 }

@@ -13,11 +13,7 @@ import '../molecules/mood_selector.dart';
 /// Displays journal entries for a single date below the calendar grid.
 /// Shows one date divider, then each entry as a full-width card.
 class EntryDetailView extends StatelessWidget {
-  const EntryDetailView({
-    super.key,
-    required this.entries,
-    required this.date,
-  });
+  const EntryDetailView({super.key, required this.entries, required this.date});
 
   final List<JournalEntry> entries;
   final DateTime date;
@@ -38,8 +34,7 @@ class EntryDetailView extends StatelessWidget {
             children: [
               Expanded(child: Divider(color: cs.outlineVariant)),
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
                 child: Text(
                   dateLabel.toUpperCase(),
                   style: tt.labelSmall?.copyWith(
@@ -55,10 +50,12 @@ class EntryDetailView extends StatelessWidget {
         ),
 
         // ── Entry cards ──
-        ...entries.map((entry) => Padding(
-              padding: const EdgeInsets.only(bottom: AppSpacing.md),
-              child: _EntryCard(entry: entry),
-            )),
+        ...entries.map(
+          (entry) => Padding(
+            padding: const EdgeInsets.only(bottom: AppSpacing.md),
+            child: _EntryCard(entry: entry),
+          ),
+        ),
 
         // ── Share day ──
         if (entries.isNotEmpty)
@@ -67,8 +64,8 @@ class EntryDetailView extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(bottom: AppSpacing.md),
               child: OutlinedButton.icon(
-                onPressed: () =>
-                    ExportService.instance.shareDayEntries(entries, date),
+                onPressed:
+                    () => ExportService.instance.shareDayEntries(entries, date),
                 icon: const Icon(Icons.share_outlined, size: 16),
                 label: const Text('Share Day'),
                 style: OutlinedButton.styleFrom(
@@ -130,12 +127,14 @@ class _EntryCard extends StatelessWidget {
                 const SizedBox(width: AppSpacing.sm),
                 RetraqChip(
                   label: entry.label!,
-                  color: entry.label == 'AM'
-                      ? cs.primaryContainer
-                      : cs.tertiaryContainer,
-                  textColor: entry.label == 'AM'
-                      ? cs.onPrimaryContainer
-                      : cs.onTertiaryContainer,
+                  color:
+                      entry.label == 'AM'
+                          ? cs.primaryContainer
+                          : cs.tertiaryContainer,
+                  textColor:
+                      entry.label == 'AM'
+                          ? cs.onPrimaryContainer
+                          : cs.onTertiaryContainer,
                 ),
               ],
               const Spacer(),
@@ -151,7 +150,10 @@ class _EntryCard extends StatelessWidget {
             const SizedBox(height: AppSpacing.sm),
             Row(
               children: [
-                Text(moodEmoji(entry.mood!), style: const TextStyle(fontSize: 16)),
+                Text(
+                  moodEmoji(entry.mood!),
+                  style: const TextStyle(fontSize: 16),
+                ),
                 const SizedBox(width: AppSpacing.xs),
                 Text(
                   moodLabel(entry.mood!),
@@ -170,7 +172,9 @@ class _EntryCard extends StatelessWidget {
             BionicText(
               text: entry.entry!,
               style: tt.bodyLarge?.copyWith(height: 1.6),
-              enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
+              enabled:
+                  SettingsProvider.maybeOf(context)?.bionicReadingEnabled ??
+                  false,
             ),
         ],
       ),

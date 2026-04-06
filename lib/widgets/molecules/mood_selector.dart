@@ -50,22 +50,23 @@ class MoodSelector extends StatelessWidget {
       label: 'Mood selector',
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: _moodOptions.map((option) {
-          final isSelected = selectedMood == option.value;
-          final color = colors[option.value - 1];
-          return _MoodButton(
-            option: option,
-            color: color,
-            isSelected: isSelected,
-            hasSelection: selectedMood != null,
-            onTap: () {
-              HapticFeedback.lightImpact();
-              // Tap again to deselect
-              onChanged(isSelected ? null : option.value);
-            },
-            theme: theme,
-          );
-        }).toList(),
+        children:
+            _moodOptions.map((option) {
+              final isSelected = selectedMood == option.value;
+              final color = colors[option.value - 1];
+              return _MoodButton(
+                option: option,
+                color: color,
+                isSelected: isSelected,
+                hasSelection: selectedMood != null,
+                onTap: () {
+                  HapticFeedback.lightImpact();
+                  // Tap again to deselect
+                  onChanged(isSelected ? null : option.value);
+                },
+                theme: theme,
+              );
+            }).toList(),
       ),
     );
   }
@@ -92,7 +93,8 @@ class _MoodButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final opacity = hasSelection && !isSelected ? 0.4 : 1.0;
     final reduceMotion = MediaQuery.of(context).disableAnimations;
-    final animDuration = reduceMotion ? Duration.zero : const Duration(milliseconds: 150);
+    final animDuration =
+        reduceMotion ? Duration.zero : const Duration(milliseconds: 150);
 
     return Semantics(
       button: true,
@@ -113,12 +115,12 @@ class _MoodButton extends StatelessWidget {
                 height: 48,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: isSelected
-                      ? Border.all(color: color, width: 2.5)
-                      : null,
-                  color: isSelected
-                      ? color.withValues(alpha: 0.12)
-                      : Colors.transparent,
+                  border:
+                      isSelected ? Border.all(color: color, width: 2.5) : null,
+                  color:
+                      isSelected
+                          ? color.withValues(alpha: 0.12)
+                          : Colors.transparent,
                 ),
                 child: Center(
                   child: MoodBlob(
@@ -135,9 +137,8 @@ class _MoodButton extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                  color: isSelected
-                      ? color
-                      : theme.colorScheme.onSurfaceVariant,
+                  color:
+                      isSelected ? color : theme.colorScheme.onSurfaceVariant,
                 ),
                 child: Text(option.label),
               ),
@@ -148,4 +149,3 @@ class _MoodButton extends StatelessWidget {
     );
   }
 }
-

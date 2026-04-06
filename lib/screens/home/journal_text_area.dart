@@ -40,9 +40,7 @@ class JournalTextArea extends StatelessWidget {
       decoration: BoxDecoration(
         color: cs.surfaceContainerHigh,
         borderRadius: AppSpacing.borderRadiusXl,
-        border: Border.all(
-          color: cs.outlineVariant.withValues(alpha: 0.3),
-        ),
+        border: Border.all(color: cs.outlineVariant.withValues(alpha: 0.3)),
       ),
       child: Stack(
         children: [
@@ -63,10 +61,8 @@ class JournalTextArea extends StatelessWidget {
               }
             },
             inputFormatters: [
-              if (enterToSave)
-                EnterToSaveFormatter(onEnter: onSave),
-              if (!enterToSave && bulletPoints)
-                BulletPointFormatter(),
+              if (enterToSave) EnterToSaveFormatter(onEnter: onSave),
+              if (!enterToSave && bulletPoints) BulletPointFormatter(),
             ],
             decoration: InputDecoration(
               hintText: bulletPoints ? '• $hint' : hint,

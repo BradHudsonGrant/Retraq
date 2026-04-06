@@ -30,15 +30,9 @@ class AdaptiveTwoPane extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(
-          flex: (leftFraction * 100).round(),
-          child: left,
-        ),
+        Expanded(flex: (leftFraction * 100).round(), child: left),
         const VerticalDivider(width: 1),
-        Expanded(
-          flex: ((1 - leftFraction) * 100).round(),
-          child: right,
-        ),
+        Expanded(flex: ((1 - leftFraction) * 100).round(), child: right),
       ],
     );
   }

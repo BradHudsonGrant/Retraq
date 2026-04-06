@@ -45,79 +45,73 @@ class StatCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
-    final disableAnimations =
-        MediaQuery.of(context).disableAnimations;
+    final disableAnimations = MediaQuery.of(context).disableAnimations;
 
     final accent = accentColor ?? cs.primary;
-    final counterDuration =
-        Duration(milliseconds: min(800 + value * 2, 1200));
+    final counterDuration = Duration(milliseconds: min(800 + value * 2, 1200));
 
     // ── Card content ──
     Widget cardContent = Semantics(
       label: '$label: $value${suffix != null ? ' $suffix' : ''}',
       excludeSemantics: true,
       child: Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      decoration: BoxDecoration(
-        color: cs.surfaceContainerLow,
-        borderRadius: AppSpacing.borderRadiusXl,
-        boxShadow: [
-          BoxShadow(
-            color: cs.onSurface.withValues(alpha: 0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Icon row — icon pinned to the right
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Text(
-                  label,
-                  style: tt.labelMedium?.copyWith(
-                    color: cs.onSurfaceVariant,
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        decoration: BoxDecoration(
+          color: cs.surfaceContainerLow,
+          borderRadius: AppSpacing.borderRadiusXl,
+          boxShadow: [
+            BoxShadow(
+              color: cs.onSurface.withValues(alpha: 0.04),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Icon row — icon pinned to the right
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    label,
+                    style: tt.labelMedium?.copyWith(color: cs.onSurfaceVariant),
                   ),
                 ),
-              ),
-              Container(
-                width: 36,
-                height: 36,
-                decoration: BoxDecoration(
-                  color: accent.withValues(alpha: 0.15),
-                  shape: BoxShape.circle,
+                Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    color: accent.withValues(alpha: 0.15),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(icon, size: 20, color: accent),
                 ),
-                child: Icon(icon, size: 20, color: accent),
-              ),
-            ],
-          ),
+              ],
+            ),
 
-          const SizedBox(height: AppSpacing.sm),
+            const SizedBox(height: AppSpacing.sm),
 
-          // Animated counter + optional suffix
-          _CounterRow(
-            value: value,
-            suffix: suffix,
-            duration: counterDuration,
-            disableAnimations: disableAnimations,
-            textTheme: tt,
-            colorScheme: cs,
-          ),
-        ],
+            // Animated counter + optional suffix
+            _CounterRow(
+              value: value,
+              suffix: suffix,
+              duration: counterDuration,
+              disableAnimations: disableAnimations,
+              textTheme: tt,
+              colorScheme: cs,
+            ),
+          ],
+        ),
       ),
-    ));
+    );
 
     // ── Entrance animation ──
     if (disableAnimations) return cardContent;
 
-    return _StaggeredEntrance(
-      delay: delay,
-      child: cardContent,
-    );
+    return _StaggeredEntrance(delay: delay, child: cardContent);
   }
 }
 
@@ -191,10 +185,7 @@ class _CounterRow extends StatelessWidget {
 // ────────────────────────────────────────────────────────────────────
 
 class _StaggeredEntrance extends StatefulWidget {
-  const _StaggeredEntrance({
-    required this.delay,
-    required this.child,
-  });
+  const _StaggeredEntrance({required this.delay, required this.child});
 
   final int delay;
   final Widget child;

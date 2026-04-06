@@ -49,9 +49,10 @@ class _RetraqButtonState extends State<RetraqButton> {
     if (widget.isOutlined) {
       button = OutlinedButton.icon(
         onPressed: widget.onPressed,
-        icon: widget.icon != null
-            ? Icon(widget.icon, size: widget.isSmall ? 16 : 20)
-            : null,
+        icon:
+            widget.icon != null
+                ? Icon(widget.icon, size: widget.isSmall ? 16 : 20)
+                : null,
         label: Text(
           widget.label,
           style: widget.isSmall ? tt.labelSmall : tt.labelLarge,
@@ -67,14 +68,19 @@ class _RetraqButtonState extends State<RetraqButton> {
     } else {
       button = FilledButton.icon(
         onPressed: widget.onPressed,
-        icon: widget.icon != null
-            ? Icon(widget.icon, size: widget.isSmall ? 16 : 20,
-                color: cs.onPrimary)
-            : null,
+        icon:
+            widget.icon != null
+                ? Icon(
+                  widget.icon,
+                  size: widget.isSmall ? 16 : 20,
+                  color: cs.onPrimary,
+                )
+                : null,
         label: Text(
           widget.label,
-          style: (widget.isSmall ? tt.labelSmall : tt.labelLarge)
-              ?.copyWith(color: cs.onPrimary),
+          style: (widget.isSmall ? tt.labelSmall : tt.labelLarge)?.copyWith(
+            color: cs.onPrimary,
+          ),
         ),
         style: FilledButton.styleFrom(
           backgroundColor: cs.primary,
@@ -93,19 +99,20 @@ class _RetraqButtonState extends State<RetraqButton> {
     return Semantics(
       label: widget.label,
       enabled: widget.onPressed != null,
-      child: reduceMotion
-          ? button
-          : GestureDetector(
-              onTapDown: _onTapDown,
-              onTapUp: _onTapUp,
-              onTapCancel: _onTapCancel,
-              child: AnimatedScale(
-                scale: _isPressed ? 0.96 : 1.0,
-                duration: Duration(milliseconds: _isPressed ? 80 : 150),
-                curve: Curves.easeOut,
-                child: button,
+      child:
+          reduceMotion
+              ? button
+              : GestureDetector(
+                onTapDown: _onTapDown,
+                onTapUp: _onTapUp,
+                onTapCancel: _onTapCancel,
+                child: AnimatedScale(
+                  scale: _isPressed ? 0.96 : 1.0,
+                  duration: Duration(milliseconds: _isPressed ? 80 : 150),
+                  curve: Curves.easeOut,
+                  child: button,
+                ),
               ),
-            ),
     );
   }
 }

@@ -2,7 +2,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:retraq/services/notification_service.dart';
 
 void main() {
-
   group('Message lists are non-empty', () {
     test('morningMessages is non-empty', () {
       expect(NotificationService.morningMessages, isNotEmpty);
@@ -59,18 +58,27 @@ void main() {
       expect(allPossible, contains(message));
     });
 
-    test('streakAtRisk=true returns a streak-at-risk message regardless of hour', () {
-      final morningMsg =
-          NotificationService.pickMessage(8, streakAtRisk: true);
-      final eveningMsg =
-          NotificationService.pickMessage(20, streakAtRisk: true);
-      final middayMsg =
-          NotificationService.pickMessage(14, streakAtRisk: true);
+    test(
+      'streakAtRisk=true returns a streak-at-risk message regardless of hour',
+      () {
+        final morningMsg = NotificationService.pickMessage(
+          8,
+          streakAtRisk: true,
+        );
+        final eveningMsg = NotificationService.pickMessage(
+          20,
+          streakAtRisk: true,
+        );
+        final middayMsg = NotificationService.pickMessage(
+          14,
+          streakAtRisk: true,
+        );
 
-      expect(NotificationService.streakAtRiskMessages, contains(morningMsg));
-      expect(NotificationService.streakAtRiskMessages, contains(eveningMsg));
-      expect(NotificationService.streakAtRiskMessages, contains(middayMsg));
-    });
+        expect(NotificationService.streakAtRiskMessages, contains(morningMsg));
+        expect(NotificationService.streakAtRiskMessages, contains(eveningMsg));
+        expect(NotificationService.streakAtRiskMessages, contains(middayMsg));
+      },
+    );
   });
 
   group('Day-of-year rotation', () {

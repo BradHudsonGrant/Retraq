@@ -24,8 +24,9 @@ class NotificationService {
     final locationName = await FlutterTimezone.getLocalTimezone();
     tz.setLocalLocation(tz.getLocation(locationName));
 
-    const androidSettings =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+    const androidSettings = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
     const iosSettings = DarwinInitializationSettings(
       requestAlertPermission: false,
       requestBadgePermission: false,
@@ -43,15 +44,21 @@ class NotificationService {
   /// Returns true if granted.
   Future<bool> requestPermission() async {
     // Android 13+
-    final android = _plugin.resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>();
+    final android =
+        _plugin
+            .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin
+            >();
     if (android != null) {
       final granted = await android.requestNotificationsPermission();
       return granted ?? false;
     }
     // iOS
-    final ios = _plugin.resolvePlatformSpecificImplementation<
-        IOSFlutterLocalNotificationsPlugin>();
+    final ios =
+        _plugin
+            .resolvePlatformSpecificImplementation<
+              IOSFlutterLocalNotificationsPlugin
+            >();
     if (ios != null) {
       final granted = await ios.requestPermissions(
         alert: true,
@@ -135,7 +142,8 @@ class NotificationService {
       return streakAtRiskMessages[day % streakAtRiskMessages.length];
     }
 
-    final isWeekend = now.weekday == DateTime.saturday || now.weekday == DateTime.sunday;
+    final isWeekend =
+        now.weekday == DateTime.saturday || now.weekday == DateTime.sunday;
     if (isWeekend) {
       // Mix weekend-specific with general messages
       if (day % 3 == 0) {
@@ -153,12 +161,22 @@ class NotificationService {
 
   /// Schedule a daily notification at the given hour (0-23) and minute (0-59).
   /// If [streakAtRisk] is true, picks a streak-warning message.
-  Future<void> scheduleDaily(int hour, {int minute = 0, bool streakAtRisk = false}) async {
+  Future<void> scheduleDaily(
+    int hour, {
+    int minute = 0,
+    bool streakAtRisk = false,
+  }) async {
     await cancel(); // Clear any existing schedule
 
     final now = tz.TZDateTime.now(tz.local);
-    var scheduled =
-        tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minute);
+    var scheduled = tz.TZDateTime(
+      tz.local,
+      now.year,
+      now.month,
+      now.day,
+      hour,
+      minute,
+    );
     if (scheduled.isBefore(now)) {
       scheduled = scheduled.add(const Duration(days: 1));
     }

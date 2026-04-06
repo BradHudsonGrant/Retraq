@@ -74,9 +74,7 @@ void main() {
   group('EnterToSaveFormatter', () {
     test('swallows newline and returns old value', () {
       var enterCalled = false;
-      final formatter = EnterToSaveFormatter(
-        onEnter: () => enterCalled = true,
-      );
+      final formatter = EnterToSaveFormatter(onEnter: () => enterCalled = true);
 
       final oldVal = _val('Hello');
       final newVal = _val('Hello\n', offset: 6);

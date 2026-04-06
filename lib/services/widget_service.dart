@@ -36,9 +36,10 @@ class WidgetService {
       // Find the latest entry's mood (if any).
       final entries = await db.entries.getEntriesForDate(DateTime.now());
       final latestMood = entries.isNotEmpty ? (entries.first.mood ?? -1) : -1;
-      final lastDate = entries.isNotEmpty
-          ? entries.first.createdAt.toIso8601String().substring(0, 10)
-          : '';
+      final lastDate =
+          entries.isNotEmpty
+              ? entries.first.createdAt.toIso8601String().substring(0, 10)
+              : '';
 
       await Future.wait([
         HomeWidget.saveWidgetData<int>('streak', widgetData.currentStreak),

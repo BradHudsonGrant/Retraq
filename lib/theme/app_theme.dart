@@ -44,9 +44,7 @@ class AppTheme {
         backgroundColor: navBarBackground.withValues(alpha: 0.8),
         indicatorColor: colorScheme.primaryContainer,
         labelTextStyle: WidgetStatePropertyAll(
-          AppText.labelStyle.copyWith(
-            color: colorScheme.onSurfaceVariant,
-          ),
+          AppText.labelStyle.copyWith(color: colorScheme.onSurfaceVariant),
         ),
       ),
       cardTheme: CardThemeData(
@@ -91,7 +89,9 @@ class AppTheme {
       ),
       bottomSheetTheme: BottomSheetThemeData(
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(AppSpacing.radiusXxl)),
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(AppSpacing.radiusXxl),
+          ),
         ),
         showDragHandle: true,
       ),

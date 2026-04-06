@@ -40,17 +40,20 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     OnboardingPageData(
       icon: Icons.edit_note,
       title: 'Capture it\nbefore it\u2019s gone.',
-      body: 'Quick thoughts, random ideas, things you\u2019ll\nforget by tomorrow. Just get it down.',
+      body:
+          'Quick thoughts, random ideas, things you\u2019ll\nforget by tomorrow. Just get it down.',
     ),
     OnboardingPageData(
       icon: Icons.auto_awesome,
       title: 'Your life,\nactually organised.',
-      body: 'Look back on any day, week, or month.\nFull sentences optional \u2014 brain dumps welcome.',
+      body:
+          'Look back on any day, week, or month.\nFull sentences optional \u2014 brain dumps welcome.',
     ),
     OnboardingPageData(
       icon: Icons.lock_outline,
       title: 'Completely\nyours.',
-      body: 'Everything stays on your device.\nNo account. No cloud. No compromises.',
+      body:
+          'Everything stays on your device.\nNo account. No cloud. No compromises.',
     ),
   ];
 
@@ -95,7 +98,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     final lastPage = _totalPageCount - 1;
     if (_currentPage < lastPage) {
       _controller.nextPage(
-        duration: reduceMotion ? Duration.zero : const Duration(milliseconds: 400),
+        duration:
+            reduceMotion ? Duration.zero : const Duration(milliseconds: 400),
         curve: Curves.easeInOut,
       );
     } else if (_currentPage == lastPage) {
@@ -137,7 +141,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       debugPrint('Failed to save consent records: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to save consent. Please try again.')),
+          const SnackBar(
+            content: Text('Failed to save consent. Please try again.'),
+          ),
         );
       }
       return false;
@@ -147,24 +153,25 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Future<void> _showNotificationPrePrompt() async {
     final shouldEnable = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        icon: const Icon(Icons.notifications_outlined, size: 32),
-        title: const Text('Stay on track'),
-        content: const Text(
-          'A gentle daily reminder can help you build a journaling habit. '
-          'You can change or turn this off anytime in Settings.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Not now'),
+      builder:
+          (ctx) => AlertDialog(
+            icon: const Icon(Icons.notifications_outlined, size: 32),
+            title: const Text('Stay on track'),
+            content: const Text(
+              'A gentle daily reminder can help you build a journaling habit. '
+              'You can change or turn this off anytime in Settings.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, false),
+                child: const Text('Not now'),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.pop(ctx, true),
+                child: const Text('Enable reminders'),
+              ),
+            ],
           ),
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Enable reminders'),
-          ),
-        ],
-      ),
     );
     if (shouldEnable == true) {
       try {
@@ -181,7 +188,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     if (!mounted) return;
     final reduceMotion = MediaQuery.of(context).disableAnimations;
     _controller.nextPage(
-      duration: reduceMotion ? Duration.zero : const Duration(milliseconds: 400),
+      duration:
+          reduceMotion ? Duration.zero : const Duration(milliseconds: 400),
       curve: Curves.easeInOut,
     );
   }
@@ -255,12 +263,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     privacyAccepted: _privacyAccepted,
                     termsAccepted: _termsAccepted,
                     healthAccepted: _healthAccepted,
-                    onPrivacyChanged: (v) =>
-                        setState(() => _privacyAccepted = v ?? false),
-                    onTermsChanged: (v) =>
-                        setState(() => _termsAccepted = v ?? false),
-                    onHealthChanged: (v) =>
-                        setState(() => _healthAccepted = v ?? false),
+                    onPrivacyChanged:
+                        (v) => setState(() => _privacyAccepted = v ?? false),
+                    onTermsChanged:
+                        (v) => setState(() => _termsAccepted = v ?? false),
+                    onHealthChanged:
+                        (v) => setState(() => _healthAccepted = v ?? false),
                   );
                 },
               ),
@@ -298,9 +306,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         _currentPage == _totalPageCount - 1
                             ? 'Get Started'
                             : 'Next',
-                        style: tt.labelLarge?.copyWith(
-                          color: cs.onPrimary,
-                        ),
+                        style: tt.labelLarge?.copyWith(color: cs.onPrimary),
                       ),
                     ),
                   ],

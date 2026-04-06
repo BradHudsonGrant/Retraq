@@ -59,9 +59,7 @@ class EntryCard extends StatelessWidget {
                     tooltip: 'Entry options',
                     icon: Icon(
                       Icons.more_horiz,
-                      color: Theme.of(context)
-                          .colorScheme
-                          .onSurfaceVariant
+                      color: Theme.of(context).colorScheme.onSurfaceVariant
                           .withValues(alpha: onMenuTap != null ? 0.6 : 0.3),
                     ),
                   ),
@@ -71,7 +69,10 @@ class EntryCard extends StatelessWidget {
                 const SizedBox(height: AppSpacing.sm),
                 Row(
                   children: [
-                    Text(moodEmoji(mood!), style: const TextStyle(fontSize: 16)),
+                    Text(
+                      moodEmoji(mood!),
+                      style: const TextStyle(fontSize: 16),
+                    ),
                     const SizedBox(width: AppSpacing.xs),
                     Text(
                       moodLabel(mood!),
@@ -87,16 +88,11 @@ class EntryCard extends StatelessWidget {
               if (title != null && title!.isNotEmpty) ...[
                 Text(
                   title!,
-                  style: tt.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: tt.titleSmall?.copyWith(fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: AppSpacing.xs),
               ],
-              Text(
-                text,
-                style: tt.bodyLarge?.copyWith(height: 1.6),
-              ),
+              Text(text, style: tt.bodyLarge?.copyWith(height: 1.6)),
             ],
           ),
         ),

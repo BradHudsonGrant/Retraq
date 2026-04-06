@@ -51,18 +51,23 @@ class ConsentPage extends StatelessWidget {
                 color: cs.primaryContainer,
                 shape: BoxShape.circle,
               ),
-              child: ExcludeSemantics(child: Icon(Icons.handshake_outlined, size: 36,
-                  color: cs.onPrimaryContainer)),
+              child: ExcludeSemantics(
+                child: Icon(
+                  Icons.handshake_outlined,
+                  size: 36,
+                  color: cs.onPrimaryContainer,
+                ),
+              ),
             ),
           ),
           const SizedBox(height: AppSpacing.lg),
           Center(
             child: BionicText(
               text: 'Almost there!',
-              style: tt.headlineMedium?.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
-              enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
+              style: tt.headlineMedium?.copyWith(fontWeight: FontWeight.w700),
+              enabled:
+                  SettingsProvider.maybeOf(context)?.bionicReadingEnabled ??
+                  false,
             ),
           ),
           const SizedBox(height: AppSpacing.xl),
@@ -77,8 +82,13 @@ class ConsentPage extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ExcludeSemantics(child: Icon(Icons.info_outline, size: 20,
-                    color: cs.onTertiaryContainer)),
+                ExcludeSemantics(
+                  child: Icon(
+                    Icons.info_outline,
+                    size: 20,
+                    color: cs.onTertiaryContainer,
+                  ),
+                ),
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: BionicText(
@@ -87,7 +97,11 @@ class ConsentPage extends StatelessWidget {
                       color: cs.onTertiaryContainer,
                       height: 1.5,
                     ),
-                    enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
+                    enabled:
+                        SettingsProvider.maybeOf(
+                          context,
+                        )?.bionicReadingEnabled ??
+                        false,
                   ),
                 ),
               ],
@@ -101,14 +115,16 @@ class ConsentPage extends StatelessWidget {
             value: healthAccepted,
             onChanged: onHealthChanged,
             label: 'I acknowledge the Health Disclaimer',
-            onTapLink: () => Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (_) => const LegalScreen(
-                  title: 'Health Disclaimer',
-                  content: healthDisclaimerText,
+            onTapLink:
+                () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder:
+                        (_) => const LegalScreen(
+                          title: 'Health Disclaimer',
+                          content: healthDisclaimerText,
+                        ),
+                  ),
                 ),
-              ),
-            ),
             colorScheme: cs,
             textTheme: tt,
           ),
@@ -120,14 +136,16 @@ class ConsentPage extends StatelessWidget {
             value: privacyAccepted,
             onChanged: onPrivacyChanged,
             label: 'I have read and agree to the Privacy Policy',
-            onTapLink: () => Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (_) => const LegalScreen(
-                  title: 'Privacy Policy',
-                  content: privacyPolicyText,
+            onTapLink:
+                () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder:
+                        (_) => const LegalScreen(
+                          title: 'Privacy Policy',
+                          content: privacyPolicyText,
+                        ),
+                  ),
                 ),
-              ),
-            ),
             colorScheme: cs,
             textTheme: tt,
           ),
@@ -139,14 +157,16 @@ class ConsentPage extends StatelessWidget {
             value: termsAccepted,
             onChanged: onTermsChanged,
             label: 'I agree to the Terms of Use',
-            onTapLink: () => Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (_) => const LegalScreen(
-                  title: 'Terms of Use',
-                  content: termsOfServiceText,
+            onTapLink:
+                () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder:
+                        (_) => const LegalScreen(
+                          title: 'Terms of Use',
+                          content: termsOfServiceText,
+                        ),
+                  ),
                 ),
-              ),
-            ),
             colorScheme: cs,
             textTheme: tt,
           ),
@@ -186,12 +206,7 @@ class _ConsentCheckbox extends StatelessWidget {
           SizedBox(
             width: 48,
             height: 48,
-            child: Center(
-              child: Checkbox(
-                value: value,
-                onChanged: onChanged,
-              ),
-            ),
+            child: Center(child: Checkbox(value: value, onChanged: onChanged)),
           ),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
