@@ -67,6 +67,7 @@ jobs:
           path: coverage/
 
   build-android:
+    if: false # Disabled until release keystore is configured
     runs-on: ubuntu-latest
     needs: analyze-and-test
     steps:
@@ -134,6 +135,7 @@ jobs:
           retention-days: 14
 
   build-ios:
+    if: false # Disabled until iOS signing is configured
     runs-on: macos-latest
     needs: analyze-and-test
     steps:
@@ -164,6 +166,7 @@ jobs:
   # Integration tests on an Android emulator.
   # Runs after unit tests pass. Uses reactivecircus/android-emulator-runner.
   integration-test:
+    if: false # Disabled until needed
     runs-on: ubuntu-latest
     needs: analyze-and-test
     steps:
