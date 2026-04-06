@@ -4,7 +4,7 @@ import '../services/database_service.dart';
 import '../services/notification_service.dart';
 import '../services/user_repository.dart';
 import '../theme/app_spacing.dart';
-import '../widgets/atoms/sincethen_logo.dart';
+import '../widgets/atoms/retraq_logo.dart';
 import '../widgets/molecules/page_indicator_dots.dart';
 import '../utils/app_info.dart' as info;
 import 'onboarding/age_gate_page.dart';
@@ -101,34 +101,47 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     } else if (_currentPage == lastPage) {
       // Consent page — only complete if both accepted
       if (_privacyAccepted && _termsAccepted && _healthAccepted) {
-        await _saveConsentRecords();
+        final saved = await _saveConsentRecords();
+        if (!saved) return; // SnackBar already shown; let user retry
         if (mounted) await _showNotificationPrePrompt();
         widget.onComplete();
       }
     }
   }
 
-  Future<void> _saveConsentRecords() async {
+  /// Returns true if all consent records saved successfully.
+  Future<bool> _saveConsentRecords() async {
     final userRepo = DatabaseService.instance.userRepo;
     final now = DateTime.now();
-    await userRepo.saveConsentRecord(
-      consentType: 'privacy_policy',
-      documentVersion: currentPrivacyPolicyVersion,
-      acceptedAt: now,
-      appVersion: info.appVersion,
-    );
-    await userRepo.saveConsentRecord(
-      consentType: 'terms_of_service',
-      documentVersion: currentTermsOfServiceVersion,
-      acceptedAt: now,
-      appVersion: info.appVersion,
-    );
-    await userRepo.saveConsentRecord(
-      consentType: 'health_disclaimer',
-      documentVersion: currentHealthDisclaimerVersion,
-      acceptedAt: now,
-      appVersion: info.appVersion,
-    );
+    try {
+      await userRepo.saveConsentRecord(
+        consentType: 'privacy_policy',
+        documentVersion: currentPrivacyPolicyVersion,
+        acceptedAt: now,
+        appVersion: info.appVersion,
+      );
+      await userRepo.saveConsentRecord(
+        consentType: 'terms_of_service',
+        documentVersion: currentTermsOfServiceVersion,
+        acceptedAt: now,
+        appVersion: info.appVersion,
+      );
+      await userRepo.saveConsentRecord(
+        consentType: 'health_disclaimer',
+        documentVersion: currentHealthDisclaimerVersion,
+        acceptedAt: now,
+        appVersion: info.appVersion,
+      );
+      return true;
+    } catch (e) {
+      debugPrint('Failed to save consent records: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to save consent. Please try again.')),
+        );
+      }
+      return false;
+    }
   }
 
   Future<void> _showNotificationPrePrompt() async {
@@ -180,6 +193,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     setState(() => _ageDenied = true);
   }
 
+  Future<void> _retryAge() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_ageDeniedKey);
+    if (!mounted) return;
+    setState(() => _ageDenied = false);
+  }
+
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
@@ -206,7 +226,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
               child: Row(
                 children: [
-                  const SinceThenLogo(size: 32, animate: true, showText: true),
+                  const RetraqLogo(size: 32, animate: true, showText: true),
                 ],
               ),
             ),
@@ -217,15 +237,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 controller: _controller,
                 itemCount: _totalPageCount,
                 onPageChanged: (i) => setState(() => _currentPage = i),
-                physics: _currentPage == 0
-                    ? const NeverScrollableScrollPhysics()
-                    : null,
+                physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (_, i) {
                   if (i == 0) {
                     return AgeGatePage(
                       onConfirm: _confirmAge,
                       onDeny: _denyAge,
                       isDenied: _ageDenied,
+                      onRetry: _retryAge,
                     );
                   }
                   if (i <= _pages.length) {

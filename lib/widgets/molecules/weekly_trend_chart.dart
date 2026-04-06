@@ -369,7 +369,7 @@ class _Labels extends StatelessWidget {
   Widget build(BuildContext context) {
     final style = Theme.of(context).textTheme.labelSmall?.copyWith(
           color: onSurfaceVariant.withValues(alpha: 0.7),
-          fontSize: 10,
+          fontSize: 12,
         );
 
     return Row(

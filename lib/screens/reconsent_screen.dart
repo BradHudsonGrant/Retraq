@@ -30,25 +30,34 @@ class _ReconsentScreenState extends State<ReconsentScreen> {
     }
     final userRepo = DatabaseService.instance.userRepo;
     final now = DateTime.now();
-    await userRepo.saveConsentRecord(
-      consentType: 'privacy_policy',
-      documentVersion: currentPrivacyPolicyVersion,
-      acceptedAt: now,
-      appVersion: info.appVersion,
-    );
-    await userRepo.saveConsentRecord(
-      consentType: 'terms_of_service',
-      documentVersion: currentTermsOfServiceVersion,
-      acceptedAt: now,
-      appVersion: info.appVersion,
-    );
-    await userRepo.saveConsentRecord(
-      consentType: 'health_disclaimer',
-      documentVersion: currentHealthDisclaimerVersion,
-      acceptedAt: now,
-      appVersion: info.appVersion,
-    );
-    widget.onComplete();
+    try {
+      await userRepo.saveConsentRecord(
+        consentType: 'privacy_policy',
+        documentVersion: currentPrivacyPolicyVersion,
+        acceptedAt: now,
+        appVersion: info.appVersion,
+      );
+      await userRepo.saveConsentRecord(
+        consentType: 'terms_of_service',
+        documentVersion: currentTermsOfServiceVersion,
+        acceptedAt: now,
+        appVersion: info.appVersion,
+      );
+      await userRepo.saveConsentRecord(
+        consentType: 'health_disclaimer',
+        documentVersion: currentHealthDisclaimerVersion,
+        acceptedAt: now,
+        appVersion: info.appVersion,
+      );
+      widget.onComplete();
+    } catch (e) {
+      debugPrint('Failed to save consent records: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to save consent. Please try again.')),
+        );
+      }
+    }
   }
 
   @override

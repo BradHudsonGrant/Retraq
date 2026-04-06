@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../models/journal_entry.dart';
 import '../../services/database_service.dart';
 import '../../theme/app_spacing.dart';
-import '../atoms/sincethen_button.dart';
+import '../atoms/retraq_button.dart';
 import '../molecules/mood_selector.dart';
 
 /// Bottom sheet for editing or deleting an existing journal entry.
@@ -160,7 +160,7 @@ class _EditEntrySheetState extends State<EditEntrySheet> {
             // Save button
             SizedBox(
               width: double.infinity,
-              child: SinceThenButton(
+              child: RetraqButton(
                 label: _isSaving ? 'Saving...' : 'Save Changes',
                 icon: Icons.check,
                 onPressed: _isSaving ? null : _save,
@@ -208,10 +208,19 @@ class _EditEntrySheetState extends State<EditEntrySheet> {
 
   Future<void> _save() async {
     if (!mounted) return;
-    setState(() => _isSaving = true);
 
     final titleText = _titleCtrl.text.trim();
     final entryText = _entryCtrl.text.trim();
+
+    // Block saving a completely empty entry (no text, no title, no mood).
+    if (titleText.isEmpty && entryText.isEmpty && _mood == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Entry is empty. Add some text, a title, or a mood.')),
+      );
+      return;
+    }
+
+    setState(() => _isSaving = true);
 
     final updatedEntry = JournalEntry(
       id: widget.entry.id,

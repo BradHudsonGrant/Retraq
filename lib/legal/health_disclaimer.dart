@@ -5,15 +5,15 @@ const String healthDisclaimerText = '''
 
 ## Not a Medical Device
 
-SinceThen is **not** a medical device, health app, or therapeutic tool. It has not been evaluated or approved by any regulatory body for medical use, including the FDA, EMA, or any equivalent authority.
+Retraq is **not** a medical device, health app, or therapeutic tool. It has not been evaluated or approved by any regulatory body for medical use, including the FDA, EMA, or any equivalent authority.
 
 ## Purpose of the App
 
-SinceThen is designed as a productivity and memory aid for people who have ADHD. It provides a simple, structured way to capture daily thoughts and experiences through journaling. The App is a personal organization tool -- nothing more.
+Retraq is designed as a productivity and memory aid for people who have ADHD. It provides a simple, structured way to capture daily thoughts and experiences. The App is a personal organization tool -- nothing more.
 
 ## No Medical Claims
 
-SinceThen does **not** diagnose, treat, cure, or prevent any medical condition, including but not limited to ADHD, anxiety, depression, or any other mental health condition. The App makes no health claims whatsoever. It is a simple journaling tool that some people with ADHD may find helpful for keeping track of their day.
+Retraq does **not** diagnose, treat, cure, or prevent any medical condition, including but not limited to ADHD, anxiety, depression, or any other mental health condition. The App makes no health claims whatsoever. It is a simple daily log tool that some people with ADHD may find helpful for keeping track of their day.
 
 ## Not a Substitute for Professional Advice
 
@@ -25,11 +25,11 @@ If you are struggling with your mental health, please reach out to a qualified h
 
 ## Your Responsibility
 
-By using SinceThen, you acknowledge that the App is a personal journaling tool and that any decisions you make regarding your health or well-being should be made in consultation with qualified healthcare professionals.
+By using Retraq, you acknowledge that the App is a personal daily log tool and that any decisions you make regarding your health or well-being should be made in consultation with qualified healthcare professionals.
 
 ## Contact Us
 
 If you have any questions about this disclaimer, please contact us at:
 
-contact@sincethenjournal.app
+contact@retraq.app
 ''';

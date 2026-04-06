@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 /// is displayed in bold to help guide the eye through the text faster.
 ///
 /// When [enabled] is `false`, renders as a plain [Text] widget.
-class BionicText extends StatelessWidget {
+class BionicText extends StatefulWidget {
   const BionicText({
     super.key,
     required this.text,
@@ -35,34 +35,54 @@ class BionicText extends StatelessWidget {
   final TextAlign? textAlign;
 
   @override
+  State<BionicText> createState() => _BionicTextState();
+}
+
+class _BionicTextState extends State<BionicText> {
+  /// Cached text spans to avoid recomputation on every build.
+  List<TextSpan>? _cachedSpans;
+
+  /// The text value that [_cachedSpans] was computed for.
+  String? _cachedText;
+
+  List<TextSpan> _getSpans() {
+    if (_cachedSpans != null && _cachedText == widget.text) {
+      return _cachedSpans!;
+    }
+    _cachedText = widget.text;
+    _cachedSpans = _buildSpans();
+    return _cachedSpans!;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    if (!enabled || text.isEmpty) {
+    if (!widget.enabled || widget.text.isEmpty) {
       return Text(
-        text,
-        style: style,
-        maxLines: maxLines,
-        overflow: overflow,
-        textAlign: textAlign,
+        widget.text,
+        style: widget.style,
+        maxLines: widget.maxLines,
+        overflow: widget.overflow,
+        textAlign: widget.textAlign,
       );
     }
 
     return Text.rich(
       TextSpan(
-        style: style,
-        children: _buildSpans(),
+        style: widget.style,
+        children: _getSpans(),
       ),
-      maxLines: maxLines,
-      overflow: overflow,
-      textAlign: textAlign,
+      maxLines: widget.maxLines,
+      overflow: widget.overflow,
+      textAlign: widget.textAlign,
     );
   }
 
-  /// Splits [text] into words and whitespace, then builds [TextSpan]s
+  /// Splits [widget.text] into words and whitespace, then builds [TextSpan]s
   /// where the first ceil(letterCount / 2) letters of each word are bold.
   List<TextSpan> _buildSpans() {
     final spans = <TextSpan>[];
     // Match runs of whitespace or runs of non-whitespace.
-    final segments = RegExp(r'\S+|\s+').allMatches(text);
+    final segments = RegExp(r'\S+|\s+').allMatches(widget.text);
 
     // Max weight (w900/Black) for bold portions — maximum contrast
     const boldWeight = FontWeight.w900;

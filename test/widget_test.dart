@@ -4,7 +4,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sincethen/screens/app_shell.dart';
+import 'package:retraq/screens/app_shell.dart';
 
 import 'test_helpers.dart';
 
@@ -29,15 +29,15 @@ void main() {
     await tester.pumpWidget(wrapShell());
     await tester.pump(const Duration(milliseconds: 100));
 
-    // Header uses RichText with separate "Since" + "Then" spans
+    // Header uses RichText with separate "Ret" + "raq" spans
     expect(find.byWidgetPredicate((w) =>
         w is RichText &&
         w.text is TextSpan &&
         (w.text as TextSpan).children != null &&
         (w.text as TextSpan).children!.any(
-            (s) => s is TextSpan && s.text == 'Since') &&
+            (s) => s is TextSpan && s.text == 'Ret') &&
         (w.text as TextSpan).children!.any(
-            (s) => s is TextSpan && s.text == 'Then')), findsOneWidget);
+            (s) => s is TextSpan && s.text == 'raq')), findsOneWidget);
     expect(find.byType(SvgPicture), findsWidgets);
     expect(find.byType(AppBar), findsOneWidget);
 

@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sincethen/models/journal_entry.dart';
-import 'package:sincethen/services/database_service.dart';
+import 'package:retraq/models/journal_entry.dart';
+import 'package:retraq/services/database_service.dart';
 
 import '../test_helpers.dart';
 
@@ -134,7 +134,7 @@ void main() {
 
       // Replicate text export logic
       final buffer = StringBuffer();
-      buffer.writeln('SinceThen Journal Export');
+      buffer.writeln('Retraq Journal Export');
       buffer.writeln('Total entries: ${entries.length}');
       buffer.writeln('${'=' * 40}\n');
 
@@ -148,7 +148,7 @@ void main() {
       }
 
       final text = buffer.toString();
-      expect(text, contains('SinceThen Journal Export'));
+      expect(text, contains('Retraq Journal Export'));
       expect(text, contains('Total entries: ${entries.length}'));
       expect(text, contains('=' * 40));
     });

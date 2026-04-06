@@ -4,9 +4,9 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sincethen/screens/lock_screen.dart';
-import 'package:sincethen/services/database_service.dart';
-import 'package:sincethen/widgets/molecules/number_pad.dart';
+import 'package:retraq/screens/lock_screen.dart';
+import 'package:retraq/services/database_service.dart';
+import 'package:retraq/widgets/molecules/number_pad.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../test_helpers.dart';

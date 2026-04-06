@@ -27,7 +27,7 @@ class ConsentPage extends StatelessWidget {
   final ValueChanged<bool?> onHealthChanged;
 
   static const _healthDisclaimer =
-      'SinceThen is a personal journaling app \u2014 not a medical or therapeutic '
+      'Retraq is a personal daily log app \u2014 not a medical or therapeutic '
       'tool. It does not provide health advice, diagnosis, or treatment. If '
       'you are in crisis, please contact a mental health professional or call '
       '988 (Suicide & Crisis Lifeline).';
@@ -177,37 +177,40 @@ class _ConsentCheckbox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: 48,
-          height: 48,
-          child: Center(
-            child: Checkbox(
-              value: value,
-              onChanged: onChanged,
+    return InkWell(
+      onTap: () => onChanged(!value),
+      borderRadius: AppSpacing.borderRadiusLg,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 48,
+            height: 48,
+            child: Center(
+              child: Checkbox(
+                value: value,
+                onChanged: onChanged,
+              ),
             ),
           ),
-        ),
-        const SizedBox(width: AppSpacing.sm),
-        Expanded(
-          child: GestureDetector(
-            onTap: onTapLink,
-            behavior: HitTestBehavior.opaque,
+          const SizedBox(width: AppSpacing.sm),
+          Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),
-              child: Text(
-                label,
-                style: textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.onSurface,
-                  decoration: TextDecoration.underline,
+              child: InkWell(
+                onTap: onTapLink,
+                child: Text(
+                  label,
+                  style: textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.onSurface,
+                    decoration: TextDecoration.underline,
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

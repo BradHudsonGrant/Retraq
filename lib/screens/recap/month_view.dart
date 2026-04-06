@@ -164,15 +164,17 @@ class _MonthEntryList extends StatelessWidget {
     // Sort days descending (newest first)
     final days = grouped.keys.toList()..sort((a, b) => b.compareTo(a));
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        for (final day in days)
-          EntryDetailView(
-            entries: grouped[day]!,
-            date: DateTime(selectedMonth.year, selectedMonth.month, day),
-          ),
-      ],
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: days.length,
+      itemBuilder: (context, index) {
+        final day = days[index];
+        return EntryDetailView(
+          entries: grouped[day]!,
+          date: DateTime(selectedMonth.year, selectedMonth.month, day),
+        );
+      },
     );
   }
 }

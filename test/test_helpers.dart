@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sincethen/models/user_settings.dart';
-import 'package:sincethen/providers/settings_provider.dart';
-import 'package:sincethen/services/database_service.dart';
+import 'package:retraq/models/user_settings.dart';
+import 'package:retraq/providers/settings_provider.dart';
+import 'package:retraq/services/database_service.dart';
 
 /// Wraps a widget in MaterialApp + Scaffold for widget testing.
 /// Use for screens and widgets that need a Scaffold ancestor.

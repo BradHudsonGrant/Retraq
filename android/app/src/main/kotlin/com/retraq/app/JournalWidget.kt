@@ -1,4 +1,4 @@
-package com.sincethen.app
+package com.retraq.app
 
 import android.appwidget.AppWidgetManager
 import android.content.Context
@@ -26,7 +26,7 @@ class JournalWidget : HomeWidgetProvider() {
             views.setTextViewText(R.id.widget_streak, streakText)
 
             // Total entries
-            val entriesText = if (totalEntries == 1) "1 entry" else "$totalEntries entries"
+            val entriesText = if (totalEntries == 1) "1 traq" else "$totalEntries traqs"
             views.setTextViewText(R.id.widget_entries, entriesText)
 
             // Mood (show only when set)

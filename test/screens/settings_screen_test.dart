@@ -3,9 +3,9 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sincethen/models/user_settings.dart';
-import 'package:sincethen/screens/settings_screen.dart';
-import 'package:sincethen/widgets/molecules/settings_row.dart';
+import 'package:retraq/models/user_settings.dart';
+import 'package:retraq/screens/settings_screen.dart';
+import 'package:retraq/widgets/molecules/settings_row.dart';
 
 import '../test_helpers.dart';
 
@@ -23,7 +23,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 200));
 
       expect(find.text('Appearance'), findsOneWidget);
-      expect(find.text('Choose how SinceThen feels to you.'), findsOneWidget);
+      expect(find.text('Choose how Retraq feels to you.'), findsOneWidget);
       await flushDriftTimers(tester);
     });
 
@@ -113,7 +113,7 @@ void main() {
       ));
       await tester.pump(const Duration(milliseconds: 200));
 
-      expect(find.text('SinceThen Version 0.9.0'), findsOneWidget);
+      expect(find.text('Retraq Version 0.9.0'), findsOneWidget);
       expect(find.text('Privacy Policy'), findsOneWidget);
       expect(find.text('Terms'), findsOneWidget);
       expect(find.text('Health'), findsOneWidget);

@@ -1,6 +1,6 @@
 // ignore_for_file: prefer_single_quotes
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sincethen/utils/date_helpers.dart';
+import 'package:retraq/utils/date_helpers.dart';
 
 void main() {
   group('formatHour', () {

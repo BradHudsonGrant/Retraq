@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 import '../models/user_settings.dart';
 
 /// Provides the current [UserSettings] down the widget tree.
-/// Updated by the root [SinceThenApp] whenever settings change.
+/// Updated by the root [RetraqApp] whenever settings change.
 class SettingsProvider extends InheritedWidget {
   const SettingsProvider({
     super.key,

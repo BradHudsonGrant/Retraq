@@ -5,7 +5,7 @@ import '../../providers/settings_provider.dart';
 import '../../theme/app_spacing.dart';
 import '../../utils/entry_action_dialogs.dart';
 import '../atoms/bionic_text.dart';
-import '../atoms/sincethen_chip.dart';
+import '../atoms/retraq_chip.dart';
 import '../molecules/entry_action_menu.dart';
 
 /// Vertical scrollable list showing each day of a week
@@ -206,7 +206,7 @@ class _InlineEntry extends StatelessWidget {
               ),
               if (entry.label != null) ...[
                 const SizedBox(width: AppSpacing.sm),
-                SinceThenChip(
+                RetraqChip(
                   label: entry.label!,
                   color: entry.label == 'AM'
                       ? cs.primaryContainer

@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_single_quotes
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sincethen/utils/text_input_formatters.dart';
+import 'package:retraq/utils/text_input_formatters.dart';
 
 /// Helper to simulate a format update.
 TextEditingValue _format(

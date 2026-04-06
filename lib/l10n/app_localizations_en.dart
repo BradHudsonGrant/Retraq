@@ -9,7 +9,7 @@ class L10nEn extends L10n {
   L10nEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appName => 'SinceThen';
+  String get appName => 'Retraq';
 
   @override
   String get appNameSince => 'Since';
@@ -54,10 +54,10 @@ class L10nEn extends L10n {
   String get homeSubtitle => 'Brain dump here. Full sentences optional.';
 
   @override
-  String get entryTitleHint => 'Entry title (optional)';
+  String get entryTitleHint => 'Traq title (optional)';
 
   @override
-  String get entryTitleLabel => 'Entry title';
+  String get entryTitleLabel => 'Traq title';
 
   @override
   String get amHint => 'How did the morning go?';
@@ -66,13 +66,13 @@ class L10nEn extends L10n {
   String get pmHint => 'How about the rest of the day?';
 
   @override
-  String get saveEntry => 'Save Entry';
+  String get saveEntry => 'Save Traq';
 
   @override
   String get saving => 'Saving...';
 
   @override
-  String get journalEntryLabel => 'Journal entry';
+  String get journalEntryLabel => 'Traq';
 
   @override
   String get amLabel => 'AM';
@@ -81,15 +81,15 @@ class L10nEn extends L10n {
   String get pmLabel => 'PM';
 
   @override
-  String get progressFirstEntry => 'Start your first entry above.';
+  String get progressFirstEntry => 'Drop your first traq above.';
 
   @override
   String progressWeekCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count entries',
-      one: '1 entry',
+      other: '$count traqs',
+      one: '1 traq',
     );
     return '$_temp0 this week — keep going!';
   }
@@ -104,7 +104,7 @@ class L10nEn extends L10n {
   String get yesterdayLabel => 'Yesterday';
 
   @override
-  String get entrySaved => 'Entry saved';
+  String get entrySaved => 'Traq saved';
 
   @override
   String get undoLabel => 'Undo';
@@ -114,7 +114,7 @@ class L10nEn extends L10n {
 
   @override
   String saveAndSwitchContent(String period, String newPeriod) {
-    return 'Your $period entry will be saved before switching to $newPeriod.';
+    return 'Your $period traq will be saved before switching to $newPeriod.';
   }
 
   @override
@@ -127,39 +127,39 @@ class L10nEn extends L10n {
   String get saveFailedMessage => 'Failed to save. Please try again.';
 
   @override
-  String get milestone1 => 'Your very first entry!';
+  String get milestone1 => 'Your very first traq!';
 
   @override
-  String get milestone5 => '5 entries! You\'re off to a great start.';
+  String get milestone5 => '5 traqs! You\'re off to a great start.';
 
   @override
-  String get milestone10 => '10 entries! You\'re building a habit.';
+  String get milestone10 => '10 traqs! You\'re building a habit.';
 
   @override
-  String get milestone25 => '25 entries! Look at you go.';
+  String get milestone25 => '25 traqs! Look at you go.';
 
   @override
-  String get milestone50 => '50 entries! That\'s genuinely impressive.';
+  String get milestone50 => '50 traqs! That\'s genuinely impressive.';
 
   @override
-  String get milestone100 => '100 entries! You\'re a journaling pro.';
+  String get milestone100 => '100 traqs! You\'re a pro.';
 
   @override
-  String get milestone250 => '250 entries! A real treasure trove.';
+  String get milestone250 => '250 traqs! A real treasure trove.';
 
   @override
-  String get milestone500 => '500 entries! Half a thousand memories.';
+  String get milestone500 => '500 traqs! Half a thousand memories.';
 
   @override
-  String get milestone1000 => '1,000 entries! Legendary status.';
+  String get milestone1000 => '1,000 traqs! Legendary status.';
 
   @override
   String entryCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count entries',
-      one: '1 entry',
+      other: '$count traqs',
+      one: '1 traq',
     );
     return '$_temp0';
   }
@@ -171,26 +171,26 @@ class L10nEn extends L10n {
 
   @override
   String changeDateLabel(String date) {
-    return 'Change entry date, currently $date';
+    return 'Change traq date, currently $date';
   }
 
   @override
   String get recapTitle => 'Recap';
 
   @override
-  String get searchHint => 'Search entries...';
+  String get searchHint => 'Search traqs...';
 
   @override
   String get closeSearch => 'Close search';
 
   @override
-  String get searchEntries => 'Search entries';
+  String get searchEntries => 'Search traqs';
 
   @override
   String get searching => 'Searching...';
 
   @override
-  String get noSearchResults => 'No entries match your search.';
+  String get noSearchResults => 'No traqs match your search.';
 
   @override
   String get weekLabel => 'Week';
@@ -203,14 +203,14 @@ class L10nEn extends L10n {
 
   @override
   String weeklyRecapStats(int totalEntries, int activeDays, String preferredTime) {
-    return '$totalEntries entries · $activeDays days · $preferredTime';
+    return '$totalEntries traqs · $activeDays days · $preferredTime';
   }
 
   @override
-  String get noEntriesYet => 'No entries yet';
+  String get noEntriesYet => 'No traqs yet';
 
   @override
-  String get noEntriesYetMessage => 'Your journal entries will appear here once you start writing.';
+  String get noEntriesYetMessage => 'Your traqs will appear here once you start writing.';
 
   @override
   String get statsTitle => 'Stats';
@@ -222,13 +222,13 @@ class L10nEn extends L10n {
   String get noStatsYet => 'No stats yet';
 
   @override
-  String get noStatsYetMessage => 'Start journaling to see your patterns and streaks.';
+  String get noStatsYetMessage => 'Start traqing to see your patterns and streaks.';
 
   @override
-  String get totalEntries => 'Total Entries';
+  String get totalEntries => 'Total Traqs';
 
   @override
-  String get daysJournaled => 'Days Journaled';
+  String get daysJournaled => 'Days Traqed';
 
   @override
   String get currentStreak => 'Current Streak';
@@ -314,10 +314,10 @@ class L10nEn extends L10n {
   String get ageGateDeniedTitle => 'Sorry!';
 
   @override
-  String get ageGateMessage => 'SinceThen is designed for users\naged 13 and older.';
+  String get ageGateMessage => 'Retraq is designed for users\naged 13 and older.';
 
   @override
-  String get ageGateDenied => 'SinceThen requires users to be 13 years or older.\nPlease come back when you\'re old enough!';
+  String get ageGateDenied => 'Retraq requires users to be 13 years or older.\nPlease come back when you\'re old enough!';
 
   @override
   String get ageConfirmButton => 'I am 13 or older';
@@ -329,7 +329,7 @@ class L10nEn extends L10n {
   String get almostThere => 'Almost there!';
 
   @override
-  String get healthDisclaimer => 'SinceThen is a personal journaling app — not a medical or therapeutic tool. It does not provide health advice, diagnosis, or treatment. If you are in crisis, please contact a mental health professional or call 988 (Suicide & Crisis Lifeline).';
+  String get healthDisclaimer => 'Retraq is a personal journaling app — not a medical or therapeutic tool. It does not provide health advice, diagnosis, or treatment. If you are in crisis, please contact a mental health professional or call 988 (Suicide & Crisis Lifeline).';
 
   @override
   String get healthDisclaimerCheckbox => 'I acknowledge the Health Disclaimer';
@@ -344,7 +344,7 @@ class L10nEn extends L10n {
   String get notificationDialogTitle => 'Stay on track';
 
   @override
-  String get notificationDialogContent => 'A gentle daily reminder can help you build a journaling habit. You can change or turn this off anytime in Settings.';
+  String get notificationDialogContent => 'A gentle daily reminder can help you build a traqing habit. You can change or turn this off anytime in Settings.';
 
   @override
   String get notNow => 'Not now';
@@ -353,7 +353,7 @@ class L10nEn extends L10n {
   String get enableReminders => 'Enable reminders';
 
   @override
-  String get unlockBiometric => 'Unlock SinceThen';
+  String get unlockBiometric => 'Unlock Retraq';
 
   @override
   String get enterPin => 'Enter your PIN';
@@ -387,7 +387,7 @@ class L10nEn extends L10n {
   String get appearanceTitle => 'Appearance';
 
   @override
-  String get appearanceSubtitle => 'Choose how SinceThen feels to you.';
+  String get appearanceSubtitle => 'Choose how Retraq feels to you.';
 
   @override
   String get themeSystem => 'System';
@@ -402,13 +402,13 @@ class L10nEn extends L10n {
   String get securityTitle => 'Security';
 
   @override
-  String get securitySubtitle => 'Keep your journal private.';
+  String get securitySubtitle => 'Keep your traqs private.';
 
   @override
   String get appLock => 'App Lock';
 
   @override
-  String get appLockEnabled => 'PIN required to open SinceThen';
+  String get appLockEnabled => 'PIN required to open Retraq';
 
   @override
   String get appLockDisabled => 'No lock — anyone can open the app';
@@ -429,7 +429,7 @@ class L10nEn extends L10n {
   String get biometricUnavailable => 'Biometrics not available on this device';
 
   @override
-  String get biometricEnabled => 'Biometric unlock enabled — you\'ll be prompted next time you open SinceThen';
+  String get biometricEnabled => 'Biometric unlock enabled — you\'ll be prompted next time you open Retraq';
 
   @override
   String get preferencesTitle => 'Preferences';
@@ -438,7 +438,7 @@ class L10nEn extends L10n {
   String get allDayNotes => 'All Day Notes';
 
   @override
-  String get allDayNotesSubtitle => 'One entry or split AM/PM';
+  String get allDayNotesSubtitle => 'One traq or split AM/PM';
 
   @override
   String get allDayOption => 'All Day';
@@ -453,16 +453,16 @@ class L10nEn extends L10n {
   String get asksAboutYesterday => 'Asks about yesterday';
 
   @override
-  String get journalEntryTitle => 'Journal Entry Title';
+  String get journalEntryTitle => 'Traq Title';
 
   @override
-  String get journalEntryTitleSubtitle => 'Show or hide title fields in new entries';
+  String get journalEntryTitleSubtitle => 'Show or hide title fields in new traqs';
 
   @override
   String get moodTracking => 'Mood Tracking';
 
   @override
-  String get moodTrackingSubtitle => 'Log how you feel with each entry';
+  String get moodTrackingSubtitle => 'Log how you feel with each traq';
 
   @override
   String get requireMood => 'Require Mood';
@@ -471,10 +471,10 @@ class L10nEn extends L10n {
   String get requireMoodSubtitle => 'Must pick a mood before saving';
 
   @override
-  String get moodOnlyEntries => 'Mood-Only Entries';
+  String get moodOnlyEntries => 'Mood-Only Traqs';
 
   @override
-  String get moodOnlyEntriesSubtitle => 'Save entries with just a mood, no text';
+  String get moodOnlyEntriesSubtitle => 'Save traqs with just a mood, no text';
 
   @override
   String get advancedTitle => 'Advanced';
@@ -483,7 +483,7 @@ class L10nEn extends L10n {
   String get enterToSave => 'Enter to Save';
 
   @override
-  String get enterToSaveSubtitle => 'Press Enter to save entry instead of new line';
+  String get enterToSaveSubtitle => 'Press Enter to save traq instead of new line';
 
   @override
   String get bulletPointsOnEnter => 'Bullet Points on Enter';
@@ -537,19 +537,19 @@ class L10nEn extends L10n {
   String get importFromBackup => 'Import from Backup';
 
   @override
-  String get importAccepts => 'Accepts SinceThen JSON backup files only';
+  String get importAccepts => 'Accepts Retraq JSON backup files only';
 
   @override
   String get exportScopeTitle => 'Export scope';
 
   @override
-  String get exportScopeContent => 'Export this week\'s entries or all entries?\n\nThe exported file will contain your personal journal entries and settings. Keep it somewhere safe.';
+  String get exportScopeContent => 'Export this week\'s traqs or all traqs?\n\nThe exported file will contain your personal traqs and settings. Keep it somewhere safe.';
 
   @override
   String get thisWeek => 'This Week';
 
   @override
-  String get allEntries => 'All Entries';
+  String get allEntries => 'All Traqs';
 
   @override
   String importConfirmTitle(String filename) {
@@ -557,14 +557,14 @@ class L10nEn extends L10n {
   }
 
   @override
-  String get importConfirmContent => 'This will add entries from this backup to your journal. Duplicate entries will be skipped.';
+  String get importConfirmContent => 'This will add traqs from this backup. Duplicates will be skipped.';
 
   @override
   String get importButton => 'Import';
 
   @override
   String importSuccess(int imported, String skipped, String errors) {
-    return 'Imported $imported entries$skipped$errors';
+    return 'Imported $imported traqs$skipped$errors';
   }
 
   @override
@@ -583,7 +583,7 @@ class L10nEn extends L10n {
   String get deleteAllDataTitle => 'Delete all data?';
 
   @override
-  String get deleteAllDataContent => 'This will permanently delete all journal entries and reset your settings. This cannot be undone.\n\nConsider exporting your data first from the options above.';
+  String get deleteAllDataContent => 'This will permanently delete all traqs and reset your settings. This cannot be undone.\n\nConsider exporting your data first from the options above.';
 
   @override
   String get typeDeleteToConfirm => 'Type DELETE to confirm:';
@@ -601,25 +601,25 @@ class L10nEn extends L10n {
   String get deleteDataFailed => 'Failed to delete data. Please try again.';
 
   @override
-  String get editEntry => 'Edit Entry';
+  String get editEntry => 'Edit Traq';
 
   @override
   String get titleHint => 'Title';
 
   @override
-  String get entryTextHint => 'Entry text...';
+  String get entryTextHint => 'Traq text...';
 
   @override
-  String get entryTextLabel => 'Entry text';
+  String get entryTextLabel => 'Traq text';
 
   @override
-  String get deleteEntryTooltip => 'Delete entry';
+  String get deleteEntryTooltip => 'Delete traq';
 
   @override
   String get saveChanges => 'Save Changes';
 
   @override
-  String get entrySavedOverlay => 'Entry saved';
+  String get entrySavedOverlay => 'Traq saved';
 
   @override
   String get niceOne => 'Nice one ✓';
@@ -649,7 +649,7 @@ class L10nEn extends L10n {
   String get setPinButton => 'Set PIN';
 
   @override
-  String get entryActions => 'Entry actions';
+  String get entryActions => 'Traq actions';
 
   @override
   String get editAction => 'Edit';
@@ -661,7 +661,7 @@ class L10nEn extends L10n {
   String get deleteAction => 'Delete';
 
   @override
-  String get deleteEntryTitle => 'Delete entry?';
+  String get deleteEntryTitle => 'Delete traq?';
 
   @override
   String get deleteEntryMessage => 'Are you sure? This can\'t be undone.';
@@ -806,7 +806,7 @@ class L10nEn extends L10n {
   String get prompt27 => 'A moment of calm from today...';
 
   @override
-  String get notifTitle => 'SinceThen';
+  String get notifTitle => 'Retraq';
 
   @override
   String get notifMorning0 => 'Good morning! Set an intention for today — even one word counts.';
@@ -818,7 +818,7 @@ class L10nEn extends L10n {
   String get notifMorning2 => 'Morning check-in: how are you feeling right now?';
 
   @override
-  String get notifMorning3 => 'Start your day with a thought. Your journal is ready.';
+  String get notifMorning3 => 'Start your day with a thought. Retraq is ready.';
 
   @override
   String get notifMorning4 => 'A fresh page for a fresh day. What\'s on your mind?';
@@ -833,7 +833,7 @@ class L10nEn extends L10n {
   String get notifEvening2 => 'How was your day? A few words is all it takes.';
 
   @override
-  String get notifEvening3 => 'Hey, how did today go? Your journal would love to know.';
+  String get notifEvening3 => 'Hey, how did today go? Drop a quick traq.';
 
   @override
   String get notifEvening4 => 'What\'s the TL;DR of today?';
@@ -845,13 +845,13 @@ class L10nEn extends L10n {
   String get notifEvening6 => 'What made today different from yesterday?';
 
   @override
-  String get notifEvening7 => 'The best time to journal was this morning. The second best time is now.';
+  String get notifEvening7 => 'The best time to traq was this morning. The second best time is now.';
 
   @override
   String get notifEvening8 => 'What surprised you today? Write it down before you forget.';
 
   @override
-  String get notifGeneral0 => 'Your journal is waiting. No pressure, just jot something down.';
+  String get notifGeneral0 => 'Retraq is waiting. No pressure, just jot something down.';
 
   @override
   String get notifGeneral1 => 'Ready to write? Your future self will thank you.';
@@ -860,13 +860,13 @@ class L10nEn extends L10n {
   String get notifGeneral2 => 'Just checking in. What\'s on your mind today?';
 
   @override
-  String get notifGeneral3 => 'One small entry, one big habit. You\'ve got this.';
+  String get notifGeneral3 => 'One small traq, one big habit. You\'ve got this.';
 
   @override
   String get notifGeneral4 => 'Today deserves to be remembered. What stood out?';
 
   @override
-  String get notifGeneral5 => 'Your journal, your pace. Write as much or as little as you\'d like.';
+  String get notifGeneral5 => 'Your traqs, your pace. Write as much or as little as you\'d like.';
 
   @override
   String get notifGeneral6 => 'Time for a brain dump? Open up and let it flow.';
@@ -887,7 +887,7 @@ class L10nEn extends L10n {
   String get notifGeneral11 => 'Quick check: anything worth remembering today?';
 
   @override
-  String get notifGeneral12 => 'One minute, one entry. You can do this.';
+  String get notifGeneral12 => 'One minute, one traq. You can do this.';
 
   @override
   String get notifGeneral13 => 'What would you tell a friend about today?';
@@ -899,13 +899,13 @@ class L10nEn extends L10n {
   String get notifGeneral15 => 'A few taps now, a whole memory saved forever.';
 
   @override
-  String get notifGeneral16 => 'Your journal doesn\'t judge. It just listens.';
+  String get notifGeneral16 => 'Retraq doesn\'t judge. It just listens.';
 
   @override
   String get notifGeneral17 => 'Plot twist: you actually have time for this. Promise.';
 
   @override
-  String get notifWeekend0 => 'Lazy weekend? Perfect journaling weather.';
+  String get notifWeekend0 => 'Lazy weekend? Perfect traqing weather.';
 
   @override
   String get notifWeekend1 => 'Weekends fly by. Capture this one before it does.';
@@ -920,7 +920,7 @@ class L10nEn extends L10n {
   String get notifStreakRisk1 => 'Don\'t let today break your streak — one sentence is enough.';
 
   @override
-  String get notifStreakRisk2 => 'You\'ve been consistent. Keep it going with a quick entry.';
+  String get notifStreakRisk2 => 'You\'ve been consistent. Keep it going with a quick traq.';
 
   @override
   String settingsLegalFooter(String appName, String version) {
@@ -937,5 +937,5 @@ class L10nEn extends L10n {
   String get healthDisclaimerTitle => 'Health Disclaimer';
 
   @override
-  String get exportPiiNote => 'The exported file will contain your personal journal entries and settings. Keep it somewhere safe.';
+  String get exportPiiNote => 'The exported file will contain your personal traqs and settings. Keep it somewhere safe.';
 }

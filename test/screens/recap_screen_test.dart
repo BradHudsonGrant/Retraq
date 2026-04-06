@@ -3,10 +3,10 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sincethen/screens/recap_screen.dart';
-import 'package:sincethen/widgets/molecules/segmented_pill.dart';
-import 'package:sincethen/widgets/organisms/calendar_grid.dart';
-import 'package:sincethen/widgets/organisms/week_day_list.dart';
+import 'package:retraq/screens/recap_screen.dart';
+import 'package:retraq/widgets/molecules/segmented_pill.dart';
+import 'package:retraq/widgets/organisms/calendar_grid.dart';
+import 'package:retraq/widgets/organisms/week_day_list.dart';
 
 import '../test_helpers.dart';
 

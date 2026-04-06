@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../theme/app_spacing.dart';
 import '../molecules/number_pad.dart';
 
-/// SharedPreferences key for the configured PIN length (4 or 6).
+/// Secure storage key for the configured PIN length (4 or 6).
 const pinLengthPrefKey = 'pin_length';
 
 class PinSetupSheet extends StatefulWidget {
@@ -91,9 +91,9 @@ class PinSetupSheetState extends State<PinSetupSheet> {
     } else {
       // Verify match
       if (_enteredPin == _firstPin) {
-        // Persist the chosen PIN length for lock/verify screens.
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setInt(pinLengthPrefKey, _pinLength);
+        // Persist the chosen PIN length to secure storage for lock/verify screens.
+        const secureStorage = FlutterSecureStorage();
+        await secureStorage.write(key: pinLengthPrefKey, value: '$_pinLength');
         if (!mounted) return;
         Navigator.of(context).pop(_firstPin);
       } else {
@@ -146,7 +146,7 @@ class PinSetupSheetState extends State<PinSetupSheet> {
               ),
             ),
 
-            // PIN length selector — only shown during initial entry.
+            // PIN length selector -- only shown during initial entry.
             if (!_isConfirmStep) ...[
               const SizedBox(height: AppSpacing.md),
               SegmentedButton<int>(

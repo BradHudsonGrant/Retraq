@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sincethen/widgets/molecules/segmented_pill.dart';
+import 'package:retraq/widgets/molecules/segmented_pill.dart';
 
 import '../../test_helpers.dart';
 

@@ -2,7 +2,7 @@ import WidgetKit
 import SwiftUI
 
 /// Shared data keys (must match Flutter WidgetService keys).
-private let appGroupId = "group.com.sincethen.app"
+private let appGroupId = "group.com.retraq.app"
 
 struct JournalEntry: TimelineEntry {
     let date: Date
@@ -43,7 +43,7 @@ struct Provider: TimelineProvider {
     }
 }
 
-struct SinceThenWidgetEntryView: View {
+struct RetraqWidgetEntryView: View {
     var entry: Provider.Entry
 
     private let moodEmojis = ["😢", "😔", "😐", "😊", "🤩"]
@@ -51,7 +51,7 @@ struct SinceThenWidgetEntryView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text("SinceThen")
+            Text("Retraq")
                 .font(.caption)
                 .fontWeight(.bold)
                 .foregroundColor(Color(red: 0.11, green: 0.37, blue: 0.13))
@@ -66,7 +66,7 @@ struct SinceThenWidgetEntryView: View {
                     .fontWeight(.bold)
             }
 
-            Text("\(entry.totalEntries) \(entry.totalEntries == 1 ? "entry" : "entries")")
+            Text("\(entry.totalEntries) \(entry.totalEntries == 1 ? "traq" : "traqs")")
                 .font(.caption)
                 .foregroundColor(.secondary)
 
@@ -78,7 +78,7 @@ struct SinceThenWidgetEntryView: View {
 
             Spacer()
 
-            Text("Tap to journal ✍️")
+            Text("Drop a traq ✍️")
                 .font(.caption2)
                 .foregroundColor(.green)
         }
@@ -87,12 +87,12 @@ struct SinceThenWidgetEntryView: View {
 }
 
 @main
-struct SinceThenWidget: Widget {
-    let kind: String = "SinceThenWidget"
+struct RetraqWidget: Widget {
+    let kind: String = "RetraqWidget"
 
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
-            SinceThenWidgetEntryView(entry: entry)
+            RetraqWidgetEntryView(entry: entry)
                 .containerBackground(.fill.tertiary, for: .widget)
         }
         .configurationDisplayName("Journal Stats")

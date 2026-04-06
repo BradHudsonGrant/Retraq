@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sincethen/widgets/atoms/bionic_text.dart';
+import 'package:retraq/widgets/atoms/bionic_text.dart';
 
 import '../../test_helpers.dart';
 

@@ -13,6 +13,7 @@ import 'services/notification_service.dart';
 import 'services/widget_service.dart';
 import 'l10n/app_localizations.dart';
 import 'screens/reconsent_screen.dart';
+import 'screens/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,10 +30,8 @@ void main() async {
     return true; // Prevents app crash — error is logged
   };
 
-  // Lock to portrait for a consistent mobile journal experience
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-  ]);
+  // Allow all orientations for adaptive phone/tablet layouts
+  await SystemChrome.setPreferredOrientations(DeviceOrientation.values);
 
   // Initialise Drift (SQLite) database before app starts
   await DatabaseService.instance.init();
@@ -52,17 +51,17 @@ void main() async {
     debugPrint('Widget init failed (non-fatal): $e');
   }
 
-  runApp(const SinceThenApp());
+  runApp(const RetraqApp());
 }
 
-class SinceThenApp extends StatefulWidget {
-  const SinceThenApp({super.key});
+class RetraqApp extends StatefulWidget {
+  const RetraqApp({super.key});
 
   @override
-  State<SinceThenApp> createState() => _SinceThenAppState();
+  State<RetraqApp> createState() => _RetraqAppState();
 }
 
-class _SinceThenAppState extends State<SinceThenApp> with WidgetsBindingObserver {
+class _RetraqAppState extends State<RetraqApp> with WidgetsBindingObserver {
   final _db = DatabaseService.instance;
   ThemeMode _themeMode = ThemeMode.system;
   bool _isLocked = true; // Start locked, unlock after settings check
@@ -92,7 +91,7 @@ class _SinceThenAppState extends State<SinceThenApp> with WidgetsBindingObserver
     });
   }
 
-  static const _flagSecureChannel = MethodChannel('com.sincethen.app/flag_secure');
+  static const _flagSecureChannel = MethodChannel('com.retraq.app/flag_secure');
 
   Future<void> _updateFlagSecure(bool enabled) async {
     try {
@@ -178,10 +177,7 @@ class _SinceThenAppState extends State<SinceThenApp> with WidgetsBindingObserver
 
   Widget _buildCurrentScreen() {
     if (!_settingsLoaded) {
-      return const Scaffold(
-        key: ValueKey('loading'),
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const SplashScreen(key: ValueKey('loading'));
     }
     if (_showOnboarding) {
       return OnboardingScreen(
@@ -215,7 +211,7 @@ class _SinceThenAppState extends State<SinceThenApp> with WidgetsBindingObserver
     return SettingsProvider(
       settings: _settings,
       child: MaterialApp(
-        title: 'SinceThen',
+        title: 'Retraq',
         debugShowCheckedModeBanner: false,
         showPerformanceOverlay: false,
         localizationsDelegates: L10n.localizationsDelegates,

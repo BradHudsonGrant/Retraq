@@ -203,30 +203,43 @@ class _StatsScreenState extends State<StatsScreen>
     return Semantics(
       container: true,
       label: 'Statistics overview',
-      child: Column(
+      child: Row(
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: StatCard(
-                  label: 'Total Entries',
-                  value: _stats.totalEntries,
-                  icon: Icons.edit_note,
-                  delay: 0,
-                ),
-              ),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: StatCard(
-                  label: 'Days Journaled',
-                  value: _stats.totalDays,
-                  icon: Icons.calendar_today,
-                  delay: 100,
-                ),
-              ),
-            ],
+          Expanded(
+            child: StatCard(
+              label: 'Total Entries',
+              value: _stats.totalEntries,
+              icon: Icons.edit_note,
+              delay: 0,
+            ),
           ),
-          const SizedBox(height: AppSpacing.md),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: StatCard(
+              label: 'Days Journaled',
+              value: _stats.totalDays,
+              icon: Icons.calendar_today,
+              delay: 100,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStreaksSection(ColorScheme cs, TextTheme tt) {
+    return Theme(
+      data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+      child: ExpansionTile(
+        initiallyExpanded: false,
+        tilePadding: EdgeInsets.zero,
+        childrenPadding: const EdgeInsets.only(bottom: AppSpacing.md),
+        leading: Icon(Icons.local_fire_department, color: cs.onSurfaceVariant),
+        title: Text(
+          'Streaks',
+          style: tt.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+        ),
+        children: [
           Row(
             children: [
               Expanded(
@@ -235,7 +248,7 @@ class _StatsScreenState extends State<StatsScreen>
                   value: _stats.currentStreak,
                   icon: Icons.local_fire_department,
                   suffix: 'days',
-                  delay: 200,
+                  delay: 0,
                 ),
               ),
               const SizedBox(width: AppSpacing.md),
@@ -245,7 +258,7 @@ class _StatsScreenState extends State<StatsScreen>
                   value: _stats.longestStreak,
                   icon: Icons.emoji_events,
                   suffix: 'days',
-                  delay: 300,
+                  delay: 100,
                 ),
               ),
             ],
@@ -259,7 +272,7 @@ class _StatsScreenState extends State<StatsScreen>
                   value: _stats.longestStreakThisMonth,
                   icon: Icons.date_range,
                   suffix: 'days',
-                  delay: 400,
+                  delay: 200,
                 ),
               ),
               const SizedBox(width: AppSpacing.md),
@@ -407,34 +420,43 @@ class _StatsScreenState extends State<StatsScreen>
           ),
         _buildMostActiveDay(cs, tt),
         _buildMoodSection(cs, tt),
+        const SizedBox(height: AppSpacing.md),
+        _buildStreaksSection(cs, tt),
       ],
     );
   }
 
   Widget _buildTabletStats(ColorScheme cs, TextTheme tt) {
-    return AdaptiveTwoPane(
-      leftFraction: 0.4,
-      left: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildHeroStats(),
-          _buildMostActiveDay(cs, tt),
-          _buildMoodSection(cs, tt),
-        ],
-      ),
-      right: Padding(
-        padding: const EdgeInsets.only(left: AppSpacing.lg),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (_stats.weeklyTrends.isNotEmpty)
-              WeeklyTrendChart(
-                data: _stats.weeklyTrends,
-                onWeekTapped: (i) => _onWeekTapped(context, i),
-              ),
-          ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        AdaptiveTwoPane(
+          leftFraction: 0.4,
+          left: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildHeroStats(),
+              _buildMostActiveDay(cs, tt),
+              _buildMoodSection(cs, tt),
+            ],
+          ),
+          right: Padding(
+            padding: const EdgeInsets.only(left: AppSpacing.lg),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (_stats.weeklyTrends.isNotEmpty)
+                  WeeklyTrendChart(
+                    data: _stats.weeklyTrends,
+                    onWeekTapped: (i) => _onWeekTapped(context, i),
+                  ),
+              ],
+            ),
+          ),
         ),
-      ),
+        const SizedBox(height: AppSpacing.md),
+        _buildStreaksSection(cs, tt),
+      ],
     );
   }
 

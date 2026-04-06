@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sincethen/services/notification_service.dart';
+import 'package:retraq/services/notification_service.dart';
 
 void main() {
 

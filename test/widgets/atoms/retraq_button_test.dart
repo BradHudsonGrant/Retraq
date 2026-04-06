@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sincethen/widgets/atoms/sincethen_button.dart';
+import 'package:retraq/widgets/atoms/retraq_button.dart';
 
 import '../../test_helpers.dart';
 
 void main() {
-  group('SinceThenButton', () {
+  group('RetraqButton', () {
     testWidgets('renders label text', (tester) async {
       await tester.pumpWidget(wrapWidget(
-        SinceThenButton(label: 'Save Entry', onPressed: () {}),
+        RetraqButton(label: 'Save Entry', onPressed: () {}),
       ));
       expect(find.text('Save Entry'), findsOneWidget);
     });
 
     testWidgets('renders icon when provided', (tester) async {
       await tester.pumpWidget(wrapWidget(
-        SinceThenButton(label: 'Save', icon: Icons.check, onPressed: () {}),
+        RetraqButton(label: 'Save', icon: Icons.check, onPressed: () {}),
       ));
       expect(find.byIcon(Icons.check), findsOneWidget);
     });
@@ -23,7 +23,7 @@ void main() {
     testWidgets('calls onPressed on tap', (tester) async {
       var tapped = false;
       await tester.pumpWidget(wrapWidget(
-        SinceThenButton(label: 'Tap Me', onPressed: () => tapped = true),
+        RetraqButton(label: 'Tap Me', onPressed: () => tapped = true),
       ));
 
       await tester.tap(find.text('Tap Me'));
@@ -33,7 +33,7 @@ void main() {
 
     testWidgets('does not fire when onPressed is null (disabled)', (tester) async {
       await tester.pumpWidget(wrapWidget(
-        const SinceThenButton(label: 'Disabled', onPressed: null),
+        const RetraqButton(label: 'Disabled', onPressed: null),
       ));
 
       // Widget renders but button is disabled
@@ -42,21 +42,21 @@ void main() {
 
     testWidgets('uses OutlinedButton when isOutlined is true', (tester) async {
       await tester.pumpWidget(wrapWidget(
-        SinceThenButton(label: 'Outlined', isOutlined: true, onPressed: () {}),
+        RetraqButton(label: 'Outlined', isOutlined: true, onPressed: () {}),
       ));
       expect(find.byType(OutlinedButton), findsOneWidget);
     });
 
     testWidgets('uses FilledButton by default', (tester) async {
       await tester.pumpWidget(wrapWidget(
-        SinceThenButton(label: 'Filled', onPressed: () {}),
+        RetraqButton(label: 'Filled', onPressed: () {}),
       ));
       expect(find.byType(FilledButton), findsOneWidget);
     });
 
     testWidgets('has AnimatedScale for press feedback', (tester) async {
       await tester.pumpWidget(wrapWidget(
-        SinceThenButton(label: 'Animate', onPressed: () {}),
+        RetraqButton(label: 'Animate', onPressed: () {}),
       ));
       expect(find.byType(AnimatedScale), findsOneWidget);
     });

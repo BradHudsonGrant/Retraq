@@ -3,8 +3,8 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sincethen/screens/home_screen.dart';
-import 'package:sincethen/utils/journal_prompts.dart';
+import 'package:retraq/screens/home_screen.dart';
+import 'package:retraq/utils/journal_prompts.dart';
 
 import '../test_helpers.dart';
 

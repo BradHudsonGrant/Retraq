@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sincethen/models/user_settings.dart';
+import 'package:retraq/models/user_settings.dart';
 
 void main() {
   group('UserSettings', () {

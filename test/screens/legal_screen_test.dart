@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sincethen/screens/legal_screen.dart';
+import 'package:retraq/screens/legal_screen.dart';
 
 void main() {
   const testContent = '''

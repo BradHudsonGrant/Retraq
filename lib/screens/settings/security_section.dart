@@ -114,7 +114,7 @@ class _SecuritySectionState extends State<SecuritySection> {
         SettingsRow(
           title: 'App Lock',
           subtitle: s.appLockEnabled
-              ? 'PIN required to open SinceThen'
+              ? 'PIN required to open Retraq'
               : 'No lock — anyone can open the app',
           trailing: Semantics(
             label: 'App lock',
@@ -190,7 +190,7 @@ class _SecuritySectionState extends State<SecuritySection> {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                'Biometric unlock enabled — you\u2019ll be prompted next time you open SinceThen',
+                                'Biometric unlock enabled — you\u2019ll be prompted next time you open Retraq',
                                 style: tt.bodyMedium?.copyWith(
                                   color: cs.onPrimaryContainer,
                                 ),

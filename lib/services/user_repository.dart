@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:home_widget/home_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user.dart';
 import 'database_service.dart';
@@ -104,8 +106,32 @@ class UserRepository {
         await prefs.remove('lock_failed_attempts');
         await prefs.remove('lock_lockout_count');
         await prefs.remove('lock_lockout_end');
+        await prefs.remove('review_prompt_shown');
+        await prefs.remove('pin_length');
       } catch (_) {
         // SharedPreferences may not be available in test environments.
+      }
+      // Clear secure storage lockout state and PIN length.
+      // IMPORTANT: Do NOT use deleteAll() — it would destroy the DB
+      // encryption key (retraq_db_key), making the database unopenable.
+      try {
+        const secureStorage = FlutterSecureStorage();
+        await secureStorage.delete(key: 'pin_length');
+        await secureStorage.delete(key: 'lock_failed_attempts');
+        await secureStorage.delete(key: 'lock_lockout_count');
+        await secureStorage.delete(key: 'lock_lockout_end');
+      } catch (_) {
+        // SecureStorage may not be available in test environments.
+      }
+      // Clear home widget data
+      try {
+        await HomeWidget.saveWidgetData<int>('streak', 0);
+        await HomeWidget.saveWidgetData<int>('totalEntries', 0);
+        await HomeWidget.saveWidgetData<String>('lastEntryDate', '');
+        await HomeWidget.saveWidgetData<int>('mood', 0);
+        await HomeWidget.updateWidget(name: 'JournalWidget');
+      } catch (_) {
+        // HomeWidget may not be available in test environments.
       }
       // Force-restart the app so the UI reflects the clean state.
       // Skip when running in Flutter test harness.

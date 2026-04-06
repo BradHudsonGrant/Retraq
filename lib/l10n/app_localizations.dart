@@ -96,7 +96,7 @@ abstract class L10n {
   /// No description provided for @appName.
   ///
   /// In en, this message translates to:
-  /// **'SinceThen'**
+  /// **'Retraq'**
   String get appName;
 
   /// No description provided for @appNameSince.
@@ -186,13 +186,13 @@ abstract class L10n {
   /// No description provided for @entryTitleHint.
   ///
   /// In en, this message translates to:
-  /// **'Entry title (optional)'**
+  /// **'Traq title (optional)'**
   String get entryTitleHint;
 
   /// No description provided for @entryTitleLabel.
   ///
   /// In en, this message translates to:
-  /// **'Entry title'**
+  /// **'Traq title'**
   String get entryTitleLabel;
 
   /// No description provided for @amHint.
@@ -210,7 +210,7 @@ abstract class L10n {
   /// No description provided for @saveEntry.
   ///
   /// In en, this message translates to:
-  /// **'Save Entry'**
+  /// **'Save Traq'**
   String get saveEntry;
 
   /// No description provided for @saving.
@@ -222,7 +222,7 @@ abstract class L10n {
   /// No description provided for @journalEntryLabel.
   ///
   /// In en, this message translates to:
-  /// **'Journal entry'**
+  /// **'Traq'**
   String get journalEntryLabel;
 
   /// No description provided for @amLabel.
@@ -240,13 +240,13 @@ abstract class L10n {
   /// No description provided for @progressFirstEntry.
   ///
   /// In en, this message translates to:
-  /// **'Start your first entry above.'**
+  /// **'Drop your first traq above.'**
   String get progressFirstEntry;
 
   /// No description provided for @progressWeekCount.
   ///
   /// In en, this message translates to:
-  /// **'{count, plural, =1{1 entry} other{{count} entries}} this week — keep going!'**
+  /// **'{count, plural, =1{1 traq} other{{count} traqs}} this week — keep going!'**
   String progressWeekCount(int count);
 
   /// No description provided for @recentLabel.
@@ -270,7 +270,7 @@ abstract class L10n {
   /// No description provided for @entrySaved.
   ///
   /// In en, this message translates to:
-  /// **'Entry saved'**
+  /// **'Traq saved'**
   String get entrySaved;
 
   /// No description provided for @undoLabel.
@@ -288,7 +288,7 @@ abstract class L10n {
   /// No description provided for @saveAndSwitchContent.
   ///
   /// In en, this message translates to:
-  /// **'Your {period} entry will be saved before switching to {newPeriod}.'**
+  /// **'Your {period} traq will be saved before switching to {newPeriod}.'**
   String saveAndSwitchContent(String period, String newPeriod);
 
   /// No description provided for @cancelLabel.
@@ -312,61 +312,61 @@ abstract class L10n {
   /// No description provided for @milestone1.
   ///
   /// In en, this message translates to:
-  /// **'Your very first entry!'**
+  /// **'Your very first traq!'**
   String get milestone1;
 
   /// No description provided for @milestone5.
   ///
   /// In en, this message translates to:
-  /// **'5 entries! You\'re off to a great start.'**
+  /// **'5 traqs! You\'re off to a great start.'**
   String get milestone5;
 
   /// No description provided for @milestone10.
   ///
   /// In en, this message translates to:
-  /// **'10 entries! You\'re building a habit.'**
+  /// **'10 traqs! You\'re building a habit.'**
   String get milestone10;
 
   /// No description provided for @milestone25.
   ///
   /// In en, this message translates to:
-  /// **'25 entries! Look at you go.'**
+  /// **'25 traqs! Look at you go.'**
   String get milestone25;
 
   /// No description provided for @milestone50.
   ///
   /// In en, this message translates to:
-  /// **'50 entries! That\'s genuinely impressive.'**
+  /// **'50 traqs! That\'s genuinely impressive.'**
   String get milestone50;
 
   /// No description provided for @milestone100.
   ///
   /// In en, this message translates to:
-  /// **'100 entries! You\'re a journaling pro.'**
+  /// **'100 traqs! You\'re a pro.'**
   String get milestone100;
 
   /// No description provided for @milestone250.
   ///
   /// In en, this message translates to:
-  /// **'250 entries! A real treasure trove.'**
+  /// **'250 traqs! A real treasure trove.'**
   String get milestone250;
 
   /// No description provided for @milestone500.
   ///
   /// In en, this message translates to:
-  /// **'500 entries! Half a thousand memories.'**
+  /// **'500 traqs! Half a thousand memories.'**
   String get milestone500;
 
   /// No description provided for @milestone1000.
   ///
   /// In en, this message translates to:
-  /// **'1,000 entries! Legendary status.'**
+  /// **'1,000 traqs! Legendary status.'**
   String get milestone1000;
 
   /// No description provided for @entryCount.
   ///
   /// In en, this message translates to:
-  /// **'{count, plural, =1{1 entry} other{{count} entries}}'**
+  /// **'{count, plural, =1{1 traq} other{{count} traqs}}'**
   String entryCount(int count);
 
   /// No description provided for @moreEntries.
@@ -378,7 +378,7 @@ abstract class L10n {
   /// No description provided for @changeDateLabel.
   ///
   /// In en, this message translates to:
-  /// **'Change entry date, currently {date}'**
+  /// **'Change traq date, currently {date}'**
   String changeDateLabel(String date);
 
   /// No description provided for @recapTitle.
@@ -390,7 +390,7 @@ abstract class L10n {
   /// No description provided for @searchHint.
   ///
   /// In en, this message translates to:
-  /// **'Search entries...'**
+  /// **'Search traqs...'**
   String get searchHint;
 
   /// No description provided for @closeSearch.
@@ -402,7 +402,7 @@ abstract class L10n {
   /// No description provided for @searchEntries.
   ///
   /// In en, this message translates to:
-  /// **'Search entries'**
+  /// **'Search traqs'**
   String get searchEntries;
 
   /// No description provided for @searching.
@@ -414,7 +414,7 @@ abstract class L10n {
   /// No description provided for @noSearchResults.
   ///
   /// In en, this message translates to:
-  /// **'No entries match your search.'**
+  /// **'No traqs match your search.'**
   String get noSearchResults;
 
   /// No description provided for @weekLabel.
@@ -438,19 +438,19 @@ abstract class L10n {
   /// No description provided for @weeklyRecapStats.
   ///
   /// In en, this message translates to:
-  /// **'{totalEntries} entries · {activeDays} days · {preferredTime}'**
+  /// **'{totalEntries} traqs · {activeDays} days · {preferredTime}'**
   String weeklyRecapStats(int totalEntries, int activeDays, String preferredTime);
 
   /// No description provided for @noEntriesYet.
   ///
   /// In en, this message translates to:
-  /// **'No entries yet'**
+  /// **'No traqs yet'**
   String get noEntriesYet;
 
   /// No description provided for @noEntriesYetMessage.
   ///
   /// In en, this message translates to:
-  /// **'Your journal entries will appear here once you start writing.'**
+  /// **'Your traqs will appear here once you start writing.'**
   String get noEntriesYetMessage;
 
   /// No description provided for @statsTitle.
@@ -474,19 +474,19 @@ abstract class L10n {
   /// No description provided for @noStatsYetMessage.
   ///
   /// In en, this message translates to:
-  /// **'Start journaling to see your patterns and streaks.'**
+  /// **'Start traqing to see your patterns and streaks.'**
   String get noStatsYetMessage;
 
   /// No description provided for @totalEntries.
   ///
   /// In en, this message translates to:
-  /// **'Total Entries'**
+  /// **'Total Traqs'**
   String get totalEntries;
 
   /// No description provided for @daysJournaled.
   ///
   /// In en, this message translates to:
-  /// **'Days Journaled'**
+  /// **'Days Traqed'**
   String get daysJournaled;
 
   /// No description provided for @currentStreak.
@@ -642,13 +642,13 @@ abstract class L10n {
   /// No description provided for @ageGateMessage.
   ///
   /// In en, this message translates to:
-  /// **'SinceThen is designed for users\naged 13 and older.'**
+  /// **'Retraq is designed for users\naged 13 and older.'**
   String get ageGateMessage;
 
   /// No description provided for @ageGateDenied.
   ///
   /// In en, this message translates to:
-  /// **'SinceThen requires users to be 13 years or older.\nPlease come back when you\'re old enough!'**
+  /// **'Retraq requires users to be 13 years or older.\nPlease come back when you\'re old enough!'**
   String get ageGateDenied;
 
   /// No description provided for @ageConfirmButton.
@@ -672,7 +672,7 @@ abstract class L10n {
   /// No description provided for @healthDisclaimer.
   ///
   /// In en, this message translates to:
-  /// **'SinceThen is a personal journaling app — not a medical or therapeutic tool. It does not provide health advice, diagnosis, or treatment. If you are in crisis, please contact a mental health professional or call 988 (Suicide & Crisis Lifeline).'**
+  /// **'Retraq is a personal journaling app — not a medical or therapeutic tool. It does not provide health advice, diagnosis, or treatment. If you are in crisis, please contact a mental health professional or call 988 (Suicide & Crisis Lifeline).'**
   String get healthDisclaimer;
 
   /// No description provided for @healthDisclaimerCheckbox.
@@ -702,7 +702,7 @@ abstract class L10n {
   /// No description provided for @notificationDialogContent.
   ///
   /// In en, this message translates to:
-  /// **'A gentle daily reminder can help you build a journaling habit. You can change or turn this off anytime in Settings.'**
+  /// **'A gentle daily reminder can help you build a traqing habit. You can change or turn this off anytime in Settings.'**
   String get notificationDialogContent;
 
   /// No description provided for @notNow.
@@ -720,7 +720,7 @@ abstract class L10n {
   /// No description provided for @unlockBiometric.
   ///
   /// In en, this message translates to:
-  /// **'Unlock SinceThen'**
+  /// **'Unlock Retraq'**
   String get unlockBiometric;
 
   /// No description provided for @enterPin.
@@ -768,7 +768,7 @@ abstract class L10n {
   /// No description provided for @appearanceSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Choose how SinceThen feels to you.'**
+  /// **'Choose how Retraq feels to you.'**
   String get appearanceSubtitle;
 
   /// No description provided for @themeSystem.
@@ -798,7 +798,7 @@ abstract class L10n {
   /// No description provided for @securitySubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Keep your journal private.'**
+  /// **'Keep your traqs private.'**
   String get securitySubtitle;
 
   /// No description provided for @appLock.
@@ -810,7 +810,7 @@ abstract class L10n {
   /// No description provided for @appLockEnabled.
   ///
   /// In en, this message translates to:
-  /// **'PIN required to open SinceThen'**
+  /// **'PIN required to open Retraq'**
   String get appLockEnabled;
 
   /// No description provided for @appLockDisabled.
@@ -852,7 +852,7 @@ abstract class L10n {
   /// No description provided for @biometricEnabled.
   ///
   /// In en, this message translates to:
-  /// **'Biometric unlock enabled — you\'ll be prompted next time you open SinceThen'**
+  /// **'Biometric unlock enabled — you\'ll be prompted next time you open Retraq'**
   String get biometricEnabled;
 
   /// No description provided for @preferencesTitle.
@@ -870,7 +870,7 @@ abstract class L10n {
   /// No description provided for @allDayNotesSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'One entry or split AM/PM'**
+  /// **'One traq or split AM/PM'**
   String get allDayNotesSubtitle;
 
   /// No description provided for @allDayOption.
@@ -900,13 +900,13 @@ abstract class L10n {
   /// No description provided for @journalEntryTitle.
   ///
   /// In en, this message translates to:
-  /// **'Journal Entry Title'**
+  /// **'Traq Title'**
   String get journalEntryTitle;
 
   /// No description provided for @journalEntryTitleSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Show or hide title fields in new entries'**
+  /// **'Show or hide title fields in new traqs'**
   String get journalEntryTitleSubtitle;
 
   /// No description provided for @moodTracking.
@@ -918,7 +918,7 @@ abstract class L10n {
   /// No description provided for @moodTrackingSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Log how you feel with each entry'**
+  /// **'Log how you feel with each traq'**
   String get moodTrackingSubtitle;
 
   /// No description provided for @requireMood.
@@ -936,13 +936,13 @@ abstract class L10n {
   /// No description provided for @moodOnlyEntries.
   ///
   /// In en, this message translates to:
-  /// **'Mood-Only Entries'**
+  /// **'Mood-Only Traqs'**
   String get moodOnlyEntries;
 
   /// No description provided for @moodOnlyEntriesSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Save entries with just a mood, no text'**
+  /// **'Save traqs with just a mood, no text'**
   String get moodOnlyEntriesSubtitle;
 
   /// No description provided for @advancedTitle.
@@ -960,7 +960,7 @@ abstract class L10n {
   /// No description provided for @enterToSaveSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Press Enter to save entry instead of new line'**
+  /// **'Press Enter to save traq instead of new line'**
   String get enterToSaveSubtitle;
 
   /// No description provided for @bulletPointsOnEnter.
@@ -1068,7 +1068,7 @@ abstract class L10n {
   /// No description provided for @importAccepts.
   ///
   /// In en, this message translates to:
-  /// **'Accepts SinceThen JSON backup files only'**
+  /// **'Accepts Retraq JSON backup files only'**
   String get importAccepts;
 
   /// No description provided for @exportScopeTitle.
@@ -1080,7 +1080,7 @@ abstract class L10n {
   /// No description provided for @exportScopeContent.
   ///
   /// In en, this message translates to:
-  /// **'Export this week\'s entries or all entries?\n\nThe exported file will contain your personal journal entries and settings. Keep it somewhere safe.'**
+  /// **'Export this week\'s traqs or all traqs?\n\nThe exported file will contain your personal traqs and settings. Keep it somewhere safe.'**
   String get exportScopeContent;
 
   /// No description provided for @thisWeek.
@@ -1092,7 +1092,7 @@ abstract class L10n {
   /// No description provided for @allEntries.
   ///
   /// In en, this message translates to:
-  /// **'All Entries'**
+  /// **'All Traqs'**
   String get allEntries;
 
   /// No description provided for @importConfirmTitle.
@@ -1104,7 +1104,7 @@ abstract class L10n {
   /// No description provided for @importConfirmContent.
   ///
   /// In en, this message translates to:
-  /// **'This will add entries from this backup to your journal. Duplicate entries will be skipped.'**
+  /// **'This will add traqs from this backup. Duplicates will be skipped.'**
   String get importConfirmContent;
 
   /// No description provided for @importButton.
@@ -1116,7 +1116,7 @@ abstract class L10n {
   /// No description provided for @importSuccess.
   ///
   /// In en, this message translates to:
-  /// **'Imported {imported} entries{skipped}{errors}'**
+  /// **'Imported {imported} traqs{skipped}{errors}'**
   String importSuccess(int imported, String skipped, String errors);
 
   /// No description provided for @importFailed.
@@ -1152,7 +1152,7 @@ abstract class L10n {
   /// No description provided for @deleteAllDataContent.
   ///
   /// In en, this message translates to:
-  /// **'This will permanently delete all journal entries and reset your settings. This cannot be undone.\n\nConsider exporting your data first from the options above.'**
+  /// **'This will permanently delete all traqs and reset your settings. This cannot be undone.\n\nConsider exporting your data first from the options above.'**
   String get deleteAllDataContent;
 
   /// No description provided for @typeDeleteToConfirm.
@@ -1188,7 +1188,7 @@ abstract class L10n {
   /// No description provided for @editEntry.
   ///
   /// In en, this message translates to:
-  /// **'Edit Entry'**
+  /// **'Edit Traq'**
   String get editEntry;
 
   /// No description provided for @titleHint.
@@ -1200,19 +1200,19 @@ abstract class L10n {
   /// No description provided for @entryTextHint.
   ///
   /// In en, this message translates to:
-  /// **'Entry text...'**
+  /// **'Traq text...'**
   String get entryTextHint;
 
   /// No description provided for @entryTextLabel.
   ///
   /// In en, this message translates to:
-  /// **'Entry text'**
+  /// **'Traq text'**
   String get entryTextLabel;
 
   /// No description provided for @deleteEntryTooltip.
   ///
   /// In en, this message translates to:
-  /// **'Delete entry'**
+  /// **'Delete traq'**
   String get deleteEntryTooltip;
 
   /// No description provided for @saveChanges.
@@ -1224,7 +1224,7 @@ abstract class L10n {
   /// No description provided for @entrySavedOverlay.
   ///
   /// In en, this message translates to:
-  /// **'Entry saved'**
+  /// **'Traq saved'**
   String get entrySavedOverlay;
 
   /// No description provided for @niceOne.
@@ -1284,7 +1284,7 @@ abstract class L10n {
   /// No description provided for @entryActions.
   ///
   /// In en, this message translates to:
-  /// **'Entry actions'**
+  /// **'Traq actions'**
   String get entryActions;
 
   /// No description provided for @editAction.
@@ -1308,7 +1308,7 @@ abstract class L10n {
   /// No description provided for @deleteEntryTitle.
   ///
   /// In en, this message translates to:
-  /// **'Delete entry?'**
+  /// **'Delete traq?'**
   String get deleteEntryTitle;
 
   /// No description provided for @deleteEntryMessage.
@@ -1590,7 +1590,7 @@ abstract class L10n {
   /// No description provided for @notifTitle.
   ///
   /// In en, this message translates to:
-  /// **'SinceThen'**
+  /// **'Retraq'**
   String get notifTitle;
 
   /// No description provided for @notifMorning0.
@@ -1614,7 +1614,7 @@ abstract class L10n {
   /// No description provided for @notifMorning3.
   ///
   /// In en, this message translates to:
-  /// **'Start your day with a thought. Your journal is ready.'**
+  /// **'Start your day with a thought. Retraq is ready.'**
   String get notifMorning3;
 
   /// No description provided for @notifMorning4.
@@ -1644,7 +1644,7 @@ abstract class L10n {
   /// No description provided for @notifEvening3.
   ///
   /// In en, this message translates to:
-  /// **'Hey, how did today go? Your journal would love to know.'**
+  /// **'Hey, how did today go? Drop a quick traq.'**
   String get notifEvening3;
 
   /// No description provided for @notifEvening4.
@@ -1668,7 +1668,7 @@ abstract class L10n {
   /// No description provided for @notifEvening7.
   ///
   /// In en, this message translates to:
-  /// **'The best time to journal was this morning. The second best time is now.'**
+  /// **'The best time to traq was this morning. The second best time is now.'**
   String get notifEvening7;
 
   /// No description provided for @notifEvening8.
@@ -1680,7 +1680,7 @@ abstract class L10n {
   /// No description provided for @notifGeneral0.
   ///
   /// In en, this message translates to:
-  /// **'Your journal is waiting. No pressure, just jot something down.'**
+  /// **'Retraq is waiting. No pressure, just jot something down.'**
   String get notifGeneral0;
 
   /// No description provided for @notifGeneral1.
@@ -1698,7 +1698,7 @@ abstract class L10n {
   /// No description provided for @notifGeneral3.
   ///
   /// In en, this message translates to:
-  /// **'One small entry, one big habit. You\'ve got this.'**
+  /// **'One small traq, one big habit. You\'ve got this.'**
   String get notifGeneral3;
 
   /// No description provided for @notifGeneral4.
@@ -1710,7 +1710,7 @@ abstract class L10n {
   /// No description provided for @notifGeneral5.
   ///
   /// In en, this message translates to:
-  /// **'Your journal, your pace. Write as much or as little as you\'d like.'**
+  /// **'Your traqs, your pace. Write as much or as little as you\'d like.'**
   String get notifGeneral5;
 
   /// No description provided for @notifGeneral6.
@@ -1752,7 +1752,7 @@ abstract class L10n {
   /// No description provided for @notifGeneral12.
   ///
   /// In en, this message translates to:
-  /// **'One minute, one entry. You can do this.'**
+  /// **'One minute, one traq. You can do this.'**
   String get notifGeneral12;
 
   /// No description provided for @notifGeneral13.
@@ -1776,7 +1776,7 @@ abstract class L10n {
   /// No description provided for @notifGeneral16.
   ///
   /// In en, this message translates to:
-  /// **'Your journal doesn\'t judge. It just listens.'**
+  /// **'Retraq doesn\'t judge. It just listens.'**
   String get notifGeneral16;
 
   /// No description provided for @notifGeneral17.
@@ -1788,7 +1788,7 @@ abstract class L10n {
   /// No description provided for @notifWeekend0.
   ///
   /// In en, this message translates to:
-  /// **'Lazy weekend? Perfect journaling weather.'**
+  /// **'Lazy weekend? Perfect traqing weather.'**
   String get notifWeekend0;
 
   /// No description provided for @notifWeekend1.
@@ -1818,7 +1818,7 @@ abstract class L10n {
   /// No description provided for @notifStreakRisk2.
   ///
   /// In en, this message translates to:
-  /// **'You\'ve been consistent. Keep it going with a quick entry.'**
+  /// **'You\'ve been consistent. Keep it going with a quick traq.'**
   String get notifStreakRisk2;
 
   /// No description provided for @settingsLegalFooter.
@@ -1848,7 +1848,7 @@ abstract class L10n {
   /// No description provided for @exportPiiNote.
   ///
   /// In en, this message translates to:
-  /// **'The exported file will contain your personal journal entries and settings. Keep it somewhere safe.'**
+  /// **'The exported file will contain your personal traqs and settings. Keep it somewhere safe.'**
   String get exportPiiNote;
 }
 

@@ -92,7 +92,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 12;
+  int get schemaVersion => 13;
 
   @override
   MigrationStrategy get migration => buildMigrationStrategy(this);
@@ -129,7 +129,7 @@ class DatabaseService {
   // PinService remains static (no DB dependency) — import pin_service.dart directly.
 
   static const _secureStorage = FlutterSecureStorage();
-  static const _dbKeyName = 'sincethen_db_key';
+  static const _dbKeyName = 'retraq_db_key';
 
   static Future<String> _getOrCreateDbKey() async {
     var key = await _secureStorage.read(key: _dbKeyName);
@@ -156,7 +156,7 @@ class DatabaseService {
     open.overrideFor(OperatingSystem.android, openCipherOnAndroid);
 
     final dir = await getApplicationDocumentsDirectory();
-    final file = File(p.join(dir.path, 'sincethen.sqlite'));
+    final file = File(p.join(dir.path, 'retraq.sqlite'));
     final encryptionKey = await _getOrCreateDbKey();
 
     // Clean up stale .bak files from previous migration attempts.

@@ -12,7 +12,7 @@
         android:id="@+id/widget_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="SinceThen"
+        android:text="Retraq"
         android:textSize="14sp"
         android:textStyle="bold"
         android:textColor="#1B5E20" />
@@ -54,7 +54,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="0 entries"
+        android:text="0 traqs"
         android:textSize="13sp"
         android:textColor="#757575" />
 
@@ -80,7 +80,7 @@
         android:id="@+id/widget_cta"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Tap to journal ✍️"
+        android:text="Drop a traq ✍️"
         android:textSize="12sp"
         android:textColor="#4CAF50" />
 

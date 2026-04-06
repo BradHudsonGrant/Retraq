@@ -25,7 +25,7 @@ class AppearanceSection extends StatelessWidget {
         Text('Appearance', style: tt.titleLarge),
         const SizedBox(height: AppSpacing.xs),
         BionicText(
-          text: 'Choose how SinceThen feels to you.',
+          text: 'Choose how Retraq feels to you.',
           style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant),
           enabled: SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
         ),

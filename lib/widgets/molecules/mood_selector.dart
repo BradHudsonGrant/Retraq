@@ -4,6 +4,9 @@ import '../../theme/app_colors.dart';
 import '../../theme/app_spacing.dart';
 import '../atoms/mood_blob.dart';
 
+// Re-export mood utilities for backwards compatibility
+export '../../utils/mood_utils.dart';
+
 /// Mood levels from 1 (Rough) to 5 (Amazing).
 /// Each has a blob emoji and label; color is resolved from the theme.
 class MoodOption {
@@ -130,7 +133,7 @@ class _MoodButton extends StatelessWidget {
               AnimatedDefaultTextStyle(
                 duration: animDuration,
                 style: TextStyle(
-                  fontSize: 11,
+                  fontSize: 12,
                   fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
                   color: isSelected
                       ? color
@@ -146,27 +149,3 @@ class _MoodButton extends StatelessWidget {
   }
 }
 
-/// Get the label for a mood value (1-5).
-String moodLabel(int mood) {
-  if (mood < 1 || mood > 5) return '';
-  return _moodOptions[mood - 1].label;
-}
-
-/// Get the color for a mood value (1-5), using light palette by default.
-/// Prefer [moodColorFor] when a [Brightness] is available.
-Color moodColor(int mood) {
-  if (mood < 1 || mood > 5) return Colors.grey;
-  return AppColors.moodColorsLight[mood - 1];
-}
-
-/// Get the color for a mood value (1-5) adapted to the given [brightness].
-Color moodColorFor(int mood, Brightness brightness) {
-  if (mood < 1 || mood > 5) return Colors.grey;
-  return _moodColors(brightness)[mood - 1];
-}
-
-/// Get the emoji for a mood value (1-5).
-String moodEmoji(int mood) {
-  if (mood < 1 || mood > 5) return '';
-  return _moodOptions[mood - 1].emoji;
-}

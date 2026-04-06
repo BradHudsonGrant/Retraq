@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import '../theme/app_spacing.dart';
-import '../widgets/atoms/sincethen_logo.dart';
+import '../widgets/atoms/retraq_logo.dart';
 import 'home_screen.dart';
 import 'recap_screen.dart';
 import 'stats_screen.dart';
 import 'settings_screen.dart';
 
 /// Root navigation shell — manages the four-tab layout.
-/// Receives theme toggle callback from SinceThenApp.
+/// Receives theme toggle callback from RetraqApp.
 class AppShell extends StatefulWidget {
   const AppShell({
     super.key,
@@ -108,10 +108,10 @@ class _AppShellState extends State<AppShell>
             opacity: _headerFade,
             child: Row(
               children: [
-                const SinceThenLogo(size: 28),
+                const RetraqLogo(size: 28),
                 const SizedBox(width: AppSpacing.sm),
                 Semantics(
-                  label: 'SinceThen',
+                  label: 'Retraq',
                   excludeSemantics: true,
                   child: RichText(
                     text: TextSpan(
@@ -159,8 +159,8 @@ class _AppShellState extends State<AppShell>
             color: cs.surface,
             border: Border(
               top: BorderSide(
-                color: cs.onSurface.withValues(alpha: 0.05),
-                width: 1,
+                color: cs.outlineVariant.withValues(alpha: 0.3),
+                width: 0.5,
               ),
             ),
           ),

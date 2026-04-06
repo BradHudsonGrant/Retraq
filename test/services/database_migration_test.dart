@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sincethen/models/journal_entry.dart';
-import 'package:sincethen/models/user.dart';
-import 'package:sincethen/models/user_settings.dart';
-import 'package:sincethen/services/database_service.dart';
+import 'package:retraq/models/journal_entry.dart';
+import 'package:retraq/models/user.dart';
+import 'package:retraq/models/user_settings.dart';
+import 'package:retraq/services/database_service.dart';
 
 /// Tests that verify the database schema is correct after all migrations
 /// have been applied, and that the migration code produces a usable database.
@@ -964,10 +964,10 @@ void main() {
       ]));
     });
 
-    test('schema version is 12', () async {
+    test('schema version is 13', () async {
       final result = await db.db.customSelect('PRAGMA user_version').get();
       final version = result.first.data['user_version'] as int;
-      expect(version, 12);
+      expect(version, 13);
     });
   });
 

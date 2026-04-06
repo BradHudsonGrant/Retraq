@@ -3,9 +3,9 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sincethen/models/journal_entry.dart';
-import 'package:sincethen/services/database_service.dart';
-import 'package:sincethen/widgets/organisms/edit_entry_sheet.dart';
+import 'package:retraq/models/journal_entry.dart';
+import 'package:retraq/services/database_service.dart';
+import 'package:retraq/widgets/organisms/edit_entry_sheet.dart';
 
 import '../../test_helpers.dart';
 

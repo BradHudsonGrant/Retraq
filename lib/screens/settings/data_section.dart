@@ -87,7 +87,7 @@ class DataSection extends StatelessWidget {
           Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              'Accepts SinceThen JSON backup files only',
+              'Accepts Retraq JSON backup files only',
               style: tt.bodySmall?.copyWith(
                 color: cs.onSurfaceVariant.withValues(alpha: 0.7),
               ),

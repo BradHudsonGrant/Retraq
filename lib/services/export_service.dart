@@ -34,7 +34,7 @@ String _encodeExportPayload(Map<String, dynamic> data) {
 String _formatEntriesToText(List<Map<String, dynamic>> entryMaps) {
   final readableFmt = DateFormat('EEEE, MMMM d, yyyy');
   final buffer = StringBuffer();
-  buffer.writeln('SinceThen Journal Export');
+  buffer.writeln('Retraq Export');
   buffer.writeln('Exported: ${readableFmt.format(DateTime.now())}');
   buffer.writeln('Total entries: ${entryMaps.length}');
   buffer.writeln('${'=' * 40}\n');
@@ -190,7 +190,7 @@ class ExportService {
       // Heavy JSON encoding runs off the UI thread.
       final jsonStr = await compute(_encodeExportPayload, exportData);
 
-      await _shareFile(jsonStr, 'sincethen_export.json', 'application/json');
+      await _shareFile(jsonStr, 'retraq_export.json', 'application/json');
     } catch (e, stack) {
       debugPrint('ExportService.exportAsJson failed: $e\n$stack');
       throw Exception('Failed to export journal as JSON: $e');
@@ -210,7 +210,7 @@ class ExportService {
       // Heavy text formatting runs off the UI thread.
       final text = await compute(_formatEntriesToText, maps);
 
-      await _shareFile(text, 'sincethen_export.txt', 'text/plain');
+      await _shareFile(text, 'retraq_export.txt', 'text/plain');
     } catch (e, stack) {
       debugPrint('ExportService.exportAsText failed: $e\n$stack');
       throw Exception('Failed to export journal as text: $e');
@@ -221,7 +221,7 @@ class ExportService {
   Future<void> shareEntry(JournalEntry entry) async {
     try {
       final dateStr = _readableFmt.format(entry.date);
-      final text = 'SinceThen - $dateStr\n\n${entry.displayText}';
+      final text = 'Retraq -$dateStr\n\n${entry.displayText}';
       await Share.share(text);
     } catch (e, stack) {
       debugPrint('ExportService.shareEntry failed: $e\n$stack');
@@ -234,7 +234,7 @@ class ExportService {
     if (entries.isEmpty) return;
     try {
       final dateStr = _readableFmt.format(date);
-      final buffer = StringBuffer('SinceThen - $dateStr\n');
+      final buffer = StringBuffer('Retraq -$dateStr\n');
       for (final e in entries) {
         buffer.writeln();
         if (e.label != null) buffer.writeln('[${e.label}]');
@@ -272,9 +272,15 @@ class ExportService {
     }
 
     // DB operations must stay on the main isolate.
-    // Pre-fetch existing entries grouped by date to avoid O(N) DB calls.
-    final entriesToInsert = <JournalEntry>[];
+    // Pre-fetch ALL existing entries grouped by date for O(1) duplicate lookup.
+    final allExisting = await _entries.getAllEntries();
     final existingByDate = <String, List<JournalEntry>>{};
+    for (final entry in allExisting) {
+      final key = _dateFmt.format(entry.date);
+      existingByDate.putIfAbsent(key, () => []).add(entry);
+    }
+
+    final entriesToInsert = <JournalEntry>[];
 
     for (final map in entryMaps) {
       try {
@@ -368,10 +374,7 @@ class ExportService {
         }
 
         // Duplicate check: same date + createdAt.
-        // Cache existing entries per date to avoid repeated DB queries.
-        if (!existingByDate.containsKey(dateStr)) {
-          existingByDate[dateStr] = await _entries.getEntriesForDate(date);
-        }
+        existingByDate.putIfAbsent(dateStr, () => []);
         final existing = existingByDate[dateStr]!;
         final isDuplicate = existing.any(
             (e) => e.createdAt.toIso8601String() == createdAt.toIso8601String());

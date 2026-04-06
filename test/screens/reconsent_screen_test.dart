@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sincethen/screens/legal_screen.dart';
-import 'package:sincethen/screens/reconsent_screen.dart';
+import 'package:retraq/screens/legal_screen.dart';
+import 'package:retraq/screens/reconsent_screen.dart';
 
 import '../test_helpers.dart';
 

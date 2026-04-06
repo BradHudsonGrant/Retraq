@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sincethen/widgets/organisms/save_success_overlay.dart';
+import 'package:retraq/widgets/organisms/save_success_overlay.dart';
 
 import '../../test_helpers.dart';
 

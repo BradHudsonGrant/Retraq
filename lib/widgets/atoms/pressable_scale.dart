@@ -20,15 +20,22 @@ class PressableScale extends StatefulWidget {
 
 class _PressableScaleState extends State<PressableScale> {
   bool _isPressed = false;
+  bool _isFocused = false;
+
+  void _onFocusChange(bool focused) {
+    setState(() => _isFocused = focused);
+  }
 
   @override
   Widget build(BuildContext context) {
     final mq = MediaQuery.of(context);
     final reduceMotion = mq.disableAnimations || mq.accessibleNavigation;
+    final cs = Theme.of(context).colorScheme;
 
     return FocusableActionDetector(
       enabled: widget.onTap != null,
       mouseCursor: widget.onTap != null ? SystemMouseCursors.click : MouseCursor.defer,
+      onFocusChange: _onFocusChange,
       child: GestureDetector(
       onTapDown: widget.onTap != null ? (_) => setState(() => _isPressed = true) : null,
       onTapUp: widget.onTap != null
@@ -44,7 +51,15 @@ class _PressableScaleState extends State<PressableScale> {
             ? Duration.zero
             : Duration(milliseconds: _isPressed ? 80 : 150),
         curve: Curves.easeOut,
-        child: widget.child,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            border: _isFocused
+                ? Border.all(color: cs.primary, width: 2)
+                : null,
+          ),
+          child: widget.child,
+        ),
       ),
     ));
   }

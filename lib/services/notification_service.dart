@@ -11,7 +11,7 @@ class NotificationService {
   final _plugin = FlutterLocalNotificationsPlugin();
   bool _initialized = false;
 
-  static const _channelId = 'sincethen_nudge';
+  static const _channelId = 'retraq_nudge';
   static const _channelName = 'Daily Nudge';
   static const _channelDescription = 'Daily check-in reminder';
   static const _notificationId = 0;
@@ -167,7 +167,7 @@ class NotificationService {
 
     await _plugin.zonedSchedule(
       _notificationId,
-      'SinceThen',
+      'Retraq',
       message,
       scheduled,
       const NotificationDetails(

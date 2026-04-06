@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sincethen/screens/onboarding_screen.dart';
+import 'package:retraq/screens/onboarding_screen.dart';
 
 import '../test_helpers.dart';
 
@@ -40,7 +40,7 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(find.text('Before we begin'), findsOneWidget);
-        expect(find.text('SinceThen is designed for users\naged 13 and older.'), findsOneWidget);
+        expect(find.text('Retraq is designed for users\naged 13 and older.'), findsOneWidget);
         expect(find.text('I am 13 or older'), findsOneWidget);
         expect(find.text('I am under 13'), findsOneWidget);
       });
@@ -193,7 +193,7 @@ void main() {
       expect(dots.length, 4);
     });
 
-    testWidgets('swipe gesture advances pages', (tester) async {
+    testWidgets('Next button advances pages', (tester) async {
       await tester.pumpWidget(wrapScreen(
         OnboardingScreen(onComplete: () {}),
       ));
@@ -201,8 +201,8 @@ void main() {
 
       await passAgeGate(tester);
 
-      // Swipe left to go to page 2
-      await tester.fling(find.byType(PageView), const Offset(-300, 0), 800);
+      // Tap Next to go to page 2
+      await tester.tap(find.text('Next'));
       await tester.pumpAndSettle();
 
       expect(find.text('Your life,\nactually organised.'), findsOneWidget);

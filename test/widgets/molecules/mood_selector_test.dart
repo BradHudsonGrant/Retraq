@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sincethen/widgets/atoms/mood_blob.dart';
-import 'package:sincethen/widgets/molecules/mood_selector.dart';
+import 'package:retraq/widgets/atoms/mood_blob.dart';
+import 'package:retraq/widgets/molecules/mood_selector.dart';
 
 import '../../test_helpers.dart';
 

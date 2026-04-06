@@ -1,6 +1,6 @@
-# SinceThen
+# Retraq
 
-An ADHD-friendly daily journaling app built with Flutter.
+Your memory backup. Jot your day in seconds. Built with Flutter.
 
 ## Features
 

@@ -4,8 +4,8 @@ import '../../theme/app_spacing.dart';
 /// Reusable card wrapper matching the prototype rounded card style.
 /// Used as the base for entry cards, stat cards, settings groups, etc.
 /// Includes a subtle press-scale animation when tappable.
-class SinceThenCard extends StatefulWidget {
-  const SinceThenCard({
+class RetraqCard extends StatefulWidget {
+  const RetraqCard({
     super.key,
     required this.child,
     this.color,
@@ -27,10 +27,10 @@ class SinceThenCard extends StatefulWidget {
   final String? semanticLabel;
 
   @override
-  State<SinceThenCard> createState() => _SinceThenCardState();
+  State<RetraqCard> createState() => _RetraqCardState();
 }
 
-class _SinceThenCardState extends State<SinceThenCard> {
+class _RetraqCardState extends State<RetraqCard> {
   bool _isPressed = false;
 
   @override

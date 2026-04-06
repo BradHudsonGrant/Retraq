@@ -58,8 +58,6 @@ class _RecapScreenState extends State<RecapScreen>
 
   // Subscriptions
   StreamSubscription<List<JournalEntry>>? _weekEntriesSub;
-  StreamSubscription<Set<int>>? _monthSub;
-  StreamSubscription<Map<int, int>>? _moodSub;
   StreamSubscription<List<JournalEntry>>? _entrySub;
   StreamSubscription<List<JournalEntry>>? _monthEntriesSub;
 
@@ -123,26 +121,29 @@ class _RecapScreenState extends State<RecapScreen>
   }
 
   void _listenToMonthData() {
-    _monthSub?.cancel();
-    _monthSub = _entries.watchMonthEntryDays(_selectedMonth).listen((days) {
+    _monthEntriesSub?.cancel();
+    _monthEntriesSub =
+        _entries.watchMonthEntries(_selectedMonth).listen((entries) {
       if (!mounted) return;
-      setState(() {
-        _entryDays = days;
-      });
-    });
 
-    _moodSub?.cancel();
-    _moodSub = _entries.watchMonthEntryMoods(_selectedMonth).listen((moods) {
-      if (!mounted) return;
+      // Derive entry days and mood map from the full entries list,
+      // avoiding two extra database queries.
+      final days = <int>{};
+      final moods = <int, int>{};
+      for (final e in entries) {
+        final day = e.date.day;
+        days.add(day);
+        if (e.mood != null) {
+          // Last entry's mood wins (entries are ordered by date ASC).
+          moods[day] = e.mood!;
+        }
+      }
+
       setState(() {
+        _monthEntries = entries;
+        _entryDays = days;
         _dayMoods = moods;
       });
-    });
-
-    _monthEntriesSub?.cancel();
-    _monthEntriesSub = _entries.watchMonthEntries(_selectedMonth).listen((entries) {
-      if (!mounted) return;
-      setState(() => _monthEntries = entries);
     });
   }
 
@@ -254,8 +255,6 @@ class _RecapScreenState extends State<RecapScreen>
     _searchDebounce?.cancel();
     _searchController.dispose();
     _weekEntriesSub?.cancel();
-    _monthSub?.cancel();
-    _moodSub?.cancel();
     _entrySub?.cancel();
     _monthEntriesSub?.cancel();
     super.dispose();

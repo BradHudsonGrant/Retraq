@@ -4,8 +4,8 @@ import '../../theme/app_spacing.dart';
 /// Reusable pill-shaped button used across the app.
 /// Matches the "Save Entry" style from the Home prototype.
 /// Includes a subtle press-scale animation for tactile feedback.
-class SinceThenButton extends StatefulWidget {
-  const SinceThenButton({
+class RetraqButton extends StatefulWidget {
+  const RetraqButton({
     super.key,
     required this.label,
     this.icon,
@@ -21,10 +21,10 @@ class SinceThenButton extends StatefulWidget {
   final bool isSmall;
 
   @override
-  State<SinceThenButton> createState() => _SinceThenButtonState();
+  State<RetraqButton> createState() => _RetraqButtonState();
 }
 
-class _SinceThenButtonState extends State<SinceThenButton> {
+class _RetraqButtonState extends State<RetraqButton> {
   bool _isPressed = false;
 
   void _onTapDown(TapDownDetails _) {
@@ -91,7 +91,6 @@ class _SinceThenButtonState extends State<SinceThenButton> {
     final reduceMotion = MediaQuery.of(context).disableAnimations;
 
     return Semantics(
-      button: true,
       label: widget.label,
       enabled: widget.onPressed != null,
       child: reduceMotion

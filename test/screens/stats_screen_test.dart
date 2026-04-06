@@ -2,7 +2,7 @@
 library;
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sincethen/screens/stats_screen.dart';
+import 'package:retraq/screens/stats_screen.dart';
 
 import '../test_helpers.dart';
 

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sincethen/models/journal_entry.dart';
+import 'package:retraq/models/journal_entry.dart';
 
 void main() {
   group('JournalEntry', () {

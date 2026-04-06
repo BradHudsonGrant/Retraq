@@ -33,7 +33,8 @@ class AppColors {
     surfaceContainer: Color(0xFFEAEFEC),
     surfaceContainerHigh: Color(0xFFE4E9E7),
     surfaceContainerHighest: Color(0xFFDDE4E1),
-    onSurfaceVariant: Color(0xFF59615F),
+    // Darkened from 0xFF59615F so that 0.7-opacity usage still meets WCAG 4.5:1
+    onSurfaceVariant: Color(0xFF3D4543),
     outline: Color(0xFF757C7A),
     outlineVariant: Color(0xFFACB3B1),
     inverseSurface: Color(0xFF0C0F0E),
@@ -63,7 +64,8 @@ class AppColors {
     surfaceContainer: Color(0xFF1E201F),
     surfaceContainerHigh: Color(0xFF282B29),
     surfaceContainerHighest: Color(0xFF333634),
-    onSurfaceVariant: Color(0xFFACB3B1),
+    // Brightened from 0xFFACB3B1 so that 0.7-opacity usage still meets WCAG 4.5:1
+    onSurfaceVariant: Color(0xFFC4CAC8),
     outline: Color(0xFF757C7A),
     outlineVariant: Color(0xFF59615F),
     inverseSurface: Color(0xFFF8FAF8),

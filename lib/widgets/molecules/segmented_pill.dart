@@ -81,13 +81,14 @@ class _SegmentedPillState extends State<SegmentedPill>
     );
 
     // Measure both labels to find the wider one, then use that width for both.
+    final textDirection = Directionality.of(context);
     final leftTp = TextPainter(
       text: TextSpan(text: widget.leftLabel, style: labelStyle),
-      textDirection: TextDirection.ltr,
+      textDirection: textDirection,
     )..layout();
     final rightTp = TextPainter(
       text: TextSpan(text: widget.rightLabel, style: labelStyle),
-      textDirection: TextDirection.ltr,
+      textDirection: textDirection,
     )..layout();
 
     final maxTextWidth =

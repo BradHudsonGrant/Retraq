@@ -1,6 +1,6 @@
 // ignore_for_file: prefer_single_quotes
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sincethen/models/user.dart';
+import 'package:retraq/models/user.dart';
 
 void main() {
   group('User', () {

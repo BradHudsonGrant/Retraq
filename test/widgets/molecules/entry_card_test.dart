@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sincethen/widgets/molecules/entry_card.dart';
+import 'package:retraq/widgets/molecules/entry_card.dart';
 
 import '../../test_helpers.dart';
 

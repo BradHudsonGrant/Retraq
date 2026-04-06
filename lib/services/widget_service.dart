@@ -15,7 +15,7 @@ class WidgetService {
   static final instance = WidgetService._();
 
   static const _androidWidgetName = 'JournalWidget';
-  static const _appGroupId = 'group.com.sincethen.app';
+  static const _appGroupId = 'group.com.retraq.app';
 
   /// Initialise the home_widget plugin (call once at startup).
   Future<void> init() async {

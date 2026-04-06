@@ -22,7 +22,7 @@ Future<bool> confirmAndDeleteEntry(BuildContext context, JournalEntry entry) asy
     context: context,
     builder: (ctx) => AlertDialog(
       title: const Text('Delete entry?'),
-      content: const Text("Are you sure? This can't be undone."),
+      content: const Text("This can't be undone."),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(ctx).pop(false),

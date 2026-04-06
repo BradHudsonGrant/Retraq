@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sincethen/models/journal_entry.dart';
-import 'package:sincethen/widgets/organisms/entry_detail_view.dart';
+import 'package:retraq/models/journal_entry.dart';
+import 'package:retraq/widgets/organisms/entry_detail_view.dart';
 
 import '../../test_helpers.dart';
 

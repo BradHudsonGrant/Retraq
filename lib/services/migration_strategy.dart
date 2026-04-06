@@ -285,6 +285,16 @@ MigrationStrategy buildMigrationStrategy(AppDatabase db) {
           'ALTER TABLE user_settings_table ADD COLUMN bionic_reading_enabled INTEGER NOT NULL DEFAULT 0',
         );
       }
+      if (from < 13) {
+        // v12→v13: Add index on created_at for time-ordered queries,
+        // and composite index on (date, mood) for filtered queries.
+        await db.customStatement(
+          'CREATE INDEX IF NOT EXISTS idx_journal_created_at ON journal_entries(created_at)',
+        );
+        await db.customStatement(
+          'CREATE INDEX IF NOT EXISTS idx_journal_date_mood ON journal_entries(date, mood)',
+        );
+      }
     },
   );
 }

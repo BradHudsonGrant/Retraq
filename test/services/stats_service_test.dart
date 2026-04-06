@@ -2,9 +2,9 @@
 library;
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sincethen/models/journal_entry.dart';
-import 'package:sincethen/services/database_service.dart';
-import 'package:sincethen/services/stats_service.dart';
+import 'package:retraq/models/journal_entry.dart';
+import 'package:retraq/services/database_service.dart';
+import 'package:retraq/services/stats_service.dart';
 
 import '../test_helpers.dart';
 

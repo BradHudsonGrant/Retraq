@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 /// Small pill-shaped tag/badge used for date labels, hashtags, etc.
 /// Matches the "Yesterday", "Tuesday", "#Hyperfocus" pills from prototypes.
-class SinceThenChip extends StatelessWidget {
-  const SinceThenChip({
+class RetraqChip extends StatelessWidget {
+  const RetraqChip({
     super.key,
     required this.label,
     this.color,

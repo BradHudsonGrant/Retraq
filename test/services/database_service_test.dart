@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:drift/drift.dart' hide isNotNull;
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sincethen/models/journal_entry.dart';
-import 'package:sincethen/services/database_service.dart';
-import 'package:sincethen/utils/date_helpers.dart';
+import 'package:retraq/models/journal_entry.dart';
+import 'package:retraq/services/database_service.dart';
+import 'package:retraq/utils/date_helpers.dart';
 
 import '../test_helpers.dart';
 
@@ -644,11 +644,11 @@ void main() {
       db = DatabaseService.instance;
     });
 
-    test('schema version is 12 after initInMemory', () async {
+    test('schema version is 13 after initInMemory', () async {
       // Query the Drift schema version via the underlying DB.
       final result = await db.db.customSelect('PRAGMA user_version').get();
       final version = result.first.data['user_version'] as int;
-      expect(version, 12);
+      expect(version, 13);
     });
 
     test('consent_records table exists and accepts inserts', () async {

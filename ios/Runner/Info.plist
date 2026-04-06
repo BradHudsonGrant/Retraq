@@ -5,7 +5,7 @@
 		<key>CFBundleDevelopmentRegion</key>
 		<string>$(DEVELOPMENT_LANGUAGE)</string>
 		<key>CFBundleDisplayName</key>
-		<string>SinceThen</string>
+		<string>Retraq</string>
 		<key>CFBundleExecutable</key>
 		<string>$(EXECUTABLE_NAME)</string>
 		<key>CFBundleIdentifier</key>
@@ -13,7 +13,7 @@
 		<key>CFBundleInfoDictionaryVersion</key>
 		<string>6.0</string>
 		<key>CFBundleName</key>
-		<string>SinceThen</string>
+		<string>Retraq</string>
 		<key>CFBundlePackageType</key>
 		<string>APPL</string>
 		<key>CFBundleShortVersionString</key>
@@ -46,9 +46,9 @@
 		<key>UIApplicationSupportsIndirectInputEvents</key>
 		<true/>
 		<key>NSFaceIDUsageDescription</key>
-		<string>SinceThen uses Face ID to keep your journal private.</string>
+		<string>Retraq uses Face ID to keep your traqs private.</string>
 		<key>NSUserNotificationsUsageDescription</key>
-		<string>SinceThen sends a gentle daily reminder to help you capture your day.</string>
+		<string>Retraq sends a gentle daily reminder to help you capture your day.</string>
 		<key>UIStatusBarHidden</key>
 		<false/>
 	</dict>

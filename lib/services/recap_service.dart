@@ -84,6 +84,20 @@ class RecapService {
       }
     }
 
+    // Mood statistics
+    final moodDistribution = <int, int>{};
+    int moodSum = 0;
+    int moodCount = 0;
+    for (final entry in entries) {
+      if (entry.mood != null) {
+        moodDistribution[entry.mood!] =
+            (moodDistribution[entry.mood!] ?? 0) + 1;
+        moodSum += entry.mood!;
+        moodCount++;
+      }
+    }
+    final averageMood = moodCount > 0 ? moodSum / moodCount : null;
+
     // Observation
     String observation;
     if (totalEntries == 0) {
@@ -102,6 +116,12 @@ class RecapService {
           "You wrote $totalEntries entries across $activeDays days. $busiestDay was your most active day.";
     }
 
+    // Append mood insight to observation if mood data exists
+    if (moodCount > 0 && averageMood != null) {
+      final moodLabel = _moodLabel(averageMood);
+      observation += " Your average mood was $moodLabel.";
+    }
+
     return WeeklySummary(
       totalEntries: totalEntries,
       busiestDay: busiestDay,
@@ -109,7 +129,17 @@ class RecapService {
       activeDays: activeDays,
       streak: streak,
       observation: observation,
+      averageMood: averageMood,
+      moodDistribution: moodDistribution,
     );
+  }
+
+  static String _moodLabel(double avg) {
+    if (avg >= 4.5) return "Amazing";
+    if (avg >= 3.5) return "Good";
+    if (avg >= 2.5) return "Neutral";
+    if (avg >= 1.5) return "Low";
+    return "Rough";
   }
 }
 
@@ -121,6 +151,8 @@ class WeeklySummary {
   final int activeDays;
   final int streak;
   final String observation;
+  final double? averageMood;
+  final Map<int, int> moodDistribution; // mood value -> count
 
   const WeeklySummary({
     this.totalEntries = 0,
@@ -129,5 +161,7 @@ class WeeklySummary {
     this.activeDays = 0,
     this.streak = 0,
     this.observation = "",
+    this.averageMood,
+    this.moodDistribution = const {},
   });
 }

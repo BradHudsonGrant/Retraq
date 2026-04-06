@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_spacing.dart';
 import '../../utils/text_input_formatters.dart';
-import '../../widgets/atoms/sincethen_button.dart';
+import '../../widgets/atoms/retraq_button.dart';
 
 /// The main journal text input area with optional title, AM/PM toggle,
 /// and save button.
@@ -71,7 +71,7 @@ class JournalTextArea extends StatelessWidget {
             decoration: InputDecoration(
               hintText: bulletPoints ? '• $hint' : hint,
               labelText: 'Journal entry',
-              floatingLabelBehavior: FloatingLabelBehavior.never,
+              floatingLabelBehavior: FloatingLabelBehavior.auto,
               hintStyle: tt.bodyLarge?.copyWith(
                 color: cs.onSurfaceVariant.withValues(alpha: 0.55),
               ),
@@ -96,7 +96,7 @@ class JournalTextArea extends StatelessWidget {
           Positioned(
             bottom: AppSpacing.md,
             right: AppSpacing.md,
-            child: SinceThenButton(
+            child: RetraqButton(
               label: isSaving ? 'Saving...' : 'Save Entry',
               icon: Icons.done_all,
               onPressed: isSaving ? null : onSave,

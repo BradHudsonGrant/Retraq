@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_spacing.dart';
-import '../atoms/sincethen_card.dart';
-import '../atoms/sincethen_chip.dart';
+import '../atoms/retraq_card.dart';
+import '../atoms/retraq_chip.dart';
 import 'mood_selector.dart';
 
 /// A journal entry preview card (used in "Previously…" and Recap detail).
-/// Composed of SinceThenCard + SinceThenChip atoms.
+/// Composed of RetraqCard + RetraqChip atoms.
 class EntryCard extends StatelessWidget {
   const EntryCard({
     super.key,
@@ -37,7 +37,7 @@ class EntryCard extends StatelessWidget {
     return Semantics(
       container: true,
       label: 'Journal entry for $dateLabel',
-      child: SinceThenCard(
+      child: RetraqCard(
         color: color,
         elevation: color == null ? 1 : 0,
         onTap: onTap,
@@ -49,7 +49,7 @@ class EntryCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  SinceThenChip(
+                  RetraqChip(
                     label: dateLabel,
                     color: chipColor,
                     textColor: chipTextColor,

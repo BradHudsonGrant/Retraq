@@ -10,9 +10,9 @@ import '../../theme/app_text.dart';
 /// Supports optional entrance animation (fade + scale) and a gentle
 /// breathing pulse — both designed to be calming for ADHD users.
 ///
-/// Set [showText] to display "SinceThen" branded text below the icon.
-class SinceThenLogo extends StatefulWidget {
-  const SinceThenLogo({
+/// Set [showText] to display "Retraq" branded text below the icon.
+class RetraqLogo extends StatefulWidget {
+  const RetraqLogo({
     super.key,
     this.size = 28,
     this.animate = false,
@@ -29,17 +29,17 @@ class SinceThenLogo extends StatefulWidget {
   /// Continuous gentle scale pulse (lock screen "alive" feel).
   final bool breathe;
 
-  /// Show branded "SinceThen" text below the icon.
+  /// Show branded "Retraq" text below the icon.
   final bool showText;
 
   /// Delay before starting the entrance animation.
   final Duration delay;
 
   @override
-  State<SinceThenLogo> createState() => _SinceThenLogoState();
+  State<RetraqLogo> createState() => _RetraqLogoState();
 }
 
-class _SinceThenLogoState extends State<SinceThenLogo>
+class _RetraqLogoState extends State<RetraqLogo>
     with TickerProviderStateMixin {
   late final AnimationController _entranceController;
   late final Animation<double> _fadeIn;
@@ -138,7 +138,7 @@ class _SinceThenLogoState extends State<SinceThenLogo>
 
     Widget icon = SvgPicture.asset(
       'assets/images/logo.svg',
-      semanticsLabel: 'SinceThen logo',
+      semanticsLabel: 'Retraq logo',
       width: widget.size,
       height: widget.size,
       colorFilter: ColorFilter.mode(cs.primary, BlendMode.srcIn),
@@ -160,23 +160,13 @@ class _SinceThenLogoState extends State<SinceThenLogo>
         children: [
           icon,
           SizedBox(height: spacing),
-          RichText(
-            text: TextSpan(
-              style: TextStyle(
-                fontFamily: AppText.headlineFamily,
-                fontSize: textSize,
-                color: cs.primary,
-              ),
-              children: const [
-                TextSpan(
-                  text: 'Since',
-                  style: TextStyle(fontWeight: FontWeight.w700),
-                ),
-                TextSpan(
-                  text: 'Then',
-                  style: TextStyle(fontWeight: FontWeight.w400),
-                ),
-              ],
+          Text(
+            'Retraq',
+            style: TextStyle(
+              fontFamily: AppText.headlineFamily,
+              fontSize: textSize,
+              fontWeight: FontWeight.w700,
+              color: cs.primary,
             ),
           ),
         ],

@@ -34,7 +34,7 @@ class StatsService {
       final rows = await _db.customSelect(
         "SELECT DISTINCT date(date, 'unixepoch', 'localtime') AS d "
         "FROM journal_entries WHERE date(date, 'unixepoch', 'localtime') <= ? "
-        "ORDER BY d DESC",
+        "ORDER BY d DESC LIMIT 1100",
         variables: [Variable<String>(todayStr)],
         readsFrom: {_db.journalEntries},
       ).get();

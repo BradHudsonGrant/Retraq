@@ -6,7 +6,7 @@ import '../../services/export_service.dart';
 import '../../theme/app_spacing.dart';
 import '../../utils/entry_action_dialogs.dart';
 import '../atoms/bionic_text.dart';
-import '../atoms/sincethen_chip.dart';
+import '../atoms/retraq_chip.dart';
 import '../molecules/entry_action_menu.dart';
 import '../molecules/mood_selector.dart';
 
@@ -128,7 +128,7 @@ class _EntryCard extends StatelessWidget {
               ),
               if (entry.label != null) ...[
                 const SizedBox(width: AppSpacing.sm),
-                SinceThenChip(
+                RetraqChip(
                   label: entry.label!,
                   color: entry.label == 'AM'
                       ? cs.primaryContainer

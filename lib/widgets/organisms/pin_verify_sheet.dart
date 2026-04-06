@@ -1,8 +1,7 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../../services/lockout_controller.dart';
 import '../../services/pin_service.dart';
 import 'pin_setup_sheet.dart' show pinLengthPrefKey;
 import '../../theme/app_spacing.dart';
@@ -20,112 +19,47 @@ class PinVerifySheet extends StatefulWidget {
 }
 
 class _PinVerifySheetState extends State<PinVerifySheet> {
-  final _secureStorage = const FlutterSecureStorage();
+  late final LockoutController _lockout;
+
   String _entered = '';
   bool _isError = false;
   bool _isVerifying = false;
-  bool _isLockedOut = false;
-  int _failedAttempts = 0;
-  int _lockoutCount = 0;
-  Timer? _lockoutTimer;
-  int _lockoutSecondsLeft = 0;
 
   int _pinLength = 4;
-  static const _maxAttempts = 5;
-  static const _maxLockoutSeconds = 300; // 5 minutes cap
-
-  // Same SharedPreferences keys as LockScreen for consistent behavior.
-  static const _prefFailedAttempts = 'lock_failed_attempts';
-  static const _prefLockoutCount = 'lock_lockout_count';
-  static const _prefLockoutEnd = 'lock_lockout_end';
 
   @override
   void initState() {
     super.initState();
-    _loadLockoutState();
+    _lockout = LockoutController();
+    _lockout.addListener(() {
+      if (mounted) setState(() {});
+    });
+    _loadState();
   }
 
   @override
   void dispose() {
-    _lockoutTimer?.cancel();
+    _lockout.dispose();
     super.dispose();
   }
 
-  Future<void> _loadLockoutState() async {
-    // Read configured PIN length (4 or 6, default 4).
-    final prefs = await SharedPreferences.getInstance();
-    final storedPinLength = prefs.getInt(pinLengthPrefKey) ?? 4;
+  Future<void> _loadState() async {
+    // Read configured PIN length (4 or 6, default 4) from secure storage.
+    final storedPinLength = int.tryParse(
+            await const FlutterSecureStorage().read(key: pinLengthPrefKey) ??
+                '') ??
+        4;
     if (mounted) {
       setState(() => _pinLength = (storedPinLength == 6) ? 6 : 4);
     }
 
-    _failedAttempts = int.tryParse(await _secureStorage.read(key: _prefFailedAttempts) ?? '') ?? 0;
-    _lockoutCount = int.tryParse(await _secureStorage.read(key: _prefLockoutCount) ?? '') ?? 0;
-    final lockoutEndMs = int.tryParse(await _secureStorage.read(key: _prefLockoutEnd) ?? '') ?? 0;
-    if (lockoutEndMs > 0) {
-      final lockoutEnd = DateTime.fromMillisecondsSinceEpoch(lockoutEndMs);
-      final remaining = lockoutEnd.difference(DateTime.now()).inSeconds;
-      if (remaining > 0) {
-        _lockoutSecondsLeft = remaining;
-        if (mounted) setState(() => _isLockedOut = true);
-        _startLockoutCountdown();
-      } else {
-        _clearPersistedLockout();
-      }
-    }
-  }
-
-  Future<void> _persistLockout(DateTime lockoutEnd) async {
-    await _secureStorage.write(key: _prefFailedAttempts, value: '$_failedAttempts');
-    await _secureStorage.write(key: _prefLockoutCount, value: '$_lockoutCount');
-    await _secureStorage.write(key: _prefLockoutEnd, value: '${lockoutEnd.millisecondsSinceEpoch}');
-  }
-
-  Future<void> _clearPersistedLockout() async {
-    await _secureStorage.delete(key: _prefFailedAttempts);
-    await _secureStorage.delete(key: _prefLockoutCount);
-    await _secureStorage.delete(key: _prefLockoutEnd);
-  }
-
-  Duration get _lockoutDuration {
-    // Exponential backoff: 30s, 60s, 120s, 240s, capped at 300s
-    final seconds = (30 * (1 << _lockoutCount)).clamp(30, _maxLockoutSeconds);
-    return Duration(seconds: seconds);
-  }
-
-  void _startLockout() {
-    final duration = _lockoutDuration;
-    _lockoutCount++;
-    _lockoutSecondsLeft = duration.inSeconds;
-    setState(() => _isLockedOut = true);
-    final lockoutEnd = DateTime.now().add(duration);
-    _persistLockout(lockoutEnd);
-    _startLockoutCountdown();
-  }
-
-  void _startLockoutCountdown() {
-    _lockoutTimer?.cancel();
-    _lockoutTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (!mounted) {
-        timer.cancel();
-        return;
-      }
-      _lockoutSecondsLeft--;
-      if (_lockoutSecondsLeft <= 0) {
-        timer.cancel();
-        _clearPersistedLockout();
-        setState(() {
-          _isLockedOut = false;
-          _failedAttempts = 0;
-        });
-      } else {
-        setState(() {});
-      }
-    });
+    await _lockout.loadState();
   }
 
   Future<void> _onDigit(int digit) async {
-    if (_isVerifying || _isLockedOut || _entered.length >= _pinLength) return;
+    if (_isVerifying || _lockout.isLockedOut || _entered.length >= _pinLength) {
+      return;
+    }
     setState(() {
       _entered += '$digit';
       _isError = false;
@@ -136,7 +70,7 @@ class _PinVerifySheetState extends State<PinVerifySheet> {
   }
 
   void _onDelete() {
-    if (_isVerifying || _isLockedOut || _entered.isEmpty) return;
+    if (_isVerifying || _lockout.isLockedOut || _entered.isEmpty) return;
     setState(() {
       _entered = _entered.substring(0, _entered.length - 1);
       _isError = false;
@@ -148,28 +82,22 @@ class _PinVerifySheetState extends State<PinVerifySheet> {
     final ok = await PinService.verifyPin(_entered, widget.pinHash);
     if (!mounted) return;
     if (ok) {
-      _clearPersistedLockout();
+      _lockout.clearLockout();
       Navigator.pop(context, true);
     } else {
-      _failedAttempts++;
       setState(() {
         _isError = true;
         _isVerifying = false;
         _entered = '';
       });
       HapticFeedback.heavyImpact();
-
-      if (_failedAttempts >= _maxAttempts) {
-        _startLockout();
-      }
+      _lockout.recordFailedAttempt();
     }
   }
 
   String get _statusText {
-    if (_isLockedOut) return 'Too many attempts. Wait ${_lockoutSecondsLeft}s.';
-    if (_isError) {
-      final remaining = _maxAttempts - _failedAttempts;
-      return 'Incorrect PIN. $remaining ${remaining == 1 ? 'attempt' : 'attempts'} remaining.';
+    if (_lockout.isLockedOut || _lockout.failedAttempts > 0) {
+      return _lockout.statusText(wrongPinPrefix: 'Incorrect PIN');
     }
     return 'Enter your PIN';
   }
@@ -192,12 +120,12 @@ class _PinVerifySheetState extends State<PinVerifySheet> {
           const DragHandle(),
           const SizedBox(height: AppSpacing.lg),
           Semantics(
-            liveRegion: _isError || _isLockedOut,
+            liveRegion: _isError || _lockout.isLockedOut,
             child: Text(
               _statusText,
               style: tt.titleMedium?.copyWith(
                 fontWeight: FontWeight.w600,
-                color: (_isError || _isLockedOut) ? cs.error : null,
+                color: (_isError || _lockout.isLockedOut) ? cs.error : null,
               ),
               textAlign: TextAlign.center,
             ),
@@ -212,7 +140,7 @@ class _PinVerifySheetState extends State<PinVerifySheet> {
           NumberPad(
             onDigit: (d) => _onDigit(d),
             onDelete: _onDelete,
-            isDisabled: _isVerifying || _isLockedOut,
+            isDisabled: _isVerifying || _lockout.isLockedOut,
           ),
           const SizedBox(height: AppSpacing.md),
         ],

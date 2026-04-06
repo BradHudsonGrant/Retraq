@@ -10,11 +10,13 @@ class AgeGatePage extends StatelessWidget {
     required this.onConfirm,
     required this.onDeny,
     required this.isDenied,
+    this.onRetry,
   });
 
   final VoidCallback onConfirm;
   final VoidCallback onDeny;
   final bool isDenied;
+  final VoidCallback? onRetry;
 
   @override
   Widget build(BuildContext context) {
@@ -52,9 +54,9 @@ class AgeGatePage extends StatelessWidget {
           const SizedBox(height: AppSpacing.md),
           BionicText(
             text: isDenied
-                ? 'SinceThen requires users to be 13 years or older.\n'
+                ? 'Retraq requires users to be 13 years or older.\n'
                     'Please come back when you\'re old enough!'
-                : 'SinceThen is designed for users\naged 13 and older.',
+                : 'Retraq is designed for users\naged 13 and older.',
             textAlign: TextAlign.center,
             style: tt.bodyLarge?.copyWith(
               color: cs.onSurfaceVariant,
@@ -87,6 +89,14 @@ class AgeGatePage extends StatelessWidget {
               child: Text(
                 'I am under 13',
                 style: tt.labelLarge?.copyWith(color: cs.onSurfaceVariant),
+              ),
+            ),
+          ] else if (onRetry != null) ...[
+            TextButton(
+              onPressed: onRetry,
+              child: Text(
+                'I made a mistake',
+                style: tt.labelLarge?.copyWith(color: cs.primary),
               ),
             ),
           ],

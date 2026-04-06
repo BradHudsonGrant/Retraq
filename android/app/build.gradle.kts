@@ -8,7 +8,7 @@ plugins {
 import java.util.Properties
 
 android {
-    namespace = "com.sincethen.app"
+    namespace = "com.retraq.app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = "27.0.12077973"
 
@@ -24,7 +24,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.sincethen.app"
+        applicationId = "com.retraq.app"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = 23
@@ -37,7 +37,7 @@ android {
     // Create key.properties with:
     //   storePassword=<password>
     //   keyPassword=<password>
-    //   keyAlias=sincethen
+    //   keyAlias=retraq
     //   storeFile=<path-to-keystore.jks>
     // Release signing: try key.properties first (local dev), then env vars (CI)
     val keystorePropertiesFile = rootProject.file("key.properties")
