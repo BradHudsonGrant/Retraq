@@ -30,7 +30,7 @@ void main() {
     await tester.pumpWidget(wrapShell());
     await tester.pump(const Duration(milliseconds: 100));
 
-    // Header uses RichText with separate "Ret" + "raq" spans
+    // Header uses RichText with "Retraq" span
     expect(
       find.byWidgetPredicate(
         (w) =>
@@ -38,10 +38,7 @@ void main() {
             w.text is TextSpan &&
             (w.text as TextSpan).children != null &&
             (w.text as TextSpan).children!.any(
-              (s) => s is TextSpan && s.text == 'Ret',
-            ) &&
-            (w.text as TextSpan).children!.any(
-              (s) => s is TextSpan && s.text == 'raq',
+              (s) => s is TextSpan && s.text == 'Retraq',
             ),
       ),
       findsOneWidget,
