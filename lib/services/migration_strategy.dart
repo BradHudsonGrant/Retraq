@@ -8,6 +8,12 @@ import 'database_service.dart';
 /// Each `if (from < N)` block handles upgrading from version N-1 to N.
 MigrationStrategy buildMigrationStrategy(AppDatabase db) {
   return MigrationStrategy(
+    onCreate: (migrator) async {
+      await migrator.createAll();
+      // FTS5 schema is not declared in Drift tables — create it manually
+      // so fresh installs get the same search index that v14 migrations add.
+      await _createFts5Schema(db);
+    },
     onUpgrade: (migrator, from, to) async {
       if (from < 2) {
         // v1→v2: added title column (old schema had morningEntry etc.)
@@ -301,6 +307,59 @@ MigrationStrategy buildMigrationStrategy(AppDatabase db) {
           'CREATE INDEX IF NOT EXISTS idx_journal_date_mood ON journal_entries(date, mood)',
         );
       }
+      if (from < 14) {
+        // v13→v14: Add FTS5 virtual table backing journal entry search.
+        // External-content mode reads row data straight from journal_entries
+        // (via content_rowid='id') so we don't duplicate user content on disk.
+        await _createFts5Schema(db);
+        // Backfill the index from existing rows. After this point, the AI/AD/AU
+        // triggers keep journal_entries_fts in sync automatically.
+        await db.customStatement('''
+          INSERT INTO journal_entries_fts(rowid, entry, title)
+          SELECT id, COALESCE(entry, ''), COALESCE(title, '')
+          FROM journal_entries
+        ''');
+      }
     },
   );
+}
+
+/// Create the FTS5 virtual table + sync triggers for journal_entries.
+/// Called from both onCreate (fresh installs) and the v13→v14 onUpgrade path.
+Future<void> _createFts5Schema(AppDatabase db) async {
+  // unicode61 with remove_diacritics=2 makes search match across accents
+  // (e.g. "cafe" finds "café") and case-folds Unicode letters.
+  await db.customStatement('''
+    CREATE VIRTUAL TABLE journal_entries_fts USING fts5(
+      entry,
+      title,
+      content='journal_entries',
+      content_rowid='id',
+      tokenize='unicode61 remove_diacritics 2'
+    )
+  ''');
+  // Insert trigger: mirror new rows into the FTS index.
+  await db.customStatement('''
+    CREATE TRIGGER journal_entries_ai AFTER INSERT ON journal_entries BEGIN
+      INSERT INTO journal_entries_fts(rowid, entry, title)
+      VALUES (new.id, COALESCE(new.entry, ''), COALESCE(new.title, ''));
+    END
+  ''');
+  // Delete trigger: external-content tables require the special 'delete'
+  // command with the OLD values so FTS5 can locate the indexed row.
+  await db.customStatement('''
+    CREATE TRIGGER journal_entries_ad AFTER DELETE ON journal_entries BEGIN
+      INSERT INTO journal_entries_fts(journal_entries_fts, rowid, entry, title)
+      VALUES ('delete', old.id, COALESCE(old.entry, ''), COALESCE(old.title, ''));
+    END
+  ''');
+  // Update trigger: delete the OLD index entry, then insert the NEW one.
+  await db.customStatement('''
+    CREATE TRIGGER journal_entries_au AFTER UPDATE ON journal_entries BEGIN
+      INSERT INTO journal_entries_fts(journal_entries_fts, rowid, entry, title)
+      VALUES ('delete', old.id, COALESCE(old.entry, ''), COALESCE(old.title, ''));
+      INSERT INTO journal_entries_fts(rowid, entry, title)
+      VALUES (new.id, COALESCE(new.entry, ''), COALESCE(new.title, ''));
+    END
+  ''');
 }

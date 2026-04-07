@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 import '../legal/health_disclaimer.dart';
 import '../legal/privacy_policy.dart';
 import '../legal/terms_of_service.dart';
@@ -53,10 +54,9 @@ class _ReconsentScreenState extends State<ReconsentScreen> {
     } catch (e) {
       debugPrint('Failed to save consent records: $e');
       if (mounted) {
+        final l10n = L10n.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Failed to save consent. Please try again.'),
-          ),
+          SnackBar(content: Text(l10n.consentSaveFailed)),
         );
       }
     }
@@ -66,6 +66,7 @@ class _ReconsentScreenState extends State<ReconsentScreen> {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
+    final l10n = L10n.of(context)!;
 
     return Scaffold(
       body: SafeArea(
@@ -81,7 +82,7 @@ class _ReconsentScreenState extends State<ReconsentScreen> {
               const SizedBox(height: AppSpacing.lg),
               Center(
                 child: Text(
-                  'Updated Policies',
+                  l10n.updatedPolicies,
                   style: tt.headlineMedium?.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
@@ -90,9 +91,7 @@ class _ReconsentScreenState extends State<ReconsentScreen> {
               const SizedBox(height: AppSpacing.md),
               Center(
                 child: Text(
-                  "We've updated our Privacy Policy, Terms of Use, "
-                  'and/or Health Disclaimer. '
-                  'Please review and accept to continue.',
+                  l10n.reconsentMessage,
                   textAlign: TextAlign.center,
                   style: tt.bodyLarge?.copyWith(
                     color: cs.onSurfaceVariant,
@@ -104,13 +103,13 @@ class _ReconsentScreenState extends State<ReconsentScreen> {
               _ReconsentCheckbox(
                 value: _privacyAccepted,
                 onChanged: (v) => setState(() => _privacyAccepted = v ?? false),
-                label: 'I have read and agree to the Privacy Policy',
+                label: l10n.privacyPolicyCheckbox,
                 onTapLink:
                     () => Navigator.of(context).push(
                       MaterialPageRoute<void>(
                         builder:
-                            (_) => const LegalScreen(
-                              title: 'Privacy Policy',
+                            (_) => LegalScreen(
+                              title: l10n.privacyPolicy,
                               content: privacyPolicyText,
                             ),
                       ),
@@ -120,13 +119,13 @@ class _ReconsentScreenState extends State<ReconsentScreen> {
               _ReconsentCheckbox(
                 value: _termsAccepted,
                 onChanged: (v) => setState(() => _termsAccepted = v ?? false),
-                label: 'I agree to the Terms of Use',
+                label: l10n.termsCheckbox,
                 onTapLink:
                     () => Navigator.of(context).push(
                       MaterialPageRoute<void>(
                         builder:
-                            (_) => const LegalScreen(
-                              title: 'Terms of Use',
+                            (_) => LegalScreen(
+                              title: l10n.termsOfUse,
                               content: termsOfServiceText,
                             ),
                       ),
@@ -138,13 +137,13 @@ class _ReconsentScreenState extends State<ReconsentScreen> {
                 onChanged:
                     (v) =>
                         setState(() => _healthDisclaimerAccepted = v ?? false),
-                label: 'I have read and accept the Health Disclaimer',
+                label: l10n.healthDisclaimerCheckbox,
                 onTapLink:
                     () => Navigator.of(context).push(
                       MaterialPageRoute<void>(
                         builder:
-                            (_) => const LegalScreen(
-                              title: 'Health & Wellness Disclaimer',
+                            (_) => LegalScreen(
+                              title: l10n.healthDisclaimerTitle,
                               content: healthDisclaimerText,
                             ),
                       ),
@@ -165,7 +164,7 @@ class _ReconsentScreenState extends State<ReconsentScreen> {
                       vertical: AppSpacing.md,
                     ),
                   ),
-                  child: Text('Continue', style: tt.labelLarge),
+                  child: Text(l10n.continueButton, style: tt.labelLarge),
                 ),
               ),
             ],

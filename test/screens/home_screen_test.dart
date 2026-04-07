@@ -3,6 +3,8 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:retraq/l10n/app_localizations.dart';
+import 'package:retraq/services/database_service.dart';
 import 'package:retraq/screens/home_screen.dart';
 import 'package:retraq/utils/journal_prompts.dart';
 
@@ -59,7 +61,7 @@ void main() {
       await tester.pumpWidget(wrapWidget(const HomeScreen()));
       await tester.pump(const Duration(milliseconds: 200));
 
-      expect(find.text('Entry title (optional)'), findsNothing);
+      expect(find.text('Traq title (optional)'), findsNothing);
 
       await flushDriftTimers(tester);
     });
@@ -77,7 +79,7 @@ void main() {
       await tester.pumpWidget(wrapWidget(const HomeScreen()));
       await tester.pump(const Duration(milliseconds: 200));
 
-      expect(find.text('Save Entry'), findsOneWidget);
+      expect(find.text('Save Traq'), findsOneWidget);
 
       await flushDriftTimers(tester);
     });
@@ -87,7 +89,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 200));
 
       // Compact progress bar shows week count message
-      expect(find.textContaining('first entry'), findsOneWidget);
+      expect(find.textContaining('first traq'), findsOneWidget);
 
       await flushDriftTimers(tester);
     });
@@ -111,11 +113,11 @@ void main() {
       await tester.pump(const Duration(milliseconds: 200));
 
       // Tap save with empty field — should not crash or show saving state
-      await tester.tap(find.text('Save Entry'));
+      await tester.tap(find.text('Save Traq'));
       await tester.pump();
 
       // Still shows Save Entry (not Saving...)
-      expect(find.text('Save Entry'), findsOneWidget);
+      expect(find.text('Save Traq'), findsOneWidget);
 
       await flushDriftTimers(tester);
     });
@@ -136,6 +138,81 @@ void main() {
       await tester.pump(const Duration(milliseconds: 200));
 
       expect(find.byType(HomeScreen), findsOneWidget);
+
+      await flushDriftTimers(tester);
+    });
+  });
+
+  // End-to-end coverage of the primary user action: "write a traq and save it".
+  // The broader group above uses setUpAll (shared DB) and deliberately never
+  // writes rows, so we isolate the save flow in its own group with a per-test
+  // fresh DB to avoid leaking state into the read-only tests.
+  //
+  // We pump the screen inside a MediaQuery with `disableAnimations: true` so
+  // the save-success overlay's staggered animation controllers jump straight
+  // to the end state — otherwise their pending timers trip the framework's
+  // !timersPending assertion at tearDown.
+  group('HomeScreen save flow', () {
+    setUp(() async {
+      await DatabaseService.instance.initInMemory();
+    });
+
+    Widget wrapHome() {
+      return MaterialApp(
+        localizationsDelegates: L10n.localizationsDelegates,
+        supportedLocales: L10n.supportedLocales,
+        home: const MediaQuery(
+          data: MediaQueryData(disableAnimations: true),
+          child: Scaffold(body: HomeScreen()),
+        ),
+      );
+    }
+
+    testWidgets('typing text then tapping Save persists a journal entry', (
+      tester,
+    ) async {
+      final db = DatabaseService.instance;
+      final today = DateTime.now();
+      final dayKey = DateTime(today.year, today.month, today.day);
+
+      // Precondition: DB is empty for today.
+      expect(await db.entries.getEntriesForDate(dayKey), isEmpty);
+
+      await tester.pumpWidget(wrapHome());
+      await tester.pump(const Duration(milliseconds: 200));
+
+      // Enter text in the main entry field.
+      final textField = find.byType(TextField).last;
+      await tester.enterText(textField, 'Wave 8 shipped');
+      await tester.pump();
+
+      // Tap Save Traq. With animations disabled, the save-success overlay
+      // jumps straight to its dismissed state.
+      await tester.tap(find.text('Save Traq'));
+      await tester.pumpAndSettle(const Duration(seconds: 3));
+
+      // Postcondition: exactly one entry for today with the typed text.
+      final entries = await db.entries.getEntriesForDate(dayKey);
+      expect(entries, hasLength(1));
+      expect(entries.single.entry, 'Wave 8 shipped');
+
+      await flushDriftTimers(tester);
+    });
+
+    testWidgets('empty text with save tap writes nothing to the DB', (
+      tester,
+    ) async {
+      final db = DatabaseService.instance;
+      final today = DateTime.now();
+      final dayKey = DateTime(today.year, today.month, today.day);
+
+      await tester.pumpWidget(wrapHome());
+      await tester.pump(const Duration(milliseconds: 200));
+
+      await tester.tap(find.text('Save Traq'));
+      await tester.pumpAndSettle(const Duration(seconds: 3));
+
+      expect(await db.entries.getEntriesForDate(dayKey), isEmpty);
 
       await flushDriftTimers(tester);
     });

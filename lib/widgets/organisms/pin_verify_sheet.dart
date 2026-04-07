@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import '../../l10n/app_localizations.dart';
 import '../../services/lockout_controller.dart';
 import '../../services/pin_service.dart';
+import '../../services/secure_storage.dart';
 import 'pin_setup_sheet.dart' show pinLengthPrefKey;
 import '../../theme/app_spacing.dart';
 import '../atoms/drag_handle.dart';
@@ -47,7 +48,7 @@ class _PinVerifySheetState extends State<PinVerifySheet> {
     // Read configured PIN length (4 or 6, default 4) from secure storage.
     final storedPinLength =
         int.tryParse(
-          await const FlutterSecureStorage().read(key: pinLengthPrefKey) ?? '',
+          await hardenedSecureStorage.read(key: pinLengthPrefKey) ?? '',
         ) ??
         4;
     if (mounted) {
@@ -96,17 +97,22 @@ class _PinVerifySheetState extends State<PinVerifySheet> {
     }
   }
 
-  String get _statusText {
-    if (_lockout.isLockedOut || _lockout.failedAttempts > 0) {
-      return _lockout.statusText(wrongPinPrefix: 'Incorrect PIN');
+  String _statusText(L10n l10n) {
+    if (_lockout.isLockedOut) {
+      return l10n.lockoutMessage(_lockout.lockoutSecondsLeft);
     }
-    return 'Enter your PIN';
+    if (_lockout.failedAttempts > 0) {
+      final remaining = LockoutController.maxAttempts - _lockout.failedAttempts;
+      return l10n.wrongPinMessage(remaining);
+    }
+    return l10n.enterPin;
   }
 
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
+    final l10n = L10n.of(context)!;
 
     return Padding(
       padding: EdgeInsets.only(
@@ -123,7 +129,7 @@ class _PinVerifySheetState extends State<PinVerifySheet> {
           Semantics(
             liveRegion: _isError || _lockout.isLockedOut,
             child: Text(
-              _statusText,
+              _statusText(l10n),
               style: tt.titleMedium?.copyWith(
                 fontWeight: FontWeight.w600,
                 color: (_isError || _lockout.isLockedOut) ? cs.error : null,

@@ -299,12 +299,33 @@ class ExportService {
     }
 
     // DB operations must stay on the main isolate.
-    // Pre-fetch ALL existing entries grouped by date for O(1) duplicate lookup.
-    final allExisting = await _entries.getAllEntries();
-    final existingByDate = <String, List<JournalEntry>>{};
-    for (final entry in allExisting) {
-      final key = _dateFmt.format(entry.date);
-      existingByDate.putIfAbsent(key, () => []).add(entry);
+    // Pre-scan import maps to find the date range we actually need to dedup
+    // against — then fetch ONLY that slice of the DB instead of every row.
+    // For a partial backup (e.g. one week of entries against 5 years of DB),
+    // this is the difference between loading ~7 vs ~3650 rows.
+    DateTime? minDate;
+    DateTime? maxDate;
+    for (final map in entryMaps) {
+      final dateStr = map['date'] as String?;
+      if (dateStr == null || dateStr.isEmpty) continue;
+      final d = DateTime.tryParse(dateStr);
+      if (d == null) continue;
+      final dayOnly = DateTime(d.year, d.month, d.day);
+      if (minDate == null || dayOnly.isBefore(minDate)) minDate = dayOnly;
+      if (maxDate == null || dayOnly.isAfter(maxDate)) maxDate = dayOnly;
+    }
+
+    // Build a dedup key set of "yyyy-MM-dd|createdAtIso" for O(1) lookup.
+    // The set is also updated as we accept new entries below so duplicates
+    // within the import file itself are caught.
+    final existingKeys = <String>{};
+    if (minDate != null && maxDate != null) {
+      final existing = await _entries.getEntriesForDateRange(minDate, maxDate);
+      for (final entry in existing) {
+        existingKeys.add(
+          '${_dateFmt.format(entry.date)}|${entry.createdAt.toIso8601String()}',
+        );
+      }
     }
 
     final entriesToInsert = <JournalEntry>[];
@@ -402,13 +423,9 @@ class ExportService {
           }
         }
 
-        // Duplicate check: same date + createdAt.
-        existingByDate.putIfAbsent(dateStr, () => []);
-        final existing = existingByDate[dateStr]!;
-        final isDuplicate = existing.any(
-          (e) => e.createdAt.toIso8601String() == createdAt.toIso8601String(),
-        );
-        if (isDuplicate) {
+        // Duplicate check: same date + createdAt — O(1) Set lookup.
+        final dupKey = '$dateStr|${createdAt.toIso8601String()}';
+        if (existingKeys.contains(dupKey)) {
           skipped++;
           continue;
         }
@@ -422,8 +439,8 @@ class ExportService {
           createdAt: createdAt,
         );
         entriesToInsert.add(entry);
-        // Add to cache so subsequent entries for same date detect duplicates.
-        existing.add(entry);
+        // Add to dedup set so duplicates inside the import file are caught.
+        existingKeys.add(dupKey);
       } catch (e, stack) {
         debugPrint(
           'ExportService.importFromJson: failed to parse entry: $e\n$stack',

@@ -35,7 +35,9 @@ void main() {
 
     testWidgets('shows empty state when no entries exist', (tester) async {
       await tester.pumpWidget(wrapWidget(const StatsScreen()));
-      await tester.pump(const Duration(milliseconds: 500));
+      // watchAllStats debounces 600ms before first emission; pump past it
+      // so the empty-state UI has rendered before assertions run.
+      await tester.pump(const Duration(milliseconds: 800));
 
       expect(find.text('No stats yet'), findsOneWidget);
       expect(

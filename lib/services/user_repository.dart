@@ -4,11 +4,11 @@ import 'dart:io';
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user.dart';
 import 'database_service.dart';
+import 'secure_storage.dart';
 
 /// Current document versions — bump when legal text changes.
 const String currentPrivacyPolicyVersion = '2026-03-29';
@@ -118,11 +118,10 @@ class UserRepository {
       // IMPORTANT: Do NOT use deleteAll() — it would destroy the DB
       // encryption key (retraq_db_key), making the database unopenable.
       try {
-        const secureStorage = FlutterSecureStorage();
-        await secureStorage.delete(key: 'pin_length');
-        await secureStorage.delete(key: 'lock_failed_attempts');
-        await secureStorage.delete(key: 'lock_lockout_count');
-        await secureStorage.delete(key: 'lock_lockout_end');
+        await hardenedSecureStorage.delete(key: 'pin_length');
+        await hardenedSecureStorage.delete(key: 'lock_failed_attempts');
+        await hardenedSecureStorage.delete(key: 'lock_lockout_count');
+        await hardenedSecureStorage.delete(key: 'lock_lockout_end');
       } catch (_) {
         // SecureStorage may not be available in test environments.
       }

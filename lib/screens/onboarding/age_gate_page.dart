@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import '../../providers/settings_provider.dart';
 import '../../theme/app_spacing.dart';
 import '../../widgets/atoms/bionic_text.dart';
@@ -10,18 +11,17 @@ class AgeGatePage extends StatelessWidget {
     required this.onConfirm,
     required this.onDeny,
     required this.isDenied,
-    this.onRetry,
   });
 
   final VoidCallback onConfirm;
   final VoidCallback onDeny;
   final bool isDenied;
-  final VoidCallback? onRetry;
 
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
+    final l10n = L10n.of(context)!;
 
     return Padding(
       padding: AppSpacing.pagePadding,
@@ -43,7 +43,7 @@ class AgeGatePage extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.xl),
           BionicText(
-            text: isDenied ? 'Sorry!' : 'Before we begin',
+            text: isDenied ? l10n.ageGateDeniedTitle : l10n.ageGateTitle,
             textAlign: TextAlign.center,
             style: tt.displaySmall?.copyWith(
               fontWeight: FontWeight.w700,
@@ -55,11 +55,7 @@ class AgeGatePage extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           BionicText(
-            text:
-                isDenied
-                    ? 'Retraq requires users to be 13 years or older.\n'
-                        'Please come back when you\'re old enough!'
-                    : 'Retraq is designed for users\naged 13 and older.',
+            text: isDenied ? l10n.ageGateDenied : l10n.ageGateMessage,
             textAlign: TextAlign.center,
             style: tt.bodyLarge?.copyWith(
               color: cs.onSurfaceVariant,
@@ -82,7 +78,7 @@ class AgeGatePage extends StatelessWidget {
                 ),
               ),
               child: Text(
-                'I am 13 or older',
+                l10n.ageConfirmButton,
                 style: tt.labelLarge?.copyWith(color: cs.onPrimary),
               ),
             ),
@@ -90,17 +86,21 @@ class AgeGatePage extends StatelessWidget {
             TextButton(
               onPressed: onDeny,
               child: Text(
-                'I am under 13',
+                l10n.ageDenyButton,
                 style: tt.labelLarge?.copyWith(color: cs.onSurfaceVariant),
               ),
             ),
-          ] else if (onRetry != null) ...[
-            TextButton(
-              onPressed: onRetry,
-              child: Text(
-                'I made a mistake',
-                style: tt.labelLarge?.copyWith(color: cs.primary),
+          ] else ...[
+            BionicText(
+              text: l10n.ageGateContactGuardian,
+              textAlign: TextAlign.center,
+              style: tt.bodyMedium?.copyWith(
+                color: cs.onSurfaceVariant,
+                height: 1.5,
               ),
+              enabled:
+                  SettingsProvider.maybeOf(context)?.bionicReadingEnabled ??
+                  false,
             ),
           ],
         ],

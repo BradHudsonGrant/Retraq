@@ -1,8 +1,10 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import '../../services/database_service.dart';
 import '../../services/export_service.dart';
 import '../../theme/app_spacing.dart';
+import '../../widgets/organisms/delete_confirm_dialog.dart';
 
 class DataSection extends StatelessWidget {
   const DataSection({super.key, required this.verifyPinIfNeeded});
@@ -14,12 +16,13 @@ class DataSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
+    final l10n = L10n.of(context)!;
 
     return Theme(
       data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
       child: ExpansionTile(
         title: Text(
-          'Your Data',
+          l10n.yourData,
           style: tt.titleSmall?.copyWith(
             fontWeight: FontWeight.w600,
             color: cs.onSurfaceVariant,
@@ -32,7 +35,7 @@ class DataSection extends StatelessWidget {
           Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              'Export',
+              l10n.exportLabel,
               style: tt.labelMedium?.copyWith(color: cs.onSurfaceVariant),
             ),
           ),
@@ -42,7 +45,7 @@ class DataSection extends StatelessWidget {
               Expanded(
                 child: _ExportButton(
                   icon: Icons.data_object,
-                  label: 'Export JSON',
+                  label: l10n.exportJson,
                   onPressed: () => _handleExport(context, json: true),
                 ),
               ),
@@ -50,7 +53,7 @@ class DataSection extends StatelessWidget {
               Expanded(
                 child: _ExportButton(
                   icon: Icons.description_outlined,
-                  label: 'Export Text',
+                  label: l10n.exportText,
                   onPressed: () => _handleExport(context, json: false),
                 ),
               ),
@@ -63,7 +66,7 @@ class DataSection extends StatelessWidget {
           Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              'Import',
+              l10n.importLabel,
               style: tt.labelMedium?.copyWith(color: cs.onSurfaceVariant),
             ),
           ),
@@ -73,7 +76,7 @@ class DataSection extends StatelessWidget {
             child: OutlinedButton.icon(
               onPressed: () => _importBackup(context),
               icon: const Icon(Icons.upload_file, size: 18),
-              label: const Text('Import from Backup'),
+              label: Text(l10n.importFromBackup),
               style: OutlinedButton.styleFrom(
                 shape: const StadiumBorder(),
                 padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
@@ -84,7 +87,7 @@ class DataSection extends StatelessWidget {
           Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              'Accepts Retraq JSON backup files only',
+              l10n.importAccepts,
               style: tt.bodySmall?.copyWith(
                 color: cs.onSurfaceVariant.withValues(alpha: 0.7),
               ),
@@ -101,7 +104,10 @@ class DataSection extends StatelessWidget {
             child: OutlinedButton.icon(
               onPressed: () => _confirmDeleteAllData(context),
               icon: Icon(Icons.delete_forever, size: 18, color: cs.error),
-              label: Text('Delete All Data', style: TextStyle(color: cs.error)),
+              label: Text(
+                l10n.deleteAllData,
+                style: TextStyle(color: cs.error),
+              ),
               style: OutlinedButton.styleFrom(
                 shape: const StadiumBorder(),
                 side: BorderSide(color: cs.error.withValues(alpha: 0.5)),
@@ -128,9 +134,10 @@ class DataSection extends StatelessWidget {
     } catch (_) {
       if (!context.mounted) return;
       final cs = Theme.of(context).colorScheme;
+      final l10n = L10n.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Export failed. Please try again.'),
+          content: Text(l10n.exportFailed),
           backgroundColor: cs.errorContainer,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
@@ -142,29 +149,25 @@ class DataSection extends StatelessWidget {
   }
 
   Future<bool?> _showExportScopeDialog(BuildContext context) {
+    final l10n = L10n.of(context)!;
     return showDialog<bool>(
       context: context,
       builder:
           (ctx) => AlertDialog(
-            title: const Text('Export scope'),
-            content: const Text(
-              'Export this week\u2019s entries or all entries?\n\n'
-              'The export will include your journal entries, settings, and any '
-              'profile information you\'ve provided (such as display name or '
-              'email). Keep it somewhere safe.',
-            ),
+            title: Text(l10n.exportScopeTitle),
+            content: Text(l10n.exportScopeContent),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(ctx),
-                child: const Text('Cancel'),
+                child: Text(l10n.cancelLabel),
               ),
               OutlinedButton(
                 onPressed: () => Navigator.pop(ctx, false),
-                child: const Text('This Week'),
+                child: Text(l10n.thisWeek),
               ),
               FilledButton(
                 onPressed: () => Navigator.pop(ctx, true),
-                child: const Text('All Entries'),
+                child: Text(l10n.allEntries),
               ),
             ],
           ),
@@ -183,9 +186,10 @@ class DataSection extends StatelessWidget {
     } catch (e) {
       if (!context.mounted) return;
       final cs = Theme.of(context).colorScheme;
+      final l10n = L10n.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Could not open file picker. Please try again.'),
+          content: Text(l10n.filePickerFailed),
           backgroundColor: cs.errorContainer,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
@@ -208,13 +212,16 @@ class DataSection extends StatelessWidget {
       final imported = summary['imported'] ?? 0;
       final skipped = summary['skipped'] ?? 0;
       final errors = summary['errors'] ?? 0;
+      final l10n = L10n.of(context)!;
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'Imported $imported entries'
-            '${skipped > 0 ? ', $skipped duplicates skipped' : ''}'
-            '${errors > 0 ? ', $errors errors' : ''}',
+            l10n.importSuccess(
+              imported,
+              skipped > 0 ? ', $skipped duplicates skipped' : '',
+              errors > 0 ? ', $errors errors' : '',
+            ),
           ),
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
@@ -225,11 +232,10 @@ class DataSection extends StatelessWidget {
     } catch (e) {
       if (!context.mounted) return;
       final cs = Theme.of(context).colorScheme;
+      final l10n = L10n.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text(
-            'Import failed. The file may be corrupted or in the wrong format.',
-          ),
+          content: Text(l10n.importFailed),
           backgroundColor: cs.errorContainer,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
@@ -241,23 +247,21 @@ class DataSection extends StatelessWidget {
   }
 
   Future<bool> _confirmImport(BuildContext context, String filename) async {
+    final l10n = L10n.of(context)!;
     final confirmed = await showDialog<bool>(
       context: context,
       builder:
           (ctx) => AlertDialog(
-            title: Text('Import $filename?'),
-            content: const Text(
-              'This will add entries from this backup to your journal. '
-              'Duplicate entries will be skipped.',
-            ),
+            title: Text(l10n.importConfirmTitle(filename)),
+            content: Text(l10n.importConfirmContent),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(ctx, false),
-                child: const Text('Cancel'),
+                child: Text(l10n.cancelLabel),
               ),
               FilledButton(
                 onPressed: () => Navigator.pop(ctx, true),
-                child: const Text('Import'),
+                child: Text(l10n.importButton),
               ),
             ],
           ),
@@ -267,18 +271,16 @@ class DataSection extends StatelessWidget {
 
   Future<void> _confirmDeleteAllData(BuildContext context) async {
     final cs = Theme.of(context).colorScheme;
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => _DeleteConfirmDialog(colorScheme: cs),
-    );
+    final confirmed = await DeleteConfirmDialog.show(context);
     if (confirmed != true || !context.mounted) return;
 
     try {
       await DatabaseService.instance.userRepo.deleteAllData();
       if (!context.mounted) return;
+      final l10n = L10n.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('All data has been deleted.'),
+          content: Text(l10n.allDataDeleted),
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
             borderRadius: AppSpacing.borderRadiusLg,
@@ -287,10 +289,11 @@ class DataSection extends StatelessWidget {
       );
     } catch (e) {
       if (!context.mounted) return;
+      final l10n = L10n.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'Failed to delete data. Please try again.',
+            l10n.deleteDataFailed,
             style: Theme.of(
               context,
             ).textTheme.bodyMedium?.copyWith(color: cs.onErrorContainer),
@@ -303,90 +306,6 @@ class DataSection extends StatelessWidget {
         ),
       );
     }
-  }
-}
-
-class _DeleteConfirmDialog extends StatefulWidget {
-  const _DeleteConfirmDialog({required this.colorScheme});
-
-  final ColorScheme colorScheme;
-
-  @override
-  State<_DeleteConfirmDialog> createState() => _DeleteConfirmDialogState();
-}
-
-class _DeleteConfirmDialogState extends State<_DeleteConfirmDialog> {
-  final _controller = TextEditingController();
-  bool _isValid = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller.addListener(() {
-      final valid = _controller.text.trim() == 'DELETE';
-      if (valid != _isValid) setState(() => _isValid = valid);
-    });
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = widget.colorScheme;
-    return AlertDialog(
-      title: const Text('Delete all data?'),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'This will permanently delete all journal entries and reset '
-            'your settings. This cannot be undone.'
-            '\n\nConsider exporting your data first from the options above.',
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Text(
-            'Type DELETE to confirm:',
-            style: Theme.of(
-              context,
-            ).textTheme.bodySmall?.copyWith(color: cs.onSurfaceVariant),
-          ),
-          const SizedBox(height: AppSpacing.xs),
-          TextField(
-            controller: _controller,
-            autofocus: true,
-            textCapitalization: TextCapitalization.characters,
-            decoration: InputDecoration(
-              hintText: 'DELETE',
-              border: const OutlineInputBorder(),
-              isDense: true,
-              errorText:
-                  _controller.text.isNotEmpty && !_isValid
-                      ? 'Type DELETE to confirm'
-                      : null,
-            ),
-          ),
-        ],
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context, false),
-          child: const Text('Cancel'),
-        ),
-        FilledButton(
-          onPressed: _isValid ? () => Navigator.pop(context, true) : null,
-          style: FilledButton.styleFrom(backgroundColor: cs.error),
-          child: Text(
-            'Delete Everything',
-            style: TextStyle(color: _isValid ? cs.onError : null),
-          ),
-        ),
-      ],
-    );
   }
 }
 

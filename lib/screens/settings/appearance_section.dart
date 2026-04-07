@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import '../../providers/settings_provider.dart';
 import '../../theme/app_spacing.dart';
 import '../../widgets/atoms/bionic_text.dart';
@@ -18,14 +19,15 @@ class AppearanceSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
+    final l10n = L10n.of(context)!;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Appearance', style: tt.titleLarge),
+        Text(l10n.appearanceTitle, style: tt.titleLarge),
         const SizedBox(height: AppSpacing.xs),
         BionicText(
-          text: 'Choose how Retraq feels to you.',
+          text: l10n.appearanceSubtitle,
           style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant),
           enabled:
               SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
@@ -35,7 +37,7 @@ class AppearanceSection extends StatelessWidget {
           children: [
             Expanded(
               child: ThemeCard(
-                label: 'System',
+                label: l10n.themeSystem,
                 isSelected: themeMode == ThemeMode.system,
                 isDark: null,
                 onTap: () => onThemeModeChanged(0),
@@ -44,7 +46,7 @@ class AppearanceSection extends StatelessWidget {
             const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: ThemeCard(
-                label: 'Day',
+                label: l10n.themeDay,
                 isSelected: themeMode == ThemeMode.light,
                 isDark: false,
                 onTap: () => onThemeModeChanged(1),
@@ -53,7 +55,7 @@ class AppearanceSection extends StatelessWidget {
             const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: ThemeCard(
-                label: 'Night',
+                label: l10n.themeNight,
                 isSelected: themeMode == ThemeMode.dark,
                 isDark: true,
                 onTap: () => onThemeModeChanged(2),

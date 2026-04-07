@@ -42,7 +42,7 @@ While Retraq takes care to protect your data through encrypted local storage, da
 
 ## Termination
 
-You may stop using the App at any time by uninstalling it from your device. Upon uninstallation, all locally stored data will be removed. There is no account to close or subscription to cancel (unless future premium features are introduced).
+You may stop using the App at any time by uninstalling it from your device. Upon uninstallation, all locally stored data will be removed. There is no account to close and no subscription to cancel.
 
 ## Governing Law
 

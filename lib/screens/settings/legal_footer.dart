@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import '../../theme/app_spacing.dart';
 import '../../utils/app_info.dart' as info;
 import '../../legal/privacy_policy.dart';
@@ -13,12 +14,13 @@ class LegalFooter extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
+    final l10n = L10n.of(context)!;
 
     return Center(
       child: Column(
         children: [
           Text(
-            '${info.appName} Version ${info.appVersion}',
+            l10n.settingsLegalFooter(info.appName, info.appVersion),
             style: tt.labelSmall?.copyWith(
               color: cs.onSurfaceVariant.withValues(alpha: 0.6),
             ),
@@ -28,14 +30,14 @@ class LegalFooter extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _LegalLink(
-                label: 'Privacy Policy',
+                label: l10n.privacyPolicy,
                 onPressed:
                     () => Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder:
-                            (_) => const LegalScreen(
-                              title: 'Privacy Policy',
+                            (_) => LegalScreen(
+                              title: l10n.privacyPolicy,
                               content: privacyPolicyText,
                             ),
                       ),
@@ -43,14 +45,14 @@ class LegalFooter extends StatelessWidget {
               ),
               _dot(cs, tt),
               _LegalLink(
-                label: 'Terms',
+                label: l10n.legalFooterTerms,
                 onPressed:
                     () => Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder:
-                            (_) => const LegalScreen(
-                              title: 'Terms of Service',
+                            (_) => LegalScreen(
+                              title: l10n.termsOfService,
                               content: termsOfServiceText,
                             ),
                       ),
@@ -58,14 +60,14 @@ class LegalFooter extends StatelessWidget {
               ),
               _dot(cs, tt),
               _LegalLink(
-                label: 'Health',
+                label: l10n.legalFooterHealth,
                 onPressed:
                     () => Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder:
-                            (_) => const LegalScreen(
-                              title: 'Health Disclaimer',
+                            (_) => LegalScreen(
+                              title: l10n.healthDisclaimerTitle,
                               content: healthDisclaimerText,
                             ),
                       ),
@@ -73,7 +75,7 @@ class LegalFooter extends StatelessWidget {
               ),
               _dot(cs, tt),
               _LegalLink(
-                label: 'Licenses',
+                label: l10n.legalFooterLicenses,
                 onPressed:
                     () => showLicensePage(
                       context: context,

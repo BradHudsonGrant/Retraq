@@ -637,7 +637,22 @@ class _SkeletonShimmerState extends State<_SkeletonShimmer>
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1200),
-    )..repeat(reverse: true);
+    );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // WCAG 2.3.3 — honour the OS reduce-motion setting. When motion is
+    // disabled we hold the controller at midpoint (steady 50% opacity)
+    // instead of repeating the pulse, matching the lock-screen logo.
+    final reduceMotion = MediaQuery.of(context).disableAnimations;
+    if (reduceMotion) {
+      _controller.stop();
+      _controller.value = 0.5;
+    } else if (!_controller.isAnimating) {
+      _controller.repeat(reverse: true);
+    }
   }
 
   @override

@@ -70,65 +70,54 @@ class NotificationService {
     return true; // Other platforms
   }
 
-  /// Rotating ADHD-friendly notification messages — warm, low-pressure.
-  /// Categorised by time-of-day for contextual relevance.
+  /// Rotating Retraq notification messages — warm, low-pressure.
+  /// Sourced from the Retraq branding guide rotation lists.
+  ///
+  /// Note: these are kept in code (not the ARB) because the notification
+  /// service runs without a BuildContext, so AppLocalizations is not
+  /// available. The strings here mirror the branding guide vocabulary.
+
+  /// Daily reminder rotation (morning + general fallbacks).
   @visibleForTesting
-  static const morningMessages = [
-    'Good morning! Set an intention for today — even one word counts.',
-    'Rise and write. What are you looking forward to today?',
-    'Morning check-in: how are you feeling right now?',
-    'Start your day with a thought. Your journal is ready.',
-    'A fresh page for a fresh day. What\'s on your mind?',
+  static const dailyReminderMessages = [
+    'Quick — what happened today? Even one word counts.',
+    '30 seconds. One traq. You\'ll thank yourself later.',
+    'Jot something down before today disappears.',
+    'Future you wants to know what happened today.',
+    'Don\'t let today vanish. Drop a traq.',
   ];
 
+  /// Weekly roundup messaging — fired after a week is "retraqd".
   @visibleForTesting
-  static const eveningMessages = [
-    'What happened today? Even one sentence counts.',
-    'Take a moment to capture today before it slips away.',
-    'How was your day? A few words is all it takes.',
-    'Hey, how did today go? Your journal would love to know.',
-    'What\'s the TL;DR of today?',
-    'Capture the vibe. Was today a 10 or a meh?',
-    'What made today different from yesterday?',
-    'The best time to journal was this morning. The second best time is now.',
-    'What surprised you today? Write it down before you forget.',
+  static const weeklyRoundupMessages = [
+    'Your week\'s been retraqd. Take a look back.',
+    'Here\'s what you got up to this week.',
   ];
 
+  /// Re-engagement messages for users who have been inactive a few days.
   @visibleForTesting
-  static const generalMessages = [
-    'Your journal is waiting. No pressure, just jot something down.',
-    'Ready to write? Your future self will thank you.',
-    'Just checking in. What\'s on your mind today?',
-    'One small entry, one big habit. You\'ve got this.',
-    'Today deserves to be remembered. What stood out?',
-    'Your journal, your pace. Write as much or as little as you\'d like.',
-    'Time for a brain dump? Open up and let it flow.',
-    'A quick note now saves a forgotten memory later.',
-    'Future you is curious about today. Leave a note.',
-    'Even busy days deserve a sentence or two.',
-    'You don\'t need perfect words. Just real ones.',
-    'Quick check: anything worth remembering today?',
-    'One minute, one entry. You can do this.',
-    'What would you tell a friend about today?',
-    'No rules, no word count. Just you and today.',
-    'A few taps now, a whole memory saved forever.',
-    'Your journal doesn\'t judge. It just listens.',
-    'Plot twist: you actually have time for this. Promise.',
+  static const reEngagementMessages = [
+    'It\'s been a few days. Drop a quick traq so you don\'t lose the week.',
+    'Your week is disappearing. Takes 10 seconds to save it.',
   ];
 
-  @visibleForTesting
-  static const weekendMessages = [
-    'Lazy weekend? Perfect journaling weather.',
-    'Weekends fly by. Capture this one before it does.',
-    'No rush today. Take a moment to reflect.',
-  ];
+  // ----- Backwards-compatible aliases used by the rotation logic + tests.
+  // Each maps to the appropriate brand-aligned list above.
 
   @visibleForTesting
-  static const streakAtRiskMessages = [
-    'Your streak called. It misses you.',
-    'Don\'t let today break your streak — one sentence is enough.',
-    'You\'ve been consistent. Keep it going with a quick entry.',
-  ];
+  static const morningMessages = dailyReminderMessages;
+
+  @visibleForTesting
+  static const eveningMessages = dailyReminderMessages;
+
+  @visibleForTesting
+  static const generalMessages = dailyReminderMessages;
+
+  @visibleForTesting
+  static const weekendMessages = weeklyRoundupMessages;
+
+  @visibleForTesting
+  static const streakAtRiskMessages = reEngagementMessages;
 
   /// Pick a contextually relevant message based on hour and day of week.
   @visibleForTesting

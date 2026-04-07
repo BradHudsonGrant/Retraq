@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:retraq/l10n/app_localizations.dart';
 import 'package:retraq/widgets/organisms/save_success_overlay.dart';
 
 import '../../test_helpers.dart';
@@ -24,7 +25,7 @@ void main() {
       );
 
       await tester.pump();
-      expect(find.text('Entry saved'), findsOneWidget);
+      expect(find.text('Traq saved'), findsOneWidget);
 
       await tester.pumpAndSettle(const Duration(seconds: 3));
     });
@@ -45,13 +46,13 @@ void main() {
         wrapWidget(
           SaveSuccessOverlay(
             onDismissed: () {},
-            milestoneMessage: 'Your very first entry!',
+            milestoneMessage: 'Your very first traq!',
           ),
         ),
       );
 
       await tester.pump();
-      expect(find.text('Your very first entry!'), findsOneWidget);
+      expect(find.text('Your very first traq!'), findsOneWidget);
 
       await tester.pumpAndSettle(const Duration(seconds: 3));
     });
@@ -62,7 +63,7 @@ void main() {
       );
 
       await tester.pump();
-      expect(find.text('Your very first entry!'), findsNothing);
+      expect(find.text('Your very first traq!'), findsNothing);
 
       await tester.pumpAndSettle(const Duration(seconds: 3));
     });
@@ -112,6 +113,8 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
+          localizationsDelegates: L10n.localizationsDelegates,
+          supportedLocales: L10n.supportedLocales,
           home: MediaQuery(
             data: const MediaQueryData(disableAnimations: true),
             child: Scaffold(

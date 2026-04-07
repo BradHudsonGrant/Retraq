@@ -7,19 +7,27 @@ import 'package:retraq/services/database_service.dart';
 /// Tests that verify the database schema is correct after all migrations
 /// have been applied, and that the migration code produces a usable database.
 ///
+/// NOTE: Every test in this file calls `DatabaseService.initInMemory()`,
+/// which builds the v13 schema directly via `onCreate`. The migration
+/// `onUpgrade` chain is therefore NOT exercised here — that lives in
+/// `migration_strategy_test.dart`, which seeds an old schema, sets
+/// `PRAGMA user_version`, and lets Drift run the upgrade path.
+///
 /// Migration history:
-///   v1 → v2: Added `title` column to journal_entries
-///   v2 → v3: Added `enter_to_save`, `bullet_points_on_enter` to user_settings_table
-///   v3 → v4: Schema overhaul — created `users` table, replaced morning/evening/allDay
-///            columns with unified `entry`+`label`+`user_id`, added `user_id` to settings
-///   v4 → v5: Added date index on journal_entries, cleanup whitespace-only entries,
-///            added `am_pm_cutoff_hour` to user_settings_table
-///   v5 → v6: Added FK constraint from journal_entries.user_id → users.id
-///   v6 → v7: Replaced is_dark_mode (bool) with theme_mode (int)
-///   v7 → v8: Added nudge_minute column, created consent_records table
-///   v8 → v9: Fixed FK ON DELETE CASCADE, cleaned orphaned entries
+///   v1 → v2:  Added `title` column to journal_entries
+///   v2 → v3:  Added `enter_to_save`, `bullet_points_on_enter` to user_settings_table
+///   v3 → v4:  Schema overhaul — created `users` table, replaced morning/evening/allDay
+///             columns with unified `entry`+`label`+`user_id`, added `user_id` to settings
+///   v4 → v5:  Added date index on journal_entries, cleanup whitespace-only entries,
+///             added `am_pm_cutoff_hour` to user_settings_table
+///   v5 → v6:  Added FK constraint from journal_entries.user_id → users.id
+///   v6 → v7:  Replaced is_dark_mode (bool) with theme_mode (int)
+///   v7 → v8:  Added nudge_minute column, created consent_records table
+///   v8 → v9:  Fixed FK ON DELETE CASCADE, cleaned orphaned entries
 ///   v9 → v10: Added mood column to journal_entries, mood settings
 ///   v10 → v11: Added index on mood column (idx_journal_mood)
+///   v11 → v12: Added bionic_reading_enabled column to user_settings_table
+///   v12 → v13: Added idx_journal_created_at and composite idx_journal_date_mood
 void main() {
   late DatabaseService db;
 
@@ -34,9 +42,9 @@ void main() {
 
   // ── Final schema verification ─────────────────────────────
 
-  group('Final schema (v8) - journal_entries table', () {
+  group('Final schema (v13) - journal_entries table', () {
     test('has all expected columns', () async {
-      // Verify all v5 columns exist by inserting a row that uses every column
+      // Verify all v13 columns exist by inserting a row that uses every column
       // First create a user so FK constraint is satisfied
       final userId = await db.userRepo.saveUser(
         User(
@@ -150,7 +158,7 @@ void main() {
     });
   });
 
-  group('Final schema (v8) - date index', () {
+  group('Final schema (v13) - date index', () {
     test('date index exists and queries by date work efficiently', () async {
       // Insert entries across multiple dates
       for (int day = 1; day <= 10; day++) {
@@ -170,7 +178,7 @@ void main() {
     });
   });
 
-  group('Final schema (v8) - users table', () {
+  group('Final schema (v13) - users table', () {
     test('users table exists and supports full CRUD (v4 addition)', () async {
       // Create
       final user = User(
@@ -240,7 +248,7 @@ void main() {
     });
   });
 
-  group('Final schema (v7) - user_settings_table', () {
+  group('Final schema (v13) - user_settings_table', () {
     test('has all expected columns with correct defaults', () async {
       final settings = await db.settings.getSettings();
 
@@ -561,9 +569,10 @@ void main() {
 
   group('Migration path: v3→v4 schema overhaul (morning/evening split)', () {
     // The v3→v4 migration replaces morning_entry, evening_entry, all_day_entry
-    // columns with a unified entry+label pattern. Since initInMemory creates
-    // the final schema directly, we test that the v4 schema correctly supports
-    // the data patterns the migration would produce.
+    // columns with a unified entry+label pattern. These tests verify that the
+    // post-migration v13 schema correctly supports the data patterns the
+    // migration would produce. The actual onUpgrade SQL is exercised in
+    // migration_strategy_test.dart.
 
     late DatabaseService db;
 
@@ -1104,10 +1113,10 @@ void main() {
       );
     });
 
-    test('schema version is 13', () async {
+    test('schema version is 14', () async {
       final result = await db.db.customSelect('PRAGMA user_version').get();
       final version = result.first.data['user_version'] as int;
-      expect(version, 13);
+      expect(version, 14);
     });
   });
 

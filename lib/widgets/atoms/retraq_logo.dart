@@ -136,11 +136,14 @@ class _RetraqLogoState extends State<RetraqLogo> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
 
+    // The source SVG is a wide wordmark (viewBox 1471x581, ~2.53:1 aspect
+    // ratio). [size] is treated as the icon's HEIGHT — width scales to the
+    // SVG's native aspect ratio so the wordmark is never squashed.
     Widget icon = SvgPicture.asset(
       'assets/images/logo.svg',
       semanticsLabel: 'Retraq logo',
-      width: widget.size,
       height: widget.size,
+      fit: BoxFit.contain,
       colorFilter: ColorFilter.mode(cs.primary, BlendMode.srcIn),
     );
 

@@ -65,7 +65,7 @@ void main() {
       expect(find.text('Preferences'), findsOneWidget);
       expect(find.text('All Day Notes'), findsOneWidget);
       expect(find.text('Opening Prompt'), findsOneWidget);
-      expect(find.text('Journal Entry Title'), findsOneWidget);
+      expect(find.text('Traq Title'), findsOneWidget);
       // Advanced settings are collapsed by default
       expect(find.text('Advanced'), findsOneWidget);
       await flushDriftTimers(tester);
@@ -148,7 +148,7 @@ void main() {
       );
       await tester.pump(const Duration(milliseconds: 200));
 
-      expect(find.text('Retraq Version 0.9.0'), findsOneWidget);
+      expect(find.text('Retraq v0.9.0'), findsOneWidget);
       expect(find.text('Privacy Policy'), findsOneWidget);
       expect(find.text('Terms'), findsOneWidget);
       expect(find.text('Health'), findsOneWidget);

@@ -51,5 +51,11 @@
 		<string>Retraq sends a gentle daily reminder to help you capture your day.</string>
 		<key>UIStatusBarHidden</key>
 		<false/>
+		<!-- Retraq uses only standard encryption (SQLCipher / AES) that is
+		     exempt from US export compliance review under EAR 740.17(b).
+		     Declaring this here avoids the App Store Connect export compliance
+		     questionnaire on every TestFlight build. -->
+		<key>ITSAppUsesNonExemptEncryption</key>
+		<false/>
 	</dict>
 </plist>

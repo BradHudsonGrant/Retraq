@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../l10n/app_localizations.dart';
 import '../services/database_service.dart';
 import '../services/notification_service.dart';
+import '../services/secure_storage.dart';
 import '../services/user_repository.dart';
 import '../theme/app_spacing.dart';
 import '../widgets/atoms/retraq_logo.dart';
@@ -34,31 +36,41 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   bool _healthAccepted = false;
 
   static const _ageVerifiedKey = 'age_verified';
-  static const _ageDeniedKey = 'age_denied';
 
-  static const _pages = [
-    OnboardingPageData(
-      icon: Icons.edit_note,
-      title: 'Capture it\nbefore it\u2019s gone.',
-      body:
-          'Quick thoughts, random ideas, things you\u2019ll\nforget by tomorrow. Just get it down.',
-    ),
-    OnboardingPageData(
-      icon: Icons.auto_awesome,
-      title: 'Your life,\nactually organised.',
-      body:
-          'Look back on any day, week, or month.\nFull sentences optional \u2014 brain dumps welcome.',
-    ),
-    OnboardingPageData(
-      icon: Icons.lock_outline,
-      title: 'Completely\nyours.',
-      body:
-          'Everything stays on your device.\nNo account. No cloud. No compromises.',
-    ),
-  ];
+  /// Secure-storage key for the COPPA under-13 denial flag.
+  ///
+  /// Persisted in [hardenedSecureStorage] (not SharedPreferences) so it
+  /// survives force-stop and is not trivially clearable. The only escape
+  /// hatch is uninstall/reinstall, which is high-friction enough to satisfy
+  /// FTC COPPA "neutral age screen" guidance.
+  static const ageDeniedSecureKey = 'coppa_age_denied';
+
+  /// Number of intro pages (excluding age gate and consent).
+  static const _introPageCount = 3;
+
+  /// Builds the localized onboarding intro pages from the branding guide.
+  List<OnboardingPageData> _buildPages(L10n l10n) {
+    return [
+      OnboardingPageData(
+        icon: Icons.psychology_outlined,
+        title: l10n.onboardingTitle1,
+        body: l10n.onboardingBody1,
+      ),
+      OnboardingPageData(
+        icon: Icons.edit_outlined,
+        title: l10n.onboardingTitle2,
+        body: l10n.onboardingBody2,
+      ),
+      OnboardingPageData(
+        icon: Icons.tune_outlined,
+        title: l10n.onboardingTitle3,
+        body: l10n.onboardingBody3,
+      ),
+    ];
+  }
 
   /// Total page count: age gate + info pages + consent page.
-  int get _totalPageCount => _pages.length + 2;
+  int get _totalPageCount => _introPageCount + 2;
 
   @override
   void initState() {
@@ -67,19 +79,31 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   Future<void> _checkAgeVerified() async {
+    // COPPA: check the denial flag FIRST from secure storage. If a user
+    // has previously declared under-13, we render the denial screen
+    // immediately without re-prompting, even across force-stops.
+    bool denied = false;
+    try {
+      denied =
+          (await hardenedSecureStorage.read(key: ageDeniedSecureKey)) == 'true';
+    } catch (_) {
+      // SecureStorage may not be available in test environments;
+      // fall through and treat as not-denied.
+    }
+
     final prefs = await SharedPreferences.getInstance();
     final verified = prefs.getBool(_ageVerifiedKey) ?? false;
-    final denied = prefs.getBool(_ageDeniedKey) ?? false;
-    if (verified && mounted) {
+
+    if (denied && mounted) {
+      setState(() {
+        _ageDenied = true;
+        _initialized = true;
+      });
+    } else if (verified && mounted) {
       _controller.dispose();
       _controller = PageController(initialPage: 1);
       setState(() {
         _currentPage = 1;
-        _initialized = true;
-      });
-    } else if (denied && mounted) {
-      setState(() {
-        _ageDenied = true;
         _initialized = true;
       });
     } else if (mounted) {
@@ -141,8 +165,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       debugPrint('Failed to save consent records: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Failed to save consent. Please try again.'),
+          SnackBar(
+            content: Text(L10n.of(context)!.consentSaveFailed),
           ),
         );
       }
@@ -151,24 +175,22 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   Future<void> _showNotificationPrePrompt() async {
+    final l10n = L10n.of(context)!;
     final shouldEnable = await showDialog<bool>(
       context: context,
       builder:
           (ctx) => AlertDialog(
             icon: const Icon(Icons.notifications_outlined, size: 32),
-            title: const Text('Stay on track'),
-            content: const Text(
-              'A gentle daily reminder can help you build a journaling habit. '
-              'You can change or turn this off anytime in Settings.',
-            ),
+            title: Text(l10n.notificationDialogTitle),
+            content: Text(l10n.notificationDialogContent),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(ctx, false),
-                child: const Text('Not now'),
+                child: Text(l10n.notNow),
               ),
               FilledButton(
                 onPressed: () => Navigator.pop(ctx, true),
-                child: const Text('Enable reminders'),
+                child: Text(l10n.enableReminders),
               ),
             ],
           ),
@@ -195,23 +217,27 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   Future<void> _denyAge() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_ageDeniedKey, true);
+    // COPPA: persist denial to secure storage so it survives force-stop.
+    // There is intentionally no inverse "retry" method — per FTC guidance
+    // the age screen must be neutral and must not nudge a user to re-declare.
+    try {
+      await hardenedSecureStorage.write(
+        key: ageDeniedSecureKey,
+        value: 'true',
+      );
+    } catch (_) {
+      // SecureStorage may not be available in test environments.
+    }
     if (!mounted) return;
     setState(() => _ageDenied = true);
-  }
-
-  Future<void> _retryAge() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_ageDeniedKey);
-    if (!mounted) return;
-    setState(() => _ageDenied = false);
   }
 
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
+    final l10n = L10n.of(context)!;
+    final pages = _buildPages(l10n);
 
     if (!_initialized) {
       return Scaffold(
@@ -250,11 +276,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       onConfirm: _confirmAge,
                       onDeny: _denyAge,
                       isDenied: _ageDenied,
-                      onRetry: _retryAge,
                     );
                   }
-                  if (i <= _pages.length) {
-                    return OnboardingIntroPage(data: _pages[i - 1]);
+                  if (i <= pages.length) {
+                    return OnboardingIntroPage(data: pages[i - 1]);
                   }
                   // Last page: consent
                   return ConsentPage(
@@ -279,12 +304,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // Page dots (info pages + consent = _pages.length + 1)
+                    // Page dots (info pages + consent = pages.length + 1)
                     Semantics(
-                      label: 'Page $_currentPage of ${_totalPageCount - 1}',
+                      label: l10n.onboardingPageLabel(
+                        _currentPage,
+                        _totalPageCount - 1,
+                      ),
                       excludeSemantics: true,
                       child: PageIndicatorDots(
-                        count: _pages.length + 1,
+                        count: pages.length + 1,
                         current: _currentPage - 1,
                       ),
                     ),
@@ -302,8 +330,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       ),
                       child: Text(
                         _currentPage == _totalPageCount - 1
-                            ? 'Get Started'
-                            : 'Next',
+                            ? l10n.getStartedButton
+                            : l10n.nextButton,
                         style: tt.labelLarge?.copyWith(color: cs.onPrimary),
                       ),
                     ),

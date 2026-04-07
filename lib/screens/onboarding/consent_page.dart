@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import '../../providers/settings_provider.dart';
 import '../../theme/app_spacing.dart';
 import '../../widgets/atoms/bionic_text.dart';
@@ -26,16 +27,11 @@ class ConsentPage extends StatelessWidget {
   final ValueChanged<bool?> onTermsChanged;
   final ValueChanged<bool?> onHealthChanged;
 
-  static const _healthDisclaimer =
-      'Retraq is a personal daily log app \u2014 not a medical or therapeutic '
-      'tool. It does not provide health advice, diagnosis, or treatment. If '
-      'you are in crisis, please contact a mental health professional or call '
-      '988 (Suicide & Crisis Lifeline).';
-
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
+    final l10n = L10n.of(context)!;
 
     return SingleChildScrollView(
       padding: AppSpacing.pagePadding,
@@ -63,7 +59,7 @@ class ConsentPage extends StatelessWidget {
           const SizedBox(height: AppSpacing.lg),
           Center(
             child: BionicText(
-              text: 'Almost there!',
+              text: l10n.almostThere,
               style: tt.headlineMedium?.copyWith(fontWeight: FontWeight.w700),
               enabled:
                   SettingsProvider.maybeOf(context)?.bionicReadingEnabled ??
@@ -92,7 +88,7 @@ class ConsentPage extends StatelessWidget {
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: BionicText(
-                    text: _healthDisclaimer,
+                    text: l10n.healthDisclaimer,
                     style: tt.bodySmall?.copyWith(
                       color: cs.onTertiaryContainer,
                       height: 1.5,
@@ -114,13 +110,13 @@ class ConsentPage extends StatelessWidget {
           _ConsentCheckbox(
             value: healthAccepted,
             onChanged: onHealthChanged,
-            label: 'I acknowledge the Health Disclaimer',
+            label: l10n.healthDisclaimerCheckbox,
             onTapLink:
                 () => Navigator.of(context).push(
                   MaterialPageRoute<void>(
                     builder:
-                        (_) => const LegalScreen(
-                          title: 'Health Disclaimer',
+                        (_) => LegalScreen(
+                          title: l10n.healthDisclaimerTitle,
                           content: healthDisclaimerText,
                         ),
                   ),
@@ -135,13 +131,13 @@ class ConsentPage extends StatelessWidget {
           _ConsentCheckbox(
             value: privacyAccepted,
             onChanged: onPrivacyChanged,
-            label: 'I have read and agree to the Privacy Policy',
+            label: l10n.privacyPolicyCheckbox,
             onTapLink:
                 () => Navigator.of(context).push(
                   MaterialPageRoute<void>(
                     builder:
-                        (_) => const LegalScreen(
-                          title: 'Privacy Policy',
+                        (_) => LegalScreen(
+                          title: l10n.privacyPolicy,
                           content: privacyPolicyText,
                         ),
                   ),
@@ -156,13 +152,13 @@ class ConsentPage extends StatelessWidget {
           _ConsentCheckbox(
             value: termsAccepted,
             onChanged: onTermsChanged,
-            label: 'I agree to the Terms of Use',
+            label: l10n.termsCheckbox,
             onTapLink:
                 () => Navigator.of(context).push(
                   MaterialPageRoute<void>(
                     builder:
-                        (_) => const LegalScreen(
-                          title: 'Terms of Use',
+                        (_) => LegalScreen(
+                          title: l10n.termsOfUse,
                           content: termsOfServiceText,
                         ),
                   ),

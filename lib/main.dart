@@ -10,6 +10,7 @@ import 'screens/onboarding_screen.dart';
 import 'services/database_service.dart';
 import 'providers/settings_provider.dart';
 import 'services/notification_service.dart';
+import 'services/screen_security_service.dart';
 import 'services/widget_service.dart';
 import 'l10n/app_localizations.dart';
 import 'screens/reconsent_screen.dart';
@@ -33,23 +34,13 @@ void main() async {
   // Allow all orientations for adaptive phone/tablet layouts
   await SystemChrome.setPreferredOrientations(DeviceOrientation.values);
 
-  // Initialise Drift (SQLite) database before app starts
+  // Initialise Drift (SQLite) database before app starts — it's the only
+  // service the splash screen / first real route depends on.
+  // NotificationService and WidgetService are deferred to a post-first-frame
+  // callback in RetraqApp.initState so they don't block the splash from
+  // painting (they previously added flutter_local_notifications + home_widget
+  // plugin handshakes to the critical path).
   await DatabaseService.instance.init();
-
-  // Initialise local notifications (non-fatal if it fails)
-  try {
-    await NotificationService.instance.init();
-  } catch (e) {
-    debugPrint('Notification init failed (non-fatal): $e');
-  }
-
-  // Initialise home screen widget data (non-fatal if it fails)
-  try {
-    await WidgetService.instance.init();
-    await WidgetService.instance.update();
-  } catch (e) {
-    debugPrint('Widget init failed (non-fatal): $e');
-  }
 
   runApp(const RetraqApp());
 }
@@ -89,19 +80,32 @@ class _RetraqAppState extends State<RetraqApp> with WidgetsBindingObserver {
       }
       _updateFlagSecure(s.appLockEnabled);
     });
+
+    // Defer non-critical service init until after the first frame so the
+    // splash screen paints immediately. NotificationService.init() is also
+    // called lazily inside _loadSettings before scheduleDaily, so the race
+    // between this callback and _loadSettings is safe (init is idempotent).
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      unawaited(_initBackgroundServices());
+    });
   }
 
-  static const _flagSecureChannel = MethodChannel('com.retraq.app/flag_secure');
-
-  Future<void> _updateFlagSecure(bool enabled) async {
+  Future<void> _initBackgroundServices() async {
     try {
-      await _flagSecureChannel.invokeMethod(
-        enabled ? 'addFlagSecure' : 'clearFlagSecure',
-      );
+      await NotificationService.instance.init();
     } catch (e) {
-      debugPrint('FLAG_SECURE toggle failed: $e');
+      debugPrint('Notification init failed (non-fatal): $e');
+    }
+    try {
+      await WidgetService.instance.init();
+      await WidgetService.instance.update();
+    } catch (e) {
+      debugPrint('Widget init failed (non-fatal): $e');
     }
   }
+
+  Future<void> _updateFlagSecure(bool enabled) =>
+      ScreenSecurityService.instance.setSecure(enabled);
 
   @override
   void dispose() {
@@ -137,6 +141,9 @@ class _RetraqAppState extends State<RetraqApp> with WidgetsBindingObserver {
     });
     _updateFlagSecure(settings.appLockEnabled);
     try {
+      // init() is idempotent — safe to call here even though the post-frame
+      // callback in initState may have already run it.
+      await NotificationService.instance.init();
       await NotificationService.instance.scheduleDaily(
         settings.nudgeHour,
         minute: settings.nudgeMinute,

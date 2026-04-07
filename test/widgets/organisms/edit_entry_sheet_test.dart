@@ -3,6 +3,7 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:retraq/l10n/app_localizations.dart';
 import 'package:retraq/models/journal_entry.dart';
 import 'package:retraq/services/database_service.dart';
 import 'package:retraq/widgets/organisms/edit_entry_sheet.dart';
@@ -25,6 +26,8 @@ void main() {
 
   Widget buildOpener(JournalEntry entry) {
     return MaterialApp(
+      localizationsDelegates: L10n.localizationsDelegates,
+      supportedLocales: L10n.supportedLocales,
       home: Scaffold(
         body: Builder(
           builder: (context) {
@@ -46,7 +49,7 @@ void main() {
       await tester.tap(find.text('Open'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Edit Entry'), findsOneWidget);
+      expect(find.text('Edit Traq'), findsOneWidget);
 
       await flushDriftTimers(tester);
     });

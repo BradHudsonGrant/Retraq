@@ -2,10 +2,8 @@
   "@@locale": "en",
 
   "appName": "Retraq",
-  "appNameSince": "Since",
-  "appNameThen": "Then",
 
-  "navJournal": "Journal",
+  "navJot": "Jot",
   "navRecap": "Recap",
   "navStats": "Stats",
   "navSettings": "Settings",
@@ -40,6 +38,8 @@
   "recentLabel": "Recent",
   "todayLabel": "Today",
   "yesterdayLabel": "Yesterday",
+  "noRecentEntries": "No traqs yet. Drop a traq?",
+  "recentEntriesPlaceholder": "Your recent traqs will appear here.",
 
   "entrySaved": "Traq saved",
   "undoLabel": "Undo",
@@ -55,6 +55,8 @@
   "saveAndSwitchButton": "Save & Switch",
 
   "saveFailedMessage": "Failed to save. Please try again.",
+  "writeSomethingFirst": "Write something first!",
+  "pickMoodToSave": "Pick a mood to save",
 
   "milestone1": "Your very first traq!",
   "milestone5": "5 traqs! You're off to a great start.",
@@ -87,14 +89,14 @@
   },
 
   "recapTitle": "Recap",
-  "searchHint": "Search traqs...",
+  "searchHint": "Search your traqs...",
   "closeSearch": "Close search",
-  "searchEntries": "Search traqs",
+  "searchEntries": "Search your traqs",
   "searching": "Searching...",
-  "noSearchResults": "No traqs match your search.",
+  "noSearchResults": "No traqs found. Try different words.",
   "weekLabel": "Week",
   "monthLabel": "Month",
-  "weeklyRecap": "Weekly Recap",
+  "weeklyRecap": "Week Retraqd",
   "weeklyRecapStats": "{totalEntries} traqs · {activeDays} days · {preferredTime}",
   "@weeklyRecapStats": {
     "placeholders": {
@@ -105,6 +107,11 @@
   },
   "noEntriesYet": "No traqs yet",
   "noEntriesYetMessage": "Your traqs will appear here once you start writing.",
+  "noEntriesForWeek": "No traqs for this week.",
+  "previousWeek": "Previous week",
+  "nextWeek": "Next week",
+  "currentWeek": "Current week",
+  "thisWeekLabel": "This week",
 
   "statsTitle": "Stats",
   "statsSubtitle": "Your journey so far.",
@@ -143,12 +150,12 @@
     }
   },
 
-  "onboardingTitle1": "Your day,\nyour words.",
-  "onboardingBody1": "No templates. No pressure.\nJust jot down the highlights.",
-  "onboardingTitle2": "Look back\nwithout stress.",
-  "onboardingBody2": "A simple calendar shows\nwhat you captured each day.",
-  "onboardingTitle3": "Private\nby default.",
-  "onboardingBody3": "Everything stays on your phone.\nNo account needed. Ever.",
+  "onboardingTitle1": "How've you been?\nWhat have you\nbeen up to?",
+  "onboardingBody1": "If those questions make your\nmind go blank, you're in the right place.",
+  "onboardingTitle2": "Retraq is your\nmemory backup.",
+  "onboardingBody2": "Jot down anything about your day —\na word, a sentence, whatever.\nAnything is a start.",
+  "onboardingTitle3": "Start simple.\nThat's the whole point.",
+  "onboardingBody3": "Want more features later?\nThey're all in settings,\nwaiting for when you're ready.",
   "onboardingPageLabel": "Page {current} of {total}",
   "@onboardingPageLabel": {
     "placeholders": {
@@ -157,13 +164,14 @@
     }
   },
   "nextButton": "Next",
-  "getStartedButton": "Get Started",
+  "getStartedButton": "Drop your first traq",
   "ageGateTitle": "Before we begin",
   "ageGateDeniedTitle": "Sorry!",
   "ageGateMessage": "Retraq is designed for users\naged 13 and older.",
   "ageGateDenied": "Retraq requires users to be 13 years or older.\nPlease come back when you're old enough!",
   "ageConfirmButton": "I am 13 or older",
   "ageDenyButton": "I am under 13",
+  "ageGateContactGuardian": "If this was entered in error, please contact a parent or guardian.",
   "almostThere": "Almost there!",
   "healthDisclaimer": "Retraq is a personal journaling app — not a medical or therapeutic tool. It does not provide health advice, diagnosis, or treatment. If you are in crisis, please contact a mental health professional or call 988 (Suicide & Crisis Lifeline).",
   "healthDisclaimerCheckbox": "I acknowledge the Health Disclaimer",
@@ -173,9 +181,13 @@
   "notificationDialogContent": "A gentle daily reminder can help you build a traqing habit. You can change or turn this off anytime in Settings.",
   "notNow": "Not now",
   "enableReminders": "Enable reminders",
+  "consentSaveFailed": "Failed to save consent. Please try again.",
 
   "unlockBiometric": "Unlock Retraq",
   "enterPin": "Enter your PIN",
+  "forgotPin": "Forgot PIN?",
+  "forgotPinMessage": "If you've forgotten your PIN, you can reset the app. This will permanently delete all your traqs and data.",
+  "resetApp": "Reset App",
   "wrongPinMessage": "Wrong PIN. {remaining, plural, =1{1 attempt} other{{remaining} attempts}} remaining.",
   "@wrongPinMessage": {
     "placeholders": {
@@ -190,7 +202,7 @@
   },
 
   "updatedPolicies": "Updated Policies",
-  "reconsentMessage": "We've updated our Privacy Policy and/or Terms of Use. Please review and accept to continue.",
+  "reconsentMessage": "We've updated our Privacy Policy, Terms of Use, and/or Health Disclaimer. Please review and accept to continue.",
   "continueButton": "Continue",
 
   "appearanceTitle": "Appearance",
@@ -209,7 +221,9 @@
   "biometricUnlock": "Biometric Unlock",
   "biometricSubtitle": "Use fingerprint or face to unlock",
   "biometricUnavailable": "Biometrics not available on this device",
-  "biometricEnabled": "Biometric unlock enabled — you'll be prompted next time you open Retraq",
+  "biometricEnabledMessage": "Biometric unlock enabled — you'll be prompted next time you open Retraq",
+  "appLockA11y": "App lock",
+  "biometricUnlockA11y": "Biometric unlock",
 
   "preferencesTitle": "Preferences",
   "allDayNotes": "All Day Notes",
@@ -231,8 +245,22 @@
   "enterToSaveSubtitle": "Press Enter to save traq instead of new line",
   "bulletPointsOnEnter": "Bullet Points on Enter",
   "bulletPointsSubtitle": "Auto-insert • when pressing Enter",
+  "bionicReading": "Bionic Reading",
+  "bionicReadingSubtitle": "Bolds the start of each word for faster reading",
   "weekStartsOn": "Week Starts On",
   "amPmSwitchesAt": "AM/PM Switches At",
+  "weekStartsOnA11y": "Week starts on {day}",
+  "@weekStartsOnA11y": {
+    "placeholders": {
+      "day": { "type": "String" }
+    }
+  },
+  "amPmSwitchesAtA11y": "AM/PM switches at {time}",
+  "@amPmSwitchesAtA11y": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
   "mondayName": "Monday",
   "tuesdayName": "Tuesday",
   "wednesdayName": "Wednesday",
@@ -286,6 +314,7 @@
   "entryTextLabel": "Traq text",
   "deleteEntryTooltip": "Delete traq",
   "saveChanges": "Save Changes",
+  "entryEmptyMessage": "Traq is empty. Add some text, a title, or a mood.",
 
   "entrySavedOverlay": "Traq saved",
   "niceOne": "Nice one ✓",
@@ -330,6 +359,22 @@
   "dayFr": "Fr",
   "daySa": "Sa",
   "daySu": "Su",
+  "calendarDayA11y": "Day {day}",
+  "@calendarDayA11y": {
+    "placeholders": {
+      "day": { "type": "int" }
+    }
+  },
+  "calendarDayTodaySuffix": ", today",
+  "calendarDayHasEntriesSuffix": ", has entries",
+  "calendarDaySelectedSuffix": ", selected",
+  "entryCardA11y": "Journal traq for {dateLabel}",
+  "@entryCardA11y": {
+    "placeholders": {
+      "dateLabel": { "type": "String" }
+    }
+  },
+  "entryOptionsTooltip": "Traq options",
 
   "themeLabel": "{label} theme",
   "@themeLabel": {
@@ -368,44 +413,18 @@
   "prompt27": "A moment of calm from today...",
 
   "notifTitle": "Retraq",
-  "notifMorning0": "Good morning! Set an intention for today — even one word counts.",
-  "notifMorning1": "Rise and write. What are you looking forward to today?",
-  "notifMorning2": "Morning check-in: how are you feeling right now?",
-  "notifMorning3": "Start your day with a thought. Retraq is ready.",
-  "notifMorning4": "A fresh page for a fresh day. What's on your mind?",
-  "notifEvening0": "What happened today? Even one sentence counts.",
-  "notifEvening1": "Take a moment to capture today before it slips away.",
-  "notifEvening2": "How was your day? A few words is all it takes.",
-  "notifEvening3": "Hey, how did today go? Drop a quick traq.",
-  "notifEvening4": "What's the TL;DR of today?",
-  "notifEvening5": "Capture the vibe. Was today a 10 or a meh?",
-  "notifEvening6": "What made today different from yesterday?",
-  "notifEvening7": "The best time to traq was this morning. The second best time is now.",
-  "notifEvening8": "What surprised you today? Write it down before you forget.",
-  "notifGeneral0": "Retraq is waiting. No pressure, just jot something down.",
-  "notifGeneral1": "Ready to write? Your future self will thank you.",
-  "notifGeneral2": "Just checking in. What's on your mind today?",
-  "notifGeneral3": "One small traq, one big habit. You've got this.",
-  "notifGeneral4": "Today deserves to be remembered. What stood out?",
-  "notifGeneral5": "Your traqs, your pace. Write as much or as little as you'd like.",
-  "notifGeneral6": "Time for a brain dump? Open up and let it flow.",
-  "notifGeneral7": "A quick note now saves a forgotten memory later.",
-  "notifGeneral8": "Future you is curious about today. Leave a note.",
-  "notifGeneral9": "Even busy days deserve a sentence or two.",
-  "notifGeneral10": "You don't need perfect words. Just real ones.",
-  "notifGeneral11": "Quick check: anything worth remembering today?",
-  "notifGeneral12": "One minute, one traq. You can do this.",
-  "notifGeneral13": "What would you tell a friend about today?",
-  "notifGeneral14": "No rules, no word count. Just you and today.",
-  "notifGeneral15": "A few taps now, a whole memory saved forever.",
-  "notifGeneral16": "Retraq doesn't judge. It just listens.",
-  "notifGeneral17": "Plot twist: you actually have time for this. Promise.",
-  "notifWeekend0": "Lazy weekend? Perfect traqing weather.",
-  "notifWeekend1": "Weekends fly by. Capture this one before it does.",
-  "notifWeekend2": "No rush today. Take a moment to reflect.",
-  "notifStreakRisk0": "Your streak called. It misses you.",
-  "notifStreakRisk1": "Don't let today break your streak — one sentence is enough.",
-  "notifStreakRisk2": "You've been consistent. Keep it going with a quick traq.",
+
+  "notifDaily0": "Quick — what happened today? Even one word counts.",
+  "notifDaily1": "30 seconds. One traq. You'll thank yourself later.",
+  "notifDaily2": "Jot something down before today disappears.",
+  "notifDaily3": "Future you wants to know what happened today.",
+  "notifDaily4": "Don't let today vanish. Drop a traq.",
+
+  "notifWeekly0": "Your week's been retraqd. Take a look back.",
+  "notifWeekly1": "Here's what you got up to this week.",
+
+  "notifReengage0": "It's been a few days. Drop a quick traq so you don't lose the week.",
+  "notifReengage1": "Your week is disappearing. Takes 10 seconds to save it.",
 
   "settingsLegalFooter": "{appName} v{version}",
   "@settingsLegalFooter": {
@@ -416,7 +435,11 @@
   },
   "privacyPolicy": "Privacy Policy",
   "termsOfService": "Terms of Service",
+  "termsOfUse": "Terms of Use",
   "healthDisclaimerTitle": "Health Disclaimer",
+  "legalFooterTerms": "Terms",
+  "legalFooterHealth": "Health",
+  "legalFooterLicenses": "Licenses",
 
   "exportPiiNote": "The exported file will contain your personal traqs and settings. Keep it somewhere safe."
 }

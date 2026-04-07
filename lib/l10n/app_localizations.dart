@@ -61,8 +61,7 @@ import 'app_localizations_en.dart';
 /// be consistent with the languages listed in the L10n.supportedLocales
 /// property.
 abstract class L10n {
-  L10n(String locale)
-    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  L10n(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -82,16 +81,17 @@ abstract class L10n {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
-      <LocalizationsDelegate<dynamic>>[
-        delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
+    delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+  ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('en')];
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('en')
+  ];
 
   /// No description provided for @appName.
   ///
@@ -99,23 +99,11 @@ abstract class L10n {
   /// **'Retraq'**
   String get appName;
 
-  /// No description provided for @appNameSince.
+  /// No description provided for @navJot.
   ///
   /// In en, this message translates to:
-  /// **'Since'**
-  String get appNameSince;
-
-  /// No description provided for @appNameThen.
-  ///
-  /// In en, this message translates to:
-  /// **'Then'**
-  String get appNameThen;
-
-  /// No description provided for @navJournal.
-  ///
-  /// In en, this message translates to:
-  /// **'Journal'**
-  String get navJournal;
+  /// **'Jot'**
+  String get navJot;
 
   /// No description provided for @navRecap.
   ///
@@ -267,6 +255,18 @@ abstract class L10n {
   /// **'Yesterday'**
   String get yesterdayLabel;
 
+  /// No description provided for @noRecentEntries.
+  ///
+  /// In en, this message translates to:
+  /// **'No traqs yet. Drop a traq?'**
+  String get noRecentEntries;
+
+  /// No description provided for @recentEntriesPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Your recent traqs will appear here.'**
+  String get recentEntriesPlaceholder;
+
   /// No description provided for @entrySaved.
   ///
   /// In en, this message translates to:
@@ -308,6 +308,18 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Failed to save. Please try again.'**
   String get saveFailedMessage;
+
+  /// No description provided for @writeSomethingFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Write something first!'**
+  String get writeSomethingFirst;
+
+  /// No description provided for @pickMoodToSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a mood to save'**
+  String get pickMoodToSave;
 
   /// No description provided for @milestone1.
   ///
@@ -390,7 +402,7 @@ abstract class L10n {
   /// No description provided for @searchHint.
   ///
   /// In en, this message translates to:
-  /// **'Search traqs...'**
+  /// **'Search your traqs...'**
   String get searchHint;
 
   /// No description provided for @closeSearch.
@@ -402,7 +414,7 @@ abstract class L10n {
   /// No description provided for @searchEntries.
   ///
   /// In en, this message translates to:
-  /// **'Search traqs'**
+  /// **'Search your traqs'**
   String get searchEntries;
 
   /// No description provided for @searching.
@@ -414,7 +426,7 @@ abstract class L10n {
   /// No description provided for @noSearchResults.
   ///
   /// In en, this message translates to:
-  /// **'No traqs match your search.'**
+  /// **'No traqs found. Try different words.'**
   String get noSearchResults;
 
   /// No description provided for @weekLabel.
@@ -432,18 +444,14 @@ abstract class L10n {
   /// No description provided for @weeklyRecap.
   ///
   /// In en, this message translates to:
-  /// **'Weekly Recap'**
+  /// **'Week Retraqd'**
   String get weeklyRecap;
 
   /// No description provided for @weeklyRecapStats.
   ///
   /// In en, this message translates to:
   /// **'{totalEntries} traqs · {activeDays} days · {preferredTime}'**
-  String weeklyRecapStats(
-    int totalEntries,
-    int activeDays,
-    String preferredTime,
-  );
+  String weeklyRecapStats(int totalEntries, int activeDays, String preferredTime);
 
   /// No description provided for @noEntriesYet.
   ///
@@ -456,6 +464,36 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Your traqs will appear here once you start writing.'**
   String get noEntriesYetMessage;
+
+  /// No description provided for @noEntriesForWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'No traqs for this week.'**
+  String get noEntriesForWeek;
+
+  /// No description provided for @previousWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous week'**
+  String get previousWeek;
+
+  /// No description provided for @nextWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Next week'**
+  String get nextWeek;
+
+  /// No description provided for @currentWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Current week'**
+  String get currentWeek;
+
+  /// No description provided for @thisWeekLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'This week'**
+  String get thisWeekLabel;
 
   /// No description provided for @statsTitle.
   ///
@@ -580,37 +618,37 @@ abstract class L10n {
   /// No description provided for @onboardingTitle1.
   ///
   /// In en, this message translates to:
-  /// **'Your day,\nyour words.'**
+  /// **'How\'ve you been?\nWhat have you\nbeen up to?'**
   String get onboardingTitle1;
 
   /// No description provided for @onboardingBody1.
   ///
   /// In en, this message translates to:
-  /// **'No templates. No pressure.\nJust jot down the highlights.'**
+  /// **'If those questions make your\nmind go blank, you\'re in the right place.'**
   String get onboardingBody1;
 
   /// No description provided for @onboardingTitle2.
   ///
   /// In en, this message translates to:
-  /// **'Look back\nwithout stress.'**
+  /// **'Retraq is your\nmemory backup.'**
   String get onboardingTitle2;
 
   /// No description provided for @onboardingBody2.
   ///
   /// In en, this message translates to:
-  /// **'A simple calendar shows\nwhat you captured each day.'**
+  /// **'Jot down anything about your day —\na word, a sentence, whatever.\nAnything is a start.'**
   String get onboardingBody2;
 
   /// No description provided for @onboardingTitle3.
   ///
   /// In en, this message translates to:
-  /// **'Private\nby default.'**
+  /// **'Start simple.\nThat\'s the whole point.'**
   String get onboardingTitle3;
 
   /// No description provided for @onboardingBody3.
   ///
   /// In en, this message translates to:
-  /// **'Everything stays on your phone.\nNo account needed. Ever.'**
+  /// **'Want more features later?\nThey\'re all in settings,\nwaiting for when you\'re ready.'**
   String get onboardingBody3;
 
   /// No description provided for @onboardingPageLabel.
@@ -628,7 +666,7 @@ abstract class L10n {
   /// No description provided for @getStartedButton.
   ///
   /// In en, this message translates to:
-  /// **'Get Started'**
+  /// **'Drop your first traq'**
   String get getStartedButton;
 
   /// No description provided for @ageGateTitle.
@@ -666,6 +704,12 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'I am under 13'**
   String get ageDenyButton;
+
+  /// No description provided for @ageGateContactGuardian.
+  ///
+  /// In en, this message translates to:
+  /// **'If this was entered in error, please contact a parent or guardian.'**
+  String get ageGateContactGuardian;
 
   /// No description provided for @almostThere.
   ///
@@ -721,6 +765,12 @@ abstract class L10n {
   /// **'Enable reminders'**
   String get enableReminders;
 
+  /// No description provided for @consentSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save consent. Please try again.'**
+  String get consentSaveFailed;
+
   /// No description provided for @unlockBiometric.
   ///
   /// In en, this message translates to:
@@ -732,6 +782,24 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Enter your PIN'**
   String get enterPin;
+
+  /// No description provided for @forgotPin.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot PIN?'**
+  String get forgotPin;
+
+  /// No description provided for @forgotPinMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'If you\'ve forgotten your PIN, you can reset the app. This will permanently delete all your traqs and data.'**
+  String get forgotPinMessage;
+
+  /// No description provided for @resetApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset App'**
+  String get resetApp;
 
   /// No description provided for @wrongPinMessage.
   ///
@@ -754,7 +822,7 @@ abstract class L10n {
   /// No description provided for @reconsentMessage.
   ///
   /// In en, this message translates to:
-  /// **'We\'ve updated our Privacy Policy and/or Terms of Use. Please review and accept to continue.'**
+  /// **'We\'ve updated our Privacy Policy, Terms of Use, and/or Health Disclaimer. Please review and accept to continue.'**
   String get reconsentMessage;
 
   /// No description provided for @continueButton.
@@ -853,11 +921,23 @@ abstract class L10n {
   /// **'Biometrics not available on this device'**
   String get biometricUnavailable;
 
-  /// No description provided for @biometricEnabled.
+  /// No description provided for @biometricEnabledMessage.
   ///
   /// In en, this message translates to:
   /// **'Biometric unlock enabled — you\'ll be prompted next time you open Retraq'**
-  String get biometricEnabled;
+  String get biometricEnabledMessage;
+
+  /// No description provided for @appLockA11y.
+  ///
+  /// In en, this message translates to:
+  /// **'App lock'**
+  String get appLockA11y;
+
+  /// No description provided for @biometricUnlockA11y.
+  ///
+  /// In en, this message translates to:
+  /// **'Biometric unlock'**
+  String get biometricUnlockA11y;
 
   /// No description provided for @preferencesTitle.
   ///
@@ -979,6 +1059,18 @@ abstract class L10n {
   /// **'Auto-insert • when pressing Enter'**
   String get bulletPointsSubtitle;
 
+  /// No description provided for @bionicReading.
+  ///
+  /// In en, this message translates to:
+  /// **'Bionic Reading'**
+  String get bionicReading;
+
+  /// No description provided for @bionicReadingSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bolds the start of each word for faster reading'**
+  String get bionicReadingSubtitle;
+
   /// No description provided for @weekStartsOn.
   ///
   /// In en, this message translates to:
@@ -990,6 +1082,18 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'AM/PM Switches At'**
   String get amPmSwitchesAt;
+
+  /// No description provided for @weekStartsOnA11y.
+  ///
+  /// In en, this message translates to:
+  /// **'Week starts on {day}'**
+  String weekStartsOnA11y(String day);
+
+  /// No description provided for @amPmSwitchesAtA11y.
+  ///
+  /// In en, this message translates to:
+  /// **'AM/PM switches at {time}'**
+  String amPmSwitchesAtA11y(String time);
 
   /// No description provided for @mondayName.
   ///
@@ -1225,6 +1329,12 @@ abstract class L10n {
   /// **'Save Changes'**
   String get saveChanges;
 
+  /// No description provided for @entryEmptyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Traq is empty. Add some text, a title, or a mood.'**
+  String get entryEmptyMessage;
+
   /// No description provided for @entrySavedOverlay.
   ///
   /// In en, this message translates to:
@@ -1417,6 +1527,42 @@ abstract class L10n {
   /// **'Su'**
   String get daySu;
 
+  /// No description provided for @calendarDayA11y.
+  ///
+  /// In en, this message translates to:
+  /// **'Day {day}'**
+  String calendarDayA11y(int day);
+
+  /// No description provided for @calendarDayTodaySuffix.
+  ///
+  /// In en, this message translates to:
+  /// **', today'**
+  String get calendarDayTodaySuffix;
+
+  /// No description provided for @calendarDayHasEntriesSuffix.
+  ///
+  /// In en, this message translates to:
+  /// **', has entries'**
+  String get calendarDayHasEntriesSuffix;
+
+  /// No description provided for @calendarDaySelectedSuffix.
+  ///
+  /// In en, this message translates to:
+  /// **', selected'**
+  String get calendarDaySelectedSuffix;
+
+  /// No description provided for @entryCardA11y.
+  ///
+  /// In en, this message translates to:
+  /// **'Journal traq for {dateLabel}'**
+  String entryCardA11y(String dateLabel);
+
+  /// No description provided for @entryOptionsTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Traq options'**
+  String get entryOptionsTooltip;
+
   /// No description provided for @themeLabel.
   ///
   /// In en, this message translates to:
@@ -1597,233 +1743,59 @@ abstract class L10n {
   /// **'Retraq'**
   String get notifTitle;
 
-  /// No description provided for @notifMorning0.
+  /// No description provided for @notifDaily0.
   ///
   /// In en, this message translates to:
-  /// **'Good morning! Set an intention for today — even one word counts.'**
-  String get notifMorning0;
+  /// **'Quick — what happened today? Even one word counts.'**
+  String get notifDaily0;
 
-  /// No description provided for @notifMorning1.
+  /// No description provided for @notifDaily1.
   ///
   /// In en, this message translates to:
-  /// **'Rise and write. What are you looking forward to today?'**
-  String get notifMorning1;
+  /// **'30 seconds. One traq. You\'ll thank yourself later.'**
+  String get notifDaily1;
 
-  /// No description provided for @notifMorning2.
+  /// No description provided for @notifDaily2.
   ///
   /// In en, this message translates to:
-  /// **'Morning check-in: how are you feeling right now?'**
-  String get notifMorning2;
+  /// **'Jot something down before today disappears.'**
+  String get notifDaily2;
 
-  /// No description provided for @notifMorning3.
+  /// No description provided for @notifDaily3.
   ///
   /// In en, this message translates to:
-  /// **'Start your day with a thought. Retraq is ready.'**
-  String get notifMorning3;
+  /// **'Future you wants to know what happened today.'**
+  String get notifDaily3;
 
-  /// No description provided for @notifMorning4.
+  /// No description provided for @notifDaily4.
   ///
   /// In en, this message translates to:
-  /// **'A fresh page for a fresh day. What\'s on your mind?'**
-  String get notifMorning4;
+  /// **'Don\'t let today vanish. Drop a traq.'**
+  String get notifDaily4;
 
-  /// No description provided for @notifEvening0.
+  /// No description provided for @notifWeekly0.
   ///
   /// In en, this message translates to:
-  /// **'What happened today? Even one sentence counts.'**
-  String get notifEvening0;
+  /// **'Your week\'s been retraqd. Take a look back.'**
+  String get notifWeekly0;
 
-  /// No description provided for @notifEvening1.
+  /// No description provided for @notifWeekly1.
   ///
   /// In en, this message translates to:
-  /// **'Take a moment to capture today before it slips away.'**
-  String get notifEvening1;
+  /// **'Here\'s what you got up to this week.'**
+  String get notifWeekly1;
 
-  /// No description provided for @notifEvening2.
+  /// No description provided for @notifReengage0.
   ///
   /// In en, this message translates to:
-  /// **'How was your day? A few words is all it takes.'**
-  String get notifEvening2;
+  /// **'It\'s been a few days. Drop a quick traq so you don\'t lose the week.'**
+  String get notifReengage0;
 
-  /// No description provided for @notifEvening3.
+  /// No description provided for @notifReengage1.
   ///
   /// In en, this message translates to:
-  /// **'Hey, how did today go? Drop a quick traq.'**
-  String get notifEvening3;
-
-  /// No description provided for @notifEvening4.
-  ///
-  /// In en, this message translates to:
-  /// **'What\'s the TL;DR of today?'**
-  String get notifEvening4;
-
-  /// No description provided for @notifEvening5.
-  ///
-  /// In en, this message translates to:
-  /// **'Capture the vibe. Was today a 10 or a meh?'**
-  String get notifEvening5;
-
-  /// No description provided for @notifEvening6.
-  ///
-  /// In en, this message translates to:
-  /// **'What made today different from yesterday?'**
-  String get notifEvening6;
-
-  /// No description provided for @notifEvening7.
-  ///
-  /// In en, this message translates to:
-  /// **'The best time to traq was this morning. The second best time is now.'**
-  String get notifEvening7;
-
-  /// No description provided for @notifEvening8.
-  ///
-  /// In en, this message translates to:
-  /// **'What surprised you today? Write it down before you forget.'**
-  String get notifEvening8;
-
-  /// No description provided for @notifGeneral0.
-  ///
-  /// In en, this message translates to:
-  /// **'Retraq is waiting. No pressure, just jot something down.'**
-  String get notifGeneral0;
-
-  /// No description provided for @notifGeneral1.
-  ///
-  /// In en, this message translates to:
-  /// **'Ready to write? Your future self will thank you.'**
-  String get notifGeneral1;
-
-  /// No description provided for @notifGeneral2.
-  ///
-  /// In en, this message translates to:
-  /// **'Just checking in. What\'s on your mind today?'**
-  String get notifGeneral2;
-
-  /// No description provided for @notifGeneral3.
-  ///
-  /// In en, this message translates to:
-  /// **'One small traq, one big habit. You\'ve got this.'**
-  String get notifGeneral3;
-
-  /// No description provided for @notifGeneral4.
-  ///
-  /// In en, this message translates to:
-  /// **'Today deserves to be remembered. What stood out?'**
-  String get notifGeneral4;
-
-  /// No description provided for @notifGeneral5.
-  ///
-  /// In en, this message translates to:
-  /// **'Your traqs, your pace. Write as much or as little as you\'d like.'**
-  String get notifGeneral5;
-
-  /// No description provided for @notifGeneral6.
-  ///
-  /// In en, this message translates to:
-  /// **'Time for a brain dump? Open up and let it flow.'**
-  String get notifGeneral6;
-
-  /// No description provided for @notifGeneral7.
-  ///
-  /// In en, this message translates to:
-  /// **'A quick note now saves a forgotten memory later.'**
-  String get notifGeneral7;
-
-  /// No description provided for @notifGeneral8.
-  ///
-  /// In en, this message translates to:
-  /// **'Future you is curious about today. Leave a note.'**
-  String get notifGeneral8;
-
-  /// No description provided for @notifGeneral9.
-  ///
-  /// In en, this message translates to:
-  /// **'Even busy days deserve a sentence or two.'**
-  String get notifGeneral9;
-
-  /// No description provided for @notifGeneral10.
-  ///
-  /// In en, this message translates to:
-  /// **'You don\'t need perfect words. Just real ones.'**
-  String get notifGeneral10;
-
-  /// No description provided for @notifGeneral11.
-  ///
-  /// In en, this message translates to:
-  /// **'Quick check: anything worth remembering today?'**
-  String get notifGeneral11;
-
-  /// No description provided for @notifGeneral12.
-  ///
-  /// In en, this message translates to:
-  /// **'One minute, one traq. You can do this.'**
-  String get notifGeneral12;
-
-  /// No description provided for @notifGeneral13.
-  ///
-  /// In en, this message translates to:
-  /// **'What would you tell a friend about today?'**
-  String get notifGeneral13;
-
-  /// No description provided for @notifGeneral14.
-  ///
-  /// In en, this message translates to:
-  /// **'No rules, no word count. Just you and today.'**
-  String get notifGeneral14;
-
-  /// No description provided for @notifGeneral15.
-  ///
-  /// In en, this message translates to:
-  /// **'A few taps now, a whole memory saved forever.'**
-  String get notifGeneral15;
-
-  /// No description provided for @notifGeneral16.
-  ///
-  /// In en, this message translates to:
-  /// **'Retraq doesn\'t judge. It just listens.'**
-  String get notifGeneral16;
-
-  /// No description provided for @notifGeneral17.
-  ///
-  /// In en, this message translates to:
-  /// **'Plot twist: you actually have time for this. Promise.'**
-  String get notifGeneral17;
-
-  /// No description provided for @notifWeekend0.
-  ///
-  /// In en, this message translates to:
-  /// **'Lazy weekend? Perfect traqing weather.'**
-  String get notifWeekend0;
-
-  /// No description provided for @notifWeekend1.
-  ///
-  /// In en, this message translates to:
-  /// **'Weekends fly by. Capture this one before it does.'**
-  String get notifWeekend1;
-
-  /// No description provided for @notifWeekend2.
-  ///
-  /// In en, this message translates to:
-  /// **'No rush today. Take a moment to reflect.'**
-  String get notifWeekend2;
-
-  /// No description provided for @notifStreakRisk0.
-  ///
-  /// In en, this message translates to:
-  /// **'Your streak called. It misses you.'**
-  String get notifStreakRisk0;
-
-  /// No description provided for @notifStreakRisk1.
-  ///
-  /// In en, this message translates to:
-  /// **'Don\'t let today break your streak — one sentence is enough.'**
-  String get notifStreakRisk1;
-
-  /// No description provided for @notifStreakRisk2.
-  ///
-  /// In en, this message translates to:
-  /// **'You\'ve been consistent. Keep it going with a quick traq.'**
-  String get notifStreakRisk2;
+  /// **'Your week is disappearing. Takes 10 seconds to save it.'**
+  String get notifReengage1;
 
   /// No description provided for @settingsLegalFooter.
   ///
@@ -1843,11 +1815,35 @@ abstract class L10n {
   /// **'Terms of Service'**
   String get termsOfService;
 
+  /// No description provided for @termsOfUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of Use'**
+  String get termsOfUse;
+
   /// No description provided for @healthDisclaimerTitle.
   ///
   /// In en, this message translates to:
   /// **'Health Disclaimer'**
   String get healthDisclaimerTitle;
+
+  /// No description provided for @legalFooterTerms.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms'**
+  String get legalFooterTerms;
+
+  /// No description provided for @legalFooterHealth.
+  ///
+  /// In en, this message translates to:
+  /// **'Health'**
+  String get legalFooterHealth;
+
+  /// No description provided for @legalFooterLicenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Licenses'**
+  String get legalFooterLicenses;
 
   /// No description provided for @exportPiiNote.
   ///
@@ -1865,24 +1861,24 @@ class _L10nDelegate extends LocalizationsDelegate<L10n> {
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['en'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['en'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_L10nDelegate old) => false;
 }
 
 L10n lookupL10n(Locale locale) {
+
+
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'en':
-      return L10nEn();
+    case 'en': return L10nEn();
   }
 
   throw FlutterError(
     'L10n.delegate failed to load unsupported locale "$locale". This is likely '
     'an issue with the localizations generation tool. Please file an issue '
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.',
+    'that was used.'
   );
 }

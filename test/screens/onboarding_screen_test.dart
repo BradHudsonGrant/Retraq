@@ -8,11 +8,13 @@ import '../test_helpers.dart';
 
 void main() {
   setUpAll(() async {
+    setUpFakeSecureStorage();
     await initTestDatabase();
   });
 
   setUp(() {
     SharedPreferences.setMockInitialValues({});
+    resetFakeSecureStorage();
   });
 
   Future<void> passAgeGate(WidgetTester tester) async {
@@ -70,7 +72,10 @@ void main() {
 
         await passAgeGate(tester);
 
-        expect(find.text('Capture it\nbefore it\u2019s gone.'), findsOneWidget);
+        expect(
+          find.text('How\'ve you been?\nWhat have you\nbeen up to?'),
+          findsOneWidget,
+        );
       });
 
       testWidgets('I am under 13 shows persistent block', (tester) async {
@@ -95,10 +100,13 @@ void main() {
 
       await passAgeGate(tester);
 
-      expect(find.text('Capture it\nbefore it\u2019s gone.'), findsOneWidget);
+      expect(
+        find.text('How\'ve you been?\nWhat have you\nbeen up to?'),
+        findsOneWidget,
+      );
       expect(
         find.text(
-          'Quick thoughts, random ideas, things you\u2019ll\nforget by tomorrow. Just get it down.',
+          'If those questions make your\nmind go blank, you\'re in the right place.',
         ),
         findsOneWidget,
       );
@@ -131,7 +139,7 @@ void main() {
       await tester.tap(find.text('Next'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Your life,\nactually organised.'), findsOneWidget);
+      expect(find.text('Retraq is your\nmemory backup.'), findsOneWidget);
     });
 
     testWidgets('shows Get Started on consent page', (tester) async {
@@ -140,7 +148,7 @@ void main() {
 
       await navigateToConsentPage(tester);
 
-      expect(find.text('Get Started'), findsOneWidget);
+      expect(find.text('Drop your first traq'), findsOneWidget);
       expect(find.text('Almost there!'), findsOneWidget);
     });
 
@@ -156,7 +164,7 @@ void main() {
       await navigateToConsentPage(tester);
 
       // Get Started should be disabled
-      await tester.tap(find.text('Get Started'));
+      await tester.tap(find.text('Drop your first traq'));
       await tester.pump();
       expect(completed, false);
 
@@ -169,8 +177,8 @@ void main() {
       }
 
       // Now Get Started should work — triggers notification pre-prompt dialog
-      await tester.ensureVisible(find.text('Get Started'));
-      await tester.tap(find.text('Get Started'));
+      await tester.ensureVisible(find.text('Drop your first traq'));
+      await tester.tap(find.text('Drop your first traq'));
       await tester.pumpAndSettle();
 
       // Dismiss the notification pre-prompt dialog
@@ -205,7 +213,7 @@ void main() {
       await tester.tap(find.text('Next'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Your life,\nactually organised.'), findsOneWidget);
+      expect(find.text('Retraq is your\nmemory backup.'), findsOneWidget);
     });
 
     testWidgets('all three info pages have correct body text', (tester) async {
@@ -217,7 +225,7 @@ void main() {
       // Page 1
       expect(
         find.text(
-          'Quick thoughts, random ideas, things you\u2019ll\nforget by tomorrow. Just get it down.',
+          'If those questions make your\nmind go blank, you\'re in the right place.',
         ),
         findsOneWidget,
       );
@@ -227,7 +235,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(
         find.text(
-          'Look back on any day, week, or month.\nFull sentences optional \u2014 brain dumps welcome.',
+          'Jot down anything about your day \u2014\na word, a sentence, whatever.\nAnything is a start.',
         ),
         findsOneWidget,
       );
@@ -237,7 +245,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(
         find.text(
-          'Everything stays on your device.\nNo account. No cloud. No compromises.',
+          'Want more features later?\nThey\'re all in settings,\nwaiting for when you\'re ready.',
         ),
         findsOneWidget,
       );

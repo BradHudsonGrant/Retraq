@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../../models/journal_entry.dart';
 import '../../providers/settings_provider.dart';
 import '../../services/recap_service.dart';
@@ -36,6 +37,7 @@ class RecapWeekView extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
+    final l10n = L10n.of(context)!;
     final weekEnd = weekStart.add(const Duration(days: 6));
 
     return Column(
@@ -71,7 +73,7 @@ class RecapWeekView extends StatelessWidget {
                   ),
                   const SizedBox(height: AppSpacing.md),
                   Text(
-                    'No entries yet',
+                    l10n.noEntriesYet,
                     style: tt.titleMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                       color: cs.onSurfaceVariant,
@@ -81,8 +83,8 @@ class RecapWeekView extends StatelessWidget {
                   BionicText(
                     text:
                         weekOffset == 0
-                            ? 'Your journal entries will appear here once you start writing.'
-                            : 'No entries for this week.',
+                            ? l10n.noEntriesYetMessage
+                            : l10n.noEntriesForWeek,
                     textAlign: TextAlign.center,
                     style: tt.bodyMedium?.copyWith(
                       color: cs.onSurfaceVariant.withValues(alpha: 0.7),
@@ -128,6 +130,7 @@ class _WeekNavigationHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
+    final l10n = L10n.of(context)!;
 
     final startLabel = DateFormat('MMM d').format(weekStart);
     final endLabel =
@@ -142,7 +145,7 @@ class _WeekNavigationHeader extends StatelessWidget {
         IconButton(
           onPressed: onPrevious,
           icon: const Icon(Icons.chevron_left),
-          tooltip: 'Previous week',
+          tooltip: l10n.previousWeek,
           style: IconButton.styleFrom(
             backgroundColor: cs.surfaceContainerHigh,
             foregroundColor: cs.onSurface,
@@ -154,7 +157,7 @@ class _WeekNavigationHeader extends StatelessWidget {
           children: [
             if (isCurrentWeek)
               Text(
-                'This week',
+                l10n.thisWeekLabel,
                 style: tt.titleSmall?.copyWith(
                   fontWeight: FontWeight.w600,
                   color: cs.primary,
@@ -179,7 +182,7 @@ class _WeekNavigationHeader extends StatelessWidget {
         IconButton(
           onPressed: onNext,
           icon: const Icon(Icons.chevron_right),
-          tooltip: isCurrentWeek ? 'Current week' : 'Next week',
+          tooltip: isCurrentWeek ? l10n.currentWeek : l10n.nextWeek,
           style: IconButton.styleFrom(
             backgroundColor:
                 onNext != null

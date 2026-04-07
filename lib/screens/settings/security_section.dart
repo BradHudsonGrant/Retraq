@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/user_settings.dart';
 import '../../providers/settings_provider.dart';
 import '../../services/pin_service.dart';
@@ -101,15 +102,16 @@ class _SecuritySectionState extends State<SecuritySection> {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
+    final l10n = L10n.of(context)!;
     final s = widget.settings;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Security', style: tt.titleLarge),
+        Text(l10n.securityTitle, style: tt.titleLarge),
         const SizedBox(height: AppSpacing.xs),
         BionicText(
-          text: 'Keep your journal private.',
+          text: l10n.securitySubtitle,
           style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant),
           enabled:
               SettingsProvider.maybeOf(context)?.bionicReadingEnabled ?? false,
@@ -117,13 +119,11 @@ class _SecuritySectionState extends State<SecuritySection> {
         const SizedBox(height: AppSpacing.md),
 
         SettingsRow(
-          title: 'App Lock',
+          title: l10n.appLock,
           subtitle:
-              s.appLockEnabled
-                  ? 'PIN required to open Retraq'
-                  : 'No lock — anyone can open the app',
+              s.appLockEnabled ? l10n.appLockEnabled : l10n.appLockDisabled,
           trailing: Semantics(
-            label: 'App lock',
+            label: l10n.appLockA11y,
             child: Switch(
               value: s.appLockEnabled,
               onChanged: (v) {
@@ -141,8 +141,8 @@ class _SecuritySectionState extends State<SecuritySection> {
         if (s.appLockEnabled) ...[
           const SizedBox(height: AppSpacing.md),
           SettingsRow(
-            title: 'Change PIN',
-            subtitle: 'Set a new PIN',
+            title: l10n.changePin,
+            subtitle: l10n.changePinSubtitle,
             trailing: IconButton(
               icon: Icon(Icons.chevron_right, color: cs.onSurfaceVariant),
               onPressed: () async {
@@ -154,10 +154,10 @@ class _SecuritySectionState extends State<SecuritySection> {
           ),
           const SizedBox(height: AppSpacing.md),
           SettingsRow(
-            title: 'Biometric Unlock',
-            subtitle: 'Use fingerprint or face to unlock',
+            title: l10n.biometricUnlock,
+            subtitle: l10n.biometricSubtitle,
             trailing: Semantics(
-              label: 'Biometric unlock',
+              label: l10n.biometricUnlockA11y,
               child: Switch(
                 value: s.biometricEnabled,
                 onChanged:
@@ -174,7 +174,7 @@ class _SecuritySectionState extends State<SecuritySection> {
                               messenger.showSnackBar(
                                 SnackBar(
                                   content: Text(
-                                    'Biometrics not available on this device',
+                                    l10n.biometricUnavailable,
                                     style: tt.bodyMedium?.copyWith(
                                       color: cs.onErrorContainer,
                                     ),
@@ -200,7 +200,7 @@ class _SecuritySectionState extends State<SecuritySection> {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(
-                                  'Biometric unlock enabled — you\u2019ll be prompted next time you open Retraq',
+                                  l10n.biometricEnabledMessage,
                                   style: tt.bodyMedium?.copyWith(
                                     color: cs.onPrimaryContainer,
                                   ),

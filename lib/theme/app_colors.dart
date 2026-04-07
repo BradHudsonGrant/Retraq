@@ -67,7 +67,9 @@ class AppColors {
     // Brightened from 0xFFACB3B1 so that 0.7-opacity usage still meets WCAG 4.5:1
     onSurfaceVariant: Color(0xFFC4CAC8),
     outline: Color(0xFF757C7A),
-    outlineVariant: Color(0xFF59615F),
+    // Brightened from 0xFF59615F (~2.87:1) to meet WCAG 1.4.11 3:1 contrast
+    // against the dark surface (0xFF121412). This now gives ~3.75:1.
+    outlineVariant: Color(0xFF6A726F),
     inverseSurface: Color(0xFFF8FAF8),
     inversePrimary: Color(0xFF33694B),
   );

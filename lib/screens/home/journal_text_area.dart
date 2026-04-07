@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import '../../theme/app_spacing.dart';
 import '../../utils/text_input_formatters.dart';
 import '../../widgets/atoms/retraq_button.dart';
@@ -35,6 +36,7 @@ class JournalTextArea extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
+    final l10n = L10n.of(context)!;
 
     return Container(
       decoration: BoxDecoration(
@@ -66,7 +68,7 @@ class JournalTextArea extends StatelessWidget {
             ],
             decoration: InputDecoration(
               hintText: bulletPoints ? '• $hint' : hint,
-              labelText: 'Journal entry',
+              labelText: l10n.journalEntryLabel,
               floatingLabelBehavior: FloatingLabelBehavior.auto,
               hintStyle: tt.bodyLarge?.copyWith(
                 color: cs.onSurfaceVariant.withValues(alpha: 0.55),
@@ -93,7 +95,7 @@ class JournalTextArea extends StatelessWidget {
             bottom: AppSpacing.md,
             right: AppSpacing.md,
             child: RetraqButton(
-              label: isSaving ? 'Saving...' : 'Save Entry',
+              label: isSaving ? l10n.saving : l10n.saveEntry,
               icon: Icons.done_all,
               onPressed: isSaving ? null : onSave,
             ),

@@ -4,6 +4,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:retraq/l10n/app_localizations.dart';
 import 'package:retraq/screens/app_shell.dart';
 
 import 'test_helpers.dart';
@@ -18,6 +19,8 @@ void main() {
   });
 
   Widget wrapShell() => MaterialApp(
+    localizationsDelegates: L10n.localizationsDelegates,
+    supportedLocales: L10n.supportedLocales,
     home: AppShell(
       onThemeModeChanged: (_) async {},
       themeMode: ThemeMode.system,
@@ -47,7 +50,7 @@ void main() {
     expect(find.byType(AppBar), findsOneWidget);
 
     // Verify all 4 navigation destinations exist
-    expect(find.text('Journal'), findsOneWidget);
+    expect(find.text('Jot'), findsOneWidget);
     expect(find.text('Recap'), findsOneWidget);
     expect(find.text('Stats'), findsOneWidget);
     expect(find.text('Settings'), findsOneWidget);

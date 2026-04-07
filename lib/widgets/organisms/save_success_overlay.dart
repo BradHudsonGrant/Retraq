@@ -1,9 +1,10 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../l10n/app_localizations.dart';
 import '../../theme/app_spacing.dart';
 
-/// A satisfying full-screen overlay shown after a journal entry is saved.
+/// A satisfying full-screen overlay shown after a traq is saved.
 /// Scale-up checkmark with floating particles, haptic feedback, auto-dismiss.
 class SaveSuccessOverlay extends StatefulWidget {
   const SaveSuccessOverlay({
@@ -14,7 +15,7 @@ class SaveSuccessOverlay extends StatefulWidget {
 
   final VoidCallback onDismissed;
 
-  /// Optional milestone message shown below "Entry saved" (e.g. "Your very first entry!").
+  /// Optional milestone message shown below "Traq saved" (e.g. "Your very first traq!").
   final String? milestoneMessage;
 
   @override
@@ -150,6 +151,7 @@ class _SaveSuccessOverlayState extends State<SaveSuccessOverlay>
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
+    final l10n = L10n.of(context)!;
 
     return AnimatedBuilder(
       animation: _exitCtrl,
@@ -162,7 +164,7 @@ class _SaveSuccessOverlayState extends State<SaveSuccessOverlay>
       },
       child: Semantics(
         button: true,
-        label: 'Dismiss',
+        label: l10n.dismissLabel,
         child: GestureDetector(
           onTap: () async {
             // Tap to dismiss early
@@ -296,9 +298,9 @@ class _SaveSuccessOverlayState extends State<SaveSuccessOverlay>
                     },
                     child: Semantics(
                       liveRegion: true,
-                      label: 'Entry saved',
+                      label: l10n.entrySavedOverlay,
                       child: Text(
-                        'Entry saved',
+                        l10n.entrySavedOverlay,
                         style: tt.titleLarge?.copyWith(
                           fontWeight: FontWeight.w600,
                           color: cs.primary,
@@ -331,7 +333,7 @@ class _SaveSuccessOverlayState extends State<SaveSuccessOverlay>
                           const SizedBox(height: AppSpacing.xs),
                         ],
                         Text(
-                          'Nice one ✓',
+                          l10n.niceOne,
                           style: tt.bodyMedium?.copyWith(
                             color: cs.onSurfaceVariant.withValues(alpha: 0.6),
                           ),

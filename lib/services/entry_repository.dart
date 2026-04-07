@@ -404,25 +404,23 @@ class EntryRepository {
     }
   }
 
-  /// Search entries by text content (case-insensitive LIKE query).
+  /// Search entries by text content using the FTS5 index (prefix matching).
+  /// The unicode61 tokenizer makes results case- and diacritic-insensitive.
   Future<List<JournalEntry>> searchEntries(
     String query, {
     int limit = 50,
   }) async {
-    if (query.trim().isEmpty) return [];
-    // Escape SQL LIKE wildcards in user input.
-    final escaped = query.replaceAll('%', r'\%').replaceAll('_', r'\_');
-    final pattern = '%${escaped.toLowerCase()}%';
+    final ftsQuery = _toFtsQuery(query);
+    if (ftsQuery == null) return [];
     final rows =
         await _db
             .customSelect(
-              "SELECT * FROM journal_entries "
-              "WHERE lower(entry) LIKE ? ESCAPE '\\' "
-              "OR lower(title) LIKE ? ESCAPE '\\' "
-              "ORDER BY date DESC LIMIT ?",
+              "SELECT je.* FROM journal_entries je "
+              "JOIN journal_entries_fts ON journal_entries_fts.rowid = je.id "
+              "WHERE journal_entries_fts MATCH ? "
+              "ORDER BY je.date DESC LIMIT ?",
               variables: [
-                Variable.withString(pattern),
-                Variable.withString(pattern),
+                Variable.withString(ftsQuery),
                 Variable.withInt(limit),
               ],
               readsFrom: {_db.journalEntries},
@@ -450,5 +448,19 @@ class EntryRepository {
           ),
         )
         .toList();
+  }
+
+  /// Convert a free-form user query into an FTS5 MATCH expression.
+  /// Splits on non-word characters (Unicode-aware), quotes each token to
+  /// defang FTS5 operator keywords (AND/OR/NOT/NEAR), and appends `*` for
+  /// trailing prefix matching. Returns null if no usable tokens remain.
+  String? _toFtsQuery(String input) {
+    final tokens =
+        input
+            .split(RegExp(r'[^\p{L}\p{N}_]+', unicode: true))
+            .where((t) => t.isNotEmpty)
+            .toList();
+    if (tokens.isEmpty) return null;
+    return tokens.map((t) => '"$t"*').join(' ');
   }
 }

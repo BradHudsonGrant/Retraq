@@ -41,7 +41,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 200));
 
       // With empty database, shows empty state instead of WeekDayList
-      expect(find.text('No entries yet'), findsOneWidget);
+      expect(find.text('No traqs yet'), findsOneWidget);
       // CalendarGrid should NOT be shown in default week view
       expect(find.byType(CalendarGrid), findsNothing);
       await flushDriftTimers(tester);

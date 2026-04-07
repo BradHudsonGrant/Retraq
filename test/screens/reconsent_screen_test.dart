@@ -27,7 +27,7 @@ void main() {
       );
       expect(find.text('I agree to the Terms of Use'), findsOneWidget);
       expect(
-        find.text('I have read and accept the Health Disclaimer'),
+        find.text('I acknowledge the Health Disclaimer'),
         findsOneWidget,
       );
     });
@@ -110,12 +110,12 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.tap(
-        find.text('I have read and accept the Health Disclaimer'),
+        find.text('I acknowledge the Health Disclaimer'),
       );
       await tester.pumpAndSettle();
 
       expect(find.byType(LegalScreen), findsOneWidget);
-      expect(find.text('Health & Wellness Disclaimer'), findsWidgets);
+      expect(find.text('Health Disclaimer'), findsWidgets);
     });
 
     testWidgets('submitting calls onComplete', (tester) async {

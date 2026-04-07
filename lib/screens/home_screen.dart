@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import '../l10n/app_localizations.dart';
 import '../models/journal_entry.dart';
 import '../models/user_settings.dart';
 import '../providers/settings_provider.dart';
@@ -198,7 +199,7 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   /// Shared journal input widgets used by both tablet and phone layouts.
-  List<Widget> _buildJournalContent(ColorScheme cs, TextTheme tt) {
+  List<Widget> _buildJournalContent(ColorScheme cs, TextTheme tt, L10n l10n) {
     return [
       const SizedBox(height: AppSpacing.xl),
 
@@ -225,8 +226,11 @@ class _HomeScreenState extends State<HomeScreen>
       // Date chip
       Semantics(
         button: true,
-        label:
-            'Change entry date, currently ${_selectedDate != null ? DateFormat('MMM d, yyyy').format(_entryDate) : formatDateLabel(_entryDate)}',
+        label: l10n.changeDateLabel(
+          _selectedDate != null
+              ? DateFormat('MMM d, yyyy').format(_entryDate)
+              : formatDateLabel(_entryDate),
+        ),
         excludeSemantics: true,
         child: InkWell(
           onTap: _pickDate,
@@ -260,7 +264,7 @@ class _HomeScreenState extends State<HomeScreen>
 
       const SizedBox(height: AppSpacing.sm),
       BionicText(
-        text: 'Brain dump here. Full sentences optional.',
+        text: l10n.homeSubtitle,
         style: tt.bodyLarge?.copyWith(color: cs.onSurfaceVariant),
         enabled: _settings?.bionicReadingEnabled ?? false,
       ),
@@ -278,7 +282,7 @@ class _HomeScreenState extends State<HomeScreen>
 
       // Entry title (optional)
       if (_settings?.showEntryTitle ?? false) ...[
-        _buildTitleField(cs, tt),
+        _buildTitleField(cs, tt, l10n),
         const SizedBox(height: AppSpacing.sm),
       ],
 
@@ -296,8 +300,8 @@ class _HomeScreenState extends State<HomeScreen>
               _isAllDayMode
                   ? dailyJournalPrompt()
                   : _isAm
-                  ? 'How did the morning go?'
-                  : 'How about the rest of the day?',
+                  ? l10n.amHint
+                  : l10n.pmHint,
           isSaving: _isSaving,
           onSave: _saveEntry,
           enterToSave: _settings?.enterToSave ?? false,
@@ -306,8 +310,8 @@ class _HomeScreenState extends State<HomeScreen>
               _isAllDayMode
                   ? null
                   : SegmentedPill(
-                    leftLabel: 'AM',
-                    rightLabel: 'PM',
+                    leftLabel: l10n.amLabel,
+                    rightLabel: l10n.pmLabel,
                     isRightActive: !_isAm,
                     onTapLeft: () => _switchPeriod(true),
                     onTapRight: () => _switchPeriod(false),
@@ -318,24 +322,24 @@ class _HomeScreenState extends State<HomeScreen>
       const SizedBox(height: AppSpacing.lg),
 
       // Progress bar
-      _buildProgressBar(cs, tt),
+      _buildProgressBar(cs, tt, l10n),
     ];
   }
 
-  Widget _buildJournalPane(ColorScheme cs, TextTheme tt) {
+  Widget _buildJournalPane(ColorScheme cs, TextTheme tt, L10n l10n) {
     return SingleChildScrollView(
       padding: AppSpacing.pagePadding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ..._buildJournalContent(cs, tt),
+          ..._buildJournalContent(cs, tt, l10n),
           const SizedBox(height: AppSpacing.navBarClearance),
         ],
       ),
     );
   }
 
-  Widget _buildRecentPane(ColorScheme cs, TextTheme tt) {
+  Widget _buildRecentPane(ColorScheme cs, TextTheme tt, L10n l10n) {
     return SingleChildScrollView(
       padding: AppSpacing.pagePadding,
       child: Column(
@@ -343,7 +347,7 @@ class _HomeScreenState extends State<HomeScreen>
         children: [
           const SizedBox(height: AppSpacing.xl),
           Text(
-            'Recent',
+            l10n.recentLabel,
             style: tt.titleSmall?.copyWith(
               fontWeight: FontWeight.w600,
               color: cs.onSurfaceVariant,
@@ -352,7 +356,9 @@ class _HomeScreenState extends State<HomeScreen>
           const SizedBox(height: AppSpacing.sm),
           if (_yesterdayEntries.isNotEmpty)
             RecentDayCard(
-              label: (_settings?.askAboutToday ?? true) ? 'Today' : 'Yesterday',
+              label: (_settings?.askAboutToday ?? true)
+                  ? l10n.todayLabel
+                  : l10n.yesterdayLabel,
               entries: _yesterdayEntries,
             ),
           if (_dayBeforeEntries.isNotEmpty) ...[
@@ -360,7 +366,7 @@ class _HomeScreenState extends State<HomeScreen>
             RecentDayCard(
               label:
                   (_settings?.askAboutToday ?? true)
-                      ? 'Yesterday'
+                      ? l10n.yesterdayLabel
                       : DateFormat('EEEE').format(
                         DateTime.now().subtract(const Duration(days: 2)),
                       ),
@@ -372,7 +378,7 @@ class _HomeScreenState extends State<HomeScreen>
               padding: const EdgeInsets.only(top: AppSpacing.xxl),
               child: Center(
                 child: BionicText(
-                  text: 'No recent entries yet.',
+                  text: l10n.noRecentEntries,
                   style: tt.bodyMedium?.copyWith(
                     color: cs.onSurfaceVariant.withValues(alpha: 0.7),
                   ),
@@ -391,6 +397,7 @@ class _HomeScreenState extends State<HomeScreen>
     super.build(context);
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
+    final l10n = L10n.of(context)!;
     final tablet = isTablet(context);
 
     return SafeArea(
@@ -402,20 +409,20 @@ class _HomeScreenState extends State<HomeScreen>
             child:
                 tablet
                     ? AdaptiveTwoPane(
-                      left: _buildJournalPane(cs, tt),
-                      right: _buildRecentPane(cs, tt),
+                      left: _buildJournalPane(cs, tt, l10n),
+                      right: _buildRecentPane(cs, tt, l10n),
                     )
                     : SingleChildScrollView(
                       padding: AppSpacing.pagePadding,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          ..._buildJournalContent(cs, tt),
+                          ..._buildJournalContent(cs, tt, l10n),
 
                           // Recent days
                           const SizedBox(height: AppSpacing.xl),
                           Text(
-                            'Recent',
+                            l10n.recentLabel,
                             style: tt.titleSmall?.copyWith(
                               fontWeight: FontWeight.w600,
                               color: cs.onSurfaceVariant,
@@ -426,8 +433,8 @@ class _HomeScreenState extends State<HomeScreen>
                             RecentDayCard(
                               label:
                                   (_settings?.askAboutToday ?? true)
-                                      ? 'Today'
-                                      : 'Yesterday',
+                                      ? l10n.todayLabel
+                                      : l10n.yesterdayLabel,
                               entries: _yesterdayEntries,
                             ),
                           if (_dayBeforeEntries.isNotEmpty) ...[
@@ -435,7 +442,7 @@ class _HomeScreenState extends State<HomeScreen>
                             RecentDayCard(
                               label:
                                   (_settings?.askAboutToday ?? true)
-                                      ? 'Yesterday'
+                                      ? l10n.yesterdayLabel
                                       : DateFormat('EEEE').format(
                                         DateTime.now().subtract(
                                           const Duration(days: 2),
@@ -451,7 +458,7 @@ class _HomeScreenState extends State<HomeScreen>
                                 top: AppSpacing.md,
                               ),
                               child: BionicText(
-                                text: 'Your recent entries will appear here.',
+                                text: l10n.recentEntriesPlaceholder,
                                 style: tt.bodyMedium?.copyWith(
                                   color: cs.onSurfaceVariant.withValues(
                                     alpha: 0.7,
@@ -483,14 +490,14 @@ class _HomeScreenState extends State<HomeScreen>
                   if (entryId != null) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: const Text('Entry saved'),
+                        content: Text(l10n.entrySaved),
                         behavior: SnackBarBehavior.floating,
                         shape: RoundedRectangleBorder(
                           borderRadius: AppSpacing.borderRadiusLg,
                         ),
                         duration: const Duration(seconds: 4),
                         action: SnackBarAction(
-                          label: 'Undo',
+                          label: l10n.undoLabel,
                           onPressed: () => _entries.deleteEntry(entryId),
                         ),
                       ),
@@ -504,7 +511,7 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  Widget _buildTitleField(ColorScheme cs, TextTheme tt) {
+  Widget _buildTitleField(ColorScheme cs, TextTheme tt, L10n l10n) {
     return Container(
       decoration: BoxDecoration(
         color: cs.surfaceContainerHigh,
@@ -516,8 +523,8 @@ class _HomeScreenState extends State<HomeScreen>
         textCapitalization: TextCapitalization.sentences,
         style: tt.titleMedium?.copyWith(fontWeight: FontWeight.w600),
         decoration: InputDecoration(
-          hintText: 'Entry title (optional)',
-          labelText: 'Entry title',
+          hintText: l10n.entryTitleHint,
+          labelText: l10n.entryTitleLabel,
           floatingLabelBehavior: FloatingLabelBehavior.never,
           hintStyle: tt.titleMedium?.copyWith(
             fontWeight: FontWeight.w600,
@@ -536,7 +543,7 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  Widget _buildProgressBar(ColorScheme cs, TextTheme tt) {
+  Widget _buildProgressBar(ColorScheme cs, TextTheme tt, L10n l10n) {
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.lg,
@@ -562,8 +569,8 @@ class _HomeScreenState extends State<HomeScreen>
                   _weekCount == null
                       ? '' // Loading — avoid flash
                       : _weekCount == 0
-                      ? 'Start your first entry above.'
-                      : '$_weekCount ${_weekCount == 1 ? 'entry' : 'entries'} this week — keep going!',
+                      ? l10n.progressFirstEntry
+                      : l10n.progressWeekCount(_weekCount!),
               style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant),
               enabled: _settings?.bionicReadingEnabled ?? false,
             ),
@@ -592,25 +599,28 @@ class _HomeScreenState extends State<HomeScreen>
   Future<void> _switchPeriod(bool isAm) async {
     if (isAm == _isAm) return;
 
+    final l10n = L10n.of(context)!;
     final hasText = _cleanText(_entryController.text).isNotEmpty;
     if (hasText) {
       final confirmed = await showDialog<bool>(
         context: context,
         builder:
             (ctx) => AlertDialog(
-              title: const Text('Save and switch?'),
+              title: Text(l10n.saveAndSwitch),
               content: Text(
-                'Your ${_isAm ? 'AM' : 'PM'} entry will be saved before '
-                'switching to ${isAm ? 'AM' : 'PM'}.',
+                l10n.saveAndSwitchContent(
+                  _isAm ? l10n.amLabel : l10n.pmLabel,
+                  isAm ? l10n.amLabel : l10n.pmLabel,
+                ),
               ),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(ctx, false),
-                  child: const Text('Cancel'),
+                  child: Text(l10n.cancelLabel),
                 ),
                 FilledButton(
                   onPressed: () => Navigator.pop(ctx, true),
-                  child: const Text('Save & Switch'),
+                  child: Text(l10n.saveAndSwitchButton),
                 ),
               ],
             ),
@@ -636,6 +646,7 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Future<void> _saveEntry() async {
+    final l10n = L10n.of(context)!;
     final text = _cleanText(_entryController.text);
     final titleText = _titleController.text.trim();
     final moodEnabled = _settings?.moodEnabled ?? false;
@@ -650,7 +661,7 @@ class _HomeScreenState extends State<HomeScreen>
       _shakeController.forward(from: 0);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Write something first!'),
+          content: Text(l10n.writeSomethingFirst),
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
             borderRadius: AppSpacing.borderRadiusLg,
@@ -663,7 +674,7 @@ class _HomeScreenState extends State<HomeScreen>
     if (moodRequired && !hasMood) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Pick a mood to save'),
+          content: Text(l10n.pickMoodToSave),
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
             borderRadius: AppSpacing.borderRadiusLg,
@@ -682,7 +693,7 @@ class _HomeScreenState extends State<HomeScreen>
 
     String? label;
     if (!_isAllDayMode) {
-      label = _isAm ? 'AM' : 'PM';
+      label = _isAm ? l10n.amLabel : l10n.pmLabel;
     }
 
     final entry = JournalEntry(
@@ -703,7 +714,7 @@ class _HomeScreenState extends State<HomeScreen>
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'Failed to save. Please try again.',
+            l10n.saveFailedMessage,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: Theme.of(context).colorScheme.onErrorContainer,
             ),
@@ -724,7 +735,7 @@ class _HomeScreenState extends State<HomeScreen>
     final totalCount = await _entries.getTotalEntryCount();
     if (!mounted) return;
 
-    final milestone = _milestoneForCount(totalCount);
+    final milestone = _milestoneForCount(totalCount, l10n);
 
     FocusScope.of(context).unfocus();
 
@@ -757,17 +768,17 @@ class _HomeScreenState extends State<HomeScreen>
     }
   }
 
-  static String? _milestoneForCount(int count) {
-    const milestones = <int, String>{
-      1: 'Your very first entry!',
-      5: "5 entries! You're off to a great start.",
-      10: "10 entries! You're building a habit.",
-      25: '25 entries! Look at you go.',
-      50: "50 entries! That's genuinely impressive.",
-      100: "100 entries! You're a journaling pro.",
-      250: '250 entries! A real treasure trove.',
-      500: '500 entries! Half a thousand memories.',
-      1000: '1,000 entries! Legendary status.',
+  static String? _milestoneForCount(int count, L10n l10n) {
+    final milestones = <int, String>{
+      1: l10n.milestone1,
+      5: l10n.milestone5,
+      10: l10n.milestone10,
+      25: l10n.milestone25,
+      50: l10n.milestone50,
+      100: l10n.milestone100,
+      250: l10n.milestone250,
+      500: l10n.milestone500,
+      1000: l10n.milestone1000,
     };
     return milestones[count];
   }

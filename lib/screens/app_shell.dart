@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 import '../theme/app_spacing.dart';
 import '../widgets/atoms/retraq_logo.dart';
 import 'home_screen.dart';
@@ -94,6 +95,7 @@ class _AppShellState extends State<AppShell>
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
+    final l10n = L10n.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
@@ -150,7 +152,10 @@ class _AppShellState extends State<AppShell>
             color: cs.surface,
             border: Border(
               top: BorderSide(
-                color: cs.outlineVariant.withValues(alpha: 0.3),
+                // WCAG 1.4.11: full-opacity outlineVariant so the nav bar
+                // boundary stays visible. The 0.3-alpha overlay used to crush
+                // effective contrast against dark surface to ~1.4:1.
+                color: cs.outlineVariant,
                 width: 0.5,
               ),
             ),
@@ -163,26 +168,26 @@ class _AppShellState extends State<AppShell>
               backgroundColor: Colors.transparent,
               elevation: 0,
               height: 80,
-              destinations: const [
+              destinations: [
                 NavigationDestination(
-                  icon: Icon(Icons.edit_note_outlined),
-                  selectedIcon: Icon(Icons.edit_note),
-                  label: 'Journal',
+                  icon: const Icon(Icons.edit_outlined),
+                  selectedIcon: const Icon(Icons.edit),
+                  label: l10n.navJot,
                 ),
                 NavigationDestination(
-                  icon: Icon(Icons.auto_awesome_outlined),
-                  selectedIcon: Icon(Icons.auto_awesome),
-                  label: 'Recap',
+                  icon: const Icon(Icons.auto_awesome_outlined),
+                  selectedIcon: const Icon(Icons.auto_awesome),
+                  label: l10n.navRecap,
                 ),
                 NavigationDestination(
-                  icon: Icon(Icons.bar_chart_outlined),
-                  selectedIcon: Icon(Icons.bar_chart),
-                  label: 'Stats',
+                  icon: const Icon(Icons.bar_chart_outlined),
+                  selectedIcon: const Icon(Icons.bar_chart),
+                  label: l10n.navStats,
                 ),
                 NavigationDestination(
-                  icon: Icon(Icons.settings_outlined),
-                  selectedIcon: Icon(Icons.settings),
-                  label: 'Settings',
+                  icon: const Icon(Icons.settings_outlined),
+                  selectedIcon: const Icon(Icons.settings),
+                  label: l10n.navSettings,
                 ),
               ],
             ),

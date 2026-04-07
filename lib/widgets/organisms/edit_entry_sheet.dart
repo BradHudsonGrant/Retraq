@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/journal_entry.dart';
 import '../../services/database_service.dart';
 import '../../theme/app_spacing.dart';
@@ -57,6 +58,7 @@ class _EditEntrySheetState extends State<EditEntrySheet> {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
+    final l10n = L10n.of(context)!;
     final label = widget.entry.label;
 
     return Padding(
@@ -81,7 +83,7 @@ class _EditEntrySheetState extends State<EditEntrySheet> {
                 Row(
                   children: [
                     Text(
-                      'Edit Entry',
+                      l10n.editEntry,
                       style: tt.titleLarge?.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
@@ -119,7 +121,7 @@ class _EditEntrySheetState extends State<EditEntrySheet> {
                 IconButton(
                   onPressed: _confirmDelete,
                   icon: Icon(Icons.delete_outline, color: cs.error),
-                  tooltip: 'Delete entry',
+                  tooltip: l10n.deleteEntryTooltip,
                 ),
               ],
             ),
@@ -131,9 +133,11 @@ class _EditEntrySheetState extends State<EditEntrySheet> {
               textCapitalization: TextCapitalization.sentences,
               style: tt.titleMedium?.copyWith(fontWeight: FontWeight.w600),
               decoration: InputDecoration(
-                hintText: 'Title',
-                labelText: 'Title',
-                floatingLabelBehavior: FloatingLabelBehavior.never,
+                hintText: l10n.titleHint,
+                labelText: l10n.titleHint,
+                // WCAG 3.3.2: keep the label visible at all times so users
+                // (and screen readers) always know what the field is for.
+                floatingLabelBehavior: FloatingLabelBehavior.auto,
                 hintStyle: tt.titleMedium?.copyWith(
                   color: cs.onSurfaceVariant.withValues(alpha: 0.55),
                 ),
@@ -157,7 +161,7 @@ class _EditEntrySheetState extends State<EditEntrySheet> {
               ),
 
             // Entry text field
-            _buildEditField(_entryCtrl, 'Entry text...'),
+            _buildEditField(_entryCtrl, l10n.entryTextHint),
 
             const SizedBox(height: AppSpacing.lg),
 
@@ -165,7 +169,7 @@ class _EditEntrySheetState extends State<EditEntrySheet> {
             SizedBox(
               width: double.infinity,
               child: RetraqButton(
-                label: _isSaving ? 'Saving...' : 'Save Changes',
+                label: _isSaving ? l10n.saving : l10n.saveChanges,
                 icon: Icons.check,
                 onPressed: _isSaving ? null : _save,
               ),
@@ -181,6 +185,7 @@ class _EditEntrySheetState extends State<EditEntrySheet> {
   Widget _buildEditField(TextEditingController ctrl, String hint) {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
+    final l10n = L10n.of(context)!;
 
     return Container(
       decoration: BoxDecoration(
@@ -195,8 +200,10 @@ class _EditEntrySheetState extends State<EditEntrySheet> {
         style: tt.bodyLarge,
         decoration: InputDecoration(
           hintText: hint,
-          labelText: 'Entry text',
-          floatingLabelBehavior: FloatingLabelBehavior.never,
+          labelText: l10n.entryTextLabel,
+          // WCAG 3.3.2: keep the label visible at all times so users
+          // (and screen readers) always know what the field is for.
+          floatingLabelBehavior: FloatingLabelBehavior.auto,
           hintStyle: tt.bodyLarge?.copyWith(
             color: cs.onSurfaceVariant.withValues(alpha: 0.55),
           ),
@@ -212,6 +219,7 @@ class _EditEntrySheetState extends State<EditEntrySheet> {
 
   Future<void> _save() async {
     if (!mounted) return;
+    final l10n = L10n.of(context)!;
 
     final titleText = _titleCtrl.text.trim();
     final entryText = _entryCtrl.text.trim();
@@ -219,9 +227,7 @@ class _EditEntrySheetState extends State<EditEntrySheet> {
     // Block saving a completely empty entry (no text, no title, no mood).
     if (titleText.isEmpty && entryText.isEmpty && _mood == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Entry is empty. Add some text, a title, or a mood.'),
-        ),
+        SnackBar(content: Text(l10n.entryEmptyMessage)),
       );
       return;
     }
@@ -248,23 +254,24 @@ class _EditEntrySheetState extends State<EditEntrySheet> {
       if (!mounted) return;
       setState(() => _isSaving = false);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to save. Please try again.')),
+        SnackBar(content: Text(l10n.saveFailedMessage)),
       );
     }
   }
 
   void _confirmDelete() {
     final cs = Theme.of(context).colorScheme;
+    final l10n = L10n.of(context)!;
     showDialog(
       context: context,
       builder:
           (ctx) => AlertDialog(
-            title: const Text('Delete entry?'),
-            content: const Text("This can't be undone."),
+            title: Text(l10n.deleteEntryTitle),
+            content: Text(l10n.deleteEntryMessage),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(ctx).pop(),
-                child: const Text('Cancel'),
+                child: Text(l10n.cancelLabel),
               ),
               TextButton(
                 onPressed: () async {
@@ -281,13 +288,14 @@ class _EditEntrySheetState extends State<EditEntrySheet> {
                     debugPrint('EditEntrySheet._confirmDelete failed: $e');
                     if (!mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Failed to delete. Please try again.'),
-                      ),
+                      SnackBar(content: Text(l10n.deleteFailedMessage)),
                     );
                   }
                 },
-                child: Text('Delete', style: TextStyle(color: cs.error)),
+                child: Text(
+                  l10n.deleteLabel,
+                  style: TextStyle(color: cs.error),
+                ),
               ),
             ],
           ),

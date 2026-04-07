@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import '../../services/secure_storage.dart';
 import '../../theme/app_spacing.dart';
 import '../molecules/number_pad.dart';
 
@@ -114,8 +114,10 @@ class PinSetupSheetState extends State<PinSetupSheet> {
       // Verify match
       if (_enteredPin == _firstPin) {
         // Persist the chosen PIN length to secure storage for lock/verify screens.
-        const secureStorage = FlutterSecureStorage();
-        await secureStorage.write(key: pinLengthPrefKey, value: '$_pinLength');
+        await hardenedSecureStorage.write(
+          key: pinLengthPrefKey,
+          value: '$_pinLength',
+        );
         if (!mounted) return;
         Navigator.of(context).pop(_firstPin);
       } else {

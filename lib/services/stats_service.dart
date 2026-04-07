@@ -509,15 +509,38 @@ class StatsService {
 
   /// Single stream that recomputes all stats when journal_entries changes.
   /// Replaces 4+ independent watch streams with one trigger.
+  ///
+  /// The trigger query selects an aggregate "signature" of every column that
+  /// stats actually depend on (count, sum-of-mood, min/max date). Stats are
+  /// independent of entry text, so editing an entry's body produces an
+  /// identical signature and the cached snapshot is reused — `getAllStats`
+  /// is never run for cosmetic-only writes. The 600ms debounce collapses
+  /// autosave bursts during typing into a single recompute.
   Stream<StatsSnapshot> watchAllStats({int weeks = 12}) {
+    String? lastSignature;
+    StatsSnapshot? cached;
     return _db
         .customSelect(
-          'SELECT COUNT(*) AS c FROM journal_entries',
+          "SELECT COUNT(*) AS c, COALESCE(SUM(mood), 0) AS s, "
+          "COALESCE(MAX(date), 0) AS mx, COALESCE(MIN(date), 0) AS mn, "
+          "COUNT(mood) AS mc "
+          "FROM journal_entries",
           readsFrom: {_db.journalEntries},
         )
-        .watch()
-        .transform(_debounce(const Duration(milliseconds: 300)))
-        .asyncMap((_) => getAllStats(weeks: weeks))
+        .watchSingle()
+        .transform(_debounce(const Duration(milliseconds: 600)))
+        .asyncMap((row) async {
+          final sig =
+              '${row.read<int>('c')}|${row.read<int>('s')}|'
+              '${row.read<int>('mx')}|${row.read<int>('mn')}|'
+              '${row.read<int>('mc')}';
+          final prev = cached;
+          if (sig == lastSignature && prev != null) return prev;
+          lastSignature = sig;
+          final snapshot = await getAllStats(weeks: weeks);
+          cached = snapshot;
+          return snapshot;
+        })
         .distinct()
         .handleError((e) => DatabaseService.logStreamError('watchAllStats', e));
   }

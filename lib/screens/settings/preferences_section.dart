@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/user_settings.dart';
 import '../../theme/app_spacing.dart';
 import '../../utils/date_helpers.dart';
@@ -19,21 +20,22 @@ class PreferencesSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
+    final l10n = L10n.of(context)!;
     final s = settings;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Preferences', style: tt.titleLarge),
+        Text(l10n.preferencesTitle, style: tt.titleLarge),
         const SizedBox(height: AppSpacing.md),
 
         // All Day vs AM/PM
         SettingsRow(
-          title: 'All Day Notes',
-          subtitle: 'One entry or split AM/PM',
+          title: l10n.allDayNotes,
+          subtitle: l10n.allDayNotesSubtitle,
           trailing: SegmentedPill(
-            leftLabel: 'AM/PM',
-            rightLabel: 'All Day',
+            leftLabel: '${l10n.amLabel}/${l10n.pmLabel}',
+            rightLabel: l10n.allDayOption,
             isRightActive: s.isAllDayMode,
             onTapLeft: () => onSettingsChanged(s.copyWith(isAllDayMode: false)),
             onTapRight: () => onSettingsChanged(s.copyWith(isAllDayMode: true)),
@@ -43,12 +45,11 @@ class PreferencesSection extends StatelessWidget {
 
         // Opening behavior
         SettingsRow(
-          title: 'Opening Prompt',
-          subtitle:
-              s.askAboutToday ? 'Asks about today' : 'Asks about yesterday',
+          title: l10n.openingPrompt,
+          subtitle: s.askAboutToday ? l10n.asksAboutToday : l10n.asksAboutYesterday,
           trailing: SegmentedPill(
-            leftLabel: 'Today',
-            rightLabel: 'Yesterday',
+            leftLabel: l10n.todayLabel,
+            rightLabel: l10n.yesterdayLabel,
             isRightActive: !s.askAboutToday,
             onTapLeft: () => onSettingsChanged(s.copyWith(askAboutToday: true)),
             onTapRight:
@@ -59,10 +60,10 @@ class PreferencesSection extends StatelessWidget {
 
         // Journal entry title
         SettingsRow(
-          title: 'Journal Entry Title',
-          subtitle: 'Show or hide title fields in new entries',
+          title: l10n.journalEntryTitle,
+          subtitle: l10n.journalEntryTitleSubtitle,
           trailing: Semantics(
-            label: 'Journal entry title',
+            label: l10n.journalEntryTitle,
             child: Switch(
               value: s.showEntryTitle,
               onChanged:
@@ -75,10 +76,10 @@ class PreferencesSection extends StatelessWidget {
 
         // Mood tracking
         SettingsRow(
-          title: 'Mood Tracking',
-          subtitle: 'Log how you feel with each entry',
+          title: l10n.moodTracking,
+          subtitle: l10n.moodTrackingSubtitle,
           trailing: Semantics(
-            label: 'Mood tracking',
+            label: l10n.moodTracking,
             child: Switch(
               value: s.moodEnabled,
               onChanged:
@@ -100,10 +101,10 @@ class PreferencesSection extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(left: AppSpacing.md),
             child: SettingsRow(
-              title: 'Require Mood',
-              subtitle: 'Must pick a mood before saving',
+              title: l10n.requireMood,
+              subtitle: l10n.requireMoodSubtitle,
               trailing: Semantics(
-                label: 'Require mood selection',
+                label: l10n.requireMood,
                 child: Switch(
                   value: s.moodRequired,
                   onChanged:
@@ -117,10 +118,10 @@ class PreferencesSection extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(left: AppSpacing.md),
             child: SettingsRow(
-              title: 'Mood-Only Entries',
-              subtitle: 'Save entries with just a mood, no text',
+              title: l10n.moodOnlyEntries,
+              subtitle: l10n.moodOnlyEntriesSubtitle,
               trailing: Semantics(
-                label: 'Allow mood-only entries',
+                label: l10n.moodOnlyEntries,
                 child: Switch(
                   value: s.moodOnlyEntries,
                   onChanged:
@@ -135,10 +136,10 @@ class PreferencesSection extends StatelessWidget {
 
         // Bionic Reading
         SettingsRow(
-          title: 'Bionic Reading',
-          subtitle: 'Bolds the start of each word for faster reading',
+          title: l10n.bionicReading,
+          subtitle: l10n.bionicReadingSubtitle,
           trailing: Semantics(
-            label: 'Bionic reading',
+            label: l10n.bionicReading,
             child: Switch(
               value: s.bionicReadingEnabled,
               onChanged:
@@ -154,7 +155,7 @@ class PreferencesSection extends StatelessWidget {
           data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
           child: ExpansionTile(
             title: Text(
-              'Advanced',
+              l10n.advancedTitle,
               style: tt.titleSmall?.copyWith(
                 fontWeight: FontWeight.w600,
                 color: cs.onSurfaceVariant,
@@ -164,10 +165,10 @@ class PreferencesSection extends StatelessWidget {
             childrenPadding: EdgeInsets.zero,
             children: [
               SettingsRow(
-                title: 'Enter to Save',
-                subtitle: 'Press Enter to save entry instead of new line',
+                title: l10n.enterToSave,
+                subtitle: l10n.enterToSaveSubtitle,
                 trailing: Semantics(
-                  label: 'Enter to save',
+                  label: l10n.enterToSave,
                   child: Switch(
                     value: s.enterToSave,
                     onChanged:
@@ -185,10 +186,10 @@ class PreferencesSection extends StatelessWidget {
               const SizedBox(height: AppSpacing.md),
 
               SettingsRow(
-                title: 'Bullet Points on Enter',
-                subtitle: 'Auto-insert • when pressing Enter',
+                title: l10n.bulletPointsOnEnter,
+                subtitle: l10n.bulletPointsSubtitle,
                 trailing: Semantics(
-                  label: 'Bullet points on enter',
+                  label: l10n.bulletPointsOnEnter,
                   child: Switch(
                     value: s.bulletPointsOnEnter,
                     onChanged:
@@ -207,22 +208,31 @@ class PreferencesSection extends StatelessWidget {
               const SizedBox(height: AppSpacing.md),
 
               SettingsRow(
-                title: 'Week Starts On',
-                subtitle: _dayName(s.weekStartDay),
+                title: l10n.weekStartsOn,
+                subtitle: _dayName(l10n, s.weekStartDay),
                 trailing: Semantics(
-                  label: 'Week starts on ${_dayName(s.weekStartDay)}',
+                  label: l10n.weekStartsOnA11y(_dayName(l10n, s.weekStartDay)),
                   child: DropdownButton<int>(
                     value: s.weekStartDay,
                     underline: const SizedBox.shrink(),
                     borderRadius: AppSpacing.borderRadiusLg,
-                    items: const [
-                      DropdownMenuItem(value: 1, child: Text('Monday')),
-                      DropdownMenuItem(value: 2, child: Text('Tuesday')),
-                      DropdownMenuItem(value: 3, child: Text('Wednesday')),
-                      DropdownMenuItem(value: 4, child: Text('Thursday')),
-                      DropdownMenuItem(value: 5, child: Text('Friday')),
-                      DropdownMenuItem(value: 6, child: Text('Saturday')),
-                      DropdownMenuItem(value: 7, child: Text('Sunday')),
+                    items: [
+                      DropdownMenuItem(value: 1, child: Text(l10n.mondayName)),
+                      DropdownMenuItem(value: 2, child: Text(l10n.tuesdayName)),
+                      DropdownMenuItem(
+                        value: 3,
+                        child: Text(l10n.wednesdayName),
+                      ),
+                      DropdownMenuItem(
+                        value: 4,
+                        child: Text(l10n.thursdayName),
+                      ),
+                      DropdownMenuItem(value: 5, child: Text(l10n.fridayName)),
+                      DropdownMenuItem(
+                        value: 6,
+                        child: Text(l10n.saturdayName),
+                      ),
+                      DropdownMenuItem(value: 7, child: Text(l10n.sundayName)),
                     ],
                     onChanged: (v) {
                       if (v == null) return;
@@ -235,10 +245,12 @@ class PreferencesSection extends StatelessWidget {
 
               if (!s.isAllDayMode)
                 SettingsRow(
-                  title: 'AM/PM Switches At',
+                  title: l10n.amPmSwitchesAt,
                   subtitle: formatHour(s.amPmCutoffHour),
                   trailing: Semantics(
-                    label: 'AM/PM switches at ${formatHour(s.amPmCutoffHour)}',
+                    label: l10n.amPmSwitchesAtA11y(
+                      formatHour(s.amPmCutoffHour),
+                    ),
                     child: DropdownButton<int>(
                       value: s.amPmCutoffHour,
                       underline: const SizedBox.shrink(),
@@ -264,16 +276,24 @@ class PreferencesSection extends StatelessWidget {
     );
   }
 
-  static String _dayName(int weekday) {
-    const names = {
-      1: 'Monday',
-      2: 'Tuesday',
-      3: 'Wednesday',
-      4: 'Thursday',
-      5: 'Friday',
-      6: 'Saturday',
-      7: 'Sunday',
-    };
-    return names[weekday] ?? 'Monday';
+  static String _dayName(L10n l10n, int weekday) {
+    switch (weekday) {
+      case 1:
+        return l10n.mondayName;
+      case 2:
+        return l10n.tuesdayName;
+      case 3:
+        return l10n.wednesdayName;
+      case 4:
+        return l10n.thursdayName;
+      case 5:
+        return l10n.fridayName;
+      case 6:
+        return l10n.saturdayName;
+      case 7:
+        return l10n.sundayName;
+      default:
+        return l10n.mondayName;
+    }
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../../l10n/app_localizations.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_spacing.dart';
 
@@ -32,24 +33,28 @@ class CalendarGrid extends StatelessWidget {
   /// 1 = Monday, 7 = Sunday
   final int weekStartDay;
 
-  /// Day-of-week labels in the correct order. Cached per weekStartDay.
-  static final _labelCache = <int, List<String>>{};
-
-  List<String> get _dayLabels {
-    return _labelCache.putIfAbsent(weekStartDay, () {
-      const allLabels = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
-      final startIndex = (weekStartDay - 1) % 7;
-      return [
-        ...allLabels.sublist(startIndex),
-        ...allLabels.sublist(0, startIndex),
-      ];
-    });
+  List<String> _dayLabels(L10n l10n) {
+    final allLabels = [
+      l10n.dayMo,
+      l10n.dayTu,
+      l10n.dayWe,
+      l10n.dayTh,
+      l10n.dayFr,
+      l10n.daySa,
+      l10n.daySu,
+    ];
+    final startIndex = (weekStartDay - 1) % 7;
+    return [
+      ...allLabels.sublist(startIndex),
+      ...allLabels.sublist(0, startIndex),
+    ];
   }
 
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
+    final l10n = L10n.of(context)!;
 
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
@@ -64,7 +69,7 @@ class CalendarGrid extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Month at a glance',
+                l10n.monthAtGlance,
                 style: tt.titleMedium?.copyWith(fontWeight: FontWeight.w600),
               ),
               Row(
@@ -74,7 +79,7 @@ class CalendarGrid extends StatelessWidget {
                     onPressed: onPreviousMonth,
                     iconSize: 20,
                     visualDensity: VisualDensity.compact,
-                    tooltip: 'Previous month',
+                    tooltip: l10n.previousMonth,
                   ),
                   Text(
                     DateFormat('MMMM yyyy').format(month),
@@ -85,7 +90,7 @@ class CalendarGrid extends StatelessWidget {
                     onPressed: onNextMonth,
                     iconSize: 20,
                     visualDensity: VisualDensity.compact,
-                    tooltip: 'Next month',
+                    tooltip: l10n.nextMonth,
                   ),
                 ],
               ),
@@ -97,7 +102,7 @@ class CalendarGrid extends StatelessWidget {
           // ── Day-of-week labels ──
           Row(
             children:
-                _dayLabels
+                _dayLabels(l10n)
                     .map(
                       (d) => Expanded(
                         child: Center(
@@ -210,11 +215,16 @@ class _DayCell extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
+    final l10n = L10n.of(context)!;
+
+    final a11yLabel = StringBuffer(l10n.calendarDayA11y(day));
+    if (isToday) a11yLabel.write(l10n.calendarDayTodaySuffix);
+    if (hasEntry) a11yLabel.write(l10n.calendarDayHasEntriesSuffix);
+    if (isSelected) a11yLabel.write(l10n.calendarDaySelectedSuffix);
 
     return Semantics(
       button: !isDimmed,
-      label:
-          'Day $day${isToday ? ', today' : ''}${hasEntry ? ', has entries' : ''}${isSelected ? ', selected' : ''}',
+      label: a11yLabel.toString(),
       child: InkWell(
         onTap: isDimmed ? null : onTap,
         borderRadius: BorderRadius.circular(26),

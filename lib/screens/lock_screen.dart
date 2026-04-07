@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import '../l10n/app_localizations.dart';
 import '../models/user_settings.dart';
 import '../services/database_service.dart';
 import '../services/lockout_controller.dart';
+import '../services/secure_storage.dart';
 import '../services/settings_repository.dart';
 import '../providers/settings_provider.dart';
 import '../theme/app_spacing.dart';
 import '../widgets/atoms/bionic_text.dart';
 import '../widgets/atoms/retraq_logo.dart';
 import '../widgets/molecules/number_pad.dart';
+import '../widgets/organisms/delete_confirm_dialog.dart';
 import '../widgets/organisms/pin_setup_sheet.dart' show pinLengthPrefKey;
 
 /// Full-screen lock that shows on app open when app lock is enabled.
@@ -51,7 +53,7 @@ class _LockScreenState extends State<LockScreen> {
     // Read configured PIN length (4 or 6, default 4) from secure storage.
     final storedPinLength =
         int.tryParse(
-          await const FlutterSecureStorage().read(key: pinLengthPrefKey) ?? '',
+          await hardenedSecureStorage.read(key: pinLengthPrefKey) ?? '',
         ) ??
         4;
 
@@ -69,9 +71,11 @@ class _LockScreenState extends State<LockScreen> {
 
   Future<void> _tryBiometric() async {
     if (_lockout.isLockedOut) return;
+    if (!mounted) return;
+    final reason = L10n.of(context)!.unlockBiometric;
     try {
       final didAuth = await _auth.authenticate(
-        localizedReason: 'Unlock Retraq',
+        localizedReason: reason,
         options: const AuthenticationOptions(
           stickyAuth: true,
           biometricOnly: true,
@@ -150,105 +154,57 @@ class _LockScreenState extends State<LockScreen> {
     super.dispose();
   }
 
-  String get _statusText {
-    if (_lockout.isLockedOut || _lockout.failedAttempts > 0) {
-      return _lockout.statusText();
+  String _statusText(L10n l10n) {
+    if (_lockout.isLockedOut) {
+      return l10n.lockoutMessage(_lockout.lockoutSecondsLeft);
     }
-    if (_isError) {
-      return _lockout.statusText();
+    if (_lockout.failedAttempts > 0 || _isError) {
+      final remaining = LockoutController.maxAttempts - _lockout.failedAttempts;
+      return l10n.wrongPinMessage(remaining);
     }
-    return 'Enter your PIN';
+    return l10n.enterPin;
   }
 
   void _showForgotPinDialog() {
     final cs = Theme.of(context).colorScheme;
+    final l10n = L10n.of(context)!;
     showDialog(
       context: context,
       builder:
           (ctx) => AlertDialog(
-            title: const Text('Forgot PIN?'),
-            content: const Text(
-              "If you've forgotten your PIN, you can reset the app. "
-              'This will permanently delete all your journal entries and data.',
-            ),
+            title: Text(l10n.forgotPin),
+            content: Text(l10n.forgotPinMessage),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(ctx).pop(),
-                child: const Text('Cancel'),
+                child: Text(l10n.cancelLabel),
               ),
               TextButton(
                 onPressed: () {
                   Navigator.of(ctx).pop();
                   _showDeleteConfirmation();
                 },
-                child: Text('Reset App', style: TextStyle(color: cs.error)),
+                child: Text(
+                  l10n.resetApp,
+                  style: TextStyle(color: cs.error),
+                ),
               ),
             ],
           ),
     );
   }
 
-  void _showDeleteConfirmation() {
-    final cs = Theme.of(context).colorScheme;
-    final controller = TextEditingController();
-    showDialog(
-      context: context,
-      builder:
-          (ctx) => StatefulBuilder(
-            builder:
-                (ctx, setDialogState) => AlertDialog(
-                  title: Text(
-                    'Type DELETE to confirm',
-                    style: TextStyle(color: cs.error),
-                  ),
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Text(
-                        'This action cannot be undone. All data will be permanently erased.',
-                      ),
-                      const SizedBox(height: 16),
-                      TextField(
-                        controller: controller,
-                        autofocus: true,
-                        decoration: const InputDecoration(
-                          hintText: 'Type DELETE',
-                        ),
-                        onChanged: (_) => setDialogState(() {}),
-                      ),
-                    ],
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.of(ctx).pop(),
-                      child: const Text('Cancel'),
-                    ),
-                    TextButton(
-                      onPressed:
-                          controller.text == 'DELETE'
-                              ? () {
-                                Navigator.of(ctx).pop();
-                                DatabaseService.instance.userRepo
-                                    .deleteAllData();
-                              }
-                              : null,
-                      child: Text(
-                        'Delete Everything',
-                        style: TextStyle(
-                          color: controller.text == 'DELETE' ? cs.error : null,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-          ),
-    );
+  Future<void> _showDeleteConfirmation() async {
+    final confirmed = await DeleteConfirmDialog.show(context);
+    if (confirmed != true) return;
+    await DatabaseService.instance.userRepo.deleteAllData();
   }
 
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
+    final l10n = L10n.of(context)!;
 
     return Scaffold(
       backgroundColor: cs.surface,
@@ -264,7 +220,7 @@ class _LockScreenState extends State<LockScreen> {
               Semantics(
                 liveRegion: _isError || _lockout.isLockedOut,
                 child: BionicText(
-                  text: _statusText,
+                  text: _statusText(l10n),
                   style: tt.bodyLarge?.copyWith(
                     color:
                         (_isError || _lockout.isLockedOut)
@@ -302,7 +258,7 @@ class _LockScreenState extends State<LockScreen> {
                   child: TextButton(
                     onPressed: _showForgotPinDialog,
                     child: Text(
-                      'Forgot PIN?',
+                      l10n.forgotPin,
                       style: TextStyle(
                         color: cs.onSurfaceVariant.withValues(alpha: 0.75),
                       ),

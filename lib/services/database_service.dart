@@ -7,13 +7,13 @@ import 'dart:math';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:sqlite3/open.dart';
 import 'package:sqlcipher_flutter_libs/sqlcipher_flutter_libs.dart';
 import 'entry_repository.dart';
 import 'migration_strategy.dart';
+import 'secure_storage.dart';
 import 'settings_repository.dart';
 import 'stats_service.dart';
 import 'user_repository.dart';
@@ -106,7 +106,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 13;
+  int get schemaVersion => 14;
 
   @override
   MigrationStrategy get migration => buildMigrationStrategy(this);
@@ -142,7 +142,7 @@ class DatabaseService {
   late StatsService stats;
   // PinService remains static (no DB dependency) — import pin_service.dart directly.
 
-  static const _secureStorage = FlutterSecureStorage();
+  static const _secureStorage = hardenedSecureStorage;
   static const _dbKeyName = 'retraq_db_key';
 
   static Future<String> _getOrCreateDbKey() async {
@@ -219,11 +219,6 @@ class DatabaseService {
   Future<void> _migrateToEncrypted(File file, String encryptionKey) async {
     // Open unencrypted DB, read all data.
     final oldDb = AppDatabase(NativeDatabase(file));
-    final entryRows = await (oldDb.select(oldDb.journalEntries)).get();
-    final userRows = await (oldDb.select(oldDb.users)).get();
-    final settingsRows = await (oldDb.select(oldDb.userSettingsTable)).get();
-    final consentRows = await (oldDb.select(oldDb.consentRecords)).get();
-    await oldDb.close();
 
     // Rename old file, create encrypted DB, import data.
     final backupFile = File('${file.path}.bak');
@@ -233,10 +228,56 @@ class DatabaseService {
       NativeDatabase(file, setup: (db) => _setupDb(db, encryptionKey)),
     );
 
-    await _db.batch((batch) {
+    try {
+      await copyAllTables(oldDb, _db);
+    } finally {
+      await oldDb.close();
+    }
+
+    // Migration succeeded — securely remove backup.
+    // Overwrite with zeros before deleting to prevent data recovery.
+    try {
+      final bakLength = await backupFile.length();
+      await backupFile.writeAsBytes(Uint8List(bakLength), flush: true);
+      await backupFile.delete();
+    } catch (_) {
+      // Non-critical; leave backup if delete fails.
+    }
+  }
+
+  /// Copy every row from every table in [source] into [target].
+  ///
+  /// MUST copy every column of every row (including nullable ones) so that
+  /// the pre-encryption → encrypted migration does not silently reset any
+  /// user setting to its schema default. Extracted so the column-copy logic
+  /// can be exercised from tests without requiring SQLCipher.
+  @visibleForTesting
+  static Future<void> copyAllTables(
+    AppDatabase source,
+    AppDatabase target,
+  ) async {
+    final entryRows = await source.select(source.journalEntries).get();
+    final userRows = await source.select(source.users).get();
+    final settingsRows = await source.select(source.userSettingsTable).get();
+    final consentRows = await source.select(source.consentRecords).get();
+
+    await target.batch((batch) {
+      // Users MUST be inserted before journal_entries because
+      // journal_entries.user_id has a FK → users.id with PRAGMA foreign_keys=ON.
+      for (final row in userRows) {
+        batch.insert(
+          target.users,
+          UsersCompanion.insert(
+            displayName: Value(row.displayName),
+            email: Value(row.email),
+            subscriptionTier: Value(row.subscriptionTier),
+            createdAt: row.createdAt,
+          ),
+        );
+      }
       for (final row in entryRows) {
         batch.insert(
-          _db.journalEntries,
+          target.journalEntries,
           JournalEntriesCompanion.insert(
             date: row.date,
             entry: Value(row.entry),
@@ -248,20 +289,9 @@ class DatabaseService {
           ),
         );
       }
-      for (final row in userRows) {
-        batch.insert(
-          _db.users,
-          UsersCompanion.insert(
-            displayName: Value(row.displayName),
-            email: Value(row.email),
-            subscriptionTier: Value(row.subscriptionTier),
-            createdAt: row.createdAt,
-          ),
-        );
-      }
       for (final row in settingsRows) {
         batch.insert(
-          _db.userSettingsTable,
+          target.userSettingsTable,
           UserSettingsTableCompanion(
             themeMode: Value(row.themeMode),
             isAllDayMode: Value(row.isAllDayMode),
@@ -277,12 +307,17 @@ class DatabaseService {
             enterToSave: Value(row.enterToSave),
             bulletPointsOnEnter: Value(row.bulletPointsOnEnter),
             amPmCutoffHour: Value(row.amPmCutoffHour),
+            moodEnabled: Value(row.moodEnabled),
+            moodRequired: Value(row.moodRequired),
+            moodOnlyEntries: Value(row.moodOnlyEntries),
+            bionicReadingEnabled: Value(row.bionicReadingEnabled),
+            userId: Value(row.userId),
           ),
         );
       }
       for (final row in consentRows) {
         batch.insert(
-          _db.consentRecords,
+          target.consentRecords,
           ConsentRecordsCompanion.insert(
             consentType: row.consentType,
             documentVersion: row.documentVersion,
@@ -292,16 +327,6 @@ class DatabaseService {
         );
       }
     });
-
-    // Migration succeeded — securely remove backup.
-    // Overwrite with zeros before deleting to prevent data recovery.
-    try {
-      final bakLength = await backupFile.length();
-      await backupFile.writeAsBytes(Uint8List(bakLength), flush: true);
-      await backupFile.delete();
-    } catch (_) {
-      // Non-critical; leave backup if delete fails.
-    }
   }
 
   /// Initialize with an in-memory database (for tests).

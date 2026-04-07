@@ -12,13 +12,7 @@ class L10nEn extends L10n {
   String get appName => 'Retraq';
 
   @override
-  String get appNameSince => 'Since';
-
-  @override
-  String get appNameThen => 'Then';
-
-  @override
-  String get navJournal => 'Journal';
+  String get navJot => 'Jot';
 
   @override
   String get navRecap => 'Recap';
@@ -104,6 +98,12 @@ class L10nEn extends L10n {
   String get yesterdayLabel => 'Yesterday';
 
   @override
+  String get noRecentEntries => 'No traqs yet. Drop a traq?';
+
+  @override
+  String get recentEntriesPlaceholder => 'Your recent traqs will appear here.';
+
+  @override
   String get entrySaved => 'Traq saved';
 
   @override
@@ -125,6 +125,12 @@ class L10nEn extends L10n {
 
   @override
   String get saveFailedMessage => 'Failed to save. Please try again.';
+
+  @override
+  String get writeSomethingFirst => 'Write something first!';
+
+  @override
+  String get pickMoodToSave => 'Pick a mood to save';
 
   @override
   String get milestone1 => 'Your very first traq!';
@@ -178,19 +184,19 @@ class L10nEn extends L10n {
   String get recapTitle => 'Recap';
 
   @override
-  String get searchHint => 'Search traqs...';
+  String get searchHint => 'Search your traqs...';
 
   @override
   String get closeSearch => 'Close search';
 
   @override
-  String get searchEntries => 'Search traqs';
+  String get searchEntries => 'Search your traqs';
 
   @override
   String get searching => 'Searching...';
 
   @override
-  String get noSearchResults => 'No traqs match your search.';
+  String get noSearchResults => 'No traqs found. Try different words.';
 
   @override
   String get weekLabel => 'Week';
@@ -199,14 +205,10 @@ class L10nEn extends L10n {
   String get monthLabel => 'Month';
 
   @override
-  String get weeklyRecap => 'Weekly Recap';
+  String get weeklyRecap => 'Week Retraqd';
 
   @override
-  String weeklyRecapStats(
-    int totalEntries,
-    int activeDays,
-    String preferredTime,
-  ) {
+  String weeklyRecapStats(int totalEntries, int activeDays, String preferredTime) {
     return '$totalEntries traqs · $activeDays days · $preferredTime';
   }
 
@@ -214,8 +216,22 @@ class L10nEn extends L10n {
   String get noEntriesYet => 'No traqs yet';
 
   @override
-  String get noEntriesYetMessage =>
-      'Your traqs will appear here once you start writing.';
+  String get noEntriesYetMessage => 'Your traqs will appear here once you start writing.';
+
+  @override
+  String get noEntriesForWeek => 'No traqs for this week.';
+
+  @override
+  String get previousWeek => 'Previous week';
+
+  @override
+  String get nextWeek => 'Next week';
+
+  @override
+  String get currentWeek => 'Current week';
+
+  @override
+  String get thisWeekLabel => 'This week';
 
   @override
   String get statsTitle => 'Stats';
@@ -227,8 +243,7 @@ class L10nEn extends L10n {
   String get noStatsYet => 'No stats yet';
 
   @override
-  String get noStatsYetMessage =>
-      'Start traqing to see your patterns and streaks.';
+  String get noStatsYetMessage => 'Start traqing to see your patterns and streaks.';
 
   @override
   String get totalEntries => 'Total Traqs';
@@ -285,25 +300,22 @@ class L10nEn extends L10n {
   }
 
   @override
-  String get onboardingTitle1 => 'Your day,\nyour words.';
+  String get onboardingTitle1 => 'How\'ve you been?\nWhat have you\nbeen up to?';
 
   @override
-  String get onboardingBody1 =>
-      'No templates. No pressure.\nJust jot down the highlights.';
+  String get onboardingBody1 => 'If those questions make your\nmind go blank, you\'re in the right place.';
 
   @override
-  String get onboardingTitle2 => 'Look back\nwithout stress.';
+  String get onboardingTitle2 => 'Retraq is your\nmemory backup.';
 
   @override
-  String get onboardingBody2 =>
-      'A simple calendar shows\nwhat you captured each day.';
+  String get onboardingBody2 => 'Jot down anything about your day —\na word, a sentence, whatever.\nAnything is a start.';
 
   @override
-  String get onboardingTitle3 => 'Private\nby default.';
+  String get onboardingTitle3 => 'Start simple.\nThat\'s the whole point.';
 
   @override
-  String get onboardingBody3 =>
-      'Everything stays on your phone.\nNo account needed. Ever.';
+  String get onboardingBody3 => 'Want more features later?\nThey\'re all in settings,\nwaiting for when you\'re ready.';
 
   @override
   String onboardingPageLabel(int current, int total) {
@@ -314,7 +326,7 @@ class L10nEn extends L10n {
   String get nextButton => 'Next';
 
   @override
-  String get getStartedButton => 'Get Started';
+  String get getStartedButton => 'Drop your first traq';
 
   @override
   String get ageGateTitle => 'Before we begin';
@@ -323,12 +335,10 @@ class L10nEn extends L10n {
   String get ageGateDeniedTitle => 'Sorry!';
 
   @override
-  String get ageGateMessage =>
-      'Retraq is designed for users\naged 13 and older.';
+  String get ageGateMessage => 'Retraq is designed for users\naged 13 and older.';
 
   @override
-  String get ageGateDenied =>
-      'Retraq requires users to be 13 years or older.\nPlease come back when you\'re old enough!';
+  String get ageGateDenied => 'Retraq requires users to be 13 years or older.\nPlease come back when you\'re old enough!';
 
   @override
   String get ageConfirmButton => 'I am 13 or older';
@@ -337,18 +347,19 @@ class L10nEn extends L10n {
   String get ageDenyButton => 'I am under 13';
 
   @override
+  String get ageGateContactGuardian => 'If this was entered in error, please contact a parent or guardian.';
+
+  @override
   String get almostThere => 'Almost there!';
 
   @override
-  String get healthDisclaimer =>
-      'Retraq is a personal journaling app — not a medical or therapeutic tool. It does not provide health advice, diagnosis, or treatment. If you are in crisis, please contact a mental health professional or call 988 (Suicide & Crisis Lifeline).';
+  String get healthDisclaimer => 'Retraq is a personal journaling app — not a medical or therapeutic tool. It does not provide health advice, diagnosis, or treatment. If you are in crisis, please contact a mental health professional or call 988 (Suicide & Crisis Lifeline).';
 
   @override
   String get healthDisclaimerCheckbox => 'I acknowledge the Health Disclaimer';
 
   @override
-  String get privacyPolicyCheckbox =>
-      'I have read and agree to the Privacy Policy';
+  String get privacyPolicyCheckbox => 'I have read and agree to the Privacy Policy';
 
   @override
   String get termsCheckbox => 'I agree to the Terms of Use';
@@ -357,8 +368,7 @@ class L10nEn extends L10n {
   String get notificationDialogTitle => 'Stay on track';
 
   @override
-  String get notificationDialogContent =>
-      'A gentle daily reminder can help you build a traqing habit. You can change or turn this off anytime in Settings.';
+  String get notificationDialogContent => 'A gentle daily reminder can help you build a traqing habit. You can change or turn this off anytime in Settings.';
 
   @override
   String get notNow => 'Not now';
@@ -367,10 +377,22 @@ class L10nEn extends L10n {
   String get enableReminders => 'Enable reminders';
 
   @override
+  String get consentSaveFailed => 'Failed to save consent. Please try again.';
+
+  @override
   String get unlockBiometric => 'Unlock Retraq';
 
   @override
   String get enterPin => 'Enter your PIN';
+
+  @override
+  String get forgotPin => 'Forgot PIN?';
+
+  @override
+  String get forgotPinMessage => 'If you\'ve forgotten your PIN, you can reset the app. This will permanently delete all your traqs and data.';
+
+  @override
+  String get resetApp => 'Reset App';
 
   @override
   String wrongPinMessage(int remaining) {
@@ -392,8 +414,7 @@ class L10nEn extends L10n {
   String get updatedPolicies => 'Updated Policies';
 
   @override
-  String get reconsentMessage =>
-      'We\'ve updated our Privacy Policy and/or Terms of Use. Please review and accept to continue.';
+  String get reconsentMessage => 'We\'ve updated our Privacy Policy, Terms of Use, and/or Health Disclaimer. Please review and accept to continue.';
 
   @override
   String get continueButton => 'Continue';
@@ -444,8 +465,13 @@ class L10nEn extends L10n {
   String get biometricUnavailable => 'Biometrics not available on this device';
 
   @override
-  String get biometricEnabled =>
-      'Biometric unlock enabled — you\'ll be prompted next time you open Retraq';
+  String get biometricEnabledMessage => 'Biometric unlock enabled — you\'ll be prompted next time you open Retraq';
+
+  @override
+  String get appLockA11y => 'App lock';
+
+  @override
+  String get biometricUnlockA11y => 'Biometric unlock';
 
   @override
   String get preferencesTitle => 'Preferences';
@@ -472,8 +498,7 @@ class L10nEn extends L10n {
   String get journalEntryTitle => 'Traq Title';
 
   @override
-  String get journalEntryTitleSubtitle =>
-      'Show or hide title fields in new traqs';
+  String get journalEntryTitleSubtitle => 'Show or hide title fields in new traqs';
 
   @override
   String get moodTracking => 'Mood Tracking';
@@ -500,8 +525,7 @@ class L10nEn extends L10n {
   String get enterToSave => 'Enter to Save';
 
   @override
-  String get enterToSaveSubtitle =>
-      'Press Enter to save traq instead of new line';
+  String get enterToSaveSubtitle => 'Press Enter to save traq instead of new line';
 
   @override
   String get bulletPointsOnEnter => 'Bullet Points on Enter';
@@ -510,10 +534,26 @@ class L10nEn extends L10n {
   String get bulletPointsSubtitle => 'Auto-insert • when pressing Enter';
 
   @override
+  String get bionicReading => 'Bionic Reading';
+
+  @override
+  String get bionicReadingSubtitle => 'Bolds the start of each word for faster reading';
+
+  @override
   String get weekStartsOn => 'Week Starts On';
 
   @override
   String get amPmSwitchesAt => 'AM/PM Switches At';
+
+  @override
+  String weekStartsOnA11y(String day) {
+    return 'Week starts on $day';
+  }
+
+  @override
+  String amPmSwitchesAtA11y(String time) {
+    return 'AM/PM switches at $time';
+  }
 
   @override
   String get mondayName => 'Monday';
@@ -561,8 +601,7 @@ class L10nEn extends L10n {
   String get exportScopeTitle => 'Export scope';
 
   @override
-  String get exportScopeContent =>
-      'Export this week\'s traqs or all traqs?\n\nThe exported file will contain your personal traqs and settings. Keep it somewhere safe.';
+  String get exportScopeContent => 'Export this week\'s traqs or all traqs?\n\nThe exported file will contain your personal traqs and settings. Keep it somewhere safe.';
 
   @override
   String get thisWeek => 'This Week';
@@ -576,8 +615,7 @@ class L10nEn extends L10n {
   }
 
   @override
-  String get importConfirmContent =>
-      'This will add traqs from this backup. Duplicates will be skipped.';
+  String get importConfirmContent => 'This will add traqs from this backup. Duplicates will be skipped.';
 
   @override
   String get importButton => 'Import';
@@ -588,12 +626,10 @@ class L10nEn extends L10n {
   }
 
   @override
-  String get importFailed =>
-      'Import failed. The file may be corrupted or in the wrong format.';
+  String get importFailed => 'Import failed. The file may be corrupted or in the wrong format.';
 
   @override
-  String get filePickerFailed =>
-      'Could not open file picker. Please try again.';
+  String get filePickerFailed => 'Could not open file picker. Please try again.';
 
   @override
   String get exportFailed => 'Export failed. Please try again.';
@@ -605,8 +641,7 @@ class L10nEn extends L10n {
   String get deleteAllDataTitle => 'Delete all data?';
 
   @override
-  String get deleteAllDataContent =>
-      'This will permanently delete all traqs and reset your settings. This cannot be undone.\n\nConsider exporting your data first from the options above.';
+  String get deleteAllDataContent => 'This will permanently delete all traqs and reset your settings. This cannot be undone.\n\nConsider exporting your data first from the options above.';
 
   @override
   String get typeDeleteToConfirm => 'Type DELETE to confirm:';
@@ -640,6 +675,9 @@ class L10nEn extends L10n {
 
   @override
   String get saveChanges => 'Save Changes';
+
+  @override
+  String get entryEmptyMessage => 'Traq is empty. Add some text, a title, or a mood.';
 
   @override
   String get entrySavedOverlay => 'Traq saved';
@@ -740,6 +778,28 @@ class L10nEn extends L10n {
   String get daySu => 'Su';
 
   @override
+  String calendarDayA11y(int day) {
+    return 'Day $day';
+  }
+
+  @override
+  String get calendarDayTodaySuffix => ', today';
+
+  @override
+  String get calendarDayHasEntriesSuffix => ', has entries';
+
+  @override
+  String get calendarDaySelectedSuffix => ', selected';
+
+  @override
+  String entryCardA11y(String dateLabel) {
+    return 'Journal traq for $dateLabel';
+  }
+
+  @override
+  String get entryOptionsTooltip => 'Traq options';
+
+  @override
   String themeLabel(String label) {
     return '$label theme';
   }
@@ -832,136 +892,31 @@ class L10nEn extends L10n {
   String get notifTitle => 'Retraq';
 
   @override
-  String get notifMorning0 =>
-      'Good morning! Set an intention for today — even one word counts.';
+  String get notifDaily0 => 'Quick — what happened today? Even one word counts.';
 
   @override
-  String get notifMorning1 =>
-      'Rise and write. What are you looking forward to today?';
+  String get notifDaily1 => '30 seconds. One traq. You\'ll thank yourself later.';
 
   @override
-  String get notifMorning2 =>
-      'Morning check-in: how are you feeling right now?';
+  String get notifDaily2 => 'Jot something down before today disappears.';
 
   @override
-  String get notifMorning3 => 'Start your day with a thought. Retraq is ready.';
+  String get notifDaily3 => 'Future you wants to know what happened today.';
 
   @override
-  String get notifMorning4 =>
-      'A fresh page for a fresh day. What\'s on your mind?';
+  String get notifDaily4 => 'Don\'t let today vanish. Drop a traq.';
 
   @override
-  String get notifEvening0 => 'What happened today? Even one sentence counts.';
+  String get notifWeekly0 => 'Your week\'s been retraqd. Take a look back.';
 
   @override
-  String get notifEvening1 =>
-      'Take a moment to capture today before it slips away.';
+  String get notifWeekly1 => 'Here\'s what you got up to this week.';
 
   @override
-  String get notifEvening2 => 'How was your day? A few words is all it takes.';
+  String get notifReengage0 => 'It\'s been a few days. Drop a quick traq so you don\'t lose the week.';
 
   @override
-  String get notifEvening3 => 'Hey, how did today go? Drop a quick traq.';
-
-  @override
-  String get notifEvening4 => 'What\'s the TL;DR of today?';
-
-  @override
-  String get notifEvening5 => 'Capture the vibe. Was today a 10 or a meh?';
-
-  @override
-  String get notifEvening6 => 'What made today different from yesterday?';
-
-  @override
-  String get notifEvening7 =>
-      'The best time to traq was this morning. The second best time is now.';
-
-  @override
-  String get notifEvening8 =>
-      'What surprised you today? Write it down before you forget.';
-
-  @override
-  String get notifGeneral0 =>
-      'Retraq is waiting. No pressure, just jot something down.';
-
-  @override
-  String get notifGeneral1 =>
-      'Ready to write? Your future self will thank you.';
-
-  @override
-  String get notifGeneral2 => 'Just checking in. What\'s on your mind today?';
-
-  @override
-  String get notifGeneral3 =>
-      'One small traq, one big habit. You\'ve got this.';
-
-  @override
-  String get notifGeneral4 =>
-      'Today deserves to be remembered. What stood out?';
-
-  @override
-  String get notifGeneral5 =>
-      'Your traqs, your pace. Write as much or as little as you\'d like.';
-
-  @override
-  String get notifGeneral6 => 'Time for a brain dump? Open up and let it flow.';
-
-  @override
-  String get notifGeneral7 =>
-      'A quick note now saves a forgotten memory later.';
-
-  @override
-  String get notifGeneral8 =>
-      'Future you is curious about today. Leave a note.';
-
-  @override
-  String get notifGeneral9 => 'Even busy days deserve a sentence or two.';
-
-  @override
-  String get notifGeneral10 => 'You don\'t need perfect words. Just real ones.';
-
-  @override
-  String get notifGeneral11 => 'Quick check: anything worth remembering today?';
-
-  @override
-  String get notifGeneral12 => 'One minute, one traq. You can do this.';
-
-  @override
-  String get notifGeneral13 => 'What would you tell a friend about today?';
-
-  @override
-  String get notifGeneral14 => 'No rules, no word count. Just you and today.';
-
-  @override
-  String get notifGeneral15 => 'A few taps now, a whole memory saved forever.';
-
-  @override
-  String get notifGeneral16 => 'Retraq doesn\'t judge. It just listens.';
-
-  @override
-  String get notifGeneral17 =>
-      'Plot twist: you actually have time for this. Promise.';
-
-  @override
-  String get notifWeekend0 => 'Lazy weekend? Perfect traqing weather.';
-
-  @override
-  String get notifWeekend1 =>
-      'Weekends fly by. Capture this one before it does.';
-
-  @override
-  String get notifWeekend2 => 'No rush today. Take a moment to reflect.';
-
-  @override
-  String get notifStreakRisk0 => 'Your streak called. It misses you.';
-
-  @override
-  String get notifStreakRisk1 =>
-      'Don\'t let today break your streak — one sentence is enough.';
-
-  @override
-  String get notifStreakRisk2 =>
-      'You\'ve been consistent. Keep it going with a quick traq.';
+  String get notifReengage1 => 'Your week is disappearing. Takes 10 seconds to save it.';
 
   @override
   String settingsLegalFooter(String appName, String version) {
@@ -975,9 +930,20 @@ class L10nEn extends L10n {
   String get termsOfService => 'Terms of Service';
 
   @override
+  String get termsOfUse => 'Terms of Use';
+
+  @override
   String get healthDisclaimerTitle => 'Health Disclaimer';
 
   @override
-  String get exportPiiNote =>
-      'The exported file will contain your personal traqs and settings. Keep it somewhere safe.';
+  String get legalFooterTerms => 'Terms';
+
+  @override
+  String get legalFooterHealth => 'Health';
+
+  @override
+  String get legalFooterLicenses => 'Licenses';
+
+  @override
+  String get exportPiiNote => 'The exported file will contain your personal traqs and settings. Keep it somewhere safe.';
 }

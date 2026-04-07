@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import '../../theme/app_spacing.dart';
 import '../atoms/retraq_card.dart';
 import '../atoms/retraq_chip.dart';
@@ -33,10 +34,11 @@ class EntryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tt = Theme.of(context).textTheme;
+    final l10n = L10n.of(context)!;
 
     return Semantics(
       container: true,
-      label: 'Journal entry for $dateLabel',
+      label: l10n.entryCardA11y(dateLabel),
       child: RetraqCard(
         color: color,
         elevation: color == null ? 1 : 0,
@@ -56,7 +58,7 @@ class EntryCard extends StatelessWidget {
                   ),
                   IconButton(
                     onPressed: onMenuTap,
-                    tooltip: 'Entry options',
+                    tooltip: l10n.entryOptionsTooltip,
                     icon: Icon(
                       Icons.more_horiz,
                       color: Theme.of(context).colorScheme.onSurfaceVariant
