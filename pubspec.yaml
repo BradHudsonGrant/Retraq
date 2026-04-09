@@ -36,7 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.8
 
   # Database (Drift — type-safe SQLite)
-  drift: ^2.22.1
+  drift: ^2.31.0
   sqlite3: ^2.7.0
   sqlcipher_flutter_libs: ^0.6.8
   path_provider: ^2.1.0
