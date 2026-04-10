@@ -356,9 +356,10 @@ class _HomeScreenState extends State<HomeScreen>
           const SizedBox(height: AppSpacing.sm),
           if (_yesterdayEntries.isNotEmpty)
             RecentDayCard(
-              label: (_settings?.askAboutToday ?? true)
-                  ? l10n.todayLabel
-                  : l10n.yesterdayLabel,
+              label:
+                  (_settings?.askAboutToday ?? true)
+                      ? l10n.todayLabel
+                      : l10n.yesterdayLabel,
               entries: _yesterdayEntries,
             ),
           if (_dayBeforeEntries.isNotEmpty) ...[

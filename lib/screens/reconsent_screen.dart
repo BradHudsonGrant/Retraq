@@ -55,9 +55,9 @@ class _ReconsentScreenState extends State<ReconsentScreen> {
       debugPrint('Failed to save consent records: $e');
       if (mounted) {
         final l10n = L10n.of(context)!;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.consentSaveFailed)),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(l10n.consentSaveFailed)));
       }
     }
   }

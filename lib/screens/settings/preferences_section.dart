@@ -46,7 +46,8 @@ class PreferencesSection extends StatelessWidget {
         // Opening behavior
         SettingsRow(
           title: l10n.openingPrompt,
-          subtitle: s.askAboutToday ? l10n.asksAboutToday : l10n.asksAboutYesterday,
+          subtitle:
+              s.askAboutToday ? l10n.asksAboutToday : l10n.asksAboutYesterday,
           trailing: SegmentedPill(
             leftLabel: l10n.todayLabel,
             rightLabel: l10n.yesterdayLabel,

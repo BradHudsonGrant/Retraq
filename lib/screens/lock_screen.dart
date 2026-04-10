@@ -184,10 +184,7 @@ class _LockScreenState extends State<LockScreen> {
                   Navigator.of(ctx).pop();
                   _showDeleteConfirmation();
                 },
-                child: Text(
-                  l10n.resetApp,
-                  style: TextStyle(color: cs.error),
-                ),
+                child: Text(l10n.resetApp, style: TextStyle(color: cs.error)),
               ),
             ],
           ),

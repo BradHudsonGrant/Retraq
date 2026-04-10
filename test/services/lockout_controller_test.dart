@@ -46,16 +46,15 @@ void main() {
   });
 
   tearDown(() {
-    const channel = MethodChannel('plugins.it_nomads.com/flutter_secure_storage');
+    const channel = MethodChannel(
+      'plugins.it_nomads.com/flutter_secure_storage',
+    );
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(channel, null);
   });
 
   LockoutController makeController({DateTime Function()? now}) {
-    return LockoutController(
-      storage: const FlutterSecureStorage(),
-      now: now,
-    );
+    return LockoutController(storage: const FlutterSecureStorage(), now: now);
   }
 
   test('1 failure persists across reload', () async {
@@ -68,8 +67,11 @@ void main() {
     // Simulate force-stop + relaunch: brand new controller, same store.
     final c2 = makeController();
     await c2.loadState();
-    expect(c2.failedAttempts, 1,
-        reason: 'Attempt 1 must be persisted, not held only in memory.');
+    expect(
+      c2.failedAttempts,
+      1,
+      reason: 'Attempt 1 must be persisted, not held only in memory.',
+    );
     c2.dispose();
   });
 
@@ -90,9 +92,12 @@ void main() {
     // Force-stop: new controller reads from the same mock store.
     final c2 = makeController();
     await c2.loadState();
-    expect(c2.failedAttempts, 4,
-        reason:
-            'All 4 attempts must be persisted so force-stop cannot reset the counter.');
+    expect(
+      c2.failedAttempts,
+      4,
+      reason:
+          'All 4 attempts must be persisted so force-stop cannot reset the counter.',
+    );
     expect(c2.isLockedOut, false);
     c2.dispose();
   });
@@ -133,41 +138,45 @@ void main() {
   });
 
   test(
-      'clock rewind during lockout does NOT release lockout prematurely',
-      () async {
-    // Fixed "real" time at which the lockout is triggered.
-    final lockoutTime = DateTime(2026, 4, 6, 12, 0, 0);
-    var fakeNow = lockoutTime;
+    'clock rewind during lockout does NOT release lockout prematurely',
+    () async {
+      // Fixed "real" time at which the lockout is triggered.
+      final lockoutTime = DateTime(2026, 4, 6, 12, 0, 0);
+      var fakeNow = lockoutTime;
 
-    // Build a controller that reports [fakeNow] as the current time.
-    final c1 = LockoutController(
-      storage: const FlutterSecureStorage(),
-      now: () => fakeNow,
-    );
+      // Build a controller that reports [fakeNow] as the current time.
+      final c1 = LockoutController(
+        storage: const FlutterSecureStorage(),
+        now: () => fakeNow,
+      );
 
-    // Hit the 5-failure threshold to start a lockout.
-    for (var i = 0; i < 5; i++) {
-      c1.recordFailedAttempt();
-      await c1.pendingWrites;
-    }
-    expect(c1.isLockedOut, true);
-    c1.dispose();
+      // Hit the 5-failure threshold to start a lockout.
+      for (var i = 0; i < 5; i++) {
+        c1.recordFailedAttempt();
+        await c1.pendingWrites;
+      }
+      expect(c1.isLockedOut, true);
+      c1.dispose();
 
-    // Simulate an attacker rewinding the system clock by 1 hour — far further
-    // than the (max 5-minute) lockout window would normally take to expire.
-    fakeNow = lockoutTime.subtract(const Duration(hours: 1));
+      // Simulate an attacker rewinding the system clock by 1 hour — far further
+      // than the (max 5-minute) lockout window would normally take to expire.
+      fakeNow = lockoutTime.subtract(const Duration(hours: 1));
 
-    // Load state on a fresh controller with the rewound clock.
-    final c2 = LockoutController(
-      storage: const FlutterSecureStorage(),
-      now: () => fakeNow,
-    );
-    await c2.loadState();
+      // Load state on a fresh controller with the rewound clock.
+      final c2 = LockoutController(
+        storage: const FlutterSecureStorage(),
+        now: () => fakeNow,
+      );
+      await c2.loadState();
 
-    // The lockout MUST still be active — wall-clock rewind must not release it.
-    expect(c2.isLockedOut, true,
+      // The lockout MUST still be active — wall-clock rewind must not release it.
+      expect(
+        c2.isLockedOut,
+        true,
         reason:
-            'Rewinding the clock before the lockout start must not release the lockout.');
-    c2.dispose();
-  });
+            'Rewinding the clock before the lockout start must not release the lockout.',
+      );
+      c2.dispose();
+    },
+  );
 }

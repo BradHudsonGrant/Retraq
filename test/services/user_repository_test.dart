@@ -51,16 +51,22 @@ void main() {
           documentVersion: currentPrivacyPolicyVersion,
           acceptedAt: now,
         );
-        expect(await repo.needsReconsent(), isTrue,
-            reason: 'terms + health still missing');
+        expect(
+          await repo.needsReconsent(),
+          isTrue,
+          reason: 'terms + health still missing',
+        );
 
         await repo.saveConsentRecord(
           consentType: 'terms_of_service',
           documentVersion: currentTermsOfServiceVersion,
           acceptedAt: now,
         );
-        expect(await repo.needsReconsent(), isTrue,
-            reason: 'health disclaimer still missing');
+        expect(
+          await repo.needsReconsent(),
+          isTrue,
+          reason: 'health disclaimer still missing',
+        );
 
         await repo.saveConsentRecord(
           consentType: 'health_disclaimer',

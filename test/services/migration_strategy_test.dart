@@ -392,8 +392,7 @@ void main() {
       // keep the index in sync for inserts/updates/deletes after migration.
       final day1 = DateTime(2025, 5, 1).millisecondsSinceEpoch ~/ 1000;
       final day2 = DateTime(2025, 5, 2).millisecondsSinceEpoch ~/ 1000;
-      final createdAt =
-          DateTime(2025, 5, 1, 12).millisecondsSinceEpoch ~/ 1000;
+      final createdAt = DateTime(2025, 5, 1, 12).millisecondsSinceEpoch ~/ 1000;
 
       final db = openV3WithFixtures((raw) {
         // Two pre-v14 entries — must be findable via FTS5 after backfill.
@@ -441,8 +440,7 @@ void main() {
         expect(
           cafeHits.length,
           1,
-          reason:
-              'unicode61 remove_diacritics=2 should fold "café" → "cafe"',
+          reason: 'unicode61 remove_diacritics=2 should fold "café" → "cafe"',
         );
 
         // ── Title column is also indexed ──
