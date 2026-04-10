@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:retraq/l10n/app_localizations.dart';
 
 import '../models/journal_entry.dart';
 import '../models/user_settings.dart';
@@ -11,6 +12,7 @@ import '../services/recap_service.dart';
 import '../theme/app_motion.dart';
 import '../theme/app_spacing.dart';
 import '../utils/date_helpers.dart';
+import '../widgets/atoms/retraq_logo.dart';
 import '../utils/entry_action_dialogs.dart';
 import '../utils/test_keys.dart';
 import '../widgets/atoms/glow_box.dart';
@@ -275,13 +277,14 @@ class _RecapScreenState extends State<RecapScreen>
     super.build(context);
     final tt = Theme.of(context).textTheme;
     final cs = Theme.of(context).colorScheme;
+    final l10n = L10n.of(context)!;
     final weekStartDay = _settings?.weekStartDay ?? 1;
 
     final searchButton = IconButton(
       key: TestKeys.recapSearchToggle,
       icon: Icon(_showSearch ? Icons.close : Icons.search),
       onPressed: _toggleSearch,
-      tooltip: _showSearch ? 'Close search' : 'Search entries',
+      tooltip: _showSearch ? l10n.closeSearch : l10n.searchEntries,
     );
 
     final headerRow = Row(
@@ -297,9 +300,15 @@ class _RecapScreenState extends State<RecapScreen>
               curve: AppMotion.emphasizedDecelerate,
             ),
           ],
-          child: Text(
-            'Recap',
-            style: tt.displaySmall?.copyWith(fontWeight: FontWeight.w700),
+          child: Row(
+            children: [
+              const RetraqLogo(size: 22),
+              const SizedBox(width: AppSpacing.sm),
+              Text(
+                l10n.recapTitle,
+                style: tt.displaySmall?.copyWith(fontWeight: FontWeight.w700),
+              ),
+            ],
           ),
         ),
         Animate(

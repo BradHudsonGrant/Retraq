@@ -10,6 +10,7 @@ import '../theme/app_spacing.dart';
 import '../utils/adaptive_layout.dart';
 import '../utils/pin_dialogs.dart';
 import '../utils/test_keys.dart';
+import '../widgets/atoms/retraq_logo.dart';
 import '../widgets/organisms/nudge_card.dart';
 import 'settings/appearance_section.dart';
 import 'settings/data_section.dart';
@@ -111,6 +112,9 @@ class _SettingsScreenState extends State<SettingsScreen>
     final content = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        const SizedBox(height: AppSpacing.lg),
+
+        enter(const RetraqLogo(size: 22), 0),
         const SizedBox(height: AppSpacing.lg),
 
         enter(

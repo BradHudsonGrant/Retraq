@@ -22,6 +22,7 @@ import '../widgets/molecules/segmented_pill.dart';
 import '../widgets/organisms/save_success_overlay.dart';
 import 'home/journal_text_area.dart';
 import '../widgets/atoms/bionic_text.dart';
+import '../widgets/atoms/retraq_logo.dart';
 import 'home/recent_day_card.dart';
 
 /// Home / Journal screen — the entry point of the app.
@@ -202,7 +203,11 @@ class _HomeScreenState extends State<HomeScreen>
   /// Shared journal input widgets used by both tablet and phone layouts.
   List<Widget> _buildJournalContent(ColorScheme cs, TextTheme tt, L10n l10n) {
     return [
-      const SizedBox(height: AppSpacing.xl),
+      const SizedBox(height: AppSpacing.md),
+
+      // Brand mark
+      const RetraqLogo(size: 22),
+      const SizedBox(height: AppSpacing.lg),
 
       // Hero prompt
       Semantics(

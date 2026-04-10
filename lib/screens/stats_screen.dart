@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
+import 'package:retraq/l10n/app_localizations.dart';
 
 import '../models/journal_entry.dart';
 import '../providers/settings_provider.dart';
@@ -12,6 +13,7 @@ import '../theme/app_spacing.dart';
 import '../widgets/atoms/bionic_text.dart';
 import '../widgets/atoms/glow_box.dart';
 import '../widgets/atoms/mood_blob.dart';
+import '../widgets/atoms/retraq_logo.dart';
 import '../utils/adaptive_layout.dart';
 import '../widgets/molecules/mood_selector.dart';
 import '../widgets/molecules/stat_card.dart';
@@ -39,14 +41,14 @@ class _StatsScreenState extends State<StatsScreen>
   /// Entry from exactly one year ago today, if any.
   JournalEntry? _onThisDayEntry;
 
-  static const _dayNames = [
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-    'Sunday',
+  static List<String> _dayNames(L10n l10n) => [
+    l10n.mondayName,
+    l10n.tuesdayName,
+    l10n.wednesdayName,
+    l10n.thursdayName,
+    l10n.fridayName,
+    l10n.saturdayName,
+    l10n.sundayName,
   ];
 
   @override
@@ -152,6 +154,7 @@ class _StatsScreenState extends State<StatsScreen>
   Widget _buildOnThisDayCard(ColorScheme cs, TextTheme tt) {
     final entry = _onThisDayEntry;
     if (entry == null) return const SizedBox.shrink();
+    final l10n = L10n.of(context)!;
 
     final text = entry.displayText;
     final preview = text.length > 150 ? '${text.substring(0, 150)}...' : text;
@@ -183,7 +186,7 @@ class _StatsScreenState extends State<StatsScreen>
                   ),
                   const SizedBox(width: AppSpacing.sm),
                   Text(
-                    'On this day last year...',
+                    l10n.onThisDayLastYear,
                     style: tt.titleSmall?.copyWith(
                       fontWeight: FontWeight.w600,
                       color: cs.onTertiaryContainer,
@@ -219,6 +222,7 @@ class _StatsScreenState extends State<StatsScreen>
   }
 
   Widget _buildHeroStats() {
+    final l10n = L10n.of(context)!;
     return Semantics(
       container: true,
       label: 'Statistics overview',
@@ -226,7 +230,7 @@ class _StatsScreenState extends State<StatsScreen>
         children: [
           Expanded(
             child: StatCard(
-              label: 'Total Entries',
+              label: l10n.totalEntries,
               value: _stats.totalEntries,
               icon: Icons.edit_note,
               delay: 0,
@@ -235,7 +239,7 @@ class _StatsScreenState extends State<StatsScreen>
           const SizedBox(width: AppSpacing.md),
           Expanded(
             child: StatCard(
-              label: 'Days Journaled',
+              label: l10n.daysJournaled,
               value: _stats.totalDays,
               icon: Icons.calendar_today,
               delay: 100,
@@ -247,6 +251,7 @@ class _StatsScreenState extends State<StatsScreen>
   }
 
   Widget _buildStreaksSection(ColorScheme cs, TextTheme tt) {
+    final l10n = L10n.of(context)!;
     return Theme(
       data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
       child: ExpansionTile(
@@ -255,7 +260,7 @@ class _StatsScreenState extends State<StatsScreen>
         childrenPadding: const EdgeInsets.only(bottom: AppSpacing.md),
         leading: Icon(Icons.local_fire_department, color: cs.onSurfaceVariant),
         title: Text(
-          'Streaks',
+          l10n.streaksSection,
           style: tt.titleMedium?.copyWith(fontWeight: FontWeight.w600),
         ),
         children: [
@@ -263,20 +268,20 @@ class _StatsScreenState extends State<StatsScreen>
             children: [
               Expanded(
                 child: StatCard(
-                  label: 'Current Streak',
+                  label: l10n.currentStreak,
                   value: _stats.currentStreak,
                   icon: Icons.local_fire_department,
-                  suffix: 'days',
+                  suffix: l10n.daysSuffix,
                   delay: 0,
                 ),
               ),
               const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: StatCard(
-                  label: 'Best Streak',
+                  label: l10n.bestStreak,
                   value: _stats.longestStreak,
                   icon: Icons.emoji_events,
-                  suffix: 'days',
+                  suffix: l10n.daysSuffix,
                   delay: 100,
                 ),
               ),
@@ -287,10 +292,10 @@ class _StatsScreenState extends State<StatsScreen>
             children: [
               Expanded(
                 child: StatCard(
-                  label: 'Longest This Month',
+                  label: l10n.longestThisMonth,
                   value: _stats.longestStreakThisMonth,
                   icon: Icons.date_range,
-                  suffix: 'days',
+                  suffix: l10n.daysSuffix,
                   delay: 200,
                 ),
               ),
@@ -306,6 +311,7 @@ class _StatsScreenState extends State<StatsScreen>
   Widget _buildFreezeIndicator() {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
+    final l10n = L10n.of(context)!;
     return Container(
       height: 90,
       padding: const EdgeInsets.all(AppSpacing.md),
@@ -328,7 +334,7 @@ class _StatsScreenState extends State<StatsScreen>
               const SizedBox(width: AppSpacing.xs),
               Flexible(
                 child: Text(
-                  'Streak Freeze',
+                  l10n.streakFreeze,
                   style: tt.labelMedium?.copyWith(color: cs.onSurfaceVariant),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -337,7 +343,7 @@ class _StatsScreenState extends State<StatsScreen>
           ),
           const SizedBox(height: AppSpacing.xs),
           BionicText(
-            text: _stats.freezeAvailable ? '1 available' : 'Used this week',
+            text: _stats.freezeAvailable ? l10n.streakFreezeAvailable : l10n.streakFreezeUsed,
             style: tt.bodyMedium?.copyWith(
               fontWeight: FontWeight.w600,
               color: _stats.freezeAvailable ? cs.primary : cs.onSurfaceVariant,
@@ -355,6 +361,8 @@ class _StatsScreenState extends State<StatsScreen>
     if (_stats.mostActiveWeekday < 1 || _stats.mostActiveWeekday > 7) {
       return const SizedBox.shrink();
     }
+    final l10n = L10n.of(context)!;
+    final dayName = _dayNames(l10n)[_stats.mostActiveWeekday - 1];
     return Padding(
       padding: const EdgeInsets.only(top: AppSpacing.md),
       child: Row(
@@ -362,7 +370,7 @@ class _StatsScreenState extends State<StatsScreen>
           Icon(Icons.insights, size: 18, color: cs.onSurfaceVariant),
           const SizedBox(width: AppSpacing.sm),
           BionicText(
-            text: 'Most active day: ${_dayNames[_stats.mostActiveWeekday - 1]}',
+            text: l10n.mostActiveDay(dayName),
             style: tt.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
             enabled:
                 SettingsProvider.maybeOf(context)?.bionicReadingEnabled ??
@@ -377,12 +385,13 @@ class _StatsScreenState extends State<StatsScreen>
     if (_stats.averageMood == null || _stats.moodDistribution.isEmpty) {
       return const SizedBox.shrink();
     }
+    final l10n = L10n.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: AppSpacing.xl),
         Text(
-          'Mood',
+          l10n.moodTitle,
           style: tt.titleLarge?.copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: AppSpacing.md),
@@ -408,7 +417,7 @@ class _StatsScreenState extends State<StatsScreen>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Average: ${_stats.averageMood!.toStringAsFixed(1)}',
+                    l10n.moodAverage(_stats.averageMood!.toStringAsFixed(1)),
                     style: tt.titleMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
@@ -488,6 +497,7 @@ class _StatsScreenState extends State<StatsScreen>
     final dist = _stats.moodDistribution;
     final maxCount = dist.values.fold<int>(0, (a, b) => a > b ? a : b);
     if (maxCount == 0) return const SizedBox.shrink();
+    final l10n = L10n.of(context)!;
 
     return Container(
       width: double.infinity,
@@ -500,7 +510,7 @@ class _StatsScreenState extends State<StatsScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Distribution',
+            l10n.moodDistribution,
             style: tt.titleSmall?.copyWith(
               fontWeight: FontWeight.w600,
               color: cs.onSurfaceVariant,
@@ -558,6 +568,7 @@ class _StatsScreenState extends State<StatsScreen>
     super.build(context);
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
+    final l10n = L10n.of(context)!;
 
     // Gradient sits OUTSIDE SafeArea so it paints behind the status bar,
     // flowing the system chrome into the Stats header. Only the scroll
@@ -603,16 +614,22 @@ class _StatsScreenState extends State<StatsScreen>
                       curve: AppMotion.emphasizedDecelerate,
                     ),
                   ],
-                  child: Text(
-                    'Stats',
-                    style: tt.displaySmall?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
+                  child: Row(
+                    children: [
+                      const RetraqLogo(size: 22),
+                      const SizedBox(width: AppSpacing.sm),
+                      Text(
+                        l10n.statsTitle,
+                        style: tt.displaySmall?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: AppSpacing.xs),
                 BionicText(
-                  text: 'Your journey so far.',
+                  text: l10n.statsSubtitle,
                   style: tt.bodyLarge?.copyWith(color: cs.onSurfaceVariant),
                   enabled:
                       SettingsProvider.maybeOf(context)?.bionicReadingEnabled ??
@@ -640,7 +657,7 @@ class _StatsScreenState extends State<StatsScreen>
                           ),
                           const SizedBox(height: AppSpacing.md),
                           Text(
-                            'No stats yet',
+                            l10n.noStatsYet,
                             style: tt.titleMedium?.copyWith(
                               fontWeight: FontWeight.w600,
                               color: cs.onSurfaceVariant,
@@ -648,8 +665,7 @@ class _StatsScreenState extends State<StatsScreen>
                           ),
                           const SizedBox(height: AppSpacing.xs),
                           BionicText(
-                            text:
-                                'Start journaling to see your patterns and streaks.',
+                            text: l10n.noStatsYetMessage,
                             textAlign: TextAlign.center,
                             style: tt.bodyMedium?.copyWith(
                               color: cs.onSurfaceVariant.withValues(
