@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/journal_entry.dart';
 import '../../services/database_service.dart';
+import '../../theme/app_motion.dart';
 import '../../theme/app_spacing.dart';
 import '../atoms/retraq_button.dart';
 import '../molecules/mood_selector.dart';
@@ -72,111 +74,122 @@ class _EditEntrySheetState extends State<EditEntrySheet> {
           AppSpacing.lg,
           AppSpacing.lg,
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      l10n.editEntry,
-                      style: tt.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w700,
+        child: Animate(
+          effects: [
+            FadeEffect(duration: 380.ms, curve: Curves.easeOut),
+            SlideEffect(
+              begin: const Offset(0, 0.04),
+              end: Offset.zero,
+              duration: 420.ms,
+              curve: AppMotion.emphasizedDecelerate,
+            ),
+          ],
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        l10n.editEntry,
+                        style: tt.titleLarge?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
-                    ),
-                    if (label != null) ...[
-                      const SizedBox(width: AppSpacing.sm),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.sm,
-                          vertical: 2,
-                        ),
-                        decoration: BoxDecoration(
-                          color:
-                              label == 'AM'
-                                  ? cs.primaryContainer
-                                  : cs.tertiaryContainer,
-                          borderRadius: BorderRadius.circular(
-                            AppSpacing.radiusSm,
+                      if (label != null) ...[
+                        const SizedBox(width: AppSpacing.sm),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.sm,
+                            vertical: 2,
                           ),
-                        ),
-                        child: Text(
-                          label,
-                          style: tt.labelSmall?.copyWith(
-                            fontWeight: FontWeight.w600,
+                          decoration: BoxDecoration(
                             color:
                                 label == 'AM'
-                                    ? cs.onPrimaryContainer
-                                    : cs.onTertiaryContainer,
+                                    ? cs.primaryContainer
+                                    : cs.tertiaryContainer,
+                            borderRadius: BorderRadius.circular(
+                              AppSpacing.radiusSm,
+                            ),
+                          ),
+                          child: Text(
+                            label,
+                            style: tt.labelSmall?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color:
+                                  label == 'AM'
+                                      ? cs.onPrimaryContainer
+                                      : cs.onTertiaryContainer,
+                            ),
                           ),
                         ),
-                      ),
+                      ],
                     ],
-                  ],
-                ),
-                IconButton(
-                  onPressed: _confirmDelete,
-                  icon: Icon(Icons.delete_outline, color: cs.error),
-                  tooltip: l10n.deleteEntryTooltip,
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.md),
-
-            // Title field
-            TextField(
-              controller: _titleCtrl,
-              textCapitalization: TextCapitalization.sentences,
-              style: tt.titleMedium?.copyWith(fontWeight: FontWeight.w600),
-              decoration: InputDecoration(
-                hintText: l10n.titleHint,
-                labelText: l10n.titleHint,
-                // WCAG 3.3.2: keep the label visible at all times so users
-                // (and screen readers) always know what the field is for.
-                floatingLabelBehavior: FloatingLabelBehavior.auto,
-                hintStyle: tt.titleMedium?.copyWith(
-                  color: cs.onSurfaceVariant.withValues(alpha: 0.55),
-                ),
-                filled: false,
-                border: InputBorder.none,
-                enabledBorder: InputBorder.none,
-                focusedBorder: InputBorder.none,
+                  ),
+                  IconButton(
+                    onPressed: _confirmDelete,
+                    icon: Icon(Icons.delete_outline, color: cs.error),
+                    tooltip: l10n.deleteEntryTooltip,
+                  ),
+                ],
               ),
-            ),
-            Divider(color: cs.outlineVariant),
-            const SizedBox(height: AppSpacing.sm),
+              const SizedBox(height: AppSpacing.md),
 
-            // Mood selector
-            if (widget.entry.mood != null || _mood != null)
-              Padding(
-                padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                child: MoodSelector(
-                  selectedMood: _mood,
-                  onChanged: (v) => setState(() => _mood = v),
+              // Title field
+              TextField(
+                controller: _titleCtrl,
+                textCapitalization: TextCapitalization.sentences,
+                style: tt.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                decoration: InputDecoration(
+                  hintText: l10n.titleHint,
+                  labelText: l10n.titleHint,
+                  // WCAG 3.3.2: keep the label visible at all times so users
+                  // (and screen readers) always know what the field is for.
+                  floatingLabelBehavior: FloatingLabelBehavior.auto,
+                  hintStyle: tt.titleMedium?.copyWith(
+                    color: cs.onSurfaceVariant.withValues(alpha: 0.55),
+                  ),
+                  filled: false,
+                  border: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
                 ),
               ),
+              Divider(color: cs.outlineVariant),
+              const SizedBox(height: AppSpacing.sm),
 
-            // Entry text field
-            _buildEditField(_entryCtrl, l10n.entryTextHint),
+              // Mood selector
+              if (widget.entry.mood != null || _mood != null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                  child: MoodSelector(
+                    selectedMood: _mood,
+                    onChanged: (v) => setState(() => _mood = v),
+                  ),
+                ),
 
-            const SizedBox(height: AppSpacing.lg),
+              // Entry text field
+              _buildEditField(_entryCtrl, l10n.entryTextHint),
 
-            // Save button
-            SizedBox(
-              width: double.infinity,
-              child: RetraqButton(
-                label: _isSaving ? l10n.saving : l10n.saveChanges,
-                icon: Icons.check,
-                onPressed: _isSaving ? null : _save,
+              const SizedBox(height: AppSpacing.lg),
+
+              // Save button
+              SizedBox(
+                width: double.infinity,
+                child: RetraqButton(
+                  label: _isSaving ? l10n.saving : l10n.saveChanges,
+                  icon: Icons.check,
+                  onPressed: _isSaving ? null : _save,
+                ),
               ),
-            ),
 
-            const SizedBox(height: AppSpacing.sm),
-          ],
+              const SizedBox(height: AppSpacing.sm),
+            ],
+          ),
         ),
       ),
     );
@@ -226,9 +239,9 @@ class _EditEntrySheetState extends State<EditEntrySheet> {
 
     // Block saving a completely empty entry (no text, no title, no mood).
     if (titleText.isEmpty && entryText.isEmpty && _mood == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.entryEmptyMessage)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.entryEmptyMessage)));
       return;
     }
 
@@ -253,9 +266,9 @@ class _EditEntrySheetState extends State<EditEntrySheet> {
       debugPrint('EditEntrySheet._save failed: $e');
       if (!mounted) return;
       setState(() => _isSaving = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.saveFailedMessage)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.saveFailedMessage)));
     }
   }
 

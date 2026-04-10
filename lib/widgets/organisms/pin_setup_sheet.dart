@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../../services/secure_storage.dart';
+import '../../theme/app_motion.dart';
 import '../../theme/app_spacing.dart';
 import '../molecules/number_pad.dart';
 
@@ -153,20 +155,40 @@ class PinSetupSheetState extends State<PinSetupSheet> {
           children: [
             const SizedBox(height: AppSpacing.md),
 
-            Text(
-              _title,
-              style: tt.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
+            Animate(
+              effects: [
+                FadeEffect(duration: 360.ms, curve: Curves.easeOut),
+                SlideEffect(
+                  begin: const Offset(0, 0.06),
+                  end: Offset.zero,
+                  duration: 400.ms,
+                  curve: AppMotion.emphasizedDecelerate,
+                ),
+              ],
+              child: Text(
+                _title,
+                style: tt.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
+              ),
             ),
             const SizedBox(height: AppSpacing.sm),
             Semantics(
               liveRegion: true,
-              child: Text(
-                _subtitle,
-                style: tt.bodyMedium?.copyWith(
-                  color:
-                      (_isError || _isDenylisted)
-                          ? cs.error
-                          : cs.onSurfaceVariant,
+              child: Animate(
+                effects: [
+                  FadeEffect(
+                    delay: 80.ms,
+                    duration: 360.ms,
+                    curve: Curves.easeOut,
+                  ),
+                ],
+                child: Text(
+                  _subtitle,
+                  style: tt.bodyMedium?.copyWith(
+                    color:
+                        (_isError || _isDenylisted)
+                            ? cs.error
+                            : cs.onSurfaceVariant,
+                  ),
                 ),
               ),
             ),

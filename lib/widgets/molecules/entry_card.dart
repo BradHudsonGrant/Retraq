@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import '../../theme/app_spacing.dart';
+import '../atoms/mood_blob.dart';
 import '../atoms/retraq_card.dart';
 import '../atoms/retraq_chip.dart';
 import 'mood_selector.dart';
@@ -71,9 +72,13 @@ class EntryCard extends StatelessWidget {
                 const SizedBox(height: AppSpacing.sm),
                 Row(
                   children: [
-                    Text(
-                      moodEmoji(mood!),
-                      style: const TextStyle(fontSize: 16),
+                    MoodBlob(
+                      mood: mood!,
+                      size: 18,
+                      color: moodColorFor(
+                        mood!,
+                        Theme.of(context).brightness,
+                      ),
                     ),
                     const SizedBox(width: AppSpacing.xs),
                     Text(

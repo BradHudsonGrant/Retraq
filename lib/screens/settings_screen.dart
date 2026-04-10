@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../models/user_settings.dart';
 import '../providers/settings_provider.dart';
 import '../services/database_service.dart';
 import '../services/settings_repository.dart';
 import '../services/notification_service.dart';
+import '../theme/app_motion.dart';
 import '../theme/app_spacing.dart';
 import '../utils/adaptive_layout.dart';
 import '../utils/pin_dialogs.dart';
+import '../utils/test_keys.dart';
 import '../widgets/organisms/nudge_card.dart';
 import 'settings/appearance_section.dart';
 import 'settings/data_section.dart';
@@ -30,7 +33,11 @@ class SettingsScreen extends StatefulWidget {
   State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
+class _SettingsScreenState extends State<SettingsScreen>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   final SettingsRepository _settingsRepo = DatabaseService.instance.settings;
 
   UserSettings get _settings => SettingsProvider.of(context);
@@ -78,41 +85,90 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final s = _settings;
+
+    Widget enter(Widget child, int delayMs) {
+      return Animate(
+        effects: [
+          FadeEffect(
+            delay: delayMs.ms,
+            duration: 450.ms,
+            curve: Curves.easeOut,
+          ),
+          SlideEffect(
+            delay: delayMs.ms,
+            begin: const Offset(0, 0.08),
+            end: Offset.zero,
+            duration: 500.ms,
+            curve: AppMotion.emphasizedDecelerate,
+          ),
+        ],
+        child: child,
+      );
+    }
 
     final content = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: AppSpacing.lg),
 
-        AppearanceSection(
-          themeMode: widget.themeMode,
-          onThemeModeChanged: widget.onThemeModeChanged,
+        enter(
+          AppearanceSection(
+            key: TestKeys.settingsAppearanceSection,
+            themeMode: widget.themeMode,
+            onThemeModeChanged: widget.onThemeModeChanged,
+          ),
+          0,
         ),
 
         const SizedBox(height: AppSpacing.xl),
 
-        PreferencesSection(settings: s, onSettingsChanged: _save),
-
-        const SizedBox(height: AppSpacing.xl),
-
-        SecuritySection(settings: s, onSettingsChanged: _save),
-
-        const SizedBox(height: AppSpacing.xl),
-
-        NudgeCard(
-          nudgeHour: s.nudgeHour,
-          nudgeMinute: s.nudgeMinute,
-          onChangeTime: () => _showTimePicker(context),
+        enter(
+          PreferencesSection(
+            key: TestKeys.settingsPreferencesSection,
+            settings: s,
+            onSettingsChanged: _save,
+          ),
+          60,
         ),
 
         const SizedBox(height: AppSpacing.xl),
 
-        DataSection(verifyPinIfNeeded: _verifyPinIfNeeded),
+        enter(
+          SecuritySection(
+            key: TestKeys.settingsSecuritySection,
+            settings: s,
+            onSettingsChanged: _save,
+          ),
+          120,
+        ),
 
         const SizedBox(height: AppSpacing.xl),
 
-        const LegalFooter(),
+        enter(
+          NudgeCard(
+            key: TestKeys.settingsNudgeCard,
+            nudgeHour: s.nudgeHour,
+            nudgeMinute: s.nudgeMinute,
+            onChangeTime: () => _showTimePicker(context),
+          ),
+          180,
+        ),
+
+        const SizedBox(height: AppSpacing.xl),
+
+        enter(
+          DataSection(
+            key: TestKeys.settingsDataSection,
+            verifyPinIfNeeded: _verifyPinIfNeeded,
+          ),
+          240,
+        ),
+
+        const SizedBox(height: AppSpacing.xl),
+
+        enter(const LegalFooter(key: TestKeys.settingsLegalFooter), 300),
 
         const SizedBox(height: AppSpacing.navBarClearance),
       ],

@@ -9,7 +9,9 @@ import '../services/secure_storage.dart';
 import '../services/settings_repository.dart';
 import '../providers/settings_provider.dart';
 import '../theme/app_spacing.dart';
+import '../widgets/atoms/animated_mesh_background.dart';
 import '../widgets/atoms/bionic_text.dart';
+import '../widgets/atoms/glow_box.dart';
 import '../widgets/atoms/retraq_logo.dart';
 import '../widgets/molecules/number_pad.dart';
 import '../widgets/organisms/delete_confirm_dialog.dart';
@@ -184,10 +186,7 @@ class _LockScreenState extends State<LockScreen> {
                   Navigator.of(ctx).pop();
                   _showDeleteConfirmation();
                 },
-                child: Text(
-                  l10n.resetApp,
-                  style: TextStyle(color: cs.error),
-                ),
+                child: Text(l10n.resetApp, style: TextStyle(color: cs.error)),
               ),
             ],
           ),
@@ -208,68 +207,96 @@ class _LockScreenState extends State<LockScreen> {
 
     return Scaffold(
       backgroundColor: cs.surface,
-      body: SafeArea(
-        child: Padding(
-          padding: AppSpacing.pagePadding,
-          child: Column(
-            children: [
-              const Spacer(flex: 2),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          // Drifting mesh backdrop — adds depth without distracting from PIN.
+          Positioned.fill(
+            child: AnimatedMeshBackground(
+              colors: [
+                cs.primary.withValues(alpha: 0.35),
+                cs.tertiary.withValues(alpha: 0.25),
+                cs.secondaryContainer.withValues(alpha: 0.30),
+              ],
+              baseColor: cs.surface,
+              opacity: 0.55,
+            ),
+          ),
+          SafeArea(
+            child: Padding(
+              padding: AppSpacing.pagePadding,
+              child: Column(
+                children: [
+                  const Spacer(flex: 2),
 
-              const _AnimatedLogo(),
-              const SizedBox(height: AppSpacing.sm),
-              Semantics(
-                liveRegion: _isError || _lockout.isLockedOut,
-                child: BionicText(
-                  text: _statusText(l10n),
-                  style: tt.bodyLarge?.copyWith(
-                    color:
-                        (_isError || _lockout.isLockedOut)
-                            ? cs.error
-                            : cs.onSurfaceVariant,
+                  GlowBox(
+                    color: cs.primary,
+                    glowOpacity: 0.55,
+                    blurRadius: 36,
+                    spreadRadius: 6,
+                    shape: BoxShape.circle,
+                    child: const _AnimatedLogo(),
                   ),
-                  enabled:
-                      SettingsProvider.maybeOf(context)?.bionicReadingEnabled ??
-                      false,
-                ),
-              ),
-
-              const SizedBox(height: AppSpacing.xl),
-
-              // PIN dots
-              PinDots(
-                length: _enteredPin.length,
-                maxLength: _pinLength,
-                isError: _isError,
-              ),
-
-              const Spacer(),
-
-              NumberPad(
-                onDigit: _onDigit,
-                onDelete: _onDelete,
-                onBiometric:
-                    _settings?.biometricEnabled == true ? _tryBiometric : null,
-                isDisabled: _lockout.isLockedOut,
-              ),
-
-              if (_lockout.lockoutCount >= 2)
-                Padding(
-                  padding: const EdgeInsets.only(top: AppSpacing.md),
-                  child: TextButton(
-                    onPressed: _showForgotPinDialog,
-                    child: Text(
-                      l10n.forgotPin,
-                      style: TextStyle(
-                        color: cs.onSurfaceVariant.withValues(alpha: 0.75),
+                  const SizedBox(height: AppSpacing.sm),
+                  Semantics(
+                    liveRegion: _isError || _lockout.isLockedOut,
+                    child: BionicText(
+                      text: _statusText(l10n),
+                      style: tt.bodyLarge?.copyWith(
+                        color:
+                            (_isError || _lockout.isLockedOut)
+                                ? cs.error
+                                : cs.onSurfaceVariant,
                       ),
+                      enabled:
+                          SettingsProvider.maybeOf(
+                            context,
+                          )?.bionicReadingEnabled ??
+                          false,
                     ),
                   ),
-                ),
 
-              const SizedBox(height: AppSpacing.xl),
-            ],
+                  const SizedBox(height: AppSpacing.xl),
+
+                  // PIN dots
+                  PinDots(
+                    length: _enteredPin.length,
+                    maxLength: _pinLength,
+                    isError: _isError,
+                  ),
+
+                  const Spacer(),
+
+                  NumberPad(
+                    onDigit: _onDigit,
+                    onDelete: _onDelete,
+                    onBiometric:
+                        _settings?.biometricEnabled == true
+                            ? _tryBiometric
+                            : null,
+                    isDisabled: _lockout.isLockedOut,
+                  ),
+
+                  if (_lockout.lockoutCount >= 2)
+                    Padding(
+                      padding: const EdgeInsets.only(top: AppSpacing.md),
+                      child: TextButton(
+                        onPressed: _showForgotPinDialog,
+                        child: Text(
+                          l10n.forgotPin,
+                          style: TextStyle(
+                            color: cs.onSurfaceVariant.withValues(alpha: 0.75),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                  const SizedBox(height: AppSpacing.xl),
+                ],
+              ),
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

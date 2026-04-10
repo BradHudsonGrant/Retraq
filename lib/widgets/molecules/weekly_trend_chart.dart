@@ -317,6 +317,17 @@ class _TrendChartPainter extends CustomPainter {
         topRight: const Radius.circular(_barRadius),
       );
 
+      // Soft outer glow halo behind the highlighted bar so the user can see
+      // exactly which week they tapped without flashing colours.
+      if (i == highlightedIndex) {
+        canvas.drawRRect(
+          rRect.inflate(2),
+          Paint()
+            ..color = primary.withValues(alpha: 0.45)
+            ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6),
+        );
+      }
+
       canvas.drawRRect(rRect, Paint()..color = barColor);
 
       // ── Accent glow on latest bar when it's the highest ──

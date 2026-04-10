@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../l10n/app_localizations.dart';
 import '../legal/health_disclaimer.dart';
 import '../legal/privacy_policy.dart';
 import '../legal/terms_of_service.dart';
 import '../services/database_service.dart';
 import '../services/user_repository.dart';
+import '../theme/app_motion.dart';
 import '../theme/app_spacing.dart';
 import '../utils/app_info.dart' as info;
+import '../widgets/atoms/glow_box.dart';
 import 'legal_screen.dart';
 
 /// Shown when the user has already completed onboarding but the privacy
@@ -55,9 +58,9 @@ class _ReconsentScreenState extends State<ReconsentScreen> {
       debugPrint('Failed to save consent records: $e');
       if (mounted) {
         final l10n = L10n.of(context)!;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.consentSaveFailed)),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(l10n.consentSaveFailed)));
       }
     }
   }
@@ -77,7 +80,38 @@ class _ReconsentScreenState extends State<ReconsentScreen> {
             children: [
               const SizedBox(height: AppSpacing.xxl),
               Center(
-                child: Icon(Icons.policy_outlined, size: 64, color: cs.primary),
+                child: Animate(
+                  effects: [
+                    FadeEffect(duration: 500.ms, curve: Curves.easeOut),
+                    ScaleEffect(
+                      begin: const Offset(0.85, 0.85),
+                      end: const Offset(1.0, 1.0),
+                      duration: 600.ms,
+                      curve: AppMotion.springSmooth,
+                    ),
+                  ],
+                  child: GlowBox(
+                    color: cs.primary,
+                    glowOpacity: 0.55,
+                    blurRadius: 32,
+                    spreadRadius: 4,
+                    shape: BoxShape.circle,
+                    child: Container(
+                      width: 96,
+                      height: 96,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: cs.primaryContainer,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.policy_outlined,
+                        size: 48,
+                        color: cs.onPrimaryContainer,
+                      ),
+                    ),
+                  ),
+                ),
               ),
               const SizedBox(height: AppSpacing.lg),
               Center(
@@ -151,20 +185,32 @@ class _ReconsentScreenState extends State<ReconsentScreen> {
               ),
               const SizedBox(height: AppSpacing.xl),
               Center(
-                child: FilledButton(
-                  onPressed:
-                      _privacyAccepted &&
+                child: GlowBox(
+                  color: cs.primary,
+                  glowOpacity:
+                      (_privacyAccepted &&
                               _termsAccepted &&
-                              _healthDisclaimerAccepted
-                          ? _submit
-                          : null,
-                  style: FilledButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.lg,
-                      vertical: AppSpacing.md,
+                              _healthDisclaimerAccepted)
+                          ? 0.55
+                          : 0.0,
+                  blurRadius: 26,
+                  spreadRadius: 2,
+                  borderRadius: AppSpacing.borderRadiusFull,
+                  child: FilledButton(
+                    onPressed:
+                        _privacyAccepted &&
+                                _termsAccepted &&
+                                _healthDisclaimerAccepted
+                            ? _submit
+                            : null,
+                    style: FilledButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.lg,
+                        vertical: AppSpacing.md,
+                      ),
                     ),
+                    child: Text(l10n.continueButton, style: tt.labelLarge),
                   ),
-                  child: Text(l10n.continueButton, style: tt.labelLarge),
                 ),
               ),
             ],

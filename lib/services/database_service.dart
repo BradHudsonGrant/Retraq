@@ -49,6 +49,11 @@ class Users extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get displayName => text().nullable()();
   TextColumn get email => text().nullable()();
+  // Cached subscription tier — INFORMATIONAL ONLY. Do NOT use this column to
+  // gate premium features. The source of truth is RevenueCat: any paywall
+  // check must call Purchases.getCustomerInfo() and read entitlements live.
+  // This field exists so the UI can show a tier label without waiting on
+  // network, and so an export can include the user's last-known tier.
   TextColumn get subscriptionTier =>
       text().withDefault(const Constant('free'))();
   DateTimeColumn get createdAt => dateTime()();
@@ -175,13 +180,17 @@ class DatabaseService {
 
     // Clean up stale .bak files from previous migration attempts.
     // Overwrite with zeros before deleting to prevent data recovery.
+    // Failures here can leave plaintext SQLite on disk, so log loudly so a
+    // crash reporter (when wired) sees it instead of silently swallowing.
     final bakFile = File('${file.path}.bak');
     if (bakFile.existsSync()) {
       try {
         final bakLength = await bakFile.length();
         await bakFile.writeAsBytes(Uint8List(bakLength), flush: true);
         await bakFile.delete();
-      } catch (_) {}
+      } catch (e) {
+        logStreamError('init.bakCleanup', e);
+      }
     }
 
     if (file.existsSync()) {
@@ -236,12 +245,14 @@ class DatabaseService {
 
     // Migration succeeded — securely remove backup.
     // Overwrite with zeros before deleting to prevent data recovery.
+    // If delete fails the migrated DB is still safe, but the plaintext backup
+    // would linger on disk — log so a crash reporter (when wired) catches it.
     try {
       final bakLength = await backupFile.length();
       await backupFile.writeAsBytes(Uint8List(bakLength), flush: true);
       await backupFile.delete();
-    } catch (_) {
-      // Non-critical; leave backup if delete fails.
+    } catch (e) {
+      logStreamError('migrateToEncrypted.bakCleanup', e);
     }
   }
 

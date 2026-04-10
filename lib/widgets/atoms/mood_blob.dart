@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'glow_box.dart';
 
 /// Maps mood values (1-5) to their SVG asset paths.
 const _moodAssets = {
@@ -108,6 +109,13 @@ class _MoodBlobState extends State<MoodBlob>
         weight: 40,
       ),
     ]).animate(_controller);
+
+    // If we start in the selected state (e.g., restoring a saved mood), park
+    // the controller at the end so the glow halo is visible without playing
+    // the squish animation on first frame.
+    if (widget.isSelected) {
+      _controller.value = 1.0;
+    }
   }
 
   @override
@@ -131,12 +139,16 @@ class _MoodBlobState extends State<MoodBlob>
     final selectedSize = widget.size * 1.15;
     final displaySize = widget.isSelected ? selectedSize : widget.size;
 
-    return AnimatedBuilder(
+    final blob = AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
         return Transform(
           alignment: Alignment.center,
-          transform: Matrix4.identity()..scale(_scaleX.value, _scaleY.value),
+          transform: Matrix4.diagonal3Values(
+            _scaleX.value,
+            _scaleY.value,
+            1.0,
+          ),
           child: child,
         );
       },
@@ -150,6 +162,26 @@ class _MoodBlobState extends State<MoodBlob>
           height: displaySize,
         ),
       ),
+    );
+
+    // No glow halo when not selected.
+    if (!widget.isSelected) return blob;
+
+    // Mood-coloured glow halo whose opacity rides the squish controller —
+    // fades up to ~0.65 over the same 600ms the blob takes to settle.
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return GlowBox(
+          color: widget.color,
+          glowOpacity: 0.65 * _controller.value.clamp(0.0, 1.0),
+          blurRadius: 28,
+          spreadRadius: 6,
+          shape: BoxShape.circle,
+          child: child!,
+        );
+      },
+      child: blob,
     );
   }
 }

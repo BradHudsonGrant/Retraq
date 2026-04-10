@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../../l10n/app_localizations.dart';
 import '../../services/lockout_controller.dart';
 import '../../services/pin_service.dart';
 import '../../services/secure_storage.dart';
 import 'pin_setup_sheet.dart' show pinLengthPrefKey;
+import '../../theme/app_motion.dart';
 import '../../theme/app_spacing.dart';
 import '../atoms/drag_handle.dart';
 import '../molecules/number_pad.dart';
@@ -128,13 +130,24 @@ class _PinVerifySheetState extends State<PinVerifySheet> {
           const SizedBox(height: AppSpacing.lg),
           Semantics(
             liveRegion: _isError || _lockout.isLockedOut,
-            child: Text(
-              _statusText(l10n),
-              style: tt.titleMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: (_isError || _lockout.isLockedOut) ? cs.error : null,
+            child: Animate(
+              effects: [
+                FadeEffect(duration: 320.ms, curve: Curves.easeOut),
+                SlideEffect(
+                  begin: const Offset(0, 0.05),
+                  end: Offset.zero,
+                  duration: 360.ms,
+                  curve: AppMotion.emphasizedDecelerate,
+                ),
+              ],
+              child: Text(
+                _statusText(l10n),
+                style: tt.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: (_isError || _lockout.isLockedOut) ? cs.error : null,
+                ),
+                textAlign: TextAlign.center,
               ),
-              textAlign: TextAlign.center,
             ),
           ),
           const SizedBox(height: AppSpacing.lg),

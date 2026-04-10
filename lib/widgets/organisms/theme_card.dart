@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_colors.dart';
+import '../../theme/app_motion.dart';
 import '../../theme/app_spacing.dart';
+import '../atoms/glow_box.dart';
 
 class ThemeCard extends StatelessWidget {
   const ThemeCard({
@@ -24,6 +26,78 @@ class ThemeCard extends StatelessWidget {
         isDark ?? (Theme.of(context).brightness == Brightness.dark);
     final reduceMotion = MediaQuery.of(context).disableAnimations;
 
+    final card = AnimatedContainer(
+      duration:
+          reduceMotion ? Duration.zero : const Duration(milliseconds: 300),
+      padding: const EdgeInsets.all(AppSpacing.sm),
+      decoration: BoxDecoration(
+        color: isSelected ? cs.surfaceContainerLowest : cs.surfaceContainerLow,
+        borderRadius: AppSpacing.borderRadiusLg,
+        border: isSelected ? Border.all(color: cs.primary, width: 2) : null,
+        boxShadow:
+            isSelected
+                ? [
+                  BoxShadow(
+                    color: cs.onSurface.withValues(alpha: 0.06),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ]
+                : null,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            height: 72,
+            child:
+                isDark == null
+                    ? _buildSystemPreview(cs)
+                    : _buildThemePreview(cs, effectiveDark),
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Flexible(
+                child: Text(
+                  label,
+                  style: tt.titleSmall,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              if (isSelected)
+                ExcludeSemantics(
+                  child: Icon(Icons.check_circle, color: cs.primary, size: 18),
+                )
+              else
+                Container(
+                  width: 18,
+                  height: 18,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: cs.outlineVariant),
+                  ),
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
+
+    // Glow halo when selected; spring scale otherwise unchanged.
+    final cardWithGlow =
+        isSelected
+            ? GlowBox(
+              color: cs.primary,
+              glowOpacity: 0.5,
+              blurRadius: 24,
+              spreadRadius: 1,
+              borderRadius: AppSpacing.borderRadiusLg,
+              child: card,
+            )
+            : card;
+
     return Semantics(
       button: true,
       label: '$label theme',
@@ -31,68 +105,12 @@ class ThemeCard extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         borderRadius: AppSpacing.borderRadiusLg,
-        child: AnimatedContainer(
+        child: AnimatedScale(
           duration:
-              reduceMotion ? Duration.zero : const Duration(milliseconds: 300),
-          padding: const EdgeInsets.all(AppSpacing.sm),
-          decoration: BoxDecoration(
-            color:
-                isSelected ? cs.surfaceContainerLowest : cs.surfaceContainerLow,
-            borderRadius: AppSpacing.borderRadiusLg,
-            border: isSelected ? Border.all(color: cs.primary, width: 2) : null,
-            boxShadow:
-                isSelected
-                    ? [
-                      BoxShadow(
-                        color: cs.onSurface.withValues(alpha: 0.06),
-                        blurRadius: 12,
-                        offset: const Offset(0, 4),
-                      ),
-                    ]
-                    : null,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(
-                height: 72,
-                child:
-                    isDark == null
-                        ? _buildSystemPreview(cs)
-                        : _buildThemePreview(cs, effectiveDark),
-              ),
-              const SizedBox(height: AppSpacing.xs),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Flexible(
-                    child: Text(
-                      label,
-                      style: tt.titleSmall,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  if (isSelected)
-                    ExcludeSemantics(
-                      child: Icon(
-                        Icons.check_circle,
-                        color: cs.primary,
-                        size: 18,
-                      ),
-                    )
-                  else
-                    Container(
-                      width: 18,
-                      height: 18,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: cs.outlineVariant),
-                      ),
-                    ),
-                ],
-              ),
-            ],
-          ),
+              reduceMotion ? Duration.zero : const Duration(milliseconds: 260),
+          curve: AppMotion.springSmooth,
+          scale: isSelected ? 1.04 : 1.0,
+          child: cardWithGlow,
         ),
       ),
     );

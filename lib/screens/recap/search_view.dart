@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
 
 import '../../models/journal_entry.dart';
+import '../../theme/app_motion.dart';
 import '../../theme/app_spacing.dart';
+import '../../utils/test_keys.dart';
+import '../../widgets/atoms/glow_box.dart';
 import '../../widgets/molecules/entry_action_menu.dart';
 
 /// Search bar + results section of the Recap screen.
@@ -30,36 +34,58 @@ class RecapSearchView extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
+    final reduceMotion = AppMotion.reduce(context);
+
+    final searchField = TextField(
+      key: TestKeys.recapSearchField,
+      controller: searchController,
+      onChanged: onSearchChanged,
+      autofocus: true,
+      decoration: InputDecoration(
+        hintText: 'Search entries...',
+        prefixIcon: const Icon(Icons.search),
+        suffixIcon:
+            searchController.text.isNotEmpty
+                ? IconButton(
+                  icon: const Icon(Icons.clear),
+                  onPressed: () {
+                    searchController.clear();
+                    onSearchChanged('');
+                  },
+                )
+                : null,
+        border: OutlineInputBorder(
+          borderRadius: AppSpacing.borderRadiusLg,
+          borderSide: BorderSide(
+            color: cs.outlineVariant.withValues(alpha: 0.3),
+          ),
+        ),
+        filled: true,
+        fillColor: cs.surfaceContainerHigh,
+      ),
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: AppSpacing.md),
-        TextField(
-          controller: searchController,
-          onChanged: onSearchChanged,
-          autofocus: true,
-          decoration: InputDecoration(
-            hintText: 'Search entries...',
-            prefixIcon: const Icon(Icons.search),
-            suffixIcon:
-                searchController.text.isNotEmpty
-                    ? IconButton(
-                      icon: const Icon(Icons.clear),
-                      onPressed: () {
-                        searchController.clear();
-                        onSearchChanged('');
-                      },
-                    )
-                    : null,
-            border: OutlineInputBorder(
-              borderRadius: AppSpacing.borderRadiusLg,
-              borderSide: BorderSide(
-                color: cs.outlineVariant.withValues(alpha: 0.3),
-              ),
+        Animate(
+          effects: [
+            FadeEffect(duration: 360.ms, curve: Curves.easeOut),
+            SlideEffect(
+              begin: const Offset(0, -0.04),
+              end: Offset.zero,
+              duration: 400.ms,
+              curve: AppMotion.emphasizedDecelerate,
             ),
-            filled: true,
-            fillColor: cs.surfaceContainerHigh,
+          ],
+          child: GlowBox(
+            color: cs.primary,
+            glowOpacity: 0.32,
+            blurRadius: 24,
+            spreadRadius: 0,
+            borderRadius: AppSpacing.borderRadiusLg,
+            child: searchField,
           ),
         ),
         const SizedBox(height: AppSpacing.md),
@@ -102,7 +128,7 @@ class RecapSearchView extends StatelessWidget {
             itemCount: searchResults.length,
             itemBuilder: (context, index) {
               final entry = searchResults[index];
-              return Padding(
+              final card = Padding(
                 padding: const EdgeInsets.only(bottom: AppSpacing.sm),
                 child: Container(
                   padding: const EdgeInsets.all(AppSpacing.md),
@@ -160,6 +186,25 @@ class RecapSearchView extends StatelessWidget {
                     ],
                   ),
                 ),
+              );
+              if (reduceMotion) return card;
+              final delayMs = (index * 55).clamp(0, 660);
+              return Animate(
+                effects: [
+                  FadeEffect(
+                    delay: delayMs.ms,
+                    duration: 360.ms,
+                    curve: Curves.easeOut,
+                  ),
+                  SlideEffect(
+                    delay: delayMs.ms,
+                    begin: const Offset(0, 0.08),
+                    end: Offset.zero,
+                    duration: 420.ms,
+                    curve: AppMotion.emphasizedDecelerate,
+                  ),
+                ],
+                child: card,
               );
             },
           ),

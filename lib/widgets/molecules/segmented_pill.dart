@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../theme/app_motion.dart';
 import '../../theme/app_spacing.dart';
 
 /// A two-option segmented pill toggle with a sliding highlight.
@@ -33,10 +34,15 @@ class _SegmentedPillState extends State<SegmentedPill>
     super.initState();
     _ctrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 200),
+      duration: const Duration(milliseconds: 360),
       value: widget.isRightActive ? 1.0 : 0.0,
     );
-    _slide = CurvedAnimation(parent: _ctrl, curve: Curves.easeOutCubic);
+    // Material 3 emphasized-decelerate gives a spring-like landing without
+    // overshoot — important so the highlight never escapes the pill bounds.
+    _slide = CurvedAnimation(
+      parent: _ctrl,
+      curve: AppMotion.emphasizedDecelerate,
+    );
   }
 
   @override
@@ -44,7 +50,7 @@ class _SegmentedPillState extends State<SegmentedPill>
     super.didChangeDependencies();
     final reduceMotion = MediaQuery.of(context).disableAnimations;
     _ctrl.duration =
-        reduceMotion ? Duration.zero : const Duration(milliseconds: 200);
+        reduceMotion ? Duration.zero : const Duration(milliseconds: 360);
   }
 
   @override

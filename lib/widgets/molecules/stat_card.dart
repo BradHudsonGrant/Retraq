@@ -1,15 +1,22 @@
-import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
+import '../../theme/app_motion.dart';
 import '../../theme/app_spacing.dart';
+import '../atoms/glow_box.dart';
+import '../atoms/number_ticker.dart';
 
 /// Animated stat card that displays a label, rolling counter, and icon.
 ///
-/// Features a staggered entrance animation (slide + fade) and an animated
-/// counter that rolls up from zero. Both animations respect the platform's
-/// `disableAnimations` accessibility setting.
+/// Features a staggered entrance animation (slide + fade + spring scale)
+/// powered by `flutter_animate`, and an animated counter that rolls up from
+/// zero. For values ≥ 100 the counter switches to a per-digit [NumberTicker]
+/// for a slot-machine effect; smaller values keep the cheaper
+/// [TweenAnimationBuilder]. The icon halo gently shimmers to add a sense of
+/// life. All effects respect the platform's `disableAnimations` accessibility
+/// setting and short-circuit cleanly when reduce-motion is on.
 class StatCard extends StatelessWidget {
   const StatCard({
     super.key,
@@ -45,10 +52,36 @@ class StatCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
-    final disableAnimations = MediaQuery.of(context).disableAnimations;
+    final reduceMotion = AppMotion.reduce(context);
 
     final accent = accentColor ?? cs.primary;
     final counterDuration = Duration(milliseconds: min(800 + value * 2, 1200));
+
+    // ── Icon halo (with optional shimmer) ──
+    Widget iconHalo = Container(
+      width: 36,
+      height: 36,
+      decoration: BoxDecoration(
+        color: accent.withValues(alpha: 0.15),
+        shape: BoxShape.circle,
+      ),
+      child: Icon(icon, size: 20, color: accent),
+    );
+    iconHalo = GlowBox(
+      color: accent,
+      glowOpacity: 0.35,
+      blurRadius: 14,
+      spreadRadius: 1,
+      shape: BoxShape.circle,
+      child: iconHalo,
+    );
+    if (!reduceMotion) {
+      // One-shot shimmer (not looping) so `pumpAndSettle` based tests still
+      // converge. Plays once on entrance.
+      iconHalo = iconHalo
+          .animate(delay: (delay + 600).ms)
+          .shimmer(duration: 2600.ms, color: accent.withValues(alpha: 0.55));
+    }
 
     // ── Card content ──
     Widget cardContent = Semantics(
@@ -80,15 +113,7 @@ class StatCard extends StatelessWidget {
                     style: tt.labelMedium?.copyWith(color: cs.onSurfaceVariant),
                   ),
                 ),
-                Container(
-                  width: 36,
-                  height: 36,
-                  decoration: BoxDecoration(
-                    color: accent.withValues(alpha: 0.15),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(icon, size: 20, color: accent),
-                ),
+                iconHalo,
               ],
             ),
 
@@ -99,7 +124,7 @@ class StatCard extends StatelessWidget {
               value: value,
               suffix: suffix,
               duration: counterDuration,
-              disableAnimations: disableAnimations,
+              reduceMotion: reduceMotion,
               textTheme: tt,
               colorScheme: cs,
             ),
@@ -109,9 +134,23 @@ class StatCard extends StatelessWidget {
     );
 
     // ── Entrance animation ──
-    if (disableAnimations) return cardContent;
+    if (reduceMotion) return cardContent;
 
-    return _StaggeredEntrance(delay: delay, child: cardContent);
+    return cardContent
+        .animate(delay: delay.ms)
+        .fadeIn(duration: 450.ms, curve: Curves.easeOut)
+        .slideY(
+          begin: 0.18,
+          end: 0,
+          duration: 500.ms,
+          curve: AppMotion.emphasizedDecelerate,
+        )
+        .scaleXY(
+          begin: 0.92,
+          end: 1.0,
+          duration: 520.ms,
+          curve: AppMotion.springSmooth,
+        );
   }
 }
 
@@ -124,7 +163,7 @@ class _CounterRow extends StatelessWidget {
     required this.value,
     required this.suffix,
     required this.duration,
-    required this.disableAnimations,
+    required this.reduceMotion,
     required this.textTheme,
     required this.colorScheme,
   });
@@ -132,20 +171,20 @@ class _CounterRow extends StatelessWidget {
   final int value;
   final String? suffix;
   final Duration duration;
-  final bool disableAnimations;
+  final bool reduceMotion;
   final TextTheme textTheme;
   final ColorScheme colorScheme;
 
   @override
   Widget build(BuildContext context) {
-    final valueStyle = textTheme.headlineMedium?.copyWith(
-      fontWeight: FontWeight.w700,
-    );
+    final valueStyle =
+        textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w700) ??
+        const TextStyle(fontSize: 28, fontWeight: FontWeight.w700);
     final suffixStyle = textTheme.labelSmall?.copyWith(
       color: colorScheme.onSurfaceVariant,
     );
 
-    if (disableAnimations) {
+    if (reduceMotion) {
       return Row(
         crossAxisAlignment: CrossAxisAlignment.baseline,
         textBaseline: TextBaseline.alphabetic,
@@ -159,79 +198,33 @@ class _CounterRow extends StatelessWidget {
       );
     }
 
-    return TweenAnimationBuilder<double>(
-      tween: Tween(begin: 0, end: value.toDouble()),
-      duration: duration,
-      curve: Curves.easeOutCubic,
-      builder: (context, animatedValue, _) {
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.baseline,
-          textBaseline: TextBaseline.alphabetic,
-          children: [
-            Text(animatedValue.toInt().toString(), style: valueStyle),
-            if (suffix != null) ...[
-              const SizedBox(width: AppSpacing.xs),
-              Text(suffix!, style: suffixStyle),
-            ],
-          ],
-        );
-      },
-    );
-  }
-}
+    // For multi-digit values use the per-digit slot machine. For small
+    // values the cheaper TweenAnimationBuilder roll-up is plenty.
+    final Widget number =
+        value >= 100
+            ? NumberTicker(value: value, style: valueStyle, duration: duration)
+            : TweenAnimationBuilder<double>(
+              tween: Tween(begin: 0, end: value.toDouble()),
+              duration: duration,
+              curve: Curves.easeOutCubic,
+              builder: (context, animatedValue, _) {
+                return Text(
+                  animatedValue.toInt().toString(),
+                  style: valueStyle,
+                );
+              },
+            );
 
-// ────────────────────────────────────────────────────────────────────
-// Staggered entrance — fade + slide from below with configurable delay
-// ────────────────────────────────────────────────────────────────────
-
-class _StaggeredEntrance extends StatefulWidget {
-  const _StaggeredEntrance({required this.delay, required this.child});
-
-  final int delay;
-  final Widget child;
-
-  @override
-  State<_StaggeredEntrance> createState() => _StaggeredEntranceState();
-}
-
-class _StaggeredEntranceState extends State<_StaggeredEntrance> {
-  bool _ready = false;
-  Timer? _delayTimer;
-
-  @override
-  void initState() {
-    super.initState();
-    if (widget.delay <= 0) {
-      _ready = true;
-    } else {
-      _delayTimer = Timer(Duration(milliseconds: widget.delay), () {
-        if (mounted) setState(() => _ready = true);
-      });
-    }
-  }
-
-  @override
-  void dispose() {
-    _delayTimer?.cancel();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return TweenAnimationBuilder<double>(
-      tween: Tween(begin: 0, end: _ready ? 1.0 : 0.0),
-      duration: const Duration(milliseconds: 450),
-      curve: Curves.easeOutCubic,
-      builder: (context, progress, child) {
-        return Opacity(
-          opacity: progress,
-          child: FractionalTranslation(
-            translation: Offset(0, 0.15 * (1 - progress)),
-            child: child,
-          ),
-        );
-      },
-      child: widget.child,
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.baseline,
+      textBaseline: TextBaseline.alphabetic,
+      children: [
+        number,
+        if (suffix != null) ...[
+          const SizedBox(width: AppSpacing.xs),
+          Text(suffix!, style: suffixStyle),
+        ],
+      ],
     );
   }
 }
