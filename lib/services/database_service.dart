@@ -9,8 +9,7 @@ import 'package:drift/native.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
-import 'package:sqlite3/open.dart';
-import 'package:sqlcipher_flutter_libs/sqlcipher_flutter_libs.dart';
+// sqlite3 v3 uses build hooks instead of manual library overrides.
 import 'entry_repository.dart';
 import 'migration_strategy.dart';
 import 'secure_storage.dart';
@@ -171,8 +170,8 @@ class DatabaseService {
 
   /// Must be called once before any DB operations (in main.dart).
   Future<void> init() async {
-    // Ensure Drift loads the SQLCipher library instead of plain sqlite3.
-    open.overrideFor(OperatingSystem.android, openCipherOnAndroid);
+    // sqlite3 v3 uses build hooks (configured in pubspec.yaml) to bundle
+    // SQLite3MultipleCiphers — no manual library override needed.
 
     final dir = await getApplicationDocumentsDirectory();
     final file = File(p.join(dir.path, 'retraq.sqlite'));

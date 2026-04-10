@@ -10,6 +10,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 /// On iOS, uses the strictest accessibility class that still allows
 /// background reads after first unlock.
 const hardenedSecureStorage = FlutterSecureStorage(
-  aOptions: AndroidOptions(encryptedSharedPreferences: true),
+  aOptions: AndroidOptions(),
   iOptions: IOSOptions(accessibility: KeychainAccessibility.first_unlock),
 );

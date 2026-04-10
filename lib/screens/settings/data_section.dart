@@ -177,7 +177,7 @@ class DataSection extends StatelessWidget {
   Future<void> _importBackup(BuildContext context) async {
     final PlatformFile file;
     try {
-      final result = await FilePicker.platform.pickFiles(
+      final result = await FilePicker.pickFiles(
         type: FileType.custom,
         allowedExtensions: ['json'],
       );

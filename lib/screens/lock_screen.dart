@@ -78,10 +78,8 @@ class _LockScreenState extends State<LockScreen> {
     try {
       final didAuth = await _auth.authenticate(
         localizedReason: reason,
-        options: const AuthenticationOptions(
-          stickyAuth: true,
-          biometricOnly: true,
-        ),
+        persistAcrossBackgrounding: true,
+        biometricOnly: true,
       );
       if (didAuth && mounted) {
         widget.onUnlocked();
