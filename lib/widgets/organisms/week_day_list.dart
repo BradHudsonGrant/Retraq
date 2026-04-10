@@ -78,8 +78,9 @@ class WeekDayList extends StatelessWidget {
     // Skip days after "today" so the current week doesn't render empty
     // placeholder cards for Friday/Saturday/etc. Past weeks still show
     // every day (empty ones get a "No entries" line).
-    final visibleDates =
-        dates.where((d) => !d.isAfter(today)).toList(growable: false);
+    final visibleDates = dates
+        .where((d) => !d.isAfter(today))
+        .toList(growable: false);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

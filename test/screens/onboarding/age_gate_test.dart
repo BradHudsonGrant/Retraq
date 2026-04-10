@@ -72,14 +72,8 @@ void main() {
           find.textContaining('Mistake', findRichText: true),
           findsNothing,
         );
-        expect(
-          find.textContaining('retry', findRichText: true),
-          findsNothing,
-        );
-        expect(
-          find.textContaining('Retry', findRichText: true),
-          findsNothing,
-        );
+        expect(find.textContaining('retry', findRichText: true), findsNothing);
+        expect(find.textContaining('Retry', findRichText: true), findsNothing);
         expect(
           find.textContaining('Try again', findRichText: true),
           findsNothing,

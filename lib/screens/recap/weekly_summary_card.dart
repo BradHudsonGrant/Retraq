@@ -28,9 +28,7 @@ class WeeklySummaryCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: cs.surfaceContainerLow,
         borderRadius: AppSpacing.borderRadiusXl,
-        border: Border(
-          left: BorderSide(color: cs.primary, width: 3),
-        ),
+        border: Border(left: BorderSide(color: cs.primary, width: 3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

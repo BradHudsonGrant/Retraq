@@ -80,9 +80,7 @@ class RecentDayCard extends StatelessWidget {
             for (var i = 0; i < sortedEntries.length && i < 2; i++) ...[
               if (i > 0)
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: AppSpacing.md,
-                  ),
+                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
                   child: Divider(
                     height: 1,
                     thickness: 1,

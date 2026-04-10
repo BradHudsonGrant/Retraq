@@ -144,11 +144,7 @@ class _MoodBlobState extends State<MoodBlob>
       builder: (context, child) {
         return Transform(
           alignment: Alignment.center,
-          transform: Matrix4.diagonal3Values(
-            _scaleX.value,
-            _scaleY.value,
-            1.0,
-          ),
+          transform: Matrix4.diagonal3Values(_scaleX.value, _scaleY.value, 1.0),
           child: child,
         );
       },

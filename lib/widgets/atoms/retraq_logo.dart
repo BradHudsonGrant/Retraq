@@ -158,15 +158,13 @@ class _RetraqLogoState extends State<RetraqLogo> with TickerProviderStateMixin {
     // reads on the wordmark while still feeling on-brand.
     if (widget.animate && !_reduceMotion) {
       final isDark = Theme.of(context).brightness == Brightness.dark;
-      final shimmerColor = isDark
-          ? cs.onPrimary.withValues(alpha: 0.95)
-          : cs.primary.withValues(alpha: 0.55);
+      final shimmerColor =
+          isDark
+              ? cs.onPrimary.withValues(alpha: 0.95)
+              : cs.primary.withValues(alpha: 0.55);
       icon = icon
           .animate(delay: widget.delay)
-          .shimmer(
-            duration: 2200.ms,
-            color: shimmerColor,
-          );
+          .shimmer(duration: 2200.ms, color: shimmerColor);
     }
 
     // Wrap in breathing animation if active

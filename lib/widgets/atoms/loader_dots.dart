@@ -36,10 +36,8 @@ class _LoaderDotsState extends State<LoaderDots>
   AnimationController? _ctrl;
 
   AnimationController _ensureCtrl() {
-    return _ctrl ??= AnimationController(
-      vsync: this,
-      duration: widget.duration,
-    )..repeat();
+    return _ctrl ??= AnimationController(vsync: this, duration: widget.duration)
+      ..repeat();
   }
 
   @override
@@ -84,19 +82,16 @@ class _LoaderDotsState extends State<LoaderDots>
             // sampling a sine over a 0..1 phase window then easing back to 1.
             final phase = ((t - i * 0.18) % 1.0 + 1.0) % 1.0;
             // Cosine bell that peaks at phase 0.5 and is 0 elsewhere.
-            final lift = phase < 0.5
-                ? Curves.easeOut.transform(phase * 2)
-                : Curves.easeIn.transform((1 - phase) * 2);
+            final lift =
+                phase < 0.5
+                    ? Curves.easeOut.transform(phase * 2)
+                    : Curves.easeIn.transform((1 - phase) * 2);
             final scale = 0.85 + lift * 0.45;
             return Padding(
               padding: EdgeInsets.symmetric(horizontal: widget.gap / 2),
               child: Transform.translate(
                 offset: Offset(0, -lift * 6),
-                child: _Dot(
-                  color: color,
-                  size: widget.size,
-                  scale: scale,
-                ),
+                child: _Dot(color: color, size: widget.size, scale: scale),
               ),
             );
           }),
@@ -107,11 +102,7 @@ class _LoaderDotsState extends State<LoaderDots>
 }
 
 class _Dot extends StatelessWidget {
-  const _Dot({
-    required this.color,
-    required this.size,
-    required this.scale,
-  });
+  const _Dot({required this.color, required this.size, required this.scale});
 
   final Color color;
   final double size;

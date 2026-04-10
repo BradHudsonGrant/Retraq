@@ -54,11 +54,7 @@ class SplashScreen extends StatelessWidget {
                 const SizedBox(height: 36),
                 Animate(
                   effects: [FadeEffect(delay: 350.ms, duration: 500.ms)],
-                  child: LoaderDots(
-                    color: cs.primary,
-                    size: 9,
-                    gap: 8,
-                  ),
+                  child: LoaderDots(color: cs.primary, size: 9, gap: 8),
                 ),
               ],
             ),

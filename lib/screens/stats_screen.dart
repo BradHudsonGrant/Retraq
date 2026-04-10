@@ -518,10 +518,7 @@ class _StatsScreenState extends State<StatsScreen>
                       child: MoodBlob(
                         mood: mood,
                         size: 20,
-                        color: moodColorFor(
-                          mood,
-                          Theme.of(context).brightness,
-                        ),
+                        color: moodColorFor(mood, Theme.of(context).brightness),
                       ),
                     ),
                   ),

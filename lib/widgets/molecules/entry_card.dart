@@ -75,10 +75,7 @@ class EntryCard extends StatelessWidget {
                     MoodBlob(
                       mood: mood!,
                       size: 18,
-                      color: moodColorFor(
-                        mood!,
-                        Theme.of(context).brightness,
-                      ),
+                      color: moodColorFor(mood!, Theme.of(context).brightness),
                     ),
                     const SizedBox(width: AppSpacing.xs),
                     Text(
