@@ -26,10 +26,7 @@ void main() {
         findsOneWidget,
       );
       expect(find.text('I agree to the Terms of Use'), findsOneWidget);
-      expect(
-        find.text('I acknowledge the Health Disclaimer'),
-        findsOneWidget,
-      );
+      expect(find.text('I acknowledge the Health Disclaimer'), findsOneWidget);
     });
 
     testWidgets('renders Updated Policies heading', (tester) async {
@@ -109,9 +106,7 @@ void main() {
       await tester.pumpWidget(wrapScreen(ReconsentScreen(onComplete: () {})));
       await tester.pumpAndSettle();
 
-      await tester.tap(
-        find.text('I acknowledge the Health Disclaimer'),
-      );
+      await tester.tap(find.text('I acknowledge the Health Disclaimer'));
       await tester.pumpAndSettle();
 
       expect(find.byType(LegalScreen), findsOneWidget);

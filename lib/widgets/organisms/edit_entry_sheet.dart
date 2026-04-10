@@ -226,9 +226,9 @@ class _EditEntrySheetState extends State<EditEntrySheet> {
 
     // Block saving a completely empty entry (no text, no title, no mood).
     if (titleText.isEmpty && entryText.isEmpty && _mood == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.entryEmptyMessage)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.entryEmptyMessage)));
       return;
     }
 
@@ -253,9 +253,9 @@ class _EditEntrySheetState extends State<EditEntrySheet> {
       debugPrint('EditEntrySheet._save failed: $e');
       if (!mounted) return;
       setState(() => _isSaving = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.saveFailedMessage)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.saveFailedMessage)));
     }
   }
 

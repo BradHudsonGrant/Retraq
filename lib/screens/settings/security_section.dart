@@ -133,7 +133,7 @@ class _SecuritySectionState extends State<SecuritySection> {
                   _showPinVerifyToDisable(context);
                 }
               },
-              activeColor: cs.primary,
+              activeThumbColor: cs.primary,
             ),
           ),
         ),
@@ -214,7 +214,7 @@ class _SecuritySectionState extends State<SecuritySection> {
                             );
                           }
                         },
-                activeColor: cs.primary,
+                activeThumbColor: cs.primary,
               ),
             ),
           ),

@@ -46,7 +46,8 @@ class PreferencesSection extends StatelessWidget {
         // Opening behavior
         SettingsRow(
           title: l10n.openingPrompt,
-          subtitle: s.askAboutToday ? l10n.asksAboutToday : l10n.asksAboutYesterday,
+          subtitle:
+              s.askAboutToday ? l10n.asksAboutToday : l10n.asksAboutYesterday,
           trailing: SegmentedPill(
             leftLabel: l10n.todayLabel,
             rightLabel: l10n.yesterdayLabel,
@@ -68,7 +69,7 @@ class PreferencesSection extends StatelessWidget {
               value: s.showEntryTitle,
               onChanged:
                   (v) => onSettingsChanged(s.copyWith(showEntryTitle: v)),
-              activeColor: cs.primary,
+              activeThumbColor: cs.primary,
             ),
           ),
         ),
@@ -91,7 +92,7 @@ class PreferencesSection extends StatelessWidget {
                       moodOnlyEntries: v ? s.moodOnlyEntries : false,
                     ),
                   ),
-              activeColor: cs.primary,
+              activeThumbColor: cs.primary,
             ),
           ),
         ),
@@ -109,7 +110,7 @@ class PreferencesSection extends StatelessWidget {
                   value: s.moodRequired,
                   onChanged:
                       (v) => onSettingsChanged(s.copyWith(moodRequired: v)),
-                  activeColor: cs.primary,
+                  activeThumbColor: cs.primary,
                 ),
               ),
             ),
@@ -126,7 +127,7 @@ class PreferencesSection extends StatelessWidget {
                   value: s.moodOnlyEntries,
                   onChanged:
                       (v) => onSettingsChanged(s.copyWith(moodOnlyEntries: v)),
-                  activeColor: cs.primary,
+                  activeThumbColor: cs.primary,
                 ),
               ),
             ),
@@ -144,7 +145,7 @@ class PreferencesSection extends StatelessWidget {
               value: s.bionicReadingEnabled,
               onChanged:
                   (v) => onSettingsChanged(s.copyWith(bionicReadingEnabled: v)),
-              activeColor: cs.primary,
+              activeThumbColor: cs.primary,
             ),
           ),
         ),
@@ -179,7 +180,7 @@ class PreferencesSection extends StatelessWidget {
                                 v ? false : s.bulletPointsOnEnter,
                           ),
                         ),
-                    activeColor: cs.primary,
+                    activeThumbColor: cs.primary,
                   ),
                 ),
               ),
@@ -201,7 +202,7 @@ class PreferencesSection extends StatelessWidget {
                                 enterToSave: v ? false : s.enterToSave,
                               ),
                             ),
-                    activeColor: cs.primary,
+                    activeThumbColor: cs.primary,
                   ),
                 ),
               ),
