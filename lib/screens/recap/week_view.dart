@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../models/journal_entry.dart';
 import '../../providers/settings_provider.dart';
 import '../../services/recap_service.dart';
+import '../../theme/app_motion.dart';
 import '../../theme/app_spacing.dart';
+import '../../utils/test_keys.dart';
 import '../../widgets/atoms/bionic_text.dart';
 import '../../widgets/organisms/week_day_list.dart';
 import 'weekly_summary_card.dart';
@@ -40,6 +43,10 @@ class RecapWeekView extends StatelessWidget {
     final l10n = L10n.of(context)!;
     final weekEnd = weekStart.add(const Duration(days: 6));
 
+    // Key the inner content by weekStart so navigation triggers a fresh
+    // entrance animation each time the user moves between weeks.
+    final weekKey = ValueKey(weekStart.millisecondsSinceEpoch);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -56,51 +63,76 @@ class RecapWeekView extends StatelessWidget {
 
         // Weekly summary card
         if (weeklySummary != null) ...[
-          WeeklySummaryCard(summary: weeklySummary!),
+          Animate(
+            key: ValueKey('summary-${weekStart.millisecondsSinceEpoch}'),
+            effects: [
+              FadeEffect(duration: 420.ms, curve: Curves.easeOut),
+              SlideEffect(
+                begin: const Offset(0, 0.06),
+                end: Offset.zero,
+                duration: 480.ms,
+                curve: AppMotion.emphasizedDecelerate,
+              ),
+            ],
+            child: WeeklySummaryCard(summary: weeklySummary!),
+          ),
           const SizedBox(height: AppSpacing.md),
         ],
 
         if (weekEntries.isEmpty)
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxl),
-            child: Center(
-              child: Column(
-                children: [
-                  Icon(
-                    Icons.auto_stories,
-                    size: 48,
-                    color: cs.onSurfaceVariant.withValues(alpha: 0.5),
-                  ),
-                  const SizedBox(height: AppSpacing.md),
-                  Text(
-                    l10n.noEntriesYet,
-                    style: tt.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: cs.onSurfaceVariant,
+          Animate(
+            key: ValueKey('empty-${weekStart.millisecondsSinceEpoch}'),
+            effects: [
+              FadeEffect(duration: 480.ms, curve: Curves.easeOut),
+              ScaleEffect(
+                begin: const Offset(0.92, 0.92),
+                end: const Offset(1.0, 1.0),
+                duration: 520.ms,
+                curve: AppMotion.springSmooth,
+              ),
+            ],
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxl),
+              child: Center(
+                child: Column(
+                  children: [
+                    Icon(
+                      Icons.auto_stories,
+                      size: 48,
+                      color: cs.onSurfaceVariant.withValues(alpha: 0.5),
                     ),
-                  ),
-                  const SizedBox(height: AppSpacing.xs),
-                  BionicText(
-                    text:
-                        weekOffset == 0
-                            ? l10n.noEntriesYetMessage
-                            : l10n.noEntriesForWeek,
-                    textAlign: TextAlign.center,
-                    style: tt.bodyMedium?.copyWith(
-                      color: cs.onSurfaceVariant.withValues(alpha: 0.7),
+                    const SizedBox(height: AppSpacing.md),
+                    Text(
+                      l10n.noEntriesYet,
+                      style: tt.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: cs.onSurfaceVariant,
+                      ),
                     ),
-                    enabled:
-                        SettingsProvider.maybeOf(
-                          context,
-                        )?.bionicReadingEnabled ??
-                        false,
-                  ),
-                ],
+                    const SizedBox(height: AppSpacing.xs),
+                    BionicText(
+                      text:
+                          weekOffset == 0
+                              ? l10n.noEntriesYetMessage
+                              : l10n.noEntriesForWeek,
+                      textAlign: TextAlign.center,
+                      style: tt.bodyMedium?.copyWith(
+                        color: cs.onSurfaceVariant.withValues(alpha: 0.7),
+                      ),
+                      enabled:
+                          SettingsProvider.maybeOf(
+                            context,
+                          )?.bionicReadingEnabled ??
+                          false,
+                    ),
+                  ],
+                ),
               ),
             ),
           )
         else
           WeekDayList(
+            key: weekKey,
             weekStartDay: weekStartDay,
             entries: weekEntries,
             onDaySelected: onDaySelected,
@@ -143,6 +175,7 @@ class _WeekNavigationHeader extends StatelessWidget {
       children: [
         // Previous week button
         IconButton(
+          key: TestKeys.recapPreviousWeek,
           onPressed: onPrevious,
           icon: const Icon(Icons.chevron_left),
           tooltip: l10n.previousWeek,
@@ -180,6 +213,7 @@ class _WeekNavigationHeader extends StatelessWidget {
 
         // Next week button (disabled on current week)
         IconButton(
+          key: TestKeys.recapNextWeek,
           onPressed: onNext,
           icon: const Icon(Icons.chevron_right),
           tooltip: isCurrentWeek ? l10n.currentWeek : l10n.nextWeek,

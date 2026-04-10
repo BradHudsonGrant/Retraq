@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:retraq/main.dart' as app;
+import 'package:retraq/utils/test_keys.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -23,28 +23,31 @@ void main() {
       // 1. Check for the SVG Logo in the persistent AppBar
       expect(find.byType(SvgPicture), findsWidgets);
 
-      // 2. We should start on the Journal tab
+      // 2. We should start on the Journal tab — verify via the nav key
+      expect(find.byKey(TestKeys.navJournalTab), findsOneWidget);
       expect(find.textContaining('TL;DR'), findsWidgets);
 
-      // 3. Navigate to Recap Tab
-      final recapTab = find.text('Recap');
-      await tester.tap(recapTab);
+      // 3. Navigate to Recap tab
+      await tester.tap(find.byKey(TestKeys.navRecapTab));
       await tester.pumpAndSettle();
 
-      // 4. Verify we are on Recap Screen
-      expect(find.text('Week'), findsWidgets);
-      expect(find.text('Month'), findsWidgets);
+      // 4. Verify we're on Recap: the Week/Month toggle should exist
+      expect(find.byKey(TestKeys.recapWeekMonthToggle), findsOneWidget);
+      expect(find.byKey(TestKeys.recapSearchToggle), findsOneWidget);
 
-      // 5. Ensure AppBar is still there natively (not doubled)
-      expect(find.byType(AppBar), findsOneWidget);
-
-      // 6. Navigate to Settings Tab
-      final settingsTab = find.text('Settings');
-      await tester.tap(settingsTab);
+      // 5. Navigate to Settings tab
+      await tester.tap(find.byKey(TestKeys.navSettingsTab));
       await tester.pumpAndSettle();
 
-      // 7. Verify we are on Settings Screen
-      expect(find.text('Appearance'), findsOneWidget);
+      // 6. Verify we're on Settings: the appearance section should exist
+      expect(find.byKey(TestKeys.settingsAppearanceSection), findsOneWidget);
+      expect(find.byKey(TestKeys.settingsPreferencesSection), findsOneWidget);
+
+      // 7. Hop back to Journal
+      await tester.tap(find.byKey(TestKeys.navJournalTab));
+      await tester.pumpAndSettle();
+      expect(find.byKey(TestKeys.homeEntryField), findsOneWidget);
+      expect(find.byKey(TestKeys.homeSaveButton), findsOneWidget);
     });
   });
 }

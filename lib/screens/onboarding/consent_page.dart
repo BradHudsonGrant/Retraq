@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../../l10n/app_localizations.dart';
 import '../../providers/settings_provider.dart';
+import '../../theme/app_motion.dart';
 import '../../theme/app_spacing.dart';
 import '../../widgets/atoms/bionic_text.dart';
+import '../../widgets/atoms/glow_box.dart';
 import '../../legal/privacy_policy.dart';
 import '../../legal/health_disclaimer.dart';
 import '../../legal/terms_of_service.dart';
@@ -40,18 +43,36 @@ class ConsentPage extends StatelessWidget {
         children: [
           const SizedBox(height: AppSpacing.lg),
           Center(
-            child: Container(
-              width: 72,
-              height: 72,
-              decoration: BoxDecoration(
-                color: cs.primaryContainer,
+            child: Animate(
+              effects: [
+                FadeEffect(duration: 500.ms, curve: Curves.easeOut),
+                ScaleEffect(
+                  begin: const Offset(0.85, 0.85),
+                  end: const Offset(1.0, 1.0),
+                  duration: 600.ms,
+                  curve: AppMotion.springSmooth,
+                ),
+              ],
+              child: GlowBox(
+                color: cs.primary,
+                glowOpacity: 0.55,
+                blurRadius: 32,
+                spreadRadius: 4,
                 shape: BoxShape.circle,
-              ),
-              child: ExcludeSemantics(
-                child: Icon(
-                  Icons.handshake_outlined,
-                  size: 36,
-                  color: cs.onPrimaryContainer,
+                child: Container(
+                  width: 72,
+                  height: 72,
+                  decoration: BoxDecoration(
+                    color: cs.primaryContainer,
+                    shape: BoxShape.circle,
+                  ),
+                  child: ExcludeSemantics(
+                    child: Icon(
+                      Icons.handshake_outlined,
+                      size: 36,
+                      color: cs.onPrimaryContainer,
+                    ),
+                  ),
                 ),
               ),
             ),

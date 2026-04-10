@@ -58,8 +58,8 @@ class _PressableScaleState extends State<PressableScale> {
           duration:
               reduceMotion
                   ? Duration.zero
-                  : Duration(milliseconds: _isPressed ? 80 : 150),
-          curve: Curves.easeOut,
+                  : Duration(milliseconds: _isPressed ? 80 : 200),
+          curve: Curves.easeOutCubic,
           child: DecoratedBox(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 import '../models/journal_entry.dart';
 import '../models/user_settings.dart';
@@ -7,9 +8,12 @@ import '../providers/settings_provider.dart';
 import '../services/database_service.dart';
 import '../services/entry_repository.dart';
 import '../services/recap_service.dart';
+import '../theme/app_motion.dart';
 import '../theme/app_spacing.dart';
 import '../utils/date_helpers.dart';
 import '../utils/entry_action_dialogs.dart';
+import '../utils/test_keys.dart';
+import '../widgets/atoms/glow_box.dart';
 import '../widgets/molecules/segmented_pill.dart';
 import 'recap/month_view.dart';
 import 'recap/search_view.dart';
@@ -270,106 +274,173 @@ class _RecapScreenState extends State<RecapScreen>
   Widget build(BuildContext context) {
     super.build(context);
     final tt = Theme.of(context).textTheme;
+    final cs = Theme.of(context).colorScheme;
     final weekStartDay = _settings?.weekStartDay ?? 1;
 
-    return SafeArea(
-      child: SingleChildScrollView(
-        padding: AppSpacing.pagePadding,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: AppSpacing.lg),
+    final searchButton = IconButton(
+      key: TestKeys.recapSearchToggle,
+      icon: Icon(_showSearch ? Icons.close : Icons.search),
+      onPressed: _toggleSearch,
+      tooltip: _showSearch ? 'Close search' : 'Search entries',
+    );
 
-            // ── Header with search toggle ──
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Recap',
-                  style: tt.displaySmall?.copyWith(fontWeight: FontWeight.w700),
-                ),
-                IconButton(
-                  icon: Icon(_showSearch ? Icons.close : Icons.search),
-                  onPressed: _toggleSearch,
-                  tooltip: _showSearch ? 'Close search' : 'Search entries',
-                ),
-              ],
+    final headerRow = Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Animate(
+          effects: [
+            FadeEffect(duration: 480.ms, curve: Curves.easeOut),
+            SlideEffect(
+              begin: const Offset(-0.05, 0),
+              end: Offset.zero,
+              duration: 520.ms,
+              curve: AppMotion.emphasizedDecelerate,
+            ),
+          ],
+          child: Text(
+            'Recap',
+            style: tt.displaySmall?.copyWith(fontWeight: FontWeight.w700),
+          ),
+        ),
+        Animate(
+          effects: [
+            FadeEffect(delay: 80.ms, duration: 420.ms, curve: Curves.easeOut),
+            ScaleEffect(
+              delay: 80.ms,
+              begin: const Offset(0.85, 0.85),
+              end: const Offset(1.0, 1.0),
+              duration: 460.ms,
+              curve: AppMotion.springSmooth,
+            ),
+          ],
+          child:
+              _showSearch
+                  ? GlowBox(
+                    color: cs.primary,
+                    glowOpacity: 0.45,
+                    blurRadius: 22,
+                    spreadRadius: 1,
+                    shape: BoxShape.circle,
+                    child: searchButton,
+                  )
+                  : searchButton,
+        ),
+      ],
+    );
+
+    final scrollView = SingleChildScrollView(
+      padding: AppSpacing.pagePadding,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: AppSpacing.lg),
+
+          // ── Header with search toggle ──
+          headerRow,
+
+          // ── Search view (expandable) ──
+          if (_showSearch)
+            RecapSearchView(
+              searchController: _searchController,
+              onSearchChanged: _onSearchChanged,
+              searchResults: _searchResults,
+              isSearching: _isSearching,
+              hasSearched: _hasSearched,
+              onEdit: _confirmEditEntry,
+              onDelete: _confirmDeleteEntry,
             ),
 
-            // ── Search view (expandable) ──
-            if (_showSearch)
-              RecapSearchView(
-                searchController: _searchController,
-                onSearchChanged: _onSearchChanged,
-                searchResults: _searchResults,
-                isSearching: _isSearching,
-                hasSearched: _hasSearched,
-                onEdit: _confirmEditEntry,
-                onDelete: _confirmDeleteEntry,
+          // ── Browse view (when not searching) ──
+          if (!_showSearch) ...[
+            const SizedBox(height: AppSpacing.md),
+
+            // ── Week / Month toggle ──
+            Center(
+              child: SegmentedPill(
+                key: TestKeys.recapWeekMonthToggle,
+                leftLabel: 'Week',
+                rightLabel: 'Month',
+                isRightActive: !_isWeekView,
+                onTapLeft: () => setState(() => _isWeekView = true),
+                onTapRight: () => setState(() => _isWeekView = false),
+              ),
+            ),
+
+            const SizedBox(height: AppSpacing.lg),
+
+            // ── Week view ──
+            if (_isWeekView)
+              RecapWeekView(
+                weekEntries: _weekEntries,
+                weekStartDay: weekStartDay,
+                weeklySummary: _weeklySummary,
+                weekOffset: _weekOffset,
+                weekStart: _weekStartForOffset(weekStartDay),
+                onPreviousWeek: _goToPreviousWeek,
+                onNextWeek: _weekOffset < 0 ? _goToNextWeek : null,
+                onDaySelected: (date) {
+                  // Switch to month view and select the day
+                  if (date.month != _selectedMonth.month ||
+                      date.year != _selectedMonth.year) {
+                    setState(() {
+                      _selectedMonth = DateTime(date.year, date.month);
+                    });
+                    _listenToMonthData();
+                  }
+                  setState(() => _isWeekView = false);
+                  _onDaySelected(date.day);
+                },
               ),
 
-            // ── Browse view (when not searching) ──
-            if (!_showSearch) ...[
-              const SizedBox(height: AppSpacing.md),
-
-              // ── Week / Month toggle ──
-              Center(
-                child: SegmentedPill(
-                  leftLabel: 'Week',
-                  rightLabel: 'Month',
-                  isRightActive: !_isWeekView,
-                  onTapLeft: () => setState(() => _isWeekView = true),
-                  onTapRight: () => setState(() => _isWeekView = false),
-                ),
+            // ── Month view ──
+            if (!_isWeekView)
+              RecapMonthView(
+                selectedMonth: _selectedMonth,
+                entryDays: _entryDays,
+                dayMoods: _dayMoods,
+                selectedDay: _selectedDay,
+                monthEntries: _monthEntries,
+                selectedEntries: _selectedEntries,
+                weekStartDay: weekStartDay,
+                onDaySelected: _onDaySelected,
+                onPreviousMonth: _goToPreviousMonth,
+                onNextMonth: _goToNextMonth,
               ),
-
-              const SizedBox(height: AppSpacing.lg),
-
-              // ── Week view ──
-              if (_isWeekView)
-                RecapWeekView(
-                  weekEntries: _weekEntries,
-                  weekStartDay: weekStartDay,
-                  weeklySummary: _weeklySummary,
-                  weekOffset: _weekOffset,
-                  weekStart: _weekStartForOffset(weekStartDay),
-                  onPreviousWeek: _goToPreviousWeek,
-                  onNextWeek: _weekOffset < 0 ? _goToNextWeek : null,
-                  onDaySelected: (date) {
-                    // Switch to month view and select the day
-                    if (date.month != _selectedMonth.month ||
-                        date.year != _selectedMonth.year) {
-                      setState(() {
-                        _selectedMonth = DateTime(date.year, date.month);
-                      });
-                      _listenToMonthData();
-                    }
-                    setState(() => _isWeekView = false);
-                    _onDaySelected(date.day);
-                  },
-                ),
-
-              // ── Month view ──
-              if (!_isWeekView)
-                RecapMonthView(
-                  selectedMonth: _selectedMonth,
-                  entryDays: _entryDays,
-                  dayMoods: _dayMoods,
-                  selectedDay: _selectedDay,
-                  monthEntries: _monthEntries,
-                  selectedEntries: _selectedEntries,
-                  weekStartDay: weekStartDay,
-                  onDaySelected: _onDaySelected,
-                  onPreviousMonth: _goToPreviousMonth,
-                  onNextMonth: _goToNextMonth,
-                ),
-            ],
-
-            // ── Bottom padding for nav bar ──
-            const SizedBox(height: AppSpacing.navBarClearance),
           ],
-        ),
+
+          // ── Bottom padding for nav bar ──
+          const SizedBox(height: AppSpacing.navBarClearance),
+        ],
       ),
+    );
+
+    // Gradient sits OUTSIDE SafeArea so it extends behind the status bar,
+    // blending the system chrome into the Recap header. Only the scroll
+    // content respects the safe-area insets.
+    return Stack(
+      children: [
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          height: 280,
+          child: IgnorePointer(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    cs.primary.withValues(alpha: 0.16),
+                    cs.surface.withValues(alpha: 0.0),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+        SafeArea(child: scrollView),
+      ],
     );
   }
 }

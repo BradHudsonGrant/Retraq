@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
 import '../../models/journal_entry.dart';
 import '../../providers/settings_provider.dart';
+import '../../theme/app_motion.dart';
 import '../../theme/app_spacing.dart';
 import '../../utils/entry_action_dialogs.dart';
 import '../atoms/bionic_text.dart';
@@ -48,12 +50,17 @@ class WeekDayList extends StatelessWidget {
     return List.generate(7, (i) => startOfWeek.add(Duration(days: i)));
   }
 
-  /// Group entries by date (day precision).
+  /// Group entries by date (day precision), oldest-first within each day so
+  /// readers scan top-to-bottom chronologically. Matches the order the Jot
+  /// "Recent" card uses so the two surfaces never disagree.
   Map<DateTime, List<JournalEntry>> _groupByDate() {
     final map = <DateTime, List<JournalEntry>>{};
     for (final entry in entries) {
       final key = DateTime(entry.date.year, entry.date.month, entry.date.day);
       (map[key] ??= []).add(entry);
+    }
+    for (final list in map.values) {
+      list.sort((a, b) => a.createdAt.compareTo(b.createdAt));
     }
     return map;
   }
@@ -66,31 +73,39 @@ class WeekDayList extends StatelessWidget {
     final grouped = _groupByDate();
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
+    final reduceMotion = AppMotion.reduce(context);
+
+    // Skip days after "today" so the current week doesn't render empty
+    // placeholder cards for Friday/Saturday/etc. Past weeks still show
+    // every day (empty ones get a "No entries" line).
+    final visibleDates = dates
+        .where((d) => !d.isAfter(today))
+        .toList(growable: false);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Each day of the week
-        ...dates.map((date) {
+        // Each day of the week (future days are hidden)
+        ...visibleDates.asMap().entries.map((mapEntry) {
+          final dayIndex = mapEntry.key;
+          final date = mapEntry.value;
           final isToday = date == today;
-          final isFuture = date.isAfter(today);
           final dayEntries = grouped[date] ?? [];
           final dayLabel = DateFormat(
             'EEEE',
           ).format(date); // Monday, Tuesday...
           final dateLabel = DateFormat('MMM d').format(date); // Mar 26
 
-          return Padding(
+          final dayCard = Padding(
             padding: const EdgeInsets.only(bottom: AppSpacing.sm),
             child: Semantics(
-              button: !isFuture,
+              button: true,
               label:
                   '${isToday ? 'Today' : dayLabel}, $dateLabel'
-                  '${dayEntries.isEmpty && !isFuture ? ', no entries' : ''}'
+                  '${dayEntries.isEmpty ? ', no entries' : ''}'
                   '${dayEntries.isNotEmpty ? ', ${dayEntries.length} ${dayEntries.length == 1 ? 'entry' : 'entries'}' : ''}',
-              enabled: !isFuture,
               child: InkWell(
-                onTap: isFuture ? null : () => onDaySelected?.call(date),
+                onTap: () => onDaySelected?.call(date),
                 borderRadius: AppSpacing.borderRadiusXl,
                 child: Container(
                   width: double.infinity,
@@ -109,28 +124,14 @@ class WeekDayList extends StatelessWidget {
                             isToday ? 'Today' : dayLabel,
                             style: tt.titleSmall?.copyWith(
                               fontWeight: FontWeight.w600,
-                              color:
-                                  isFuture
-                                      ? cs.onSurfaceVariant.withValues(
-                                        alpha: 0.75,
-                                      )
-                                      : isToday
-                                      ? cs.primary
-                                      : cs.onSurface,
+                              color: isToday ? cs.primary : cs.onSurface,
                             ),
                           ),
                           const SizedBox(width: AppSpacing.sm),
                           Text(
                             dateLabel,
                             style: tt.labelMedium?.copyWith(
-                              color:
-                                  isFuture
-                                      ? cs.onSurfaceVariant.withValues(
-                                        alpha: 0.75,
-                                      )
-                                      : cs.onSurfaceVariant.withValues(
-                                        alpha: 0.7,
-                                      ),
+                              color: cs.onSurfaceVariant.withValues(alpha: 0.7),
                             ),
                           ),
                           const Spacer(),
@@ -146,18 +147,27 @@ class WeekDayList extends StatelessWidget {
                         ],
                       ),
 
-                      // Entries for this day
+                      // Entries for this day — flat rows within the day
+                      // card, separated by a thin divider. No nested box
+                      // wrapper so every card on the page reads at the
+                      // same visual width.
                       if (dayEntries.isNotEmpty) ...[
                         const SizedBox(height: AppSpacing.md),
-                        ...dayEntries.map(
-                          (entry) => Padding(
-                            padding: const EdgeInsets.only(
-                              bottom: AppSpacing.sm,
+                        for (var i = 0; i < dayEntries.length; i++) ...[
+                          if (i > 0)
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: AppSpacing.md,
+                              ),
+                              child: Divider(
+                                height: 1,
+                                thickness: 1,
+                                color: cs.outlineVariant.withValues(alpha: 0.3),
+                              ),
                             ),
-                            child: _InlineEntry(entry: entry),
-                          ),
-                        ),
-                      ] else if (!isFuture) ...[
+                          _InlineEntry(entry: dayEntries[i]),
+                        ],
+                      ] else ...[
                         const SizedBox(height: AppSpacing.sm),
                         Text(
                           'No entries',
@@ -172,6 +182,26 @@ class WeekDayList extends StatelessWidget {
                 ),
               ),
             ),
+          );
+
+          if (reduceMotion) return dayCard;
+          final delayMs = dayIndex * 60;
+          return Animate(
+            effects: [
+              FadeEffect(
+                delay: delayMs.ms,
+                duration: 380.ms,
+                curve: Curves.easeOut,
+              ),
+              SlideEffect(
+                delay: delayMs.ms,
+                begin: const Offset(0, 0.08),
+                end: Offset.zero,
+                duration: 440.ms,
+                curve: AppMotion.emphasizedDecelerate,
+              ),
+            ],
+            child: dayCard,
           );
         }),
       ],
@@ -197,85 +227,106 @@ class _InlineEntry extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
-    final timeLabel = DateFormat('h:mm a').format(entry.createdAt);
+    // Show a wall-clock time only when the entry has no AM/PM bucket label;
+    // the chip already communicates "when" for labelled entries.
+    final hasLabel = entry.label != null;
+    final timeLabel =
+        hasLabel ? null : DateFormat('h:mm a').format(entry.createdAt);
+    // Backdated marker: if the entry was WRITTEN on a different day from the
+    // day it's ABOUT, surface that so "12:34 AM" on yesterday's card doesn't
+    // look like it's seconds away from another entry on the same day.
+    final createdDate = DateTime(
+      entry.createdAt.year,
+      entry.createdAt.month,
+      entry.createdAt.day,
+    );
+    final entryDate = DateTime(
+      entry.date.year,
+      entry.date.month,
+      entry.date.day,
+    );
+    final isBackdated = createdDate != entryDate;
+    final backdatedLabel =
+        isBackdated ? DateFormat('MMM d').format(entry.createdAt) : null;
 
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: cs.surfaceContainerHigh.withValues(alpha: 0.5),
-        borderRadius: AppSpacing.borderRadiusLg,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Time + label + title + actions row
-          Row(
-            children: [
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Time + label + title + actions row
+        Row(
+          children: [
+            if (timeLabel != null)
               Text(
-                timeLabel,
+                backdatedLabel != null
+                    ? '$backdatedLabel · $timeLabel'
+                    : timeLabel,
                 style: tt.labelSmall?.copyWith(
                   color: cs.onSurfaceVariant.withValues(alpha: 0.6),
+                  fontStyle: isBackdated ? FontStyle.italic : null,
                 ),
               ),
-              if (entry.label != null) ...[
-                const SizedBox(width: AppSpacing.sm),
-                RetraqChip(
-                  label: entry.label!,
-                  color:
-                      entry.label == 'AM'
-                          ? cs.primaryContainer
-                          : cs.tertiaryContainer,
-                  textColor:
-                      entry.label == 'AM'
-                          ? cs.onPrimaryContainer
-                          : cs.onTertiaryContainer,
+            if (hasLabel && backdatedLabel != null) ...[
+              Text(
+                '$backdatedLabel · ',
+                style: tt.labelSmall?.copyWith(
+                  color: cs.onSurfaceVariant.withValues(alpha: 0.6),
+                  fontStyle: FontStyle.italic,
                 ),
-              ],
-              if (entry.title != null && entry.title!.isNotEmpty) ...[
-                const SizedBox(width: AppSpacing.sm),
-                Text(
-                  '·',
-                  style: tt.labelSmall?.copyWith(
-                    color: cs.onSurfaceVariant.withValues(alpha: 0.5),
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                Expanded(
-                  child: Text(
-                    entry.title!,
-                    style: tt.labelMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-              if (entry.title == null || entry.title!.isEmpty) const Spacer(),
-              EntryActionMenu(
-                entry: entry,
-                onEdit: () => _confirmEdit(context),
-                onDelete: () => _confirmDelete(context),
-                iconSize: 18,
               ),
             ],
-          ),
-          const SizedBox(height: AppSpacing.xs),
-
-          // Entry text
-          if (entry.entry != null && entry.entry!.isNotEmpty)
-            BionicText(
-              text: entry.entry!,
-              style: tt.bodyMedium?.copyWith(height: 1.5),
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
-              enabled:
-                  SettingsProvider.maybeOf(context)?.bionicReadingEnabled ??
-                  false,
+            if (hasLabel)
+              RetraqChip(
+                label: entry.label!,
+                color:
+                    entry.label == 'AM'
+                        ? cs.primaryContainer
+                        : cs.tertiaryContainer,
+                textColor:
+                    entry.label == 'AM'
+                        ? cs.onPrimaryContainer
+                        : cs.onTertiaryContainer,
+              ),
+            if (entry.title != null && entry.title!.isNotEmpty) ...[
+              const SizedBox(width: AppSpacing.sm),
+              Text(
+                '·',
+                style: tt.labelSmall?.copyWith(
+                  color: cs.onSurfaceVariant.withValues(alpha: 0.5),
+                ),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: Text(
+                  entry.title!,
+                  style: tt.labelMedium?.copyWith(fontWeight: FontWeight.w600),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+            if (entry.title == null || entry.title!.isEmpty) const Spacer(),
+            EntryActionMenu(
+              entry: entry,
+              onEdit: () => _confirmEdit(context),
+              onDelete: () => _confirmDelete(context),
+              iconSize: 18,
             ),
-        ],
-      ),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.xs),
+
+        // Entry text
+        if (entry.entry != null && entry.entry!.isNotEmpty)
+          BionicText(
+            text: entry.entry!,
+            style: tt.bodyMedium?.copyWith(height: 1.5),
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
+            enabled:
+                SettingsProvider.maybeOf(context)?.bionicReadingEnabled ??
+                false,
+          ),
+      ],
     );
   }
 }

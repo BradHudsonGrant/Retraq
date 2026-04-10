@@ -101,14 +101,13 @@ class UserRepository {
             .into(_db.userSettingsTable)
             .insert(UserSettingsTableCompanion.insert());
       });
-      // Clear SharedPreferences keys related to lock and age verification.
+      // Clear SharedPreferences keys related to age verification and reviews.
+      // Lockout keys live in hardenedSecureStorage (LockoutController) — do
+      // not clear them from prefs here; that block is below.
       try {
         final prefs = await SharedPreferences.getInstance();
         await prefs.remove('age_verified');
         await prefs.remove('age_denied');
-        await prefs.remove('lock_failed_attempts');
-        await prefs.remove('lock_lockout_count');
-        await prefs.remove('lock_lockout_end');
         await prefs.remove('review_prompt_shown');
         await prefs.remove('pin_length');
       } catch (_) {
@@ -121,6 +120,7 @@ class UserRepository {
         await hardenedSecureStorage.delete(key: 'pin_length');
         await hardenedSecureStorage.delete(key: 'lock_failed_attempts');
         await hardenedSecureStorage.delete(key: 'lock_lockout_count');
+        await hardenedSecureStorage.delete(key: 'lock_lockout_start');
         await hardenedSecureStorage.delete(key: 'lock_lockout_end');
       } catch (_) {
         // SecureStorage may not be available in test environments.

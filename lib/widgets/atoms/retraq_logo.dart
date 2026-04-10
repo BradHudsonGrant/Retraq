@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../theme/app_text.dart';
 
@@ -146,6 +147,25 @@ class _RetraqLogoState extends State<RetraqLogo> with TickerProviderStateMixin {
       fit: BoxFit.contain,
       colorFilter: ColorFilter.mode(cs.primary, BlendMode.srcIn),
     );
+
+    // One-shot shimmer over the logo when entrance-animating + not reduced
+    // motion. Adds a premium sheen on splash / lock / onboarding without an
+    // infinite ticker (which would break `pumpAndSettle` based tests).
+    //
+    // Dark mode gets a much brighter sheen — primary teal at 0.55 alpha was
+    // basically invisible against a near-black background. Use onPrimary
+    // (the warm light fill colour) at near-full alpha so the sweep actually
+    // reads on the wordmark while still feeling on-brand.
+    if (widget.animate && !_reduceMotion) {
+      final isDark = Theme.of(context).brightness == Brightness.dark;
+      final shimmerColor =
+          isDark
+              ? cs.onPrimary.withValues(alpha: 0.95)
+              : cs.primary.withValues(alpha: 0.55);
+      icon = icon
+          .animate(delay: widget.delay)
+          .shimmer(duration: 2200.ms, color: shimmerColor);
+    }
 
     // Wrap in breathing animation if active
     if (_breatheScale != null) {

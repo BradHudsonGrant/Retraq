@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import '../../theme/app_motion.dart';
 import '../../theme/app_spacing.dart';
+import '../atoms/pressable_scale.dart';
 
 /// Reusable 3×4 number pad with optional biometric button.
 /// Used by LockScreen and PIN setup dialog.
@@ -97,15 +100,17 @@ class PadButton extends StatelessWidget {
       button: true,
       label:
           label ?? (icon == Icons.backspace_outlined ? 'Delete' : 'Biometric'),
-      child: Material(
-        color: cs.surfaceContainerLow,
-        shape: const CircleBorder(),
-        child: InkWell(
-          onTap: () {
-            HapticFeedback.lightImpact();
-            onTap();
-          },
-          customBorder: const CircleBorder(),
+      // Wrapped in PressableScale for the satisfying tap-to-shrink. No glow
+      // halo here on purpose — this is the lock-screen PIN entry surface and
+      // overstimulation would actively harm the security focus.
+      child: PressableScale(
+        onTap: () {
+          HapticFeedback.lightImpact();
+          onTap();
+        },
+        child: Material(
+          color: cs.surfaceContainerLow,
+          shape: const CircleBorder(),
           child: SizedBox(
             width: 72,
             height: 72,
@@ -145,6 +150,8 @@ class PinDots extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
 
+    final reduceMotion = AppMotion.reduce(context);
+
     return Semantics(
       liveRegion: true,
       label: '$length of $maxLength digits entered${isError ? ', error' : ''}',
@@ -152,23 +159,38 @@ class PinDots extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: List.generate(maxLength, (i) {
           final filled = i < length;
+          Widget dot = AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            width: 16,
+            height: 16,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color:
+                  isError
+                      ? cs.error
+                      : filled
+                      ? cs.primary
+                      : cs.surfaceContainerHigh,
+              border: filled ? null : Border.all(color: cs.outlineVariant),
+            ),
+          );
+
+          // Spring pop on fill — gives the PIN a tactile, satisfying feel
+          // without distracting from security focus.
+          if (!reduceMotion) {
+            dot = dot
+                .animate(target: filled ? 1 : 0)
+                .scaleXY(
+                  begin: 0.7,
+                  end: 1.0,
+                  duration: 240.ms,
+                  curve: AppMotion.springSmooth,
+                );
+          }
+
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              width: 16,
-              height: 16,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color:
-                    isError
-                        ? cs.error
-                        : filled
-                        ? cs.primary
-                        : cs.surfaceContainerHigh,
-                border: filled ? null : Border.all(color: cs.outlineVariant),
-              ),
-            ),
+            child: dot,
           );
         }),
       ),

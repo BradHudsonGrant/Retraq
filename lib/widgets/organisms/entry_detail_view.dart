@@ -6,6 +6,7 @@ import '../../services/export_service.dart';
 import '../../theme/app_spacing.dart';
 import '../../utils/entry_action_dialogs.dart';
 import '../atoms/bionic_text.dart';
+import '../atoms/mood_blob.dart';
 import '../atoms/retraq_chip.dart';
 import '../molecules/entry_action_menu.dart';
 import '../molecules/mood_selector.dart';
@@ -101,7 +102,27 @@ class _EntryCard extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
 
-    final timeLabel = DateFormat('h:mm a').format(entry.createdAt);
+    // Show a wall-clock time only when the entry has no AM/PM bucket label;
+    // the chip already communicates "when" for labelled entries.
+    final hasLabel = entry.label != null;
+    final timeLabel =
+        hasLabel ? null : DateFormat('h:mm a').format(entry.createdAt);
+    // Backdated marker: if the entry was written on a different calendar day
+    // from the day it's about, show the creation date so "12:34 AM" doesn't
+    // look adjacent to other entries that share the displayed card day.
+    final createdDate = DateTime(
+      entry.createdAt.year,
+      entry.createdAt.month,
+      entry.createdAt.day,
+    );
+    final entryDate = DateTime(
+      entry.date.year,
+      entry.date.month,
+      entry.date.day,
+    );
+    final isBackdated = createdDate != entryDate;
+    final backdatedLabel =
+        isBackdated ? DateFormat('MMM d').format(entry.createdAt) : null;
 
     return Container(
       width: double.infinity,
@@ -116,15 +137,28 @@ class _EntryCard extends StatelessWidget {
           // Timestamp + label + actions
           Row(
             children: [
-              Text(
-                timeLabel,
-                style: tt.labelSmall?.copyWith(
-                  color: cs.onSurfaceVariant.withValues(alpha: 0.75),
-                  letterSpacing: 0.5,
+              if (timeLabel != null)
+                Text(
+                  backdatedLabel != null
+                      ? '$backdatedLabel · $timeLabel'
+                      : timeLabel,
+                  style: tt.labelSmall?.copyWith(
+                    color: cs.onSurfaceVariant.withValues(alpha: 0.75),
+                    letterSpacing: 0.5,
+                    fontStyle: isBackdated ? FontStyle.italic : null,
+                  ),
                 ),
-              ),
-              if (entry.label != null) ...[
-                const SizedBox(width: AppSpacing.sm),
+              if (hasLabel && backdatedLabel != null) ...[
+                Text(
+                  '$backdatedLabel · ',
+                  style: tt.labelSmall?.copyWith(
+                    color: cs.onSurfaceVariant.withValues(alpha: 0.75),
+                    letterSpacing: 0.5,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+              ],
+              if (hasLabel)
                 RetraqChip(
                   label: entry.label!,
                   color:
@@ -136,7 +170,6 @@ class _EntryCard extends StatelessWidget {
                           ? cs.onPrimaryContainer
                           : cs.onTertiaryContainer,
                 ),
-              ],
               const Spacer(),
               EntryActionMenu(
                 entry: entry,
@@ -150,9 +183,13 @@ class _EntryCard extends StatelessWidget {
             const SizedBox(height: AppSpacing.sm),
             Row(
               children: [
-                Text(
-                  moodEmoji(entry.mood!),
-                  style: const TextStyle(fontSize: 16),
+                MoodBlob(
+                  mood: entry.mood!,
+                  size: 20,
+                  color: moodColorFor(
+                    entry.mood!,
+                    Theme.of(context).brightness,
+                  ),
                 ),
                 const SizedBox(width: AppSpacing.xs),
                 Text(

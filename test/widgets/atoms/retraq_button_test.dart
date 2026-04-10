@@ -64,7 +64,10 @@ void main() {
 
     testWidgets('has AnimatedScale for press feedback', (tester) async {
       await tester.pumpWidget(
-        wrapWidget(RetraqButton(label: 'Animate', onPressed: () {})),
+        wrapWidget(
+          RetraqButton(label: 'Animate', onPressed: () {}),
+          enableAnimations: true,
+        ),
       );
       expect(find.byType(AnimatedScale), findsOneWidget);
     });

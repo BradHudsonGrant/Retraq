@@ -52,13 +52,42 @@ void resetFakeSecureStorage() {
   _fakeSecureStorage.clear();
 }
 
+/// Forces every widget under [child] to see `disableAnimations: true`.
+/// This makes the new flutter_animate / Animate-based effects short-circuit
+/// in tests so timers and tickers stay quiet for `pumpAndSettle`.
+Widget _withReducedMotion(Widget child) {
+  return Builder(
+    builder: (context) {
+      return MediaQuery(
+        data: MediaQuery.of(context).copyWith(disableAnimations: true),
+        child: child,
+      );
+    },
+  );
+}
+
+Widget _maybeReduceMotion(Widget child, {required bool enableAnimations}) {
+  return enableAnimations ? child : _withReducedMotion(child);
+}
+
 /// Wraps a widget in MaterialApp + Scaffold for widget testing.
 /// Use for screens and widgets that need a Scaffold ancestor.
-Widget wrapWidget(Widget child, {UserSettings? settings}) {
+///
+/// By default, animations are reduced (disableAnimations=true) so widget
+/// tests using `pumpAndSettle` converge cleanly. Pass [enableAnimations] true
+/// for the rare test that asserts on animation widgets like AnimatedScale.
+Widget wrapWidget(
+  Widget child, {
+  UserSettings? settings,
+  bool enableAnimations = false,
+}) {
   Widget app = MaterialApp(
     localizationsDelegates: L10n.localizationsDelegates,
     supportedLocales: L10n.supportedLocales,
-    home: Scaffold(body: child),
+    home: _maybeReduceMotion(
+      Scaffold(body: child),
+      enableAnimations: enableAnimations,
+    ),
   );
   if (settings != null) {
     app = SettingsProvider(settings: settings, child: app);
@@ -68,11 +97,15 @@ Widget wrapWidget(Widget child, {UserSettings? settings}) {
 
 /// Wraps a widget in MaterialApp only (no Scaffold).
 /// Use for widgets that provide their own Scaffold (e.g. LockScreen).
-Widget wrapScreen(Widget child, {UserSettings? settings}) {
+Widget wrapScreen(
+  Widget child, {
+  UserSettings? settings,
+  bool enableAnimations = false,
+}) {
   Widget app = MaterialApp(
     localizationsDelegates: L10n.localizationsDelegates,
     supportedLocales: L10n.supportedLocales,
-    home: child,
+    home: _maybeReduceMotion(child, enableAnimations: enableAnimations),
   );
   if (settings != null) {
     app = SettingsProvider(settings: settings, child: app);
@@ -82,11 +115,18 @@ Widget wrapScreen(Widget child, {UserSettings? settings}) {
 
 /// Wraps a widget in MaterialApp + Scaffold + SingleChildScrollView.
 /// Use for tall widgets that may overflow the test viewport.
-Widget wrapScrollable(Widget child, {UserSettings? settings}) {
+Widget wrapScrollable(
+  Widget child, {
+  UserSettings? settings,
+  bool enableAnimations = false,
+}) {
   Widget app = MaterialApp(
     localizationsDelegates: L10n.localizationsDelegates,
     supportedLocales: L10n.supportedLocales,
-    home: Scaffold(body: SingleChildScrollView(child: child)),
+    home: _maybeReduceMotion(
+      Scaffold(body: SingleChildScrollView(child: child)),
+      enableAnimations: enableAnimations,
+    ),
   );
   if (settings != null) {
     app = SettingsProvider(settings: settings, child: app);

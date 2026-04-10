@@ -1,13 +1,17 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
 
 import '../models/journal_entry.dart';
 import '../providers/settings_provider.dart';
 import '../services/database_service.dart';
 import '../services/stats_service.dart';
+import '../theme/app_motion.dart';
 import '../theme/app_spacing.dart';
 import '../widgets/atoms/bionic_text.dart';
+import '../widgets/atoms/glow_box.dart';
+import '../widgets/atoms/mood_blob.dart';
 import '../utils/adaptive_layout.dart';
 import '../widgets/molecules/mood_selector.dart';
 import '../widgets/molecules/stat_card.dart';
@@ -154,50 +158,61 @@ class _StatsScreenState extends State<StatsScreen>
 
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.lg),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        decoration: BoxDecoration(
-          color: cs.tertiaryContainer,
-          borderRadius: AppSpacing.borderRadiusXl,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(
-                  Icons.auto_awesome,
-                  size: 18,
-                  color: cs.onTertiaryContainer,
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                Text(
-                  'On this day last year...',
-                  style: tt.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w600,
+      child: GlowBox(
+        color: cs.tertiary,
+        glowOpacity: 0.42,
+        blurRadius: 30,
+        spreadRadius: 2,
+        borderRadius: AppSpacing.borderRadiusXl,
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(AppSpacing.lg),
+          decoration: BoxDecoration(
+            color: cs.tertiaryContainer,
+            borderRadius: AppSpacing.borderRadiusXl,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    Icons.auto_awesome,
+                    size: 18,
                     color: cs.onTertiaryContainer,
                   ),
+                  const SizedBox(width: AppSpacing.sm),
+                  Text(
+                    'On this day last year...',
+                    style: tt.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: cs.onTertiaryContainer,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              if (entry.mood != null) ...[
+                MoodBlob(
+                  mood: entry.mood!,
+                  size: 32,
+                  color: moodColorFor(
+                    entry.mood!,
+                    Theme.of(context).brightness,
+                  ),
                 ),
+                const SizedBox(height: AppSpacing.xs),
               ],
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            if (entry.mood != null) ...[
-              Text(
-                moodEmoji(entry.mood!),
-                style: const TextStyle(fontSize: 24),
-              ),
-              const SizedBox(height: AppSpacing.xs),
+              if (preview.isNotEmpty)
+                BionicText(
+                  text: preview,
+                  style: tt.bodyMedium?.copyWith(color: cs.onTertiaryContainer),
+                  enabled:
+                      SettingsProvider.maybeOf(context)?.bionicReadingEnabled ??
+                      false,
+                ),
             ],
-            if (preview.isNotEmpty)
-              BionicText(
-                text: preview,
-                style: tt.bodyMedium?.copyWith(color: cs.onTertiaryContainer),
-                enabled:
-                    SettingsProvider.maybeOf(context)?.bionicReadingEnabled ??
-                    false,
-              ),
-          ],
+          ),
         ),
       ),
     );
@@ -380,9 +395,13 @@ class _StatsScreenState extends State<StatsScreen>
           ),
           child: Row(
             children: [
-              Text(
-                moodEmoji(_stats.averageMood!.round()),
-                style: const TextStyle(fontSize: 32),
+              MoodBlob(
+                mood: _stats.averageMood!.round(),
+                size: 40,
+                color: moodColorFor(
+                  _stats.averageMood!.round(),
+                  Theme.of(context).brightness,
+                ),
               ),
               const SizedBox(width: AppSpacing.md),
               Column(
@@ -495,9 +514,12 @@ class _StatsScreenState extends State<StatsScreen>
                 children: [
                   SizedBox(
                     width: 28,
-                    child: Text(
-                      moodEmoji(mood),
-                      style: const TextStyle(fontSize: 16),
+                    child: Center(
+                      child: MoodBlob(
+                        mood: mood,
+                        size: 20,
+                        color: moodColorFor(mood, Theme.of(context).brightness),
+                      ),
                     ),
                   ),
                   const SizedBox(width: AppSpacing.sm),
@@ -537,83 +559,127 @@ class _StatsScreenState extends State<StatsScreen>
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
 
-    return SafeArea(
-      child: SingleChildScrollView(
-        padding: AppSpacing.pagePadding,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: AppSpacing.lg),
-
-            // ── Header ──
-            Text(
-              'Stats',
-              style: tt.displaySmall?.copyWith(fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(height: AppSpacing.xs),
-            BionicText(
-              text: 'Your journey so far.',
-              style: tt.bodyLarge?.copyWith(color: cs.onSurfaceVariant),
-              enabled:
-                  SettingsProvider.maybeOf(context)?.bionicReadingEnabled ??
-                  false,
-            ),
-
-            const SizedBox(height: AppSpacing.lg),
-
-            // ── Loading skeleton ──
-            if (_isLoading)
-              _buildLoadingSkeleton(cs)
-            // ── Empty state ──
-            else if (_stats.totalEntries == 0) ...[
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxl),
-                child: Center(
-                  child: Column(
-                    children: [
-                      Icon(
-                        Icons.bar_chart,
-                        size: 48,
-                        color: cs.onSurfaceVariant.withValues(alpha: 0.75),
-                      ),
-                      const SizedBox(height: AppSpacing.md),
-                      Text(
-                        'No stats yet',
-                        style: tt.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: cs.onSurfaceVariant,
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacing.xs),
-                      BionicText(
-                        text:
-                            'Start journaling to see your patterns and streaks.',
-                        textAlign: TextAlign.center,
-                        style: tt.bodyMedium?.copyWith(
-                          color: cs.onSurfaceVariant.withValues(alpha: 0.75),
-                        ),
-                        enabled:
-                            SettingsProvider.maybeOf(
-                              context,
-                            )?.bionicReadingEnabled ??
-                            false,
-                      ),
-                    ],
-                  ),
+    // Gradient sits OUTSIDE SafeArea so it paints behind the status bar,
+    // flowing the system chrome into the Stats header. Only the scroll
+    // view respects the safe-area insets.
+    return Stack(
+      children: [
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          height: 300,
+          child: IgnorePointer(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    cs.primary.withValues(alpha: 0.18),
+                    cs.surface.withValues(alpha: 0.0),
+                  ],
                 ),
               ),
-            ] else ...[
-              _buildOnThisDayCard(cs, tt),
-              if (isTablet(context))
-                _buildTabletStats(cs, tt)
-              else
-                _buildPhoneStats(cs, tt),
-            ], // end stats content
-            // ── Bottom padding for nav bar ──
-            const SizedBox(height: AppSpacing.navBarClearance),
-          ],
+            ),
+          ),
         ),
-      ),
+        SafeArea(
+          child: SingleChildScrollView(
+            padding: AppSpacing.pagePadding,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: AppSpacing.lg),
+
+                // ── Header ──
+                Animate(
+                  effects: [
+                    FadeEffect(duration: 500.ms, curve: Curves.easeOut),
+                    SlideEffect(
+                      begin: const Offset(-0.04, 0),
+                      end: Offset.zero,
+                      duration: 550.ms,
+                      curve: AppMotion.emphasizedDecelerate,
+                    ),
+                  ],
+                  child: Text(
+                    'Stats',
+                    style: tt.displaySmall?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                BionicText(
+                  text: 'Your journey so far.',
+                  style: tt.bodyLarge?.copyWith(color: cs.onSurfaceVariant),
+                  enabled:
+                      SettingsProvider.maybeOf(context)?.bionicReadingEnabled ??
+                      false,
+                ),
+
+                const SizedBox(height: AppSpacing.lg),
+
+                // ── Loading skeleton ──
+                if (_isLoading)
+                  _buildLoadingSkeleton(cs)
+                // ── Empty state ──
+                else if (_stats.totalEntries == 0) ...[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: AppSpacing.xxl,
+                    ),
+                    child: Center(
+                      child: Column(
+                        children: [
+                          Icon(
+                            Icons.bar_chart,
+                            size: 48,
+                            color: cs.onSurfaceVariant.withValues(alpha: 0.75),
+                          ),
+                          const SizedBox(height: AppSpacing.md),
+                          Text(
+                            'No stats yet',
+                            style: tt.titleMedium?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: cs.onSurfaceVariant,
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.xs),
+                          BionicText(
+                            text:
+                                'Start journaling to see your patterns and streaks.',
+                            textAlign: TextAlign.center,
+                            style: tt.bodyMedium?.copyWith(
+                              color: cs.onSurfaceVariant.withValues(
+                                alpha: 0.75,
+                              ),
+                            ),
+                            enabled:
+                                SettingsProvider.maybeOf(
+                                  context,
+                                )?.bionicReadingEnabled ??
+                                false,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ] else ...[
+                  _buildOnThisDayCard(cs, tt),
+                  if (isTablet(context))
+                    _buildTabletStats(cs, tt)
+                  else
+                    _buildPhoneStats(cs, tt),
+                ], // end stats content
+                // ── Bottom padding for nav bar ──
+                const SizedBox(height: AppSpacing.navBarClearance),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

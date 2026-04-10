@@ -6,6 +6,8 @@ import '../services/notification_service.dart';
 import '../services/secure_storage.dart';
 import '../services/user_repository.dart';
 import '../theme/app_spacing.dart';
+import '../widgets/atoms/animated_mesh_background.dart';
+import '../widgets/atoms/glow_box.dart';
 import '../widgets/atoms/retraq_logo.dart';
 import '../widgets/molecules/page_indicator_dots.dart';
 import '../utils/app_info.dart' as info;
@@ -121,11 +123,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     final reduceMotion = MediaQuery.of(context).disableAnimations;
     final lastPage = _totalPageCount - 1;
     if (_currentPage < lastPage) {
-      _controller.nextPage(
-        duration:
-            reduceMotion ? Duration.zero : const Duration(milliseconds: 400),
-        curve: Curves.easeInOut,
-      );
+      if (reduceMotion) {
+        _controller.jumpToPage(_currentPage + 1);
+      } else {
+        _controller.nextPage(
+          duration: const Duration(milliseconds: 400),
+          curve: Curves.easeInOut,
+        );
+      }
     } else if (_currentPage == lastPage) {
       // Consent page — only complete if both accepted
       if (_privacyAccepted && _termsAccepted && _healthAccepted) {
@@ -207,11 +212,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     await prefs.setBool(_ageVerifiedKey, true);
     if (!mounted) return;
     final reduceMotion = MediaQuery.of(context).disableAnimations;
-    _controller.nextPage(
-      duration:
-          reduceMotion ? Duration.zero : const Duration(milliseconds: 400),
-      curve: Curves.easeInOut,
-    );
+    if (reduceMotion) {
+      _controller.jumpToPage(_currentPage + 1);
+    } else {
+      _controller.nextPage(
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut,
+      );
+    }
   }
 
   Future<void> _denyAge() async {
@@ -243,98 +251,126 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
     return Scaffold(
       backgroundColor: cs.surface,
-      body: SafeArea(
-        child: Column(
-          children: [
-            // Header: Logo only (no Skip — consent is required)
-            const Padding(
-              padding: EdgeInsets.only(
-                left: AppSpacing.xl,
-                right: AppSpacing.md,
-                top: AppSpacing.md,
-              ),
-              child: Row(
-                children: [RetraqLogo(size: 32, animate: true, showText: true)],
-              ),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          Positioned.fill(
+            child: AnimatedMeshBackground(
+              colors: [
+                cs.primary.withValues(alpha: 0.30),
+                cs.tertiary.withValues(alpha: 0.22),
+                cs.secondaryContainer.withValues(alpha: 0.30),
+              ],
+              baseColor: cs.surface,
+              opacity: 0.45,
             ),
-
-            // Pages
-            Expanded(
-              child: PageView.builder(
-                controller: _controller,
-                itemCount: _totalPageCount,
-                onPageChanged: (i) => setState(() => _currentPage = i),
-                physics: const NeverScrollableScrollPhysics(),
-                itemBuilder: (_, i) {
-                  if (i == 0) {
-                    return AgeGatePage(
-                      onConfirm: _confirmAge,
-                      onDeny: _denyAge,
-                      isDenied: _ageDenied,
-                    );
-                  }
-                  if (i <= pages.length) {
-                    return OnboardingIntroPage(data: pages[i - 1]);
-                  }
-                  // Last page: consent
-                  return ConsentPage(
-                    privacyAccepted: _privacyAccepted,
-                    termsAccepted: _termsAccepted,
-                    healthAccepted: _healthAccepted,
-                    onPrivacyChanged:
-                        (v) => setState(() => _privacyAccepted = v ?? false),
-                    onTermsChanged:
-                        (v) => setState(() => _termsAccepted = v ?? false),
-                    onHealthChanged:
-                        (v) => setState(() => _healthAccepted = v ?? false),
-                  );
-                },
-              ),
-            ),
-
-            // Dots + button (hidden on age gate page)
-            if (_currentPage > 0)
-              Padding(
-                padding: const EdgeInsets.all(AppSpacing.xl),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // Page dots (info pages + consent = pages.length + 1)
-                    Semantics(
-                      label: l10n.onboardingPageLabel(
-                        _currentPage,
-                        _totalPageCount - 1,
-                      ),
-                      excludeSemantics: true,
-                      child: PageIndicatorDots(
-                        count: pages.length + 1,
-                        current: _currentPage - 1,
-                      ),
-                    ),
-
-                    // Next / Get Started button
-                    FilledButton(
-                      onPressed: _isNextEnabled ? _next : null,
-                      style: FilledButton.styleFrom(
-                        backgroundColor: cs.primary,
-                        foregroundColor: cs.onPrimary,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.lg,
-                          vertical: AppSpacing.md,
-                        ),
-                      ),
-                      child: Text(
-                        _currentPage == _totalPageCount - 1
-                            ? l10n.getStartedButton
-                            : l10n.nextButton,
-                        style: tt.labelLarge?.copyWith(color: cs.onPrimary),
-                      ),
-                    ),
-                  ],
+          ),
+          SafeArea(
+            child: Column(
+              children: [
+                // Header: Logo only (no Skip — consent is required)
+                const Padding(
+                  padding: EdgeInsets.only(
+                    left: AppSpacing.xl,
+                    right: AppSpacing.md,
+                    top: AppSpacing.md,
+                  ),
+                  child: Row(
+                    children: [
+                      RetraqLogo(size: 32, animate: true, showText: true),
+                    ],
+                  ),
                 ),
-              ),
-          ],
-        ),
+
+                // Pages
+                Expanded(
+                  child: PageView.builder(
+                    controller: _controller,
+                    itemCount: _totalPageCount,
+                    onPageChanged: (i) => setState(() => _currentPage = i),
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (_, i) {
+                      if (i == 0) {
+                        return AgeGatePage(
+                          onConfirm: _confirmAge,
+                          onDeny: _denyAge,
+                          isDenied: _ageDenied,
+                        );
+                      }
+                      if (i <= pages.length) {
+                        return OnboardingIntroPage(data: pages[i - 1]);
+                      }
+                      // Last page: consent
+                      return ConsentPage(
+                        privacyAccepted: _privacyAccepted,
+                        termsAccepted: _termsAccepted,
+                        healthAccepted: _healthAccepted,
+                        onPrivacyChanged:
+                            (v) =>
+                                setState(() => _privacyAccepted = v ?? false),
+                        onTermsChanged:
+                            (v) => setState(() => _termsAccepted = v ?? false),
+                        onHealthChanged:
+                            (v) => setState(() => _healthAccepted = v ?? false),
+                      );
+                    },
+                  ),
+                ),
+
+                // Dots + button (hidden on age gate page)
+                if (_currentPage > 0)
+                  Padding(
+                    padding: const EdgeInsets.all(AppSpacing.xl),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // Page dots (info pages + consent = pages.length + 1)
+                        Semantics(
+                          label: l10n.onboardingPageLabel(
+                            _currentPage,
+                            _totalPageCount - 1,
+                          ),
+                          excludeSemantics: true,
+                          child: PageIndicatorDots(
+                            count: pages.length + 1,
+                            current: _currentPage - 1,
+                          ),
+                        ),
+
+                        // Next / Get Started button
+                        GlowBox(
+                          color: cs.primary,
+                          glowOpacity: _isNextEnabled ? 0.55 : 0.0,
+                          blurRadius: 26,
+                          spreadRadius: 2,
+                          borderRadius: AppSpacing.borderRadiusFull,
+                          child: FilledButton(
+                            onPressed: _isNextEnabled ? _next : null,
+                            style: FilledButton.styleFrom(
+                              backgroundColor: cs.primary,
+                              foregroundColor: cs.onPrimary,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: AppSpacing.lg,
+                                vertical: AppSpacing.md,
+                              ),
+                            ),
+                            child: Text(
+                              _currentPage == _totalPageCount - 1
+                                  ? l10n.getStartedButton
+                                  : l10n.nextButton,
+                              style: tt.labelLarge?.copyWith(
+                                color: cs.onPrimary,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

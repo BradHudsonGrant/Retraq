@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../../models/journal_entry.dart';
 import '../../providers/settings_provider.dart';
+import '../../theme/app_motion.dart';
 import '../../theme/app_spacing.dart';
 import '../../utils/entry_action_dialogs.dart';
 import '../../widgets/atoms/bionic_text.dart';
+import '../../widgets/atoms/retraq_chip.dart';
 import '../../widgets/molecules/entry_action_menu.dart';
 
 /// Compact card showing a recent day's entries on the home screen.
@@ -25,22 +28,28 @@ class RecentDayCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
+    final reduceMotion = AppMotion.reduce(context);
+
+    // Always render oldest-first so this card matches the Recap week/month
+    // views — reading top-to-bottom gives a chronological story of the day.
+    final sortedEntries = [...entries]
+      ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
 
     final entryPreview =
-        entries.isNotEmpty
-            ? entries.first.displayText.length > 60
-                ? '${entries.first.displayText.substring(0, 60)}...'
-                : entries.first.displayText
+        sortedEntries.isNotEmpty
+            ? sortedEntries.first.displayText.length > 60
+                ? '${sortedEntries.first.displayText.substring(0, 60)}...'
+                : sortedEntries.first.displayText
             : '';
 
-    return Semantics(
+    final card = Semantics(
       container: true,
       label: 'Entry for $label: $entryPreview',
       child: Container(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
           color: cs.surfaceContainerLow,
-          borderRadius: AppSpacing.borderRadiusLg,
+          borderRadius: AppSpacing.borderRadiusXl,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -48,73 +57,90 @@ class RecentDayCard extends StatelessWidget {
             Row(
               children: [
                 ExcludeSemantics(
-                  child: Icon(Icons.history, size: 14, color: cs.primary),
+                  child: Icon(Icons.history, size: 16, color: cs.primary),
                 ),
                 const SizedBox(width: AppSpacing.xs),
                 Text(
                   label,
-                  style: tt.labelMedium?.copyWith(
+                  style: tt.titleSmall?.copyWith(
                     fontWeight: FontWeight.w600,
                     color: cs.primary,
                   ),
                 ),
                 const Spacer(),
                 Text(
-                  '${entries.length} ${entries.length == 1 ? 'entry' : 'entries'}',
-                  style: tt.labelSmall?.copyWith(
+                  '${sortedEntries.length} ${sortedEntries.length == 1 ? 'entry' : 'entries'}',
+                  style: tt.labelMedium?.copyWith(
                     color: cs.onSurfaceVariant.withValues(alpha: 0.7),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacing.sm),
-            for (var i = 0; i < entries.length && i < 2; i++) ...[
-              if (i > 0) const SizedBox(height: AppSpacing.sm),
-              Row(
+            const SizedBox(height: AppSpacing.md),
+            for (var i = 0; i < sortedEntries.length && i < 2; i++) ...[
+              if (i > 0)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                  child: Divider(
+                    height: 1,
+                    thickness: 1,
+                    color: cs.outlineVariant.withValues(alpha: 0.3),
+                  ),
+                ),
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (entries[i].label != null)
-                    Padding(
-                      padding: const EdgeInsets.only(right: AppSpacing.xs),
-                      child: Text(
-                        entries[i].label!,
-                        style: tt.labelSmall?.copyWith(
-                          color: cs.onSurfaceVariant.withValues(alpha: 0.75),
-                          fontWeight: FontWeight.w600,
+                  // Label pill + action row
+                  Row(
+                    children: [
+                      if (sortedEntries[i].label != null)
+                        RetraqChip(
+                          label: sortedEntries[i].label!,
+                          color:
+                              sortedEntries[i].label == 'AM'
+                                  ? cs.primaryContainer
+                                  : cs.tertiaryContainer,
+                          textColor:
+                              sortedEntries[i].label == 'AM'
+                                  ? cs.onPrimaryContainer
+                                  : cs.onTertiaryContainer,
                         ),
+                      const Spacer(),
+                      EntryActionMenu(
+                        entry: sortedEntries[i],
+                        onEdit: () => _confirmEdit(context, sortedEntries[i]),
+                        onDelete:
+                            () => _confirmDelete(context, sortedEntries[i]),
+                        iconSize: 18,
+                        iconAlpha: 0.4,
                       ),
-                    ),
-                  Expanded(
-                    child: BionicText(
-                      text: entries[i].displayText,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: tt.bodySmall?.copyWith(
-                        color: cs.onSurface.withValues(alpha: 0.8),
-                      ),
-                      enabled:
-                          SettingsProvider.maybeOf(
-                            context,
-                          )?.bionicReadingEnabled ??
-                          false,
-                    ),
+                    ],
                   ),
-                  EntryActionMenu(
-                    entry: entries[i],
-                    onEdit: () => _confirmEdit(context, entries[i]),
-                    onDelete: () => _confirmDelete(context, entries[i]),
-                    iconSize: 18,
-                    iconAlpha: 0.4,
+                  if (sortedEntries[i].label != null)
+                    const SizedBox(height: AppSpacing.xs),
+                  BionicText(
+                    text: sortedEntries[i].displayText,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: tt.bodyMedium?.copyWith(
+                      height: 1.5,
+                      color: cs.onSurface.withValues(alpha: 0.9),
+                    ),
+                    enabled:
+                        SettingsProvider.maybeOf(
+                          context,
+                        )?.bionicReadingEnabled ??
+                        false,
                   ),
                 ],
               ),
             ],
-            if (entries.length > 2)
+            if (sortedEntries.length > 2)
               Padding(
-                padding: const EdgeInsets.only(top: AppSpacing.xs),
+                padding: const EdgeInsets.only(top: AppSpacing.sm),
                 child: Text(
-                  '+${entries.length - 2} more',
-                  style: tt.labelSmall?.copyWith(
+                  '+${sortedEntries.length - 2} more',
+                  style: tt.labelMedium?.copyWith(
                     color: cs.onSurfaceVariant.withValues(alpha: 0.75),
                   ),
                 ),
@@ -122,6 +148,20 @@ class RecentDayCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+
+    if (reduceMotion) return card;
+    return Animate(
+      effects: [
+        FadeEffect(duration: 380.ms, curve: Curves.easeOut),
+        SlideEffect(
+          begin: const Offset(0, 0.06),
+          end: Offset.zero,
+          duration: 420.ms,
+          curve: AppMotion.emphasizedDecelerate,
+        ),
+      ],
+      child: card,
     );
   }
 }

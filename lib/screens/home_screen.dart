@@ -16,6 +16,7 @@ import '../theme/app_spacing.dart';
 import '../utils/adaptive_layout.dart';
 import '../utils/date_helpers.dart';
 import '../utils/journal_prompts.dart';
+import '../utils/test_keys.dart';
 import '../widgets/molecules/mood_selector.dart';
 import '../widgets/molecules/segmented_pill.dart';
 import '../widgets/organisms/save_success_overlay.dart';
@@ -233,6 +234,7 @@ class _HomeScreenState extends State<HomeScreen>
         ),
         excludeSemantics: true,
         child: InkWell(
+          key: TestKeys.homeDateChip,
           onTap: _pickDate,
           borderRadius: AppSpacing.borderRadiusLg,
           child: Chip(
@@ -274,6 +276,7 @@ class _HomeScreenState extends State<HomeScreen>
       // Mood selector (opt-in via settings)
       if (_settings?.moodEnabled ?? false) ...[
         MoodSelector(
+          key: TestKeys.homeMoodSelector,
           selectedMood: _selectedMood,
           onChanged: (mood) => setState(() => _selectedMood = mood),
         ),
@@ -306,10 +309,13 @@ class _HomeScreenState extends State<HomeScreen>
           onSave: _saveEntry,
           enterToSave: _settings?.enterToSave ?? false,
           bulletPoints: _settings?.bulletPointsOnEnter ?? false,
+          textFieldKey: TestKeys.homeEntryField,
+          saveButtonKey: TestKeys.homeSaveButton,
           topRightWidget:
               _isAllDayMode
                   ? null
                   : SegmentedPill(
+                    key: TestKeys.homeAmPmToggle,
                     leftLabel: l10n.amLabel,
                     rightLabel: l10n.pmLabel,
                     isRightActive: !_isAm,
@@ -483,10 +489,17 @@ class _HomeScreenState extends State<HomeScreen>
                 onDismissed: () {
                   if (!mounted) return;
                   final entryId = _lastSavedEntryId;
+                  // Clear the form here (deferred from _saveEntry) so the
+                  // form rebuild happens during the overlay dismissal frame
+                  // rather than competing with its entrance animation.
+                  _titleController.clear();
+                  _entryController.clear();
                   setState(() {
                     _showSaveSuccess = false;
                     _milestoneMessage = null;
                     _lastSavedEntryId = null;
+                    _selectedDate = null;
+                    _selectedMood = null;
                   });
                   if (entryId != null) {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -520,6 +533,7 @@ class _HomeScreenState extends State<HomeScreen>
         border: Border.all(color: cs.outlineVariant.withValues(alpha: 0.3)),
       ),
       child: TextField(
+        key: TestKeys.homeTitleField,
         controller: _titleController,
         textCapitalization: TextCapitalization.sentences,
         style: tt.titleMedium?.copyWith(fontWeight: FontWeight.w600),
@@ -741,16 +755,17 @@ class _HomeScreenState extends State<HomeScreen>
     FocusScope.of(context).unfocus();
 
     HapticFeedback.mediumImpact();
+    // Show the overlay first WITHOUT clearing the underlying form. The overlay
+    // is fully opaque so the form isn't visible, but rebuilding the journal
+    // tree (text controllers, recent day cards) on the same frame as the
+    // overlay's elastic entry causes a visible jank. Defer the clear to the
+    // dismissal callback when the overlay is already mid-fade-out.
     setState(() {
       _isSaving = false;
       _showSaveSuccess = true;
       _milestoneMessage = milestone;
-      _selectedDate = null;
       _lastSavedEntryId = savedId;
     });
-    _titleController.clear();
-    _entryController.clear();
-    _selectedMood = null;
 
     // Check for in-app review prompt (fires once at 5th entry)
     ReviewService.instance.checkAndPrompt(totalCount);

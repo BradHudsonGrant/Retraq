@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../providers/settings_provider.dart';
 import '../../theme/app_spacing.dart';
 import '../atoms/bionic_text.dart';
+import '../atoms/glow_box.dart';
 
 class NudgeCard extends StatelessWidget {
   const NudgeCard({
@@ -27,54 +28,67 @@ class NudgeCard extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
 
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      decoration: BoxDecoration(
-        color: cs.primary,
-        borderRadius: AppSpacing.borderRadiusXxl,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ExcludeSemantics(
-            child: Icon(
-              Icons.notifications_active,
-              size: 36,
-              color: cs.onPrimary,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          BionicText(
-            text:
-                'Get a quick nudge to drop a breadcrumb before you forget your day.',
-            style: tt.titleMedium?.copyWith(
-              color: cs.onPrimary,
-              fontWeight: FontWeight.w500,
-              height: 1.3,
-            ),
-            enabled:
-                SettingsProvider.maybeOf(context)?.bionicReadingEnabled ??
-                false,
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Daily at ${_formatTime(nudgeHour, nudgeMinute)}',
-                style: tt.bodySmall?.copyWith(color: cs.onPrimary),
+    return GlowBox(
+      color: cs.primary,
+      glowOpacity: 0.42,
+      blurRadius: 30,
+      spreadRadius: 1,
+      borderRadius: AppSpacing.borderRadiusXxl,
+      child: Container(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        decoration: BoxDecoration(
+          color: cs.primary,
+          borderRadius: AppSpacing.borderRadiusXxl,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ExcludeSemantics(
+              child: Icon(
+                Icons.notifications_active,
+                size: 36,
+                color: cs.onPrimary,
               ),
-              FilledButton(
-                onPressed: onChangeTime,
-                style: FilledButton.styleFrom(
-                  backgroundColor: cs.surfaceContainerLowest,
-                  foregroundColor: cs.primary,
+            ),
+            const SizedBox(height: AppSpacing.md),
+            BionicText(
+              text:
+                  'Get a quick nudge to drop a breadcrumb before you forget your day.',
+              style: tt.titleMedium?.copyWith(
+                color: cs.onPrimary,
+                fontWeight: FontWeight.w500,
+                height: 1.3,
+              ),
+              enabled:
+                  SettingsProvider.maybeOf(context)?.bionicReadingEnabled ??
+                  false,
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Daily at ${_formatTime(nudgeHour, nudgeMinute)}',
+                  style: tt.bodySmall?.copyWith(color: cs.onPrimary),
                 ),
-                child: const Text('Change Time'),
-              ),
-            ],
-          ),
-        ],
+                GlowBox(
+                  color: cs.surfaceContainerLowest,
+                  glowOpacity: 0.55,
+                  blurRadius: 18,
+                  borderRadius: AppSpacing.borderRadiusFull,
+                  child: FilledButton(
+                    onPressed: onChangeTime,
+                    style: FilledButton.styleFrom(
+                      backgroundColor: cs.surfaceContainerLowest,
+                      foregroundColor: cs.primary,
+                    ),
+                    child: const Text('Change Time'),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

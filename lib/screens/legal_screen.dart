@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../theme/app_spacing.dart';
 
@@ -20,7 +21,18 @@ class LegalScreen extends StatelessWidget {
           top: AppSpacing.lg,
           bottom: AppSpacing.xxl,
         ),
-        child: _MarkdownBody(content: content, colorScheme: cs),
+        child: Animate(
+          effects: [
+            FadeEffect(duration: 400.ms, curve: Curves.easeOut),
+            SlideEffect(
+              begin: const Offset(0, 0.04),
+              end: Offset.zero,
+              duration: 500.ms,
+              curve: Curves.easeOutCubic,
+            ),
+          ],
+          child: _MarkdownBody(content: content, colorScheme: cs),
+        ),
       ),
     );
   }

@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../l10n/app_localizations.dart';
 import '../../theme/app_colors.dart';
+import '../../theme/app_motion.dart';
 import '../../theme/app_spacing.dart';
+import '../../utils/test_keys.dart';
+import '../atoms/glow_box.dart';
 
 /// Monthly calendar grid with entry dot indicators.
 /// Respects the user's weekStartDay setting for column order.
@@ -75,6 +78,7 @@ class CalendarGrid extends StatelessWidget {
               Row(
                 children: [
                   IconButton(
+                    key: TestKeys.recapPreviousMonth,
                     icon: const Icon(Icons.chevron_left),
                     onPressed: onPreviousMonth,
                     iconSize: 20,
@@ -86,6 +90,7 @@ class CalendarGrid extends StatelessWidget {
                     style: tt.labelLarge,
                   ),
                   IconButton(
+                    key: TestKeys.recapNextMonth,
                     icon: const Icon(Icons.chevron_right),
                     onPressed: onNextMonth,
                     iconSize: 20,
@@ -150,6 +155,7 @@ class CalendarGrid extends StatelessWidget {
     for (var day = 1; day <= daysInMonth; day++) {
       cells.add(
         _DayCell(
+          key: TestKeys.calendarDay(day),
           day: day,
           isSelected: day == selectedDay,
           hasEntry: entryDays.contains(day),
@@ -187,6 +193,7 @@ class CalendarGrid extends StatelessWidget {
 
 class _DayCell extends StatelessWidget {
   const _DayCell({
+    super.key,
     required this.day,
     this.isSelected = false,
     this.hasEntry = false,
@@ -222,6 +229,69 @@ class _DayCell extends StatelessWidget {
     if (hasEntry) a11yLabel.write(l10n.calendarDayHasEntriesSuffix);
     if (isSelected) a11yLabel.write(l10n.calendarDaySelectedSuffix);
 
+    final innerCircle = Container(
+      width: 44,
+      height: 44,
+      decoration:
+          isSelected
+              ? BoxDecoration(color: cs.primary, shape: BoxShape.circle)
+              : isToday
+              ? BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: cs.primary.withValues(alpha: 0.5),
+                  width: 1.5,
+                ),
+              )
+              : null,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            '$day',
+            style: tt.bodySmall?.copyWith(
+              color:
+                  isDimmed
+                      ? cs.onSurfaceVariant.withValues(alpha: 0.65)
+                      : isSelected
+                      ? cs.onPrimary
+                      : cs.onSurface,
+              fontWeight: isSelected ? FontWeight.w700 : FontWeight.w400,
+            ),
+          ),
+          if (hasEntry && !isDimmed)
+            Container(
+              width: 4,
+              height: 4,
+              margin: const EdgeInsets.only(top: 1),
+              decoration: BoxDecoration(
+                color:
+                    isSelected
+                        ? cs.onPrimary
+                        : moodValue != null &&
+                            moodValue! >= 1 &&
+                            moodValue! <= 5
+                        ? AppColors.moodColors(brightness)[moodValue! - 1]
+                        : cs.primary,
+                shape: BoxShape.circle,
+              ),
+            ),
+        ],
+      ),
+    );
+
+    final cellChild =
+        isSelected
+            ? GlowBox(
+              color: cs.primary,
+              glowOpacity: 0.6,
+              blurRadius: 20,
+              spreadRadius: 1,
+              shape: BoxShape.circle,
+              child: innerCircle,
+            )
+            : innerCircle;
+
     return Semantics(
       button: !isDimmed,
       label: a11yLabel.toString(),
@@ -231,57 +301,14 @@ class _DayCell extends StatelessWidget {
         child: SizedBox(
           height: 52,
           child: Center(
-            child: Container(
-              width: 44,
-              height: 44,
-              decoration:
-                  isSelected
-                      ? BoxDecoration(color: cs.primary, shape: BoxShape.circle)
-                      : isToday
-                      ? BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: cs.primary.withValues(alpha: 0.5),
-                          width: 1.5,
-                        ),
-                      )
-                      : null,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    '$day',
-                    style: tt.bodySmall?.copyWith(
-                      color:
-                          isDimmed
-                              ? cs.onSurfaceVariant.withValues(alpha: 0.65)
-                              : isSelected
-                              ? cs.onPrimary
-                              : cs.onSurface,
-                      fontWeight:
-                          isSelected ? FontWeight.w700 : FontWeight.w400,
-                    ),
-                  ),
-                  if (hasEntry && !isDimmed)
-                    Container(
-                      width: 4,
-                      height: 4,
-                      margin: const EdgeInsets.only(top: 1),
-                      decoration: BoxDecoration(
-                        color:
-                            isSelected
-                                ? cs.onPrimary
-                                : moodValue != null &&
-                                    moodValue! >= 1 &&
-                                    moodValue! <= 5
-                                ? AppColors.moodColors(brightness)[moodValue! -
-                                    1]
-                                : cs.primary,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                ],
-              ),
+            child: AnimatedScale(
+              duration:
+                  AppMotion.reduce(context)
+                      ? Duration.zero
+                      : const Duration(milliseconds: 220),
+              curve: AppMotion.springSmooth,
+              scale: isSelected ? 1.08 : 1.0,
+              child: cellChild,
             ),
           ),
         ),
