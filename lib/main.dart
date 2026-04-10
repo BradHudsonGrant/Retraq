@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:ui';
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'models/user_settings.dart';
+import 'theme/app_motion.dart';
 import 'theme/app_theme.dart';
 import 'screens/app_shell.dart';
 import 'screens/lock_screen.dart';
@@ -33,6 +35,12 @@ void main() async {
 
   // Allow all orientations for adaptive phone/tablet layouts
   await SystemChrome.setPreferredOrientations(DeviceOrientation.values);
+
+  // Draw behind both the status bar and the gesture/3-button nav bar so the
+  // top gradient tints and bottom NavigationBar surface flow seamlessly into
+  // the system chrome. AnnotatedRegion in the home builder below handles the
+  // per-theme tinting.
+  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
   // Initialise Drift (SQLite) database before app starts — it's the only
   // service the splash screen / first real route depends on.
@@ -233,15 +241,38 @@ class _RetraqAppState extends State<RetraqApp> with WidgetsBindingObserver {
         themeMode: _themeMode,
         home: Builder(
           builder: (ctx) {
-            final reduceMotion = MediaQuery.of(ctx).disableAnimations;
-            return AnimatedSwitcher(
-              duration:
-                  reduceMotion
-                      ? Duration.zero
-                      : const Duration(milliseconds: 300),
-              switchInCurve: Curves.easeOut,
-              switchOutCurve: Curves.easeIn,
-              child: _buildCurrentScreen(),
+            final cs = Theme.of(ctx).colorScheme;
+            final isDark = Theme.of(ctx).brightness == Brightness.dark;
+            // Tint the Android status bar and 3-button / gesture nav bar so
+            // the system chrome blends into Retraq's surface instead of the
+            // OEM default slab. iOS ignores these uniforms.
+            return AnnotatedRegion<SystemUiOverlayStyle>(
+              value: SystemUiOverlayStyle(
+                statusBarColor: Colors.transparent,
+                statusBarIconBrightness:
+                    isDark ? Brightness.light : Brightness.dark,
+                statusBarBrightness:
+                    isDark ? Brightness.dark : Brightness.light,
+                systemNavigationBarColor: cs.surface,
+                systemNavigationBarDividerColor: Colors.transparent,
+                systemNavigationBarIconBrightness:
+                    isDark ? Brightness.light : Brightness.dark,
+              ),
+              // Material 3 fade-through for top-level screen swaps.
+              // Reduce-motion collapses the duration to zero so the swap is
+              // instant for users with "Remove animations" enabled.
+              child: PageTransitionSwitcher(
+                duration: AppMotion.aware(ctx, AppMotion.slow),
+                transitionBuilder: (child, primary, secondary) {
+                  return FadeThroughTransition(
+                    animation: primary,
+                    secondaryAnimation: secondary,
+                    fillColor: cs.surface,
+                    child: child,
+                  );
+                },
+                child: _buildCurrentScreen(),
+              ),
             );
           },
         ),
