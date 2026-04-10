@@ -244,7 +244,7 @@ class ExportService {
     try {
       final dateStr = _readableFmt.format(entry.date);
       final text = 'Retraq -$dateStr\n\n${entry.displayText}';
-      await Share.share(text);
+      await SharePlus.instance.share(ShareParams(text: text));
     } catch (e, stack) {
       debugPrint('ExportService.shareEntry failed: $e\n$stack');
       throw Exception('Failed to share entry: $e');
@@ -266,7 +266,9 @@ class ExportService {
         if (e.title != null && e.title!.isNotEmpty) buffer.writeln(e.title);
         buffer.writeln(e.displayText);
       }
-      await Share.share(buffer.toString().trimRight());
+      await SharePlus.instance.share(
+        ShareParams(text: buffer.toString().trimRight()),
+      );
     } catch (e, stack) {
       debugPrint('ExportService.shareDayEntries failed: $e\n$stack');
       throw Exception('Failed to share day entries: $e');
@@ -474,7 +476,9 @@ class ExportService {
     final file = File('${dir.path}/$filename');
     await file.writeAsString(content);
     try {
-      await Share.shareXFiles([XFile(file.path, mimeType: mimeType)]);
+      await SharePlus.instance.share(
+        ShareParams(files: [XFile(file.path, mimeType: mimeType)]),
+      );
     } finally {
       if (await file.exists()) {
         await file.delete();

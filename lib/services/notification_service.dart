@@ -21,8 +21,8 @@ class NotificationService {
 
     // Initialize timezone
     tzdata.initializeTimeZones();
-    final locationName = await FlutterTimezone.getLocalTimezone();
-    tz.setLocalLocation(tz.getLocation(locationName));
+    final timezoneInfo = await FlutterTimezone.getLocalTimezone();
+    tz.setLocalLocation(tz.getLocation(timezoneInfo.identifier));
 
     const androidSettings = AndroidInitializationSettings(
       '@mipmap/ic_launcher',
@@ -36,7 +36,7 @@ class NotificationService {
       android: androidSettings,
       iOS: iosSettings,
     );
-    await _plugin.initialize(initSettings);
+    await _plugin.initialize(settings: initSettings);
     _initialized = true;
   }
 
@@ -173,11 +173,11 @@ class NotificationService {
     final message = pickMessage(hour, streakAtRisk: streakAtRisk);
 
     await _plugin.zonedSchedule(
-      _notificationId,
-      'Retraq',
-      message,
-      scheduled,
-      const NotificationDetails(
+      id: _notificationId,
+      title: 'Retraq',
+      body: message,
+      scheduledDate: scheduled,
+      notificationDetails: const NotificationDetails(
         android: AndroidNotificationDetails(
           _channelId,
           _channelName,
@@ -187,8 +187,6 @@ class NotificationService {
         ),
         iOS: DarwinNotificationDetails(),
       ),
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
       matchDateTimeComponents: DateTimeComponents.time,
     );

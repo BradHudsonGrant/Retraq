@@ -21,6 +21,11 @@ version: 0.9.0+1
 environment:
   sdk: ^3.7.2
 
+hooks:
+  user_defines:
+    sqlite3:
+      source: sqlite3mc
+
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
 # consider running `flutter pub upgrade --major-versions`. Alternatively,
@@ -37,8 +42,7 @@ dependencies:
 
   # Database (Drift — type-safe SQLite)
   drift: ^2.22.1
-  sqlite3: ^2.7.0
-  sqlcipher_flutter_libs: ^0.6.8
+  sqlite3: ^3.0.0
   path_provider: ^2.1.0
   path: ^1.9.0
 
@@ -46,22 +50,22 @@ dependencies:
   intl: any # Pinned by flutter_localizations SDK — version varies with Flutter
 
   # Security
-  local_auth: ^2.3.0
+  local_auth: ^3.0.0
   crypto: ^3.0.6
-  flutter_secure_storage: ^9.0.0
+  flutter_secure_storage: ^10.0.0
   shared_preferences: ^2.3.0
 
   # Notifications
-  flutter_local_notifications: ^18.0.0
-  timezone: ^0.10.0
-  flutter_timezone: ^3.0.1
+  flutter_local_notifications: ^21.0.0
+  timezone: ^0.11.0
+  flutter_timezone: ^5.0.0
 
   # In-app review
   in_app_review: ^2.0.10
 
   # Sharing & export
-  share_plus: ^10.1.4
-  file_picker: ^8.0.0
+  share_plus: ^12.0.0
+  file_picker: ^11.0.0
   flutter_svg: ^2.2.2
   url_launcher: ^6.3.0
   home_widget: ^0.9.0
