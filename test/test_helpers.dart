@@ -21,29 +21,29 @@ void setUpFakeSecureStorage() {
   const channel = MethodChannel('plugins.it_nomads.com/flutter_secure_storage');
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
       .setMockMethodCallHandler(channel, (MethodCall call) async {
-    final args = (call.arguments as Map?)?.cast<String, dynamic>();
-    final key = args?['key'] as String?;
-    switch (call.method) {
-      case 'read':
-        return _fakeSecureStorage[key];
-      case 'readAll':
-        return Map<String, String>.from(_fakeSecureStorage);
-      case 'write':
-        final value = args?['value'] as String?;
-        if (key != null && value != null) _fakeSecureStorage[key] = value;
-        return null;
-      case 'delete':
-        if (key != null) _fakeSecureStorage.remove(key);
-        return null;
-      case 'deleteAll':
-        _fakeSecureStorage.clear();
-        return null;
-      case 'containsKey':
-        return _fakeSecureStorage.containsKey(key);
-      default:
-        return null;
-    }
-  });
+        final args = (call.arguments as Map?)?.cast<String, dynamic>();
+        final key = args?['key'] as String?;
+        switch (call.method) {
+          case 'read':
+            return _fakeSecureStorage[key];
+          case 'readAll':
+            return Map<String, String>.from(_fakeSecureStorage);
+          case 'write':
+            final value = args?['value'] as String?;
+            if (key != null && value != null) _fakeSecureStorage[key] = value;
+            return null;
+          case 'delete':
+            if (key != null) _fakeSecureStorage.remove(key);
+            return null;
+          case 'deleteAll':
+            _fakeSecureStorage.clear();
+            return null;
+          case 'containsKey':
+            return _fakeSecureStorage.containsKey(key);
+          default:
+            return null;
+        }
+      });
 }
 
 /// Clears the in-memory secure storage backing store. Call in `setUp` if

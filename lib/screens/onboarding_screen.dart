@@ -165,9 +165,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       debugPrint('Failed to save consent records: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(L10n.of(context)!.consentSaveFailed),
-          ),
+          SnackBar(content: Text(L10n.of(context)!.consentSaveFailed)),
         );
       }
       return false;
@@ -221,10 +219,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     // There is intentionally no inverse "retry" method — per FTC guidance
     // the age screen must be neutral and must not nudge a user to re-declare.
     try {
-      await hardenedSecureStorage.write(
-        key: ageDeniedSecureKey,
-        value: 'true',
-      );
+      await hardenedSecureStorage.write(key: ageDeniedSecureKey, value: 'true');
     } catch (_) {
       // SecureStorage may not be available in test environments.
     }

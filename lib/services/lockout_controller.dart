@@ -5,11 +5,9 @@ import 'secure_storage.dart';
 
 /// Shared brute-force lockout controller used by LockScreen and PinVerifySheet.
 class LockoutController extends ChangeNotifier {
-  LockoutController({
-    FlutterSecureStorage? storage,
-    DateTime Function()? now,
-  }) : _secureStorage = storage ?? hardenedSecureStorage,
-       _now = now ?? DateTime.now;
+  LockoutController({FlutterSecureStorage? storage, DateTime Function()? now})
+    : _secureStorage = storage ?? hardenedSecureStorage,
+      _now = now ?? DateTime.now;
 
   final FlutterSecureStorage _secureStorage;
   final DateTime Function() _now;
@@ -62,9 +60,10 @@ class LockoutController extends ChangeNotifier {
       final lockoutEnd = DateTime.fromMillisecondsSinceEpoch(lockoutEndMs);
       // Fall back to (end - duration) for legacy state written by older
       // versions of this controller that did not persist the start timestamp.
-      final lockoutStart = lockoutStartMs > 0
-          ? DateTime.fromMillisecondsSinceEpoch(lockoutStartMs)
-          : lockoutEnd.subtract(_lockoutDuration);
+      final lockoutStart =
+          lockoutStartMs > 0
+              ? DateTime.fromMillisecondsSinceEpoch(lockoutStartMs)
+              : lockoutEnd.subtract(_lockoutDuration);
       final now = _now();
       // Clock-rewind defense (Option A): if the current wall clock is BEFORE
       // the recorded lockout start, the user has moved the clock backwards.
@@ -75,9 +74,10 @@ class LockoutController extends ChangeNotifier {
       if (clockRewound || remainingSeconds > 0) {
         // When the clock has been rewound we cannot trust wall-clock arithmetic
         // for the countdown, so fall back to the full original window.
-        _lockoutSecondsLeft = clockRewound
-            ? lockoutEnd.difference(lockoutStart).inSeconds
-            : remainingSeconds;
+        _lockoutSecondsLeft =
+            clockRewound
+                ? lockoutEnd.difference(lockoutStart).inSeconds
+                : remainingSeconds;
         _isLockedOut = true;
         _startCountdown();
         notifyListeners();
