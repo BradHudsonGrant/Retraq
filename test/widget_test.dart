@@ -2,7 +2,6 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:retraq/l10n/app_localizations.dart';
 import 'package:retraq/screens/app_shell.dart';
@@ -27,27 +26,17 @@ void main() {
     ),
   );
 
-  testWidgets('AppShell renders Top Bar and four tabs', (
+  testWidgets('AppShell renders four navigation tabs', (
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(wrapShell());
     await tester.pump(const Duration(milliseconds: 100));
 
-    // Header uses RichText with "Retraq" span
-    expect(
-      find.byWidgetPredicate(
-        (w) =>
-            w is RichText &&
-            w.text is TextSpan &&
-            (w.text as TextSpan).children != null &&
-            (w.text as TextSpan).children!.any(
-              (s) => s is TextSpan && s.text == 'Retraq',
-            ),
-      ),
-      findsOneWidget,
-    );
-    expect(find.byType(SvgPicture), findsWidgets);
-    expect(find.byType(AppBar), findsOneWidget);
+    // Shell intentionally has NO top AppBar — each screen owns its own
+    // header for max real-estate. Just verify the nav bar and the four
+    // tab labels are present.
+    expect(find.byType(AppBar), findsNothing);
+    expect(find.byType(NavigationBar), findsOneWidget);
 
     // Verify all 4 navigation destinations exist
     expect(find.text('Jot'), findsOneWidget);

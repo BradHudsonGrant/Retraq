@@ -158,10 +158,10 @@ void main() {
     });
 
     Widget wrapHome() {
-      return MaterialApp(
+      return const MaterialApp(
         localizationsDelegates: L10n.localizationsDelegates,
         supportedLocales: L10n.supportedLocales,
-        home: const MediaQuery(
+        home: MediaQuery(
           data: MediaQueryData(disableAnimations: true),
           child: Scaffold(body: HomeScreen()),
         ),

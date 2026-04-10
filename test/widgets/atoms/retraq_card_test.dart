@@ -54,7 +54,10 @@ void main() {
 
     testWidgets('has AnimatedScale when tappable', (tester) async {
       await tester.pumpWidget(
-        wrapWidget(RetraqCard(onTap: () {}, child: const Text('Scale'))),
+        wrapWidget(
+          RetraqCard(onTap: () {}, child: const Text('Scale')),
+          enableAnimations: true,
+        ),
       );
       expect(find.byType(AnimatedScale), findsOneWidget);
     });

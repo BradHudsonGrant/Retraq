@@ -185,9 +185,13 @@ void main() {
         await enterPin(tester, ['9', '9', '9', '9']);
       }
 
-      // NumberPad should be in disabled state (opacity 0.3)
-      final opacity = tester.widget<Opacity>(find.byType(Opacity));
-      expect(opacity.opacity, 0.3);
+      // NumberPad should be in disabled state (opacity 0.3).
+      // New animations introduced additional Opacity widgets in the tree
+      // (mesh background, glow effects), so match by exact opacity value.
+      final disabledOpacity = find.byWidgetPredicate(
+        (w) => w is Opacity && w.opacity == 0.3,
+      );
+      expect(disabledOpacity, findsOneWidget);
     });
   });
 }
