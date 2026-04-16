@@ -84,7 +84,7 @@ class StatCard extends StatelessWidget {
     }
 
     // ── Card content ──
-    Widget cardContent = Semantics(
+    final Widget cardContent = Semantics(
       label: '$label: $value${suffix != null ? ' $suffix' : ''}',
       excludeSemantics: true,
       child: Container(

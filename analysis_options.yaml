@@ -21,6 +21,7 @@ linter:
   # `// ignore_for_file: name_of_lint` syntax on the line or in the file
   # producing the lint.
   rules:
+    # Baseline (retained from the original flutter_lints + additions).
     prefer_const_constructors: true
     prefer_const_declarations: true
     prefer_single_quotes: true
@@ -29,6 +30,34 @@ linter:
     use_key_in_widget_constructors: true
     prefer_is_empty: true
     unnecessary_this: true
+
+    # Task 1.5 — expanded rule set targeting this app's concerns.
+    #
+    # Shipped in this commit (clean or trivial-to-fix):
+    # - Stream / async hygiene for a Drift + StreamSubscription codebase.
+    cancel_subscriptions: true
+    close_sinks: true
+    # - Refactor-safety / code-quality.
+    prefer_final_locals: true
+    prefer_final_in_for_each: true
+    avoid_empty_else: true
+    # - Widget build-context discipline (AsyncContext lifecycle).
+    use_build_context_synchronously: true
+    #
+    # Deferred to follow-up commits (surface too many warnings for a
+    # single cross-cutting commit; each needs per-site judgement):
+    #   unawaited_futures — ~30 sites, mostly intentional fire-and-forget
+    #     inside Flutter widget lifecycle callbacks. Needs explicit
+    #     `unawaited(...)` wraps per-site.
+    #   discarded_futures — similar; often `onPressed: () => foo()` where
+    #     foo is async. Needs `onPressed: () { unawaited(foo()); }` or
+    #     making the callback async.
+    #   unnecessary_lambdas — mostly in test closures; cosmetic.
+    #   avoid_dynamic_calls — mostly test-double shims; tests legitimately
+    #     use dynamic for mocking patterns.
+    #
+    # Removed:
+    #   avoid_returning_null_for_future — removed in Dart 3.3.0.
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options
