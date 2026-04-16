@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:retraq/l10n/app_localizations.dart';
 
 import '../../models/journal_entry.dart';
 import '../../theme/app_motion.dart';
@@ -40,17 +41,19 @@ class RecapMonthView extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
+    final l10n = L10n.of(context)!;
 
     if (isTablet(context)) {
-      return _buildTabletLayout(context, cs, tt);
+      return _buildTabletLayout(context, cs, tt, l10n);
     }
-    return _buildPhoneLayout(context, cs, tt);
+    return _buildPhoneLayout(context, cs, tt, l10n);
   }
 
   Widget _buildTabletLayout(
     BuildContext context,
     ColorScheme cs,
     TextTheme tt,
+    L10n l10n,
   ) {
     return SizedBox(
       height: MediaQuery.sizeOf(context).height * 0.7,
@@ -59,24 +62,24 @@ class RecapMonthView extends StatelessWidget {
         left: SingleChildScrollView(child: _buildCalendarGrid()),
         right: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-          child: _buildEntryList(cs, tt),
+          child: _buildEntryList(cs, tt, l10n),
         ),
       ),
     );
   }
 
-  Widget _buildPhoneLayout(BuildContext context, ColorScheme cs, TextTheme tt) {
+  Widget _buildPhoneLayout(BuildContext context, ColorScheme cs, TextTheme tt, L10n l10n) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildCalendarGrid(),
         const SizedBox(height: AppSpacing.md),
-        _buildEntryList(cs, tt),
+        _buildEntryList(cs, tt, l10n),
       ],
     );
   }
 
-  Widget _buildEntryList(ColorScheme cs, TextTheme tt) {
+  Widget _buildEntryList(ColorScheme cs, TextTheme tt, L10n l10n) {
     // Day selected — show entries for that day
     if (selectedDay != null) {
       if (selectedEntries.isNotEmpty) {
@@ -108,7 +111,7 @@ class RecapMonthView extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: AppSpacing.xl),
           child: Center(
             child: Text(
-              'No entry for this day',
+              l10n.noEntryForDay,
               style: tt.bodyMedium?.copyWith(
                 color: cs.onSurfaceVariant.withValues(alpha: 0.7),
               ),
@@ -127,7 +130,7 @@ class RecapMonthView extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: AppSpacing.xl),
           child: Center(
             child: BionicText(
-              text: 'No entries this month.',
+              text: l10n.noEntriesThisMonth,
               style: tt.bodyMedium?.copyWith(
                 color: cs.onSurfaceVariant.withValues(alpha: 0.7),
               ),
@@ -190,11 +193,21 @@ class _MonthEntryList extends StatelessWidget {
     // Sort days descending (newest first)
     final days = grouped.keys.toList()..sort((a, b) => b.compareTo(a));
 
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: days.length,
-      itemBuilder: (context, index) {
+    // Task 8.1 — Previously wrapped in
+    // `CustomScrollView(shrinkWrap: true, physics: NeverScrollableScrollPhysics)`
+    // inside a parent SingleChildScrollView. That defeated SliverList's
+    // lazy-build — every day card materialised on first frame anyway.
+    // Use a plain Column which is semantically identical (all children
+    // built) but removes the sliver overhead and clarifies intent.
+    //
+    // True virtualisation (real lazy-build, scale to 1000+ days) requires
+    // restructuring the recap screen to use a single CustomScrollView
+    // with slivers for the calendar + entries. Deferred as a v1.1
+    // architectural change; at current scale (≤ ~60 entries per month)
+    // the cost is negligible.
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: List<Widget>.generate(days.length, (index) {
         final day = days[index];
         final detail = EntryDetailView(
           entries: grouped[day]!,
@@ -220,7 +233,7 @@ class _MonthEntryList extends StatelessWidget {
           ],
           child: detail,
         );
-      },
+      }),
     );
   }
 }

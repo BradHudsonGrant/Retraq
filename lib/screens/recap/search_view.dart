@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
+import 'package:retraq/l10n/app_localizations.dart';
 
 import '../../models/journal_entry.dart';
 import '../../theme/app_motion.dart';
@@ -34,6 +35,7 @@ class RecapSearchView extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
+    final l10n = L10n.of(context)!;
     final reduceMotion = AppMotion.reduce(context);
 
     final searchField = TextField(
@@ -42,7 +44,7 @@ class RecapSearchView extends StatelessWidget {
       onChanged: onSearchChanged,
       autofocus: true,
       decoration: InputDecoration(
-        hintText: 'Search entries...',
+        hintText: l10n.searchHint,
         prefixIcon: const Icon(Icons.search),
         suffixIcon:
             searchController.text.isNotEmpty
@@ -65,7 +67,22 @@ class RecapSearchView extends StatelessWidget {
       ),
     );
 
-    return Column(
+    // Task 8.1 — Previously wrapped in
+    // `CustomScrollView(shrinkWrap: true, physics: NeverScrollableScrollPhysics)`
+    // with SliverToBoxAdapter + SliverList.builder inside the parent
+    // SingleChildScrollView. That defeated SliverList's lazy-build —
+    // every result card materialised on first frame anyway. Use plain
+    // Column + List.generate which is semantically identical but
+    // removes sliver overhead and clarifies intent.
+    //
+    // True virtualisation at scale (500+ search results, e.g. FTS5 query
+    // over multi-year journal) requires restructuring the recap screen
+    // into a single CustomScrollView with slivers. Deferred as a v1.1
+    // architectural change; FTS5 search already LIMITs to 50 results
+    // by default so this is not a live scaling bottleneck today.
+
+    // Header (search box).
+    final searchFieldHeader = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: AppSpacing.md),
@@ -89,44 +106,53 @@ class RecapSearchView extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppSpacing.md),
+      ],
+    );
 
-        // Search results
-        if (isSearching)
-          Semantics(
-            liveRegion: true,
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.xxl),
-                child: Text(
-                  'Searching...',
-                  style: tt.bodyMedium?.copyWith(
-                    color: cs.onSurfaceVariant.withValues(alpha: 0.6),
-                  ),
-                ),
+    // Status: searching indicator, empty state, or nothing.
+    final Widget? statusWidget;
+    if (isSearching) {
+      statusWidget = Semantics(
+        liveRegion: true,
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.xxl),
+            child: Text(
+              l10n.searching,
+              style: tt.bodyMedium?.copyWith(
+                color: cs.onSurfaceVariant.withValues(alpha: 0.6),
               ),
             ),
-          )
-        else if (hasSearched && searchResults.isEmpty)
-          Semantics(
-            liveRegion: true,
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.xxl),
-                child: Text(
-                  'No entries match your search.',
-                  style: tt.bodyMedium?.copyWith(
-                    color: cs.onSurfaceVariant.withValues(alpha: 0.6),
-                  ),
-                ),
+          ),
+        ),
+      );
+    } else if (hasSearched && searchResults.isEmpty) {
+      statusWidget = Semantics(
+        liveRegion: true,
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.xxl),
+            child: Text(
+              l10n.noSearchResults,
+              style: tt.bodyMedium?.copyWith(
+                color: cs.onSurfaceVariant.withValues(alpha: 0.6),
               ),
             ),
-          )
+          ),
+        ),
+      );
+    } else {
+      statusWidget = null;
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        searchFieldHeader,
+        if (statusWidget != null)
+          statusWidget
         else if (searchResults.isNotEmpty)
-          ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: searchResults.length,
-            itemBuilder: (context, index) {
+          ...List<Widget>.generate(searchResults.length, (index) {
               final entry = searchResults[index];
               final card = Padding(
                 padding: const EdgeInsets.only(bottom: AppSpacing.sm),
@@ -206,8 +232,7 @@ class RecapSearchView extends StatelessWidget {
                 ],
                 child: card,
               );
-            },
-          ),
+            }),
       ],
     );
   }
