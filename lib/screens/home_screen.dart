@@ -546,9 +546,10 @@ class _HomeScreenState extends State<HomeScreen>
           hintText: l10n.entryTitleHint,
           labelText: l10n.entryTitleLabel,
           floatingLabelBehavior: FloatingLabelBehavior.never,
+          // Task 7.1 — alpha 0.75 to meet WCAG 1.4.3 AA contrast.
           hintStyle: tt.titleMedium?.copyWith(
             fontWeight: FontWeight.w600,
-            color: cs.onSurfaceVariant.withValues(alpha: 0.55),
+            color: cs.onSurfaceVariant.withValues(alpha: 0.75),
           ),
           filled: false,
           border: InputBorder.none,

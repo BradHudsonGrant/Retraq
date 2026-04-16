@@ -137,8 +137,12 @@ class _JournalTextAreaState extends State<JournalTextArea> {
         hintText: widget.bulletPoints ? '• ${widget.hint}' : widget.hint,
         labelText: l10n.journalEntryLabel,
         floatingLabelBehavior: FloatingLabelBehavior.auto,
+        // Task 7.1 — Previously alpha 0.55 on light surface ~3.5:1,
+        // failing WCAG 1.4.3 (4.5:1 minimum for body-size text). 0.75
+        // raises the composited contrast comfortably above 4.5:1
+        // while keeping the hint visually subordinate to typed text.
         hintStyle: tt.bodyLarge?.copyWith(
-          color: cs.onSurfaceVariant.withValues(alpha: 0.55),
+          color: cs.onSurfaceVariant.withValues(alpha: 0.75),
         ),
         contentPadding: EdgeInsets.fromLTRB(
           AppSpacing.lg,
