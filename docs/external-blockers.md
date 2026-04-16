@@ -377,6 +377,33 @@ Task 1.5 lint commit. Blocked by B-1 (Sentry DSN).
 
 **When:** as soon as B-1 lands.
 
+### [ ] D-7. Android Gradle Plugin 9.1.1 upgrade (Dependabot PR #22)
+
+Dependabot opened PR #22 bumping com.android.application from 8.9.1 to
+9.1.1. This is a MAJOR version bump of the Android Gradle Plugin —
+likely to require Java 21 (currently 17), Gradle 8.13+, updated Kotlin
+plugin, and may surface deprecation breakage in the release-build
+ProGuard chain. `flutter analyze` is Dart-only and cannot catch these
+kinds of failures.
+
+During the 2026-04-16 session I merged all OTHER Dependabot PRs
+(#18, #19, #20, #21, #23, #24) via local cherry-pick + push since they
+were safe single-version patch/minor bumps. #22 was explicitly
+deferred: cherry-picked locally, analyzed clean, then reverted.
+
+**When:** requires a manual release-build smoke test:
+1. Apply PR #22 on a feature branch.
+2. Run `./scripts/build-android.sh` with local release keystore
+   (or CI with real keystore secrets).
+3. Run the release AAB on a physical Android device (Pixel 10 Pro or
+   similar). Verify app launches + core flows work.
+4. If green, merge #22. If broken, file the incompatibility upstream
+   and pin at 8.9.1 until a clean upgrade path exists.
+
+Alternative: wait for a subsequent Dependabot minor bump (9.1.2 or
+9.2.x) that may include compatibility fixes for common Flutter
+release-build patterns.
+
 ## How to unblock
 
 Each checklist item is a `B-N` (external) or `D-N` (deferred internal).
