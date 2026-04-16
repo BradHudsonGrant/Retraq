@@ -1,7 +1,7 @@
 const String termsOfServiceText = '''
 # Terms of Service
 
-**Last Updated: March 29, 2026**
+**Last Updated: April 16, 2026**
 
 ## Acceptance of Terms
 
@@ -47,6 +47,20 @@ You may stop using the App at any time by uninstalling it from your device. Upon
 ## Governing Law
 
 These Terms of Service shall be governed by and construed in accordance with the laws of the Province of Ontario, Canada. Any disputes arising from these terms shall be resolved in the appropriate courts of Ontario, Canada.
+
+### Mandatory Consumer Protections Prevail
+
+The foregoing choice of Ontario law and jurisdiction **does not derogate from any mandatory consumer-protection law applicable to you in your country or province of residence**. Where such mandatory protections are more favourable to you, they prevail over this clause.
+
+In particular, and without limitation:
+
+- **Residents of Quebec** retain all rights under the Consumer Protection Act (Quebec C.P.A.) and the Civil Code of Quebec (including Article 1437 on abusive clauses).
+- **Residents of the European Union, European Economic Area, or United Kingdom** retain all rights under Directive 93/13/EEC on Unfair Terms in Consumer Contracts, Regulation (EU) No 593/2008 (Rome I) Article 6, the UK Consumer Rights Act 2015, and any transposing national legislation.
+- **Residents of California** retain all rights under the California Consumer Privacy Act (CCPA), the California Automatic Renewal Law (Cal. Bus. & Prof. Code §17602), and Cal. Civ. Code §1668.
+- **Residents of Australia** retain all rights under the Australian Consumer Law (Schedule 2 to the Competition and Consumer Act 2010).
+- **Residents of any jurisdiction with equivalent mandatory consumer-protection provisions** retain the benefit of those provisions notwithstanding the foregoing.
+
+Nothing in these Terms limits, excludes, or modifies any consumer guarantee, right, or remedy that cannot lawfully be limited, excluded, or modified in your jurisdiction.
 
 ## Changes to These Terms
 

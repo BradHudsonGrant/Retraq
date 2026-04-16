@@ -12,7 +12,10 @@ import 'secure_storage.dart';
 
 /// Current document versions — bump when legal text changes.
 const String currentPrivacyPolicyVersion = '2026-03-29';
-const String currentTermsOfServiceVersion = '2026-03-29';
+// Bumped 2026-04-16 for Task 12.6 — added mandatory consumer-law
+// carve-out to the Governing Law section. Existing users will be
+// walked through the re-consent flow on next launch.
+const String currentTermsOfServiceVersion = '2026-04-16';
 const String currentHealthDisclaimerVersion = '2026-03-29';
 
 /// User CRUD, consent records, and data deletion.
