@@ -96,23 +96,33 @@ class _RetraqButtonState extends State<RetraqButton> {
 
     final reduceMotion = MediaQuery.of(context).disableAnimations;
 
+    // Task 7.14 — merge our Semantics with the inner FilledButton /
+    // OutlinedButton instead of nesting them. Without `container: true`
+    // the outer Semantics would stack on top of the button's own
+    // button-role node and screen readers would announce the role
+    // twice. `ExcludeSemantics` on the button subtree silences the
+    // default label/role and lets our node be the canonical one.
     return Semantics(
+      container: true,
+      button: true,
       label: widget.label,
       enabled: widget.onPressed != null,
-      child:
-          reduceMotion
-              ? button
-              : GestureDetector(
-                onTapDown: _onTapDown,
-                onTapUp: _onTapUp,
-                onTapCancel: _onTapCancel,
-                child: AnimatedScale(
-                  scale: _isPressed ? 0.96 : 1.0,
-                  duration: Duration(milliseconds: _isPressed ? 80 : 150),
-                  curve: Curves.easeOut,
-                  child: button,
+      child: ExcludeSemantics(
+        child:
+            reduceMotion
+                ? button
+                : GestureDetector(
+                  onTapDown: _onTapDown,
+                  onTapUp: _onTapUp,
+                  onTapCancel: _onTapCancel,
+                  child: AnimatedScale(
+                    scale: _isPressed ? 0.96 : 1.0,
+                    duration: Duration(milliseconds: _isPressed ? 80 : 150),
+                    curve: Curves.easeOut,
+                    child: button,
+                  ),
                 ),
-              ),
+      ),
     );
   }
 }
