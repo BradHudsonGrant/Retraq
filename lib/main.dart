@@ -86,7 +86,11 @@ class _RetraqAppState extends State<RetraqApp> with WidgetsBindingObserver {
       if (needsRebuild) {
         setState(() => _themeMode = newMode);
       }
-      _updateFlagSecure(s.appLockEnabled);
+      // Task 3.4 — FLAG_SECURE is applied unconditionally, not gated on
+      // appLockEnabled. Journal content is sensitive even without a PIN:
+      // blocking screenshots + Recents thumbnails protects users who
+      // have not set up app lock.
+      _updateFlagSecure(true);
     });
 
     // Defer non-critical service init until after the first frame so the
@@ -147,7 +151,8 @@ class _RetraqAppState extends State<RetraqApp> with WidgetsBindingObserver {
       _needsReconsent = reconsent;
       _settingsLoaded = true;
     });
-    _updateFlagSecure(settings.appLockEnabled);
+    // Task 3.4 — unconditional (see above).
+    _updateFlagSecure(true);
     try {
       // init() is idempotent — safe to call here even though the post-frame
       // callback in initState may have already run it.
