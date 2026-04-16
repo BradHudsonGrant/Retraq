@@ -296,10 +296,92 @@ Per the audit, this is already in place — just needs verification.
 
 ---
 
+## Deferred internal follow-up work
+
+Items that I encountered during implementation but chose to defer to
+dedicated follow-up commits. These are NOT external blockers — they're
+code work I will come back to — but you asked me to track them here
+for visibility. Each has a note on when to tackle it.
+
+### [ ] D-1. Expand lint rules deferred during Task 1.5
+
+When I shipped the Task 1.5 lint expansion (commit `15987f4`), I scoped
+it to the rules that land clean. Four rules would have surfaced ~100
+info-level warnings each needing per-site judgment:
+
+- `unawaited_futures` — ~30 sites, mostly intentional fire-and-forget in
+  Flutter widget lifecycle callbacks. Fix by wrapping with
+  `unawaited(...)` per-site.
+- `discarded_futures` — similar; often `onPressed: () => asyncFn()`.
+  Fix by making callbacks async or wrapping with `unawaited(...)`.
+- `unnecessary_lambdas` — mostly in test closures; cosmetic tearoff
+  refactor.
+- `avoid_dynamic_calls` — mostly test-double shims; tests legitimately
+  use `dynamic` for mocking patterns.
+
+**When:** v1.1 polish. Split into 4 separate commits, one per rule, so
+each is reviewable.
+
+### [ ] D-2. Real virtualization for Recap screen (follow-up to Task 8.1)
+
+Task 8.1 (commit `46ed3e9`) flattened the fake-sliver `CustomScrollView`
+inside MonthView and SearchView to plain Column for semantic clarity
+and small perf win. TRUE lazy virtualization — meaningful at 500+
+search results or multi-year month views — requires restructuring the
+outer `recap_screen.dart` SingleChildScrollView into a single
+`CustomScrollView` with slivers for calendar + week/month toggle +
+entry list.
+
+**When:** v1.1 performance polish, or when user complaints about search
+latency surface. Current FTS5 `LIMIT 50` makes this non-urgent.
+
+### [ ] D-3. True iOS FLAG_SECURE equivalent (follow-up to Task 3.5/3.6)
+
+Task 3.5 (commit `4994f72`) added in-Flutter lock on `inactive`/`paused`/
+`hidden` lifecycle. That's defense-in-depth; the canonical iOS fix is
+a native blur overlay swapped in on `applicationWillResignActive`.
+Task 3.6 is still pending — it requires iOS native Swift work in
+`ios/Runner/AppDelegate.swift` + a method-channel hook. Can't be done
+from inside Flutter code alone.
+
+**When:** before iOS TestFlight launch. Requires Apple Developer Program
+access (B-3) to test on a real device. Logged as pending in
+implementation_plan.md.
+
+### [ ] D-4. Fix 8 pre-existing test failures from in-flight l10n work
+
+The working tree had uncommitted modifications to `lib/l10n/*`,
+`lib/legal/*`, `lib/utils/entry_action_dialogs.dart`, etc. before this
+session started. Those changes partially localize strings but their
+matching test fixtures still look for the English literals ("No entry
+for this day", "Search entries...", etc.). Running `flutter test`
+reports 8 failures unrelated to anything I shipped.
+
+**When:** as part of the ongoing l10n workstream commits. Either the
+in-flight mods need a matching test-fixture update, or the tests
+need to be updated to use L10n.of() lookups for expected strings.
+
+### [ ] D-5. iOS release signing automation (follow-up to plan)
+
+Currently `release.yml` builds iOS with `--no-codesign`. A full
+TestFlight upload requires fastlane + App Store Connect API key.
+Blocked by B-3 (Apple Developer Program).
+
+**When:** as soon as B-3 lands. This is Epic 10 Task 10.2.
+
+### [ ] D-6. Sentry wiring (follow-up to Task 1.11 deferred)
+
+AppLog wrapper + 9 bare-catch replacements are scheduled for dedicated
+commits (Task 1.2, 1.6, 1.11 per plan). They were NOT included in the
+Task 1.5 lint commit. Blocked by B-1 (Sentry DSN).
+
+**When:** as soon as B-1 lands.
+
 ## How to unblock
 
-Each checklist item is a `B-N`. When you complete one, comment on the relevant
-Task or open an issue with the artifact / credential / decision, and I'll
+Each checklist item is a `B-N` (external) or `D-N` (deferred internal).
+When you complete an external blocker, comment on the relevant Task
+or open an issue with the artifact / credential / decision, and I'll
 resume work on the blocked tasks.
 
 Cross-referenced blockers per Epic task ID live in
