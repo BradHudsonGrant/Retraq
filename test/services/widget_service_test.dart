@@ -80,6 +80,58 @@ void main() {
       expect(_savedWidgetData['mood'], -1);
     });
 
+    test(
+      'Task 3.8 — skips DB read + HomeWidget push when app is locked',
+      () async {
+        // Seed an entry so the update WOULD produce visible data if it ran.
+        final now = DateTime.now();
+        final today = DateTime(now.year, now.month, now.day);
+        await db.entries.saveEntry(
+          JournalEntry(
+            date: today,
+            entry: 'Should not appear on widget',
+            mood: 5,
+            createdAt: now,
+          ),
+        );
+
+        // Pretend the app is locked.
+        WidgetService.instance.isLockedChecker = () => true;
+        try {
+          await WidgetService.instance.update();
+
+          // The mocked HomeWidget channel should NOT have received any
+          // saveWidgetData or updateWidget calls.
+          expect(
+            _savedWidgetData,
+            isEmpty,
+            reason:
+                'Widget must not push data while the app is locked (Task 3.8).',
+          );
+          expect(
+            _widgetUpdated,
+            isFalse,
+            reason:
+                'Widget refresh intent must not fire while the app is locked.',
+          );
+        } finally {
+          WidgetService.instance.isLockedChecker = null;
+        }
+      },
+    );
+
+    test('Task 3.8 — proceeds normally when isLockedChecker returns false',
+        () async {
+      WidgetService.instance.isLockedChecker = () => false;
+      try {
+        await WidgetService.instance.update();
+        expect(_savedWidgetData.containsKey('streak'), true);
+        expect(_widgetUpdated, isTrue);
+      } finally {
+        WidgetService.instance.isLockedChecker = null;
+      }
+    });
+
     test('pushes correct data after saving an entry', () async {
       final now = DateTime.now();
       final today = DateTime(now.year, now.month, now.day);

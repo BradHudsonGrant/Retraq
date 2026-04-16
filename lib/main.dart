@@ -100,6 +100,13 @@ class _RetraqAppState extends State<RetraqApp> with WidgetsBindingObserver {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       unawaited(_initBackgroundServices());
     });
+
+    // Task 3.8 — Tell the widget service how to check lock state so
+    // home-widget updates skip the DB while the app is locked. The
+    // widget displays mood + recent activity, which should not refresh
+    // on the home-screen while a thief holds a locked device.
+    WidgetService.instance.isLockedChecker =
+        () => _appLockEnabled && _isLocked;
   }
 
   Future<void> _initBackgroundServices() async {
