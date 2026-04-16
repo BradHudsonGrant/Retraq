@@ -462,6 +462,26 @@ engineering pass should fix regardless of AGP version).
 **When:** as soon as a Flutter stable release lists AGP 9 support in
 its release notes.
 
+#### Action for you on GitHub
+
+Dependabot's PR #22 is still **open** in the web UI even though the
+bump commit it introduced (`17eb7e1`) has been reverted on `main`
+(`3d5f151`). The GitHub MCP I have access to cannot reach this
+private repo, so I cannot close or comment on the PR from inside this
+session.
+
+Please close PR #22 manually with a short comment pointing at this
+entry, e.g.:
+
+> Blocked upstream: Flutter 3.41.6's `dev.flutter.flutter-gradle-plugin`
+> does not support AGP 9's new DSL, and the `android.newDsl=false`
+> opt-out path also fails with a Kotlin-extension collision. See
+> `docs/external-blockers.md#d-7`. Will revisit once Flutter SDK adds
+> AGP 9 support.
+
+Dependabot will re-open a fresh PR when a newer AGP 9.x release lands;
+by then the Flutter SDK unblock above may be in place.
+
 ## How to unblock
 
 Each checklist item is a `B-N` (external) or `D-N` (deferred internal).
