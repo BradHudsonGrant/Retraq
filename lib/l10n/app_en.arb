@@ -393,6 +393,10 @@
       "time": { "type": "String", "example": "8:30 PM" }
     }
   },
+  "resetToTodayLabel": "Reset to today",
+  "@resetToTodayLabel": {
+    "description": "Task 2.9 — Semantics + delete-icon tooltip on the date-override chip when an alternate day has been picked for the entry."
+  },
   "nudgeSkipIfJournaledHint": "We'll only remind you if you haven't journaled yet.",
   "@nudgeSkipIfJournaledHint": {
     "description": "Task 2.14 — Subtitle under the nudge time-picker explaining that the reminder is suppressed on days the user already journaled."

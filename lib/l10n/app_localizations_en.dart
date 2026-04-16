@@ -850,6 +850,9 @@ class L10nEn extends L10n {
   }
 
   @override
+  String get resetToTodayLabel => 'Reset to today';
+
+  @override
   String get nudgeSkipIfJournaledHint =>
       'We\'ll only remind you if you haven\'t journaled yet.';
 

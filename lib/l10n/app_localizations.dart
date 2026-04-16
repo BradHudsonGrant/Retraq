@@ -1567,6 +1567,12 @@ abstract class L10n {
   /// **'Daily at {time}'**
   String dailyAtTime(String time);
 
+  /// Task 2.9 — Semantics + delete-icon tooltip on the date-override chip when an alternate day has been picked for the entry.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset to today'**
+  String get resetToTodayLabel;
+
   /// Task 2.14 — Subtitle under the nudge time-picker explaining that the reminder is suppressed on days the user already journaled.
   ///
   /// In en, this message translates to:

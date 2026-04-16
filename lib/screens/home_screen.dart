@@ -281,6 +281,24 @@ class _HomeScreenState extends State<HomeScreen>
               borderRadius: AppSpacing.borderRadiusLg,
             ),
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
+            // Task 2.9 — when a non-default date is selected, show a
+            // reset X so users have an explicit way to return to today
+            // without reopening the picker. Additive to the border-
+            // colour signal, not a replacement.
+            onDeleted: _selectedDate != null
+                ? () => setState(() {
+                      _selectedDate = null;
+                    })
+                : null,
+            deleteIcon: _selectedDate != null
+                ? Icon(
+                    Icons.close_rounded,
+                    size: 16,
+                    color: cs.onSurfaceVariant,
+                  )
+                : null,
+            deleteButtonTooltipMessage:
+                _selectedDate != null ? l10n.resetToTodayLabel : null,
           ),
         ),
       ),
