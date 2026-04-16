@@ -384,7 +384,7 @@ All 260 tasks. Priority / Effort / Tier / Title. Detailed plan linked from the e
 | 4.5 | P1 | S | v1 | Ship mood as single switch for v1 |
 | 4.6 | P1 | S | v1 | Align README.md with current state |
 | 4.7 | P1 | S | v1 | Add widget + tablet Epic mentions |
-| 4.8 | P2 | XS | v1 | Rename "Journal" → "Jot" in plan nav refs |
+| 4.8 | P2 | XS | v1 | Rename "Journal" → "Jot" in plan nav refs _(completed in commit 9169922 — this plan's nav uses "Jot" throughout; only residual refs are competitor names like "Apple Journal")_ |
 | 4.9 | P2 | L | v1.1 | Plan v1.1 premium feature |
 | 4.10 | P3 | XS | no-op | Preserve hero flow |
 | 4.11 | P3 | XS | no-op | Preserve onboarding flow |
