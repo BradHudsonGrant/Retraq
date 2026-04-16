@@ -54,8 +54,8 @@ class NudgeCard extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.md),
             BionicText(
-              text:
-                  'Get a quick nudge to drop a breadcrumb before you forget your day.',
+              // Task 2.14 — body copy localized.
+              text: l10n.nudgeCardBody,
               style: tt.titleMedium?.copyWith(
                 color: cs.onPrimary,
                 fontWeight: FontWeight.w500,
@@ -87,10 +87,24 @@ class NudgeCard extends StatelessWidget {
                       backgroundColor: cs.surfaceContainerLowest,
                       foregroundColor: cs.primary,
                     ),
-                    child: const Text('Change Time'),
+                    // Task 2.14 — Change Time button label localized.
+                    child: Text(l10n.nudgeChangeTime),
                   ),
                 ),
               ],
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            // Task 2.14 — surface the skip-if-journaled behavior so users
+            // know the reminder won't fire after they've already written
+            // something for the day. This fixes the "won't it just nag
+            // me if I already journaled?" perception that was causing
+            // users to disable nudges wholesale.
+            Text(
+              l10n.nudgeSkipIfJournaledHint,
+              style: tt.bodySmall?.copyWith(
+                color: cs.onPrimary.withValues(alpha: 0.85),
+                height: 1.35,
+              ),
             ),
           ],
         ),

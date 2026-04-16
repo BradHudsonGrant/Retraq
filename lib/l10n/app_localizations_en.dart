@@ -843,6 +843,17 @@ class L10nEn extends L10n {
   }
 
   @override
+  String get nudgeSkipIfJournaledHint =>
+      'We\'ll only remind you if you haven\'t journaled yet.';
+
+  @override
+  String get nudgeChangeTime => 'Change Time';
+
+  @override
+  String get nudgeCardBody =>
+      'Get a quick nudge to drop a breadcrumb before you forget your day.';
+
+  @override
   String weekEntryCountSnackbar(String range, int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

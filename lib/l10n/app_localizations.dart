@@ -1555,6 +1555,24 @@ abstract class L10n {
   /// **'Daily at {time}'**
   String dailyAtTime(String time);
 
+  /// Task 2.14 — Subtitle under the nudge time-picker explaining that the reminder is suppressed on days the user already journaled.
+  ///
+  /// In en, this message translates to:
+  /// **'We\'ll only remind you if you haven\'t journaled yet.'**
+  String get nudgeSkipIfJournaledHint;
+
+  /// Task 2.14 — Label on the Change Time button in the NudgeCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Time'**
+  String get nudgeChangeTime;
+
+  /// Task 2.14 — Body copy inside the Settings NudgeCard explaining the purpose of the daily reminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Get a quick nudge to drop a breadcrumb before you forget your day.'**
+  String get nudgeCardBody;
+
   /// Task 2.3 — Shown when tapping a bar on the weekly-trend chart. {range} is a date-range string (e.g. 'Mar 3 – Mar 9'); {count} is the number of entries in that week.
   ///
   /// In en, this message translates to:

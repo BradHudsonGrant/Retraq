@@ -385,6 +385,18 @@
       "time": { "type": "String", "example": "8:30 PM" }
     }
   },
+  "nudgeSkipIfJournaledHint": "We'll only remind you if you haven't journaled yet.",
+  "@nudgeSkipIfJournaledHint": {
+    "description": "Task 2.14 — Subtitle under the nudge time-picker explaining that the reminder is suppressed on days the user already journaled."
+  },
+  "nudgeChangeTime": "Change Time",
+  "@nudgeChangeTime": {
+    "description": "Task 2.14 — Label on the Change Time button in the NudgeCard."
+  },
+  "nudgeCardBody": "Get a quick nudge to drop a breadcrumb before you forget your day.",
+  "@nudgeCardBody": {
+    "description": "Task 2.14 — Body copy inside the Settings NudgeCard explaining the purpose of the daily reminder."
+  },
   "weekEntryCountSnackbar": "{range}: {count, plural, =0{no entries} =1{1 entry} other{{count} entries}}",
   "@weekEntryCountSnackbar": {
     "description": "Task 2.3 — Shown when tapping a bar on the weekly-trend chart. {range} is a date-range string (e.g. 'Mar 3 – Mar 9'); {count} is the number of entries in that week.",
