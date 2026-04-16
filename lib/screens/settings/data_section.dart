@@ -216,13 +216,7 @@ class DataSection extends StatelessWidget {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            l10n.importSuccess(
-              imported,
-              skipped > 0 ? ', $skipped duplicates skipped' : '',
-              errors > 0 ? ', $errors errors' : '',
-            ),
-          ),
+          content: Text(l10n.importSuccess(imported, skipped, errors)),
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
             borderRadius: AppSpacing.borderRadiusLg,

@@ -1285,11 +1285,11 @@ abstract class L10n {
   /// **'Import'**
   String get importButton;
 
-  /// No description provided for @importSuccess.
+  /// Summary shown after a successful import. Uses ICU plurals for each counter; skipped/errors collapse to empty when zero.
   ///
   /// In en, this message translates to:
-  /// **'Imported {imported} traqs{skipped}{errors}'**
-  String importSuccess(int imported, String skipped, String errors);
+  /// **'{imported, plural, =1{Imported 1 traq} other{Imported {imported} traqs}}{skipped, plural, =0{} =1{, 1 duplicate skipped} other{, {skipped} duplicates skipped}}{errors, plural, =0{} =1{, 1 error} other{, {errors} errors}}'**
+  String importSuccess(int imported, int skipped, int errors);
 
   /// No description provided for @importFailed.
   ///

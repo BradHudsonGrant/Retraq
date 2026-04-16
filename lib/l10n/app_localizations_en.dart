@@ -678,8 +678,28 @@ class L10nEn extends L10n {
   String get importButton => 'Import';
 
   @override
-  String importSuccess(int imported, String skipped, String errors) {
-    return 'Imported $imported traqs$skipped$errors';
+  String importSuccess(int imported, int skipped, int errors) {
+    String _temp0 = intl.Intl.pluralLogic(
+      imported,
+      locale: localeName,
+      other: 'Imported $imported traqs',
+      one: 'Imported 1 traq',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      skipped,
+      locale: localeName,
+      other: ', $skipped duplicates skipped',
+      one: ', 1 duplicate skipped',
+      zero: '',
+    );
+    String _temp2 = intl.Intl.pluralLogic(
+      errors,
+      locale: localeName,
+      other: ', $errors errors',
+      one: ', 1 error',
+      zero: '',
+    );
+    return '$_temp0$_temp1$_temp2';
   }
 
   @override
