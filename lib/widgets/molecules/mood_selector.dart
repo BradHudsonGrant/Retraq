@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import '../../l10n/app_localizations.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_motion.dart';
 import '../../theme/app_spacing.dart';
@@ -13,22 +14,43 @@ import '../atoms/particle_burst.dart';
 export '../../utils/mood_utils.dart';
 
 /// Mood levels from 1 (Rough) to 5 (Amazing).
-/// Each has a blob emoji and label; color is resolved from the theme.
+/// Each has a blob emoji and color resolved from the theme.
+///
+/// Task 7.5 — labels are no longer hardcoded English. Resolve via
+/// [moodLabelFor] which routes through the existing ARB keys
+/// (moodRough / moodLow / moodNeutral / moodGood / moodAmazing).
 class MoodOption {
   final int value;
   final String emoji;
-  final String label;
 
-  const MoodOption(this.value, this.emoji, this.label);
+  const MoodOption(this.value, this.emoji);
 }
 
 const _moodOptions = [
-  MoodOption(1, '\u{1F622}', 'Rough'),
-  MoodOption(2, '\u{1F614}', 'Low'),
-  MoodOption(3, '\u{1F610}', 'Neutral'),
-  MoodOption(4, '\u{1F60A}', 'Good'),
-  MoodOption(5, '\u{1F929}', 'Amazing'),
+  MoodOption(1, '\u{1F622}'),
+  MoodOption(2, '\u{1F614}'),
+  MoodOption(3, '\u{1F610}'),
+  MoodOption(4, '\u{1F60A}'),
+  MoodOption(5, '\u{1F929}'),
 ];
+
+/// Resolve the localized mood label for a mood value (1-5).
+String moodLabelFor(L10n l10n, int moodValue) {
+  switch (moodValue) {
+    case 1:
+      return l10n.moodRough;
+    case 2:
+      return l10n.moodLow;
+    case 3:
+      return l10n.moodNeutral;
+    case 4:
+      return l10n.moodGood;
+    case 5:
+      return l10n.moodAmazing;
+    default:
+      return '';
+  }
+}
 
 /// Returns the mood color list appropriate for the current brightness.
 List<Color> _moodColors(Brightness brightness) =>
@@ -50,9 +72,11 @@ class MoodSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colors = _moodColors(theme.brightness);
+    final l10n = L10n.of(context)!;
 
     return Semantics(
-      label: 'Mood selector',
+      // Task 7.5 — localized accessibility label.
+      label: l10n.moodSelectorLabel,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children:
@@ -206,10 +230,15 @@ class _MoodButtonState extends State<_MoodButton> {
           );
     }
 
+    // Task 7.5 — localize both the semantic label and the visible
+    // chip text. moodButtonLabel is the ICU "{label} mood" template;
+    // feed it the localized moodRough/moodLow/... string.
+    final l10n = L10n.of(context)!;
+    final localizedLabel = moodLabelFor(l10n, widget.option.value);
     return Semantics(
       button: true,
       selected: widget.isSelected,
-      label: '${widget.option.label} mood',
+      label: l10n.moodButtonLabel(localizedLabel),
       child: InkWell(
         onTap: _handleTap,
         borderRadius: AppSpacing.borderRadiusFull,
@@ -232,7 +261,7 @@ class _MoodButtonState extends State<_MoodButton> {
                           ? widget.color
                           : widget.theme.colorScheme.onSurfaceVariant,
                 ),
-                child: Text(widget.option.label),
+                child: Text(localizedLabel),
               ),
             ],
           ),

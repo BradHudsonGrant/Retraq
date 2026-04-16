@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_single_quotes
 
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/journal_entry.dart';
 import '../../theme/app_spacing.dart';
 
@@ -26,6 +27,11 @@ class EntryActionMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final l10n = L10n.of(context)!;
+    // Task 7.3 — route through existing ARB keys (entryActions,
+    // editAction, shareAction, deleteAction) which already live in
+    // the localisation bundle. Previously hardcoded English even
+    // though the keys were ready.
     return SizedBox(
       width: 48,
       height: 48,
@@ -36,7 +42,7 @@ class EntryActionMenu extends StatelessWidget {
           Icons.more_vert,
           color: cs.onSurfaceVariant.withValues(alpha: iconAlpha),
         ),
-        tooltip: 'Entry actions',
+        tooltip: l10n.entryActions,
         onSelected: (value) {
           switch (value) {
             case 'edit':
@@ -49,34 +55,34 @@ class EntryActionMenu extends StatelessWidget {
         },
         itemBuilder:
             (_) => [
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: 'edit',
                 child: Row(
                   children: [
-                    Icon(Icons.edit_outlined, size: 18),
-                    SizedBox(width: AppSpacing.sm),
-                    Text('Edit'),
+                    const Icon(Icons.edit_outlined, size: 18),
+                    const SizedBox(width: AppSpacing.sm),
+                    Text(l10n.editAction),
                   ],
                 ),
               ),
               if (onShare != null)
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: 'share',
                   child: Row(
                     children: [
-                      Icon(Icons.share_outlined, size: 18),
-                      SizedBox(width: AppSpacing.sm),
-                      Text('Share'),
+                      const Icon(Icons.share_outlined, size: 18),
+                      const SizedBox(width: AppSpacing.sm),
+                      Text(l10n.shareAction),
                     ],
                   ),
                 ),
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: 'delete',
                 child: Row(
                   children: [
-                    Icon(Icons.delete_outline, size: 18),
-                    SizedBox(width: AppSpacing.sm),
-                    Text('Delete'),
+                    const Icon(Icons.delete_outline, size: 18),
+                    const SizedBox(width: AppSpacing.sm),
+                    Text(l10n.deleteAction),
                   ],
                 ),
               ),

@@ -184,20 +184,23 @@ class _HomeScreenState extends State<HomeScreen>
   String get _accentWord =>
       '${formatDateLabel(_entryDate, capitalize: false)}?';
 
-  static const _heroPrompts = [
-    'What\'s the\nTL;DR of ',
-    'How was\n',
-    'What happened\n',
-    'Sum up\n',
-    'What stood\nout ',
-    'Brain dump\nfor ',
-    'One thing\nabout ',
-  ];
-
-  String get _heroPrompt {
+  /// Task 7.6 — localize hero prompts via already-existing
+  /// `heroPrompt0..6` ARB keys (previously hardcoded English despite
+  /// the keys being ready). Rotation still based on day-of-year so the
+  /// prompt changes daily without UI state.
+  String _resolveHeroPrompt(L10n l10n) {
     final now = DateTime.now();
     final dayOfYear = now.difference(DateTime(now.year, 1, 1)).inDays;
-    return _heroPrompts[dayOfYear % _heroPrompts.length];
+    final prompts = <String>[
+      l10n.heroPrompt0,
+      l10n.heroPrompt1,
+      l10n.heroPrompt2,
+      l10n.heroPrompt3,
+      l10n.heroPrompt4,
+      l10n.heroPrompt5,
+      l10n.heroPrompt6,
+    ];
+    return prompts[dayOfYear % prompts.length];
   }
 
   /// Shared journal input widgets used by both tablet and phone layouts.
@@ -209,23 +212,31 @@ class _HomeScreenState extends State<HomeScreen>
       const RetraqLogo(size: 22),
       const SizedBox(height: AppSpacing.lg),
 
-      // Hero prompt
-      Semantics(
-        header: true,
-        label: '$_heroPrompt$_accentWord',
-        excludeSemantics: true,
-        child: Text.rich(
-          TextSpan(
-            style: tt.displaySmall?.copyWith(
-              fontWeight: FontWeight.w700,
-              height: 1.1,
+      // Hero prompt (Task 7.6 — localized via _resolveHeroPrompt).
+      Builder(
+        builder: (context) {
+          final heroPrompt = _resolveHeroPrompt(l10n);
+          return Semantics(
+            header: true,
+            label: '$heroPrompt$_accentWord',
+            excludeSemantics: true,
+            child: Text.rich(
+              TextSpan(
+                style: tt.displaySmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  height: 1.1,
+                ),
+                children: [
+                  TextSpan(text: heroPrompt),
+                  TextSpan(
+                    text: _accentWord,
+                    style: TextStyle(color: cs.primary),
+                  ),
+                ],
+              ),
             ),
-            children: [
-              TextSpan(text: _heroPrompt),
-              TextSpan(text: _accentWord, style: TextStyle(color: cs.primary)),
-            ],
-          ),
-        ),
+          );
+        },
       ),
       const SizedBox(height: AppSpacing.sm),
 
