@@ -42,7 +42,7 @@ dependencies:
 
   # Database (Drift — type-safe SQLite)
   drift: ^2.22.1
-  sqlite3: ^3.0.0
+  sqlite3: ^3.3.1
   path_provider: ^2.1.0
   path: ^1.9.0
 
