@@ -373,6 +373,17 @@
   "numberPadDisabled": "Number pad, disabled",
   "deleteDigit": "Delete",
   "biometricButton": "Biometric",
+  "noEntriesForDay": "No entries",
+  "@noEntriesForDay": {
+    "description": "Task 7.4 — shown in WeekDayList when a day has zero journal entries."
+  },
+  "dailyAtTime": "Daily at {time}",
+  "@dailyAtTime": {
+    "description": "Task 7.9 — NudgeCard reminder-time summary, e.g. 'Daily at 8:30 PM'. {time} is pre-formatted to user locale.",
+    "placeholders": {
+      "time": { "type": "String", "example": "8:30 PM" }
+    }
+  },
   "pinDotsLabel": "{length} of {maxLength} digits entered{error}",
   "@pinDotsLabel": {
     "placeholders": {

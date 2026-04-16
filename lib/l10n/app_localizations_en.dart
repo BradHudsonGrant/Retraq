@@ -815,6 +815,14 @@ class L10nEn extends L10n {
   String get biometricButton => 'Biometric';
 
   @override
+  String get noEntriesForDay => 'No entries';
+
+  @override
+  String dailyAtTime(String time) {
+    return 'Daily at $time';
+  }
+
+  @override
   String pinDotsLabel(int length, int maxLength, String error) {
     return '$length of $maxLength digits entered$error';
   }

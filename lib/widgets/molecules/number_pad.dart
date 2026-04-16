@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import '../../l10n/app_localizations.dart';
 import '../../theme/app_motion.dart';
 import '../../theme/app_spacing.dart';
 import '../atoms/pressable_scale.dart';
@@ -95,11 +96,15 @@ class PadButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
+    final l10n = L10n.of(context)!;
 
     return Semantics(
       button: true,
-      label:
-          label ?? (icon == Icons.backspace_outlined ? 'Delete' : 'Biometric'),
+      // Task 7.10 — localize fallback labels ("Delete" / "Biometric").
+      label: label ??
+          (icon == Icons.backspace_outlined
+              ? l10n.deleteDigit
+              : l10n.biometricButton),
       // Wrapped in PressableScale for the satisfying tap-to-shrink. No glow
       // halo here on purpose — this is the lock-screen PIN entry surface and
       // overstimulation would actively harm the security focus.

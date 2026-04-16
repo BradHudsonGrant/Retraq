@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import '../../providers/settings_provider.dart';
 import '../../theme/app_spacing.dart';
 import '../atoms/bionic_text.dart';
@@ -27,6 +28,7 @@ class NudgeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
+    final l10n = L10n.of(context)!;
 
     return GlowBox(
       color: cs.primary,
@@ -68,7 +70,10 @@ class NudgeCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Daily at ${_formatTime(nudgeHour, nudgeMinute)}',
+                  // Task 7.9 — localize "Daily at {time}". The
+                  // pre-formatted time string keeps locale-specific
+                  // time formatting from _formatTime.
+                  l10n.dailyAtTime(_formatTime(nudgeHour, nudgeMinute)),
                   style: tt.bodySmall?.copyWith(color: cs.onPrimary),
                 ),
                 GlowBox(

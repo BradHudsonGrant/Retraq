@@ -1543,6 +1543,18 @@ abstract class L10n {
   /// **'Biometric'**
   String get biometricButton;
 
+  /// Task 7.4 — shown in WeekDayList when a day has zero journal entries.
+  ///
+  /// In en, this message translates to:
+  /// **'No entries'**
+  String get noEntriesForDay;
+
+  /// Task 7.9 — NudgeCard reminder-time summary, e.g. 'Daily at 8:30 PM'. {time} is pre-formatted to user locale.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily at {time}'**
+  String dailyAtTime(String time);
+
   /// No description provided for @pinDotsLabel.
   ///
   /// In en, this message translates to:

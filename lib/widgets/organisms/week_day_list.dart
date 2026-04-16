@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/journal_entry.dart';
 import '../../providers/settings_provider.dart';
 import '../../theme/app_motion.dart';
@@ -69,6 +70,7 @@ class WeekDayList extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
+    final l10n = L10n.of(context)!;
     final dates = _weekDates();
     final grouped = _groupByDate();
     final now = DateTime.now();
@@ -96,13 +98,19 @@ class WeekDayList extends StatelessWidget {
           ).format(date); // Monday, Tuesday...
           final dateLabel = DateFormat('MMM d').format(date); // Mar 26
 
+          // Task 7.4 — semantic label uses localized "Today" + empty-
+          // state phrase. Plural handling of entry count is deferred to
+          // a future ICU-plural ARB key (Task 2.3 follow-up); for now
+          // keep the English fragment conditional on count but prefix
+          // with the localized weekday/today.
+          final todayOrDayName = isToday ? l10n.todayLabel : dayLabel;
           final dayCard = Padding(
             padding: const EdgeInsets.only(bottom: AppSpacing.sm),
             child: Semantics(
               button: true,
               label:
-                  '${isToday ? 'Today' : dayLabel}, $dateLabel'
-                  '${dayEntries.isEmpty ? ', no entries' : ''}'
+                  '$todayOrDayName, $dateLabel'
+                  '${dayEntries.isEmpty ? ', ${l10n.noEntriesForDay.toLowerCase()}' : ''}'
                   '${dayEntries.isNotEmpty ? ', ${dayEntries.length} ${dayEntries.length == 1 ? 'entry' : 'entries'}' : ''}',
               child: InkWell(
                 onTap: () => onDaySelected?.call(date),
@@ -117,11 +125,11 @@ class WeekDayList extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Day header row
+                      // Day header row (Task 7.4 — localized "Today").
                       Row(
                         children: [
                           Text(
-                            isToday ? 'Today' : dayLabel,
+                            isToday ? l10n.todayLabel : dayLabel,
                             style: tt.titleSmall?.copyWith(
                               fontWeight: FontWeight.w600,
                               color: isToday ? cs.primary : cs.onSurface,
@@ -170,7 +178,8 @@ class WeekDayList extends StatelessWidget {
                       ] else ...[
                         const SizedBox(height: AppSpacing.sm),
                         Text(
-                          'No entries',
+                          // Task 7.4 — localized empty-day label.
+                          l10n.noEntriesForDay,
                           style: tt.bodySmall?.copyWith(
                             color: cs.onSurfaceVariant.withValues(alpha: 0.6),
                             fontStyle: FontStyle.italic,
