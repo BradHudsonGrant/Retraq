@@ -393,6 +393,10 @@
       "time": { "type": "String", "example": "8:30 PM" }
     }
   },
+  "discardAndSwitchButton": "Discard & Switch",
+  "@discardAndSwitchButton": {
+    "description": "Task 2.8 — Middle action in the AM/PM switch dialog shown when the user has typed entry text. Drops the typed text and flips the day period without saving."
+  },
   "viewLabel": "View",
   "@viewLabel": {
     "description": "Task 2.7 — Trailing button on the onboarding consent row that opens the legal document. Separated from the checkbox label tap target to avoid accidental navigation when toggling consent."

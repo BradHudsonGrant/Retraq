@@ -1567,6 +1567,12 @@ abstract class L10n {
   /// **'Daily at {time}'**
   String dailyAtTime(String time);
 
+  /// Task 2.8 — Middle action in the AM/PM switch dialog shown when the user has typed entry text. Drops the typed text and flips the day period without saving.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard & Switch'**
+  String get discardAndSwitchButton;
+
   /// Task 2.7 — Trailing button on the onboarding consent row that opens the legal document. Separated from the checkbox label tap target to avoid accidental navigation when toggling consent.
   ///
   /// In en, this message translates to:

@@ -647,7 +647,11 @@ class _HomeScreenState extends State<HomeScreen>
     final l10n = L10n.of(context)!;
     final hasText = _cleanText(_entryController.text).isNotEmpty;
     if (hasText) {
-      final confirmed = await showDialog<bool>(
+      // Task 2.8 — add a third "Discard & Switch" action so users who
+      // made an accidental entry aren't forced to save it before
+      // flipping the period. Matches the three-action pattern already
+      // used elsewhere in the app.
+      final choice = await showDialog<String>(
         context: context,
         builder:
             (ctx) => AlertDialog(
@@ -660,19 +664,33 @@ class _HomeScreenState extends State<HomeScreen>
               ),
               actions: [
                 TextButton(
-                  onPressed: () => Navigator.pop(ctx, false),
+                  onPressed: () => Navigator.pop(ctx, 'cancel'),
                   child: Text(l10n.cancelLabel),
                 ),
+                TextButton(
+                  onPressed: () => Navigator.pop(ctx, 'discard'),
+                  child: Text(l10n.discardAndSwitchButton),
+                ),
                 FilledButton(
-                  onPressed: () => Navigator.pop(ctx, true),
+                  onPressed: () => Navigator.pop(ctx, 'save'),
                   child: Text(l10n.saveAndSwitchButton),
                 ),
               ],
             ),
       );
-      if (confirmed != true || !mounted) return;
-      await _saveEntry();
       if (!mounted) return;
+      switch (choice) {
+        case 'save':
+          await _saveEntry();
+          if (!mounted) return;
+          break;
+        case 'discard':
+          // Controllers cleared below after the setState.
+          break;
+        default:
+          // 'cancel' or barrier dismiss — no period flip.
+          return;
+      }
     }
 
     setState(() => _isAm = isAm);
