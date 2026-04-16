@@ -260,16 +260,18 @@ class _InlineEntry extends StatelessWidget {
                 backdatedLabel != null
                     ? '$backdatedLabel · $timeLabel'
                     : timeLabel,
+                // Task 7.7 — alpha raised from 0.6 to 0.75 for WCAG 1.4.3.
                 style: tt.labelSmall?.copyWith(
-                  color: cs.onSurfaceVariant.withValues(alpha: 0.6),
+                  color: cs.onSurfaceVariant.withValues(alpha: 0.75),
                   fontStyle: isBackdated ? FontStyle.italic : null,
                 ),
               ),
             if (hasLabel && backdatedLabel != null) ...[
               Text(
                 '$backdatedLabel · ',
+                // Task 7.7 — alpha raised from 0.6 to 0.75 for WCAG 1.4.3.
                 style: tt.labelSmall?.copyWith(
-                  color: cs.onSurfaceVariant.withValues(alpha: 0.6),
+                  color: cs.onSurfaceVariant.withValues(alpha: 0.75),
                   fontStyle: FontStyle.italic,
                 ),
               ),
@@ -290,8 +292,10 @@ class _InlineEntry extends StatelessWidget {
               const SizedBox(width: AppSpacing.sm),
               Text(
                 '·',
+                // Task 7.7 — separator dot; alpha raised from 0.5 to 0.75.
+                // Still visually secondary to the adjacent text.
                 style: tt.labelSmall?.copyWith(
-                  color: cs.onSurfaceVariant.withValues(alpha: 0.5),
+                  color: cs.onSurfaceVariant.withValues(alpha: 0.75),
                 ),
               ),
               const SizedBox(width: AppSpacing.sm),

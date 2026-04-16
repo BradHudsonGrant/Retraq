@@ -252,7 +252,12 @@ class _DayCell extends StatelessWidget {
             style: tt.bodySmall?.copyWith(
               color:
                   isDimmed
-                      ? cs.onSurfaceVariant.withValues(alpha: 0.65)
+                      // Task 7.8 — previous/next-month dimmed days raised
+                      // from alpha 0.65 to use `outline` token which is
+                      // designed for "distinguishable secondary UI" and
+                      // meets WCAG 1.4.3 (4.5:1) against both light and
+                      // dark surfaces while preserving the dimmed look.
+                      ? cs.outline
                       : isSelected
                       ? cs.onPrimary
                       : cs.onSurface,

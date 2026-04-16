@@ -36,7 +36,12 @@ class AppColors {
     // Darkened from 0xFF59615F so that 0.7-opacity usage still meets WCAG 4.5:1
     onSurfaceVariant: Color(0xFF3D4543),
     outline: Color(0xFF757C7A),
-    outlineVariant: Color(0xFFACB3B1),
+    // Task 7.12 — previous 0xFFACB3B1 on 0xFFF8FAF8 surface = ~2.0:1,
+    // failing WCAG 1.4.11 (3:1) when used as a functional boundary
+    // (focus rings, disabled borders). Darken to 0xFF8A918F which
+    // measures ~3.1:1 while remaining visually subordinate to the
+    // primary outline token.
+    outlineVariant: Color(0xFF8A918F),
     inverseSurface: Color(0xFF0C0F0E),
     inversePrimary: Color(0xFFC0FBD4),
   );
