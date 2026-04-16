@@ -1555,6 +1555,24 @@ abstract class L10n {
   /// **'Daily at {time}'**
   String dailyAtTime(String time);
 
+  /// Task 2.3 — Shown when tapping a bar on the weekly-trend chart. {range} is a date-range string (e.g. 'Mar 3 – Mar 9'); {count} is the number of entries in that week.
+  ///
+  /// In en, this message translates to:
+  /// **'{range}: {count, plural, =0{no entries} =1{1 entry} other{{count} entries}}'**
+  String weekEntryCountSnackbar(String range, int count);
+
+  /// Task 2.11 — Screen-reader label for the aggregated stats card grid.
+  ///
+  /// In en, this message translates to:
+  /// **'Statistics overview'**
+  String get statisticsOverview;
+
+  /// Task 2.11 — Screen-reader label for a recent-day card showing a snippet of its entry. {dayLabel} is a formatted day name (e.g. 'Monday'); {preview} is the first few words of the entry.
+  ///
+  /// In en, this message translates to:
+  /// **'Entry for {dayLabel}: {preview}'**
+  String entryForDayPreview(String dayLabel, String preview);
+
   /// No description provided for @pinDotsLabel.
   ///
   /// In en, this message translates to:

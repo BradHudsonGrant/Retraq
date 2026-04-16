@@ -367,8 +367,9 @@ class _RecapScreenState extends State<RecapScreen>
             Center(
               child: SegmentedPill(
                 key: TestKeys.recapWeekMonthToggle,
-                leftLabel: 'Week',
-                rightLabel: 'Month',
+                // Task 2.2 — localize via existing ARB keys.
+                leftLabel: l10n.weekLabel,
+                rightLabel: l10n.monthLabel,
                 isRightActive: !_isWeekView,
                 onTapLeft: () => setState(() => _isWeekView = true),
                 onTapRight: () => setState(() => _isWeekView = false),

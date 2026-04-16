@@ -823,6 +823,26 @@ class L10nEn extends L10n {
   }
 
   @override
+  String weekEntryCountSnackbar(String range, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count entries',
+      one: '1 entry',
+      zero: 'no entries',
+    );
+    return '$range: $_temp0';
+  }
+
+  @override
+  String get statisticsOverview => 'Statistics overview';
+
+  @override
+  String entryForDayPreview(String dayLabel, String preview) {
+    return 'Entry for $dayLabel: $preview';
+  }
+
+  @override
   String pinDotsLabel(int length, int maxLength, String error) {
     return '$length of $maxLength digits entered$error';
   }

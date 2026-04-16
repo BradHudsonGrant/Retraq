@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/journal_entry.dart';
 import '../../providers/settings_provider.dart';
 import '../../theme/app_motion.dart';
@@ -28,6 +29,7 @@ class RecentDayCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
+    final l10n = L10n.of(context)!;
     final reduceMotion = AppMotion.reduce(context);
 
     // Always render oldest-first so this card matches the Recap week/month
@@ -44,7 +46,8 @@ class RecentDayCard extends StatelessWidget {
 
     final card = Semantics(
       container: true,
-      label: 'Entry for $label: $entryPreview',
+      // Task 2.11 — localized screen-reader label.
+      label: l10n.entryForDayPreview(label, entryPreview),
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(

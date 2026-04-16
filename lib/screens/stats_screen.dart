@@ -78,13 +78,15 @@ class _StatsScreenState extends State<StatsScreen>
     final fmt = DateFormat.MMMd();
     final range = '${fmt.format(weekStart)} – ${fmt.format(weekEnd)}';
     final count = data[index];
-    final entries = count == 1 ? 'entry' : 'entries';
 
+    // Task 2.3 — localized ICU plural ("no entries" / "1 entry" /
+    // "{count} entries") via weekEntryCountSnackbar ARB key.
+    final l10n = L10n.of(context)!;
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(
         SnackBar(
-          content: Text('$range: $count $entries'),
+          content: Text(l10n.weekEntryCountSnackbar(range, count)),
           behavior: SnackBarBehavior.floating,
           duration: const Duration(seconds: 2),
         ),
@@ -225,7 +227,8 @@ class _StatsScreenState extends State<StatsScreen>
     final l10n = L10n.of(context)!;
     return Semantics(
       container: true,
-      label: 'Statistics overview',
+      // Task 2.11 — localized screen-reader label.
+      label: l10n.statisticsOverview,
       child: Row(
         children: [
           Expanded(

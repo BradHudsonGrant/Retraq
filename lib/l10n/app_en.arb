@@ -384,6 +384,26 @@
       "time": { "type": "String", "example": "8:30 PM" }
     }
   },
+  "weekEntryCountSnackbar": "{range}: {count, plural, =0{no entries} =1{1 entry} other{{count} entries}}",
+  "@weekEntryCountSnackbar": {
+    "description": "Task 2.3 — Shown when tapping a bar on the weekly-trend chart. {range} is a date-range string (e.g. 'Mar 3 – Mar 9'); {count} is the number of entries in that week.",
+    "placeholders": {
+      "range": { "type": "String", "example": "Mar 3 – Mar 9" },
+      "count": { "type": "int", "example": "3" }
+    }
+  },
+  "statisticsOverview": "Statistics overview",
+  "@statisticsOverview": {
+    "description": "Task 2.11 — Screen-reader label for the aggregated stats card grid."
+  },
+  "entryForDayPreview": "Entry for {dayLabel}: {preview}",
+  "@entryForDayPreview": {
+    "description": "Task 2.11 — Screen-reader label for a recent-day card showing a snippet of its entry. {dayLabel} is a formatted day name (e.g. 'Monday'); {preview} is the first few words of the entry.",
+    "placeholders": {
+      "dayLabel": { "type": "String", "example": "Monday" },
+      "preview": { "type": "String", "example": "Ran errands, forgot the milk..." }
+    }
+  },
   "pinDotsLabel": "{length} of {maxLength} digits entered{error}",
   "@pinDotsLabel": {
     "placeholders": {
