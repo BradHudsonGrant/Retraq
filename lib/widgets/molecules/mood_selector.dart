@@ -140,7 +140,15 @@ class _MoodButtonState extends State<_MoodButton> {
 
   @override
   Widget build(BuildContext context) {
-    final opacity = widget.hasSelection && !widget.isSelected ? 0.4 : 1.0;
+    // Task 7.11 — raise unselected opacity from 0.4 (≤3:1 contrast for
+    // low-vision users) to 0.6, and force 1.0 when the OS high-contrast
+    // flag is set so the mood pill is never dimmed for a11y-enabled users.
+    final highContrast =
+        MediaQuery.maybeOf(context)?.highContrast ?? false;
+    final unselectedOpacity = highContrast ? 1.0 : 0.6;
+    final opacity = widget.hasSelection && !widget.isSelected
+        ? unselectedOpacity
+        : 1.0;
     final reduceMotion = AppMotion.reduce(context);
     final animDuration = reduceMotion ? Duration.zero : AppMotion.fast;
 
