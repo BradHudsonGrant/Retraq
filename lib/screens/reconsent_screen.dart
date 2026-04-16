@@ -239,11 +239,16 @@ class _ReconsentCheckbox extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
 
+    // Task 2.7 — split the row into a label tap-target (toggles the
+    // checkbox) and a separate "View" button (opens the legal doc)
+    // so users who tap the text to tick the box don't get routed
+    // into the legal screen instead. Matches onboarding/consent_page.
+    final l10n = L10n.of(context)!;
     return InkWell(
       onTap: () => onChanged(!value),
       borderRadius: AppSpacing.borderRadiusLg,
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
             width: 48,
@@ -254,15 +259,22 @@ class _ReconsentCheckbox extends StatelessWidget {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),
-              child: InkWell(
-                onTap: onTapLink,
-                child: Text(
-                  label,
-                  style: tt.bodyMedium?.copyWith(
-                    color: cs.onSurface,
-                    decoration: TextDecoration.underline,
-                  ),
-                ),
+              child: Text(
+                label,
+                style: tt.bodyMedium?.copyWith(color: cs.onSurface),
+              ),
+            ),
+          ),
+          const SizedBox(width: AppSpacing.xs),
+          TextButton.icon(
+            onPressed: onTapLink,
+            icon: const Icon(Icons.open_in_new, size: 16),
+            label: Text(l10n.viewLabel),
+            style: TextButton.styleFrom(
+              foregroundColor: cs.primary,
+              minimumSize: const Size(48, 48),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.sm,
               ),
             ),
           ),

@@ -222,11 +222,18 @@ class _ConsentCheckbox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Task 2.7 — Split the consent row into two distinct tap targets
+    // so tapping the label toggles the checkbox (the expected
+    // behaviour) and a separate "View" button opens the legal
+    // document. Previously the underlined Text intercepted taps and
+    // routed to the legal screen, which is a subtle consent-capture
+    // footgun when users try to tick the box by tapping the text.
+    final l10n = L10n.of(context)!;
     return InkWell(
       onTap: () => onChanged(!value),
       borderRadius: AppSpacing.borderRadiusLg,
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
             width: 48,
@@ -237,15 +244,24 @@ class _ConsentCheckbox extends StatelessWidget {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),
-              child: InkWell(
-                onTap: onTapLink,
-                child: Text(
-                  label,
-                  style: textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.onSurface,
-                    decoration: TextDecoration.underline,
-                  ),
+              child: Text(
+                label,
+                style: textTheme.bodyMedium?.copyWith(
+                  color: colorScheme.onSurface,
                 ),
+              ),
+            ),
+          ),
+          const SizedBox(width: AppSpacing.xs),
+          TextButton.icon(
+            onPressed: onTapLink,
+            icon: const Icon(Icons.open_in_new, size: 16),
+            label: Text(l10n.viewLabel),
+            style: TextButton.styleFrom(
+              foregroundColor: colorScheme.primary,
+              minimumSize: const Size(48, 48),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.sm,
               ),
             ),
           ),

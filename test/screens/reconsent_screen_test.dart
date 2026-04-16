@@ -72,41 +72,42 @@ void main() {
       },
     );
 
-    testWidgets('tapping privacy link navigates to LegalScreen', (
+    // Task 2.7 — tapping the label no longer navigates; the dedicated
+    // "View" button adjacent to each row opens the legal doc instead.
+    testWidgets('tapping privacy View button navigates to LegalScreen', (
       tester,
     ) async {
       await tester.pumpWidget(wrapScreen(ReconsentScreen(onComplete: () {})));
       await tester.pumpAndSettle();
 
-      // Tap the underlined text link for privacy policy
-      await tester.tap(
-        find.text('I have read and agree to the Privacy Policy'),
-      );
+      // Privacy is the first consent row; its View button is the first.
+      await tester.tap(find.widgetWithText(TextButton, 'View').first);
       await tester.pumpAndSettle();
 
-      // Should navigate to LegalScreen with Privacy Policy title
       expect(find.byType(LegalScreen), findsOneWidget);
       expect(find.text('Privacy Policy'), findsWidgets);
     });
 
-    testWidgets('tapping terms link navigates to LegalScreen', (tester) async {
+    testWidgets('tapping terms View button navigates to LegalScreen', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrapScreen(ReconsentScreen(onComplete: () {})));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('I agree to the Terms of Use'));
+      await tester.tap(find.widgetWithText(TextButton, 'View').at(1));
       await tester.pumpAndSettle();
 
       expect(find.byType(LegalScreen), findsOneWidget);
       expect(find.text('Terms of Use'), findsWidgets);
     });
 
-    testWidgets('tapping health disclaimer link navigates to LegalScreen', (
+    testWidgets('tapping health View button navigates to LegalScreen', (
       tester,
     ) async {
       await tester.pumpWidget(wrapScreen(ReconsentScreen(onComplete: () {})));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('I acknowledge the Health Disclaimer'));
+      await tester.tap(find.widgetWithText(TextButton, 'View').at(2));
       await tester.pumpAndSettle();
 
       expect(find.byType(LegalScreen), findsOneWidget);

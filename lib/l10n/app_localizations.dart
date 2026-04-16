@@ -1567,6 +1567,12 @@ abstract class L10n {
   /// **'Daily at {time}'**
   String dailyAtTime(String time);
 
+  /// Task 2.7 — Trailing button on the onboarding consent row that opens the legal document. Separated from the checkbox label tap target to avoid accidental navigation when toggling consent.
+  ///
+  /// In en, this message translates to:
+  /// **'View'**
+  String get viewLabel;
+
   /// Task 2.9 — Semantics + delete-icon tooltip on the date-override chip when an alternate day has been picked for the entry.
   ///
   /// In en, this message translates to:
