@@ -27,12 +27,19 @@ class SaveSuccessOverlay extends StatefulWidget {
     super.key,
     required this.onDismissed,
     this.milestoneMessage,
+    this.holdDuration = const Duration(milliseconds: 1000),
   });
 
   final VoidCallback onDismissed;
 
   /// Optional milestone message shown below "Traq saved" (e.g. "Your very first traq!").
   final String? milestoneMessage;
+
+  /// Task 2.15 — how long to hold the fully-drawn overlay before the
+  /// exit fade begins. 1000ms for milestones / first saves, shortened
+  /// to ~400ms for routine saves after the user crosses entry #10 so
+  /// power users aren't blocked between thoughts.
+  final Duration holdDuration;
 
   @override
   State<SaveSuccessOverlay> createState() => _SaveSuccessOverlayState();
@@ -153,8 +160,10 @@ class _SaveSuccessOverlayState extends State<SaveSuccessOverlay>
     if (!mounted) return;
     HapticFeedback.lightImpact();
 
-    // Hold for the user to see it
-    await Future.delayed(const Duration(milliseconds: 1000));
+    // Hold for the user to see it. Task 2.15 — length comes from the
+    // widget parameter so routine saves can shorten while milestones
+    // keep the full celebratory dwell.
+    await Future.delayed(widget.holdDuration);
     if (!mounted) return;
 
     // Fade out

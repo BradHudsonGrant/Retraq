@@ -54,6 +54,10 @@ class _HomeScreenState extends State<HomeScreen>
   bool _isSaving = false;
   bool _showSaveSuccess = false;
   String? _milestoneMessage;
+  // Task 2.15 — how long the current overlay should hold before the
+  // exit fade. 1000ms for milestones / first ten saves, 400ms for
+  // routine power-user saves.
+  Duration _overlayHoldDuration = const Duration(milliseconds: 1000);
   bool _isAm = true;
   DateTime? _selectedDate;
   int? _lastSavedEntryId;
@@ -492,6 +496,7 @@ class _HomeScreenState extends State<HomeScreen>
             Positioned.fill(
               child: SaveSuccessOverlay(
                 milestoneMessage: _milestoneMessage,
+                holdDuration: _overlayHoldDuration,
                 onDismissed: () {
                   if (!mounted) return;
                   final entryId = _lastSavedEntryId;
@@ -767,11 +772,19 @@ class _HomeScreenState extends State<HomeScreen>
     // tree (text controllers, recent day cards) on the same frame as the
     // overlay's elastic entry causes a visible jank. Defer the clear to the
     // dismissal callback when the overlay is already mid-fade-out.
+    // Task 2.15 — keep the full ~1000ms dwell for milestone saves and
+    // the first ten overall; drop to 400ms for routine saves afterward
+    // so frequent journaling doesn't feel blocked between thoughts.
+    final isMilestone = milestone != null;
+    final shortDwell = !isMilestone && totalCount > 10;
     setState(() {
       _isSaving = false;
       _showSaveSuccess = true;
       _milestoneMessage = milestone;
       _lastSavedEntryId = savedId;
+      _overlayHoldDuration = shortDwell
+          ? const Duration(milliseconds: 400)
+          : const Duration(milliseconds: 1000);
     });
 
     // Check for in-app review prompt (fires once at 5th entry)
