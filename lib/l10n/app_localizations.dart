@@ -763,11 +763,11 @@ abstract class L10n {
   /// **'Almost there!'**
   String get almostThere;
 
-  /// No description provided for @healthDisclaimer.
+  /// Health-disclaimer body. {crisisContact} is injected from CrisisContacts.formatInline for the user's locale. Task 12.16 — never hardcode the US/Canada 988 number; the helper resolves per-region.
   ///
   /// In en, this message translates to:
-  /// **'Retraq is a personal journaling app — not a medical or therapeutic tool. It does not provide health advice, diagnosis, or treatment. If you are in crisis, please contact a mental health professional or call 988 (Suicide & Crisis Lifeline).'**
-  String get healthDisclaimer;
+  /// **'Retraq is a personal journaling app — not a medical or therapeutic tool. It does not provide health advice, diagnosis, or treatment. If you are in crisis, please contact a mental health professional or call {crisisContact}.'**
+  String healthDisclaimer(String crisisContact);
 
   /// No description provided for @healthDisclaimerCheckbox.
   ///
