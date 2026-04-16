@@ -377,32 +377,90 @@ Task 1.5 lint commit. Blocked by B-1 (Sentry DSN).
 
 **When:** as soon as B-1 lands.
 
-### [ ] D-7. Android Gradle Plugin 9.1.1 upgrade (Dependabot PR #22)
+### [ ] D-7. Android Gradle Plugin 9.1.1 upgrade (Dependabot PR #22) — blocked upstream
 
 Dependabot opened PR #22 bumping com.android.application from 8.9.1 to
-9.1.1. This is a MAJOR version bump of the Android Gradle Plugin —
-likely to require Java 21 (currently 17), Gradle 8.13+, updated Kotlin
-plugin, and may surface deprecation breakage in the release-build
-ProGuard chain. `flutter analyze` is Dart-only and cannot catch these
-kinds of failures.
+9.1.1. This is a MAJOR version bump of the Android Gradle Plugin.
 
-During the 2026-04-16 session I merged all OTHER Dependabot PRs
-(#18, #19, #20, #21, #23, #24) via local cherry-pick + push since they
-were safe single-version patch/minor bumps. #22 was explicitly
-deferred: cherry-picked locally, analyzed clean, then reverted.
+#### 2026-04-16 investigation — why it can't merge yet
 
-**When:** requires a manual release-build smoke test:
-1. Apply PR #22 on a feature branch.
-2. Run `./scripts/build-android.sh` with local release keystore
-   (or CI with real keystore secrets).
-3. Run the release AAB on a physical Android device (Pixel 10 Pro or
-   similar). Verify app launches + core flows work.
-4. If green, merge #22. If broken, file the incompatibility upstream
-   and pin at 8.9.1 until a clean upgrade path exists.
+I attempted to merge PR #22 in this session. The required toolchain
+moves are all well-understood:
 
-Alternative: wait for a subsequent Dependabot minor bump (9.1.2 or
-9.2.x) that may include compatibility fixes for common Flutter
-release-build patterns.
+1. `android/gradle/wrapper/gradle-wrapper.properties` — Gradle 8.11.1 → 9.3.1
+   (Gradle 8.13 was attempted first; AGP 9.1.1 rejects it with
+   "Minimum supported Gradle version is 9.3.1").
+2. `android/app/build.gradle.kts` — `JavaVersion.VERSION_11` → `VERSION_17`
+   for both `sourceCompatibility`/`targetCompatibility` and
+   `kotlinOptions.jvmTarget`. CI already runs JDK 17 and the dev
+   machine has JDK 17 installed, so this bump is compatible with the
+   current environment.
+
+After those two bumps, the build failed with:
+
+```
+Failed to apply plugin 'kotlin-android'.
+  Cannot add extension with name 'kotlin', as there is an extension
+  already registered with that name.
+```
+
+This is **AGP 9's built-in Kotlin support** colliding with the
+separately-applied `kotlin-android` / `org.jetbrains.kotlin.android`
+plugin. The recommended opt-out is `android.newDsl=false` in
+`gradle.properties`, and when I applied that the Flutter CLI itself
+printed:
+
+```
+[!] Starting AGP 9+, only the new DSL interface will be read. This
+results in a build failure when applying the Flutter Gradle plugin
+...
+To resolve this update flutter or opt out of `android.newDsl`. For
+instructions on how to opt out, see:
+https://docs.flutter.dev/release/breaking-changes/migrate-to-agp-9
+```
+
+So both paths fail in Flutter 3.41.6:
+- `android.newDsl=true` (AGP 9 default) — Flutter Gradle plugin
+  throws NullPointerException because it doesn't read the new DSL.
+- `android.newDsl=false` — AGP 9's built-in Kotlin extension
+  collides with the Kotlin Gradle Plugin that Flutter still
+  auto-applies.
+
+**This is not a config we can fix from inside the Retraq repo.** The
+block is upstream in `dev.flutter.flutter-gradle-plugin` — that plugin
+needs to support the AGP-9 new-DSL path AND either stop auto-applying
+KGP or use AGP's built-in Kotlin when running on AGP 9.
+
+#### Verification that the revert is clean
+
+After reverting the PR #22 cherry-pick (commit 3d5f151) the repo
+returns to AGP 8.9.1 / Gradle 8.11.1 / Java 11. I re-ran
+`flutter build apk --debug --target-platform android-arm64` and it
+built successfully — confirming the revert left no residue.
+
+#### Unblock path
+
+Two options:
+
+1. **Wait for a Flutter SDK update that supports AGP 9 natively.** As
+   of 2026-04-16, the released Flutter channels (including the 3.41.x
+   stable pinned at `.fvmrc`) all break under AGP 9 per the error
+   above. Watch the Flutter release notes for "AGP 9 support" and
+   upgrade `.fvmrc` + CI when it lands. At that point Dependabot's
+   next AGP bump becomes mergeable.
+
+2. **Upgrade Flutter SDK pre-emptively to a beta/master channel that
+   has the fix.** Not recommended for a pre-launch app. Stability of
+   the app > staying on the latest plugin.
+
+Low-priority follow-up: when the Flutter SDK unblock ships, also bump
+`android/app/build.gradle.kts` Java source/target and kotlinOptions
+jvmTarget to 17 in the same commit (they were already 17 in CI but
+11 in the local build file — a gentle mismatch that the next release
+engineering pass should fix regardless of AGP version).
+
+**When:** as soon as a Flutter stable release lists AGP 9 support in
+its release notes.
 
 ## How to unblock
 
