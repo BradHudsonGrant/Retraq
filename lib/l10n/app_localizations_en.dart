@@ -264,12 +264,33 @@ class L10nEn extends L10n {
   String get bestStreak => 'Best Streak';
 
   @override
+  String get streaksSection => 'Streaks';
+
+  @override
+  String get longestThisMonth => 'Longest This Month';
+
+  @override
+  String get streakFreeze => 'Streak Freeze';
+
+  @override
+  String get streakFreezeAvailable => '1 available';
+
+  @override
+  String get streakFreezeUsed => 'Used this week';
+
+  @override
+  String get entriesPerWeek => 'Entries per week';
+
+  @override
   String get daysSuffix => 'days';
 
   @override
   String mostActiveDay(String day) {
     return 'Most active day: $day';
   }
+
+  @override
+  String get onThisDayLastYear => 'On this day last year...';
 
   @override
   String get moodTitle => 'Mood';
@@ -406,10 +427,21 @@ class L10nEn extends L10n {
 
   @override
   String get forgotPinMessage =>
-      'If you\'ve forgotten your PIN, you can reset the app. This will permanently delete all your traqs and data.';
+      'If you\'ve forgotten your PIN, you can reset the app. This will permanently delete all your traqs and data. You can export first to save them.';
 
   @override
   String get resetApp => 'Reset App';
+
+  @override
+  String get exportBeforeReset => 'Export first';
+
+  @override
+  String get resetAppBiometricReason =>
+      'Confirm it\'s you before resetting Retraq';
+
+  @override
+  String get resetAppBiometricFailed =>
+      'Biometric check failed. Try again or cancel.';
 
   @override
   String wrongPinMessage(int remaining) {
@@ -729,10 +761,21 @@ class L10nEn extends L10n {
   String get confirmPinSubtitle => 'Enter the same PIN again';
 
   @override
+  String choosePinSubtitle(int length) {
+    return 'Choose a $length-digit PIN';
+  }
+
+  @override
   String get pinTooEasy => 'Too easy to guess. Choose a different PIN.';
 
   @override
   String get pinMismatch => 'PINs did not match. Try again.';
+
+  @override
+  String get fourDigits => '4 digits';
+
+  @override
+  String get sixDigits => '6 digits';
 
   @override
   String get setPinButton => 'Set PIN';
@@ -915,6 +958,22 @@ class L10nEn extends L10n {
 
   @override
   String get prompt27 => 'A moment of calm from today...';
+
+  @override
+  String get nudgeDescription =>
+      'Get a quick nudge to drop a breadcrumb before you forget your day.';
+
+  @override
+  String get changeTime => 'Change Time';
+
+  @override
+  String get shareDay => 'Share Day';
+
+  @override
+  String get noEntryForDay => 'No traqs for this day';
+
+  @override
+  String get noEntriesThisMonth => 'No traqs this month.';
 
   @override
   String get notifTitle => 'Retraq';

@@ -547,6 +547,42 @@ abstract class L10n {
   /// **'Best Streak'**
   String get bestStreak;
 
+  /// No description provided for @streaksSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Streaks'**
+  String get streaksSection;
+
+  /// No description provided for @longestThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Longest This Month'**
+  String get longestThisMonth;
+
+  /// No description provided for @streakFreeze.
+  ///
+  /// In en, this message translates to:
+  /// **'Streak Freeze'**
+  String get streakFreeze;
+
+  /// No description provided for @streakFreezeAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'1 available'**
+  String get streakFreezeAvailable;
+
+  /// No description provided for @streakFreezeUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'Used this week'**
+  String get streakFreezeUsed;
+
+  /// No description provided for @entriesPerWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Entries per week'**
+  String get entriesPerWeek;
+
   /// No description provided for @daysSuffix.
   ///
   /// In en, this message translates to:
@@ -558,6 +594,12 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Most active day: {day}'**
   String mostActiveDay(String day);
+
+  /// No description provided for @onThisDayLastYear.
+  ///
+  /// In en, this message translates to:
+  /// **'On this day last year...'**
+  String get onThisDayLastYear;
 
   /// No description provided for @moodTitle.
   ///
@@ -796,7 +838,7 @@ abstract class L10n {
   /// No description provided for @forgotPinMessage.
   ///
   /// In en, this message translates to:
-  /// **'If you\'ve forgotten your PIN, you can reset the app. This will permanently delete all your traqs and data.'**
+  /// **'If you\'ve forgotten your PIN, you can reset the app. This will permanently delete all your traqs and data. You can export first to save them.'**
   String get forgotPinMessage;
 
   /// No description provided for @resetApp.
@@ -804,6 +846,24 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Reset App'**
   String get resetApp;
+
+  /// Button on the Forgot PIN dialog that lets the user export their data before the destructive reset.
+  ///
+  /// In en, this message translates to:
+  /// **'Export first'**
+  String get exportBeforeReset;
+
+  /// Biometric prompt shown before the destructive reset-app action fires.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm it\'s you before resetting Retraq'**
+  String get resetAppBiometricReason;
+
+  /// No description provided for @resetAppBiometricFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Biometric check failed. Try again or cancel.'**
+  String get resetAppBiometricFailed;
 
   /// No description provided for @wrongPinMessage.
   ///
@@ -1381,6 +1441,12 @@ abstract class L10n {
   /// **'Enter the same PIN again'**
   String get confirmPinSubtitle;
 
+  /// No description provided for @choosePinSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a {length}-digit PIN'**
+  String choosePinSubtitle(int length);
+
   /// No description provided for @pinTooEasy.
   ///
   /// In en, this message translates to:
@@ -1392,6 +1458,18 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'PINs did not match. Try again.'**
   String get pinMismatch;
+
+  /// No description provided for @fourDigits.
+  ///
+  /// In en, this message translates to:
+  /// **'4 digits'**
+  String get fourDigits;
+
+  /// No description provided for @sixDigits.
+  ///
+  /// In en, this message translates to:
+  /// **'6 digits'**
+  String get sixDigits;
 
   /// No description provided for @setPinButton.
   ///
@@ -1740,6 +1818,36 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'A moment of calm from today...'**
   String get prompt27;
+
+  /// No description provided for @nudgeDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Get a quick nudge to drop a breadcrumb before you forget your day.'**
+  String get nudgeDescription;
+
+  /// No description provided for @changeTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Time'**
+  String get changeTime;
+
+  /// No description provided for @shareDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Share Day'**
+  String get shareDay;
+
+  /// No description provided for @noEntryForDay.
+  ///
+  /// In en, this message translates to:
+  /// **'No traqs for this day'**
+  String get noEntryForDay;
+
+  /// No description provided for @noEntriesThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'No traqs this month.'**
+  String get noEntriesThisMonth;
 
   /// No description provided for @notifTitle.
   ///

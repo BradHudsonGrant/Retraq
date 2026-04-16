@@ -121,6 +121,12 @@
   "daysJournaled": "Days Traqed",
   "currentStreak": "Current Streak",
   "bestStreak": "Best Streak",
+  "streaksSection": "Streaks",
+  "longestThisMonth": "Longest This Month",
+  "streakFreeze": "Streak Freeze",
+  "streakFreezeAvailable": "1 available",
+  "streakFreezeUsed": "Used this week",
+  "entriesPerWeek": "Entries per week",
   "daysSuffix": "days",
   "mostActiveDay": "Most active day: {day}",
   "@mostActiveDay": {
@@ -128,6 +134,7 @@
       "day": { "type": "String" }
     }
   },
+  "onThisDayLastYear": "On this day last year...",
   "moodTitle": "Mood",
   "moodDistribution": "Distribution",
   "moodAverage": "Average: {value}",
@@ -186,8 +193,17 @@
   "unlockBiometric": "Unlock Retraq",
   "enterPin": "Enter your PIN",
   "forgotPin": "Forgot PIN?",
-  "forgotPinMessage": "If you've forgotten your PIN, you can reset the app. This will permanently delete all your traqs and data.",
+  "forgotPinMessage": "If you've forgotten your PIN, you can reset the app. This will permanently delete all your traqs and data. You can export first to save them.",
   "resetApp": "Reset App",
+  "exportBeforeReset": "Export first",
+  "@exportBeforeReset": {
+    "description": "Button on the Forgot PIN dialog that lets the user export their data before the destructive reset."
+  },
+  "resetAppBiometricReason": "Confirm it's you before resetting Retraq",
+  "@resetAppBiometricReason": {
+    "description": "Biometric prompt shown before the destructive reset-app action fires."
+  },
+  "resetAppBiometricFailed": "Biometric check failed. Try again or cancel.",
   "wrongPinMessage": "Wrong PIN. {remaining, plural, =1{1 attempt} other{{remaining} attempts}} remaining.",
   "@wrongPinMessage": {
     "placeholders": {
@@ -324,8 +340,16 @@
   "confirmPinTitle": "Confirm PIN",
   "setPinSubtitle": "Choose a 4-digit PIN",
   "confirmPinSubtitle": "Enter the same PIN again",
+  "choosePinSubtitle": "Choose a {length}-digit PIN",
+  "@choosePinSubtitle": {
+    "placeholders": {
+      "length": { "type": "int" }
+    }
+  },
   "pinTooEasy": "Too easy to guess. Choose a different PIN.",
   "pinMismatch": "PINs did not match. Try again.",
+  "fourDigits": "4 digits",
+  "sixDigits": "6 digits",
   "setPinButton": "Set PIN",
 
   "entryActions": "Traq actions",
@@ -411,6 +435,14 @@
   "prompt25": "What are you looking forward to tomorrow?",
   "prompt26": "Something that surprised you...",
   "prompt27": "A moment of calm from today...",
+
+  "nudgeDescription": "Get a quick nudge to drop a breadcrumb before you forget your day.",
+  "changeTime": "Change Time",
+
+  "shareDay": "Share Day",
+
+  "noEntryForDay": "No traqs for this day",
+  "noEntriesThisMonth": "No traqs this month.",
 
   "notifTitle": "Retraq",
 

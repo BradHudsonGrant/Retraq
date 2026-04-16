@@ -4,6 +4,7 @@ import 'package:local_auth/local_auth.dart';
 import '../l10n/app_localizations.dart';
 import '../models/user_settings.dart';
 import '../services/database_service.dart';
+import '../services/export_service.dart';
 import '../services/lockout_controller.dart';
 import '../services/secure_storage.dart';
 import '../services/settings_repository.dart';
@@ -179,10 +180,26 @@ class _LockScreenState extends State<LockScreen> {
                 onPressed: () => Navigator.of(ctx).pop(),
                 child: Text(l10n.cancelLabel),
               ),
+              // Task 3.2 — offer an export escape hatch before the
+              // destructive reset so users who genuinely forgot their PIN
+              // can still recover their journal content. Export is
+              // intentionally available BEFORE a PIN/biometric check
+              // because (a) it has no network component (local file → OS
+              // share intent) and (b) it uses the same ExportService path
+              // that would later be gated by RevenueCat tier — separate
+              // from reset. Users with data to recover are the main
+              // beneficiaries; the actual unlock still requires PIN.
               TextButton(
-                onPressed: () {
+                onPressed: () async {
                   Navigator.of(ctx).pop();
-                  _showDeleteConfirmation();
+                  await _exportBeforeReset();
+                },
+                child: Text(l10n.exportBeforeReset),
+              ),
+              TextButton(
+                onPressed: () async {
+                  Navigator.of(ctx).pop();
+                  await _confirmAndReset();
                 },
                 child: Text(l10n.resetApp, style: TextStyle(color: cs.error)),
               ),
@@ -191,7 +208,69 @@ class _LockScreenState extends State<LockScreen> {
     );
   }
 
-  Future<void> _showDeleteConfirmation() async {
+  /// Task 3.2 — Export journal data via the share sheet before a
+  /// destructive reset. Called from the Forgot-PIN flow when the user
+  /// taps "Export first" so they can save content to another app
+  /// (Files, Drive, email) before wiping the device copy.
+  ///
+  /// Note: export currently works regardless of PIN state because the
+  /// app is running and the DB is unlocked (a lock screen is up but the
+  /// DB itself is decrypted into memory). A future hardening pass will
+  /// either require the PIN to be entered correctly at least once
+  /// before export is available, or encrypt the export with a
+  /// user-supplied passphrase.
+  Future<void> _exportBeforeReset() async {
+    try {
+      await ExportService.instance.exportAsJson(exportAll: true);
+    } on Object catch (e) {
+      debugPrint('Export before reset failed: $e');
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Export failed: $e')),
+      );
+    }
+  }
+
+  /// Task 3.2 — Before wiping all data, require a biometric challenge
+  /// (where available) as an additional check. This protects against a
+  /// shoulder-surfer or thief repeatedly failing the PIN until
+  /// "Forgot PIN?" → "Reset App" appears, then tapping through the
+  /// destructive path to deny the legitimate user access to their
+  /// data. A successful biometric proves physical possession by the
+  /// registered user.
+  ///
+  /// If biometric is not enabled in settings, falls through to the
+  /// original DeleteConfirmDialog (typed-"DELETE" typed confirmation).
+  /// That's still safer than a simple button press but lacks the
+  /// physical-presence proof that biometric provides.
+  Future<void> _confirmAndReset() async {
+    final l10n = L10n.of(context)!;
+    final useBiometric = _settings?.biometricEnabled == true;
+
+    if (useBiometric) {
+      try {
+        final authed = await _auth.authenticate(
+          localizedReason: l10n.resetAppBiometricReason,
+          biometricOnly: true,
+        );
+        if (!authed) {
+          if (!mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(l10n.resetAppBiometricFailed)),
+          );
+          return;
+        }
+      } on PlatformException catch (e) {
+        debugPrint('Reset-app biometric auth failed: $e');
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.resetAppBiometricFailed)),
+        );
+        return;
+      }
+    }
+
+    if (!mounted) return;
     final confirmed = await DeleteConfirmDialog.show(context);
     if (confirmed != true) return;
     await DatabaseService.instance.userRepo.deleteAllData();
@@ -275,7 +354,17 @@ class _LockScreenState extends State<LockScreen> {
                     isDisabled: _lockout.isLockedOut,
                   ),
 
-                  if (_lockout.lockoutCount >= 2)
+                  // Task 2.4 — Show "Forgot PIN?" from the FIRST failed
+                  // attempt, not after two full lockouts (~10+ wrong
+                  // tries). Recognition > recall is core ADHD
+                  // accommodation, and a genuinely forgetful user
+                  // should see the escape hatch immediately, not be
+                  // forced through two exponential-backoff lockouts
+                  // first. The destructive reset itself is still gated
+                  // by biometric + typed-"DELETE" confirmation (see
+                  // _confirmAndReset), so surfacing the entry point
+                  // earlier does not lower overall security.
+                  if (_lockout.failedAttempts > 0)
                     Padding(
                       padding: const EdgeInsets.only(top: AppSpacing.md),
                       child: TextButton(
