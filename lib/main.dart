@@ -127,10 +127,35 @@ class _RetraqAppState extends State<RetraqApp> with WidgetsBindingObserver {
   }
 
   /// Re-lock when app goes to background (if lock is enabled).
+  ///
+  /// Task 3.5 — Lock on `inactive` as well as `paused`. `inactive` fires
+  /// the instant the user swipes up into the app switcher or receives a
+  /// phone call; `paused` fires later, once the OS has already snapshot
+  /// the UI for the Recents thumbnail (or allowed another app to peek
+  /// at the screen). Locking on `inactive` closes that window and moves
+  /// the lock overlay in place BEFORE any OS-level snapshot is taken.
+  ///
+  /// FLAG_SECURE (Task 3.4) is now unconditional, so the thumbnail is
+  /// blocked on Android regardless of this path. The iOS equivalent is
+  /// handled separately in Task 3.6 (native `applicationWillResignActive`
+  /// blur overlay); this change is still useful on iOS because it means
+  /// the in-Flutter lock screen appears before the OS snapshot, giving
+  /// a consistent UX and a defense-in-depth layer.
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused && _appLockEnabled) {
-      setState(() => _isLocked = true);
+    if (!_appLockEnabled) return;
+    switch (state) {
+      case AppLifecycleState.inactive:
+      case AppLifecycleState.paused:
+      case AppLifecycleState.hidden:
+        if (!_isLocked) {
+          setState(() => _isLocked = true);
+        }
+      case AppLifecycleState.resumed:
+      case AppLifecycleState.detached:
+        // No-op on resume; unlock happens only through the lock screen's
+        // PIN / biometric challenge (see lock_screen.dart).
+        break;
     }
   }
 
