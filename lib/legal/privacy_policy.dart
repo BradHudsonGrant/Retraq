@@ -1,7 +1,7 @@
 const String privacyPolicyText = '''
 # Privacy Policy
 
-**Last Updated: March 29, 2026**
+**Last Updated: April 16, 2026**
 
 ## Overview
 
@@ -63,7 +63,25 @@ We may introduce optional cloud-based features in the future, such as AI-powered
 
 ## Data Controller
 
-Retraq is developed by an independent developer. All data remains on your device under your control. There is no external data controller. Because no personal data is collected or processed on external servers, the concept of a data controller under GDPR and similar frameworks does not apply in the traditional sense. You are the sole custodian of your data.
+Retraq is developed by an independent developer based in Canada. All data remains on your device under your control. Because no personal data is collected or processed on external servers, the concept of a data controller under GDPR and similar frameworks does not apply in the traditional sense for ordinary App use.
+
+Nevertheless, for the purposes of GDPR Article 13(1)(a), PIPEDA Principle 1 (Accountability), and Quebec Law 25 accountability provisions, the data controller for any processing that does occur (for example, receipt of a privacy inquiry sent to the contact address below) is the App's developer, reachable at `contact@retraq.app`. A Canadian business entity name and mailing address will be published here alongside the controller contact once entity registration completes; see the repository's `docs/external-blockers.md` (item B-5) for the pending milestone.
+
+A specific privacy officer / data protection officer is not appointed at this size; privacy inquiries may be sent to the same contact address.
+
+## Supervisory Authority Complaint Routes
+
+If you believe your privacy rights have been infringed by the App, you have the right to lodge a complaint with your local data-protection supervisory authority. Without limitation:
+
+- **Canada:** Office of the Privacy Commissioner of Canada — https://www.priv.gc.ca/
+- **Quebec:** Commission d'accès à l'information du Québec (CAI) — https://www.cai.gouv.qc.ca/
+- **European Union:** your national supervisory authority; a list is maintained by the European Data Protection Board at https://edpb.europa.eu/about-edpb/about-edpb/members_en . If you are unsure, the French CNIL (https://www.cnil.fr/) serves as a common fallback.
+- **United Kingdom:** Information Commissioner's Office (ICO) — https://ico.org.uk/
+- **United States (California):** California Privacy Protection Agency — https://cppa.ca.gov/ and the California Attorney General — https://oag.ca.gov/privacy
+- **Australia:** Office of the Australian Information Commissioner — https://www.oaic.gov.au/
+- **Other jurisdictions:** your local data-protection authority or equivalent regulator.
+
+We encourage you to contact us first at `contact@retraq.app` so we have an opportunity to address your concern, but this is not a precondition for exercising your right to complain.
 
 ## Changes to This Policy
 

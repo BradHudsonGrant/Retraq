@@ -11,7 +11,10 @@ import 'database_service.dart';
 import 'secure_storage.dart';
 
 /// Current document versions — bump when legal text changes.
-const String currentPrivacyPolicyVersion = '2026-03-29';
+// Bumped 2026-04-16 for Task 12.2 — added controller disclosure
+// improvements + supervisory-authority complaint routes (OPC Canada,
+// CAI Quebec, CNIL/EDPB, ICO UK, CPPA California, OAIC Australia).
+const String currentPrivacyPolicyVersion = '2026-04-16';
 // Bumped 2026-04-16 for Task 12.6 — added mandatory consumer-law
 // carve-out to the Governing Law section. Existing users will be
 // walked through the re-consent flow on next launch.
