@@ -17,6 +17,18 @@ jobs:
       # SHA-pinned for supply-chain safety
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
+      # Task 10.3 — assert .fvmrc matches the CI-pinned Flutter version so
+      # developers using FVM cannot drift from CI without noticing.
+      - name: Verify .fvmrc matches CI Flutter version
+        run: |
+          CI_VERSION='3.41.6'
+          FVMRC_VERSION=$(grep -oE '"flutter"\s*:\s*"[^"]+"' .fvmrc | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+          if [ "$FVMRC_VERSION" != "$CI_VERSION" ]; then
+            echo "::error::.fvmrc pins Flutter $FVMRC_VERSION but CI uses $CI_VERSION."
+            echo "Update app/.fvmrc to match."
+            exit 1
+          fi
+
       - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
         with:
           flutter-version: '3.41.6'
