@@ -193,7 +193,13 @@ class DatabaseService {
     }
 
     if (file.existsSync()) {
-      // Try opening with encryption first; if it fails, migrate.
+      // Try opening with encryption first; if it fails, decide whether to
+      // migrate or to abort. Do NOT migrate on arbitrary failure — a
+      // corrupted encrypted DB or a rotated secure-storage key both surface
+      // as open failures. Migrating in those cases would overwrite real
+      // ciphertext with an empty encrypted DB and permanently lose data.
+      // Only migrate when the on-disk file is demonstrably plaintext SQLite
+      // (magic bytes "SQLite format 3\0").
       try {
         final testDb = AppDatabase(
           NativeDatabase(file, setup: (db) => _setupDb(db, encryptionKey)),
@@ -201,9 +207,28 @@ class DatabaseService {
         // Test that we can actually read from it.
         await testDb.customSelect('SELECT count(*) FROM sqlite_master').get();
         _db = testDb;
-      } catch (_) {
-        // Existing unencrypted DB — migrate to encrypted.
-        await _migrateToEncrypted(file, encryptionKey);
+      } on Object catch (e, st) {
+        final isPlaintext = await _looksLikePlaintextSqlite(file);
+        if (isPlaintext) {
+          // Existing unencrypted DB — safe to migrate.
+          logStreamError('init.encryptedOpenFailed.migrating', e);
+          await _migrateToEncrypted(file, encryptionKey);
+        } else {
+          // File exists but is not plaintext SQLite; the encrypted open
+          // failed because the DB is corrupted, the secure-storage key was
+          // rotated, or the device is in a transient failure state. Do NOT
+          // clobber it — surface the error so the caller can prompt the
+          // user to restore from export.
+          logStreamError('init.encryptedOpenFailed.abort', e);
+          Error.throwWithStackTrace(
+            StateError(
+              'Encrypted database at ${file.path} could not be opened and is '
+              'not a plaintext SQLite file. Refusing to overwrite — check the '
+              'secure-storage key or restore from backup.',
+            ),
+            st,
+          );
+        }
       }
     } else {
       _db = AppDatabase(
@@ -224,7 +249,51 @@ class DatabaseService {
     await settings.getSettings();
   }
 
+  /// SQLite plaintext magic bytes: "SQLite format 3\0".
+  /// Only these bytes at offset 0 identify a plaintext SQLite database.
+  /// An encrypted (SQLCipher / sqlite3mc) file starts with random ciphertext
+  /// and will not match.
+  static const List<int> _plaintextSqliteMagic = [
+    0x53, 0x51, 0x4c, 0x69, 0x74, 0x65, 0x20, 0x66, // "SQLite f"
+    0x6f, 0x72, 0x6d, 0x61, 0x74, 0x20, 0x33, 0x00, // "ormat 3\0"
+  ];
+
+  /// Returns true iff [file] exists and begins with the SQLite plaintext
+  /// magic bytes. Used to gate the destructive plaintext→encrypted migration
+  /// path so that a failed encrypted-open on an already-encrypted file does
+  /// not clobber real ciphertext.
+  @visibleForTesting
+  static Future<bool> looksLikePlaintextSqliteForTesting(File file) =>
+      _looksLikePlaintextSqlite(file);
+
+  static Future<bool> _looksLikePlaintextSqlite(File file) async {
+    if (!file.existsSync()) return false;
+    final length = await file.length();
+    if (length < _plaintextSqliteMagic.length) return false;
+    final raf = await file.open();
+    try {
+      final header = await raf.read(_plaintextSqliteMagic.length);
+      for (var i = 0; i < _plaintextSqliteMagic.length; i++) {
+        if (header[i] != _plaintextSqliteMagic[i]) return false;
+      }
+      return true;
+    } finally {
+      await raf.close();
+    }
+  }
+
   Future<void> _migrateToEncrypted(File file, String encryptionKey) async {
+    // Belt-and-suspenders: refuse to migrate a file that isn't plaintext
+    // SQLite. The call sites in init() already gate on _looksLikePlaintextSqlite,
+    // but this guard protects any future caller (tests, migrations) from
+    // accidentally destroying encrypted data by calling this directly.
+    if (!await _looksLikePlaintextSqlite(file)) {
+      throw StateError(
+        'Refusing to migrate ${file.path}: file is not a plaintext SQLite '
+        'database. Migration would overwrite existing ciphertext.',
+      );
+    }
+
     // Open unencrypted DB, read all data.
     final oldDb = AppDatabase(NativeDatabase(file));
 
