@@ -267,6 +267,18 @@ abstract class L10n {
   /// **'Your recent traqs will appear here.'**
   String get recentEntriesPlaceholder;
 
+  /// Task 2.13 — Empty-recent state headline on Home. Warm/low-pressure tone; reinforces the 'no pressure' brand voice.
+  ///
+  /// In en, this message translates to:
+  /// **'A fresh page'**
+  String get emptyRecentHeadline;
+
+  /// Task 2.13 — Empty-recent state body copy on Home. One sentence, supportive, not imperative.
+  ///
+  /// In en, this message translates to:
+  /// **'No traqs from the last two days. Nothing to catch up on — just drop a breadcrumb whenever you\'re ready.'**
+  String get emptyRecentBody;
+
   /// No description provided for @entrySaved.
   ///
   /// In en, this message translates to:

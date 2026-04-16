@@ -104,6 +104,13 @@ class L10nEn extends L10n {
   String get recentEntriesPlaceholder => 'Your recent traqs will appear here.';
 
   @override
+  String get emptyRecentHeadline => 'A fresh page';
+
+  @override
+  String get emptyRecentBody =>
+      'No traqs from the last two days. Nothing to catch up on — just drop a breadcrumb whenever you\'re ready.';
+
+  @override
   String get entrySaved => 'Traq saved';
 
   @override

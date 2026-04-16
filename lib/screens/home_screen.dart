@@ -17,6 +17,7 @@ import '../utils/adaptive_layout.dart';
 import '../utils/date_helpers.dart';
 import '../utils/journal_prompts.dart';
 import '../utils/test_keys.dart';
+import '../widgets/molecules/empty_recent_state.dart';
 import '../widgets/molecules/mood_selector.dart';
 import '../widgets/molecules/segmented_pill.dart';
 import '../widgets/organisms/save_success_overlay.dart';
@@ -397,17 +398,11 @@ class _HomeScreenState extends State<HomeScreen>
             ),
           ],
           if (_yesterdayEntries.isEmpty && _dayBeforeEntries.isEmpty)
-            Padding(
-              padding: const EdgeInsets.only(top: AppSpacing.xxl),
-              child: Center(
-                child: BionicText(
-                  text: l10n.noRecentEntries,
-                  style: tt.bodyMedium?.copyWith(
-                    color: cs.onSurfaceVariant.withValues(alpha: 0.7),
-                  ),
-                  enabled: _settings?.bionicReadingEnabled ?? false,
-                ),
-              ),
+            // Task 2.13 — warmer empty-recent state (headline + body +
+            // soft icon) instead of a flat dimmed one-liner.
+            const Padding(
+              padding: EdgeInsets.only(top: AppSpacing.xl),
+              child: EmptyRecentState(),
             ),
           const SizedBox(height: AppSpacing.navBarClearance),
         ],
@@ -476,20 +471,15 @@ class _HomeScreenState extends State<HomeScreen>
                           ],
                           if (_yesterdayEntries.isEmpty &&
                               _dayBeforeEntries.isEmpty)
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                top: AppSpacing.md,
+                            // Task 2.13 — warmer empty-recent state in
+                            // the phone layout too. Drop the bionic
+                            // wrapper + opacity trick and use the
+                            // dedicated widget.
+                            const Padding(
+                              padding: EdgeInsets.only(
+                                top: AppSpacing.sm,
                               ),
-                              child: BionicText(
-                                text: l10n.recentEntriesPlaceholder,
-                                style: tt.bodyMedium?.copyWith(
-                                  color: cs.onSurfaceVariant.withValues(
-                                    alpha: 0.7,
-                                  ),
-                                ),
-                                enabled:
-                                    _settings?.bionicReadingEnabled ?? false,
-                              ),
+                              child: EmptyRecentState(),
                             ),
 
                           const SizedBox(height: AppSpacing.navBarClearance),
