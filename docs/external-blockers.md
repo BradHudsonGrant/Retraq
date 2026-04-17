@@ -377,7 +377,11 @@ Task 1.5 lint commit. Blocked by B-1 (Sentry DSN).
 
 **When:** as soon as B-1 lands.
 
-### [ ] D-7. Android Gradle Plugin 9.1.1 upgrade (Dependabot PR #22) — blocked upstream
+### [ ] D-7. Android Gradle Plugin 9.x upgrade — blocked upstream by Flutter SDK
+
+> **PR status (2026-04-16):** Dependabot PR #22 was closed with this
+> context. When Dependabot opens the next AGP 9.x bump, reopen this
+> item and retry after checking the Flutter SDK unblock below.
 
 Dependabot opened PR #22 bumping com.android.application from 8.9.1 to
 9.1.1. This is a MAJOR version bump of the Android Gradle Plugin.
@@ -462,25 +466,11 @@ engineering pass should fix regardless of AGP version).
 **When:** as soon as a Flutter stable release lists AGP 9 support in
 its release notes.
 
-#### Action for you on GitHub
-
-Dependabot's PR #22 is still **open** in the web UI even though the
-bump commit it introduced (`17eb7e1`) has been reverted on `main`
-(`3d5f151`). The GitHub MCP I have access to cannot reach this
-private repo, so I cannot close or comment on the PR from inside this
-session.
-
-Please close PR #22 manually with a short comment pointing at this
-entry, e.g.:
-
-> Blocked upstream: Flutter 3.41.6's `dev.flutter.flutter-gradle-plugin`
-> does not support AGP 9's new DSL, and the `android.newDsl=false`
-> opt-out path also fails with a Kotlin-extension collision. See
-> `docs/external-blockers.md#d-7`. Will revisit once Flutter SDK adds
-> AGP 9 support.
-
-Dependabot will re-open a fresh PR when a newer AGP 9.x release lands;
-by then the Flutter SDK unblock above may be in place.
+**History:** PR #22 (commit `17eb7e1`) was reverted on main via
+`3d5f151` and the PR itself closed on 2026-04-16 with a pointer to
+this section. Dependabot will open a fresh PR when a newer AGP 9.x
+release lands — by then the Flutter SDK unblock above may be in
+place, so retry the same two-line bump (Gradle + Java) at that point.
 
 ## How to unblock
 
