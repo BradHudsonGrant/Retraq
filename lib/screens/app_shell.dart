@@ -3,6 +3,7 @@ import '../l10n/app_localizations.dart';
 import '../theme/app_motion.dart';
 import '../utils/test_keys.dart';
 import '../widgets/atoms/morph_icon.dart';
+import '../widgets/atoms/tab_swipe_edge_glow.dart';
 import 'home_screen.dart';
 import 'recap_screen.dart';
 import 'settings_screen.dart';
@@ -70,18 +71,26 @@ class _AppShellState extends State<AppShell> {
     return Scaffold(
       // No top AppBar — each screen owns its own header for max real-estate
       // and a faster, less repaint-heavy shell.
-      body: PageView(
-        controller: _pageController,
-        onPageChanged: _onPageChanged,
-        physics: const NeverScrollableScrollPhysics(),
-        children: [
-          const HomeScreen(),
-          const RecapScreen(),
-          SettingsScreen(
-            onThemeModeChanged: widget.onThemeModeChanged,
-            themeMode: widget.themeMode,
-          ),
-        ],
+      //
+      // Task 2.12 — TabSwipeEdgeGlow wraps the PageView so accidental
+      // horizontal drags (which the NeverScrollableScrollPhysics below
+      // would silently swallow) now pulse a brief teal edge glow.
+      // Signals "we heard you, use the tabs" instead of looking frozen.
+      // Respects reduce-motion — no glow in that case.
+      body: TabSwipeEdgeGlow(
+        child: PageView(
+          controller: _pageController,
+          onPageChanged: _onPageChanged,
+          physics: const NeverScrollableScrollPhysics(),
+          children: [
+            const HomeScreen(),
+            const RecapScreen(),
+            SettingsScreen(
+              onThemeModeChanged: widget.onThemeModeChanged,
+              themeMode: widget.themeMode,
+            ),
+          ],
+        ),
       ),
       bottomNavigationBar: RepaintBoundary(
         child: Container(
