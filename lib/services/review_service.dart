@@ -1,6 +1,6 @@
-import 'package:flutter/foundation.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'app_log.dart';
 
 /// Handles in-app review prompts.
 /// Triggers once at the 5th journal entry, then never again.
@@ -26,7 +26,7 @@ class ReviewService {
       }
       await prefs.setBool(_shownKey, true);
     } catch (e) {
-      debugPrint('ReviewService.checkAndPrompt failed: $e');
+      AppLog.error('ReviewService.checkAndPrompt', e);
     }
   }
 }

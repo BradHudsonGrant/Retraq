@@ -2,8 +2,9 @@
 
 import 'dart:async';
 import 'package:drift/drift.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' show listEquals;
 import '../utils/date_helpers.dart';
+import 'app_log.dart';
 import 'database_service.dart';
 
 /// All stats/analytics queries.
@@ -109,7 +110,7 @@ class StatsService {
         freezeAvailable: !freezeUsedInWindow,
       );
     } catch (e) {
-      debugPrint('StatsService.getCurrentStreakWithFreezeInfo failed: $e');
+      AppLog.error('StatsService.getCurrentStreakWithFreezeInfo', e);
       return const StreakFreezeInfo(streak: 0, freezeAvailable: true);
     }
   }
@@ -146,7 +147,7 @@ class StatsService {
 
       return rows.first.read<int>('longest');
     } catch (e) {
-      debugPrint('StatsService.getLongestStreakThisMonth failed: $e');
+      AppLog.error('StatsService.getLongestStreakThisMonth', e);
       return 0;
     }
   }
@@ -181,7 +182,7 @@ class StatsService {
 
       return rows.first.read<int>('longest');
     } catch (e) {
-      debugPrint('StatsService.getLongestStreak failed: $e');
+      AppLog.error('StatsService.getLongestStreak', e);
       return 0;
     }
   }
@@ -228,7 +229,7 @@ class StatsService {
       }
       return result;
     } catch (e) {
-      debugPrint('StatsService.getWeeklyEntryCounts failed: $e');
+      AppLog.error('StatsService.getWeeklyEntryCounts', e);
       return List.filled(weeks, 0);
     }
   }
@@ -253,7 +254,7 @@ class StatsService {
       final dow = rows.first.read<int>('dow');
       return dow == 0 ? 7 : dow;
     } catch (e) {
-      debugPrint('StatsService.getMostActiveWeekday failed: $e');
+      AppLog.error('StatsService.getMostActiveWeekday', e);
       return 0;
     }
   }
@@ -272,7 +273,7 @@ class StatsService {
               .getSingle();
       return result.read<int>('cnt');
     } catch (e) {
-      debugPrint('StatsService.getTotalDaysWithEntries failed: $e');
+      AppLog.error('StatsService.getTotalDaysWithEntries', e);
       return 0;
     }
   }
@@ -285,7 +286,7 @@ class StatsService {
       final row = await query.getSingle();
       return row.read(count) ?? 0;
     } catch (e) {
-      debugPrint('StatsService._getTotalEntryCount failed: $e');
+      AppLog.error('StatsService._getTotalEntryCount', e);
       return 0;
     }
   }
@@ -303,7 +304,7 @@ class StatsService {
       final val = rows.first.readNullable<double>('avg_mood');
       return val;
     } catch (e) {
-      debugPrint('StatsService.getAverageMood failed: $e');
+      AppLog.error('StatsService.getAverageMood', e);
       return null;
     }
   }
@@ -325,7 +326,7 @@ class StatsService {
       }
       return result;
     } catch (e) {
-      debugPrint('StatsService.getMoodDistribution failed: $e');
+      AppLog.error('StatsService.getMoodDistribution', e);
       return {};
     }
   }
@@ -343,7 +344,7 @@ class StatsService {
       ]);
       return WidgetData(currentStreak: results[0], totalEntries: results[1]);
     } catch (e) {
-      debugPrint('StatsService.getWidgetData failed: $e');
+      AppLog.error('StatsService.getWidgetData', e);
       return const WidgetData();
     }
   }
@@ -370,7 +371,7 @@ class StatsService {
         totalDays: row.read<int>('days'),
       );
     } catch (e) {
-      debugPrint('StatsService._getBatchCounts failed: $e');
+      AppLog.error('StatsService._getBatchCounts', e);
       return (totalEntries: 0, totalDays: 0);
     }
   }
@@ -401,7 +402,7 @@ class StatsService {
       final averageMood = totalCount > 0 ? weightedSum / totalCount : null;
       return (averageMood: averageMood, distribution: distribution);
     } catch (e) {
-      debugPrint('StatsService._getBatchMoodStats failed: $e');
+      AppLog.error('StatsService._getBatchMoodStats', e);
       return (averageMood: null, distribution: const <int, int>{});
     }
   }
@@ -459,7 +460,7 @@ class StatsService {
         longestStreakThisMonth: rows.first.read<int>('longest_month'),
       );
     } catch (e) {
-      debugPrint('StatsService._getBatchStreaks failed: $e');
+      AppLog.error('StatsService._getBatchStreaks', e);
       return (longestStreak: 0, longestStreakThisMonth: 0);
     }
   }
@@ -502,7 +503,7 @@ class StatsService {
         freezeAvailable: freezeInfo.freezeAvailable,
       );
     } catch (e) {
-      debugPrint('StatsService.getAllStats failed: $e');
+      AppLog.error('StatsService.getAllStats', e);
       return const StatsSnapshot();
     }
   }

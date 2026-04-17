@@ -8,6 +8,7 @@ import '../models/journal_entry.dart';
 import '../models/user.dart';
 import '../models/user_settings.dart';
 import '../utils/date_helpers.dart';
+import 'app_log.dart';
 import 'database_service.dart';
 
 // ---------------------------------------------------------------------------
@@ -209,7 +210,7 @@ class ExportService {
 
       await _shareFile(jsonStr, 'retraq_export.json', 'application/json');
     } catch (e, stack) {
-      debugPrint('ExportService.exportAsJson failed: $e\n$stack');
+      AppLog.error('ExportService.exportAsJson', e, stack);
       throw Exception('Failed to export journal as JSON: $e');
     }
   }
@@ -234,7 +235,7 @@ class ExportService {
 
       await _shareFile(text, 'retraq_export.txt', 'text/plain');
     } catch (e, stack) {
-      debugPrint('ExportService.exportAsText failed: $e\n$stack');
+      AppLog.error('ExportService.exportAsText', e, stack);
       throw Exception('Failed to export journal as text: $e');
     }
   }
@@ -246,7 +247,7 @@ class ExportService {
       final text = 'Retraq -$dateStr\n\n${entry.displayText}';
       await SharePlus.instance.share(ShareParams(text: text));
     } catch (e, stack) {
-      debugPrint('ExportService.shareEntry failed: $e\n$stack');
+      AppLog.error('ExportService.shareEntry', e, stack);
       throw Exception('Failed to share entry: $e');
     }
   }
@@ -270,7 +271,7 @@ class ExportService {
         ShareParams(text: buffer.toString().trimRight()),
       );
     } catch (e, stack) {
-      debugPrint('ExportService.shareDayEntries failed: $e\n$stack');
+      AppLog.error('ExportService.shareDayEntries', e, stack);
       throw Exception('Failed to share day entries: $e');
     }
   }
@@ -294,9 +295,7 @@ class ExportService {
     try {
       entryMaps = await compute(_decodeEntriesFromJson, content);
     } catch (e, stack) {
-      debugPrint(
-        'ExportService.importFromJson: invalid JSON format: $e\n$stack',
-      );
+      AppLog.error('ExportService.importFromJson.decode', e, stack);
       return {'imported': 0, 'skipped': 0, 'errors': 1};
     }
 
@@ -444,9 +443,7 @@ class ExportService {
         // Add to dedup set so duplicates inside the import file are caught.
         existingKeys.add(dupKey);
       } catch (e, stack) {
-        debugPrint(
-          'ExportService.importFromJson: failed to parse entry: $e\n$stack',
-        );
+        AppLog.error('ExportService.importFromJson.parseEntry', e, stack);
         errors++;
       }
     }
@@ -457,9 +454,7 @@ class ExportService {
         await _entries.batchSaveEntries(entriesToInsert);
         imported = entriesToInsert.length;
       } catch (e, stack) {
-        debugPrint(
-          'ExportService.importFromJson: batch insert failed: $e\n$stack',
-        );
+        AppLog.error('ExportService.importFromJson.batchInsert', e, stack);
         errors += entriesToInsert.length;
       }
     }

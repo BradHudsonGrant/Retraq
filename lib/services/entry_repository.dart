@@ -1,9 +1,9 @@
 // ignore_for_file: prefer_single_quotes
 
 import 'package:drift/drift.dart';
-import 'package:flutter/foundation.dart';
 import '../models/journal_entry.dart';
 import '../utils/date_helpers.dart';
+import 'app_log.dart';
 import 'database_service.dart';
 
 /// All journal entry CRUD operations.
@@ -71,7 +71,7 @@ class EntryRepository {
             );
       }
     } catch (e) {
-      debugPrint('EntryRepository.saveEntry failed: $e');
+      AppLog.error('EntryRepository.saveEntry', e);
       rethrow;
     }
   }
@@ -90,7 +90,7 @@ class EntryRepository {
               .get();
       return rows.map(rowToEntry).toList();
     } catch (e) {
-      debugPrint('EntryRepository.getEntriesForDate failed: $e');
+      AppLog.error('EntryRepository.getEntriesForDate', e);
       return [];
     }
   }
@@ -119,7 +119,7 @@ class EntryRepository {
             ..orderBy([(t) => OrderingTerm.desc(t.date)])).get();
       return rows.map(rowToEntry).toList();
     } catch (e) {
-      debugPrint('EntryRepository.getAllEntries failed: $e');
+      AppLog.error('EntryRepository.getAllEntries', e);
       return [];
     }
   }
@@ -161,7 +161,7 @@ class EntryRepository {
               .get();
       return rows.map(rowToEntry).toList();
     } catch (e) {
-      debugPrint('EntryRepository.getRecentEntries failed: $e');
+      AppLog.error('EntryRepository.getRecentEntries', e);
       return [];
     }
   }
@@ -245,7 +245,7 @@ class EntryRepository {
       final row = await query.getSingle();
       return row.read(count) ?? 0;
     } catch (e) {
-      debugPrint('EntryRepository.getWeekEntryCount failed: $e');
+      AppLog.error('EntryRepository.getWeekEntryCount', e);
       return 0;
     }
   }
@@ -276,7 +276,7 @@ class EntryRepository {
       final row = await query.getSingle();
       return row.read(count) ?? 0;
     } catch (e) {
-      debugPrint('EntryRepository.getTotalEntryCount failed: $e');
+      AppLog.error('EntryRepository.getTotalEntryCount', e);
       return 0;
     }
   }
@@ -323,7 +323,7 @@ class EntryRepository {
               .get();
       return rows.map(rowToEntry).toList();
     } catch (e) {
-      debugPrint('EntryRepository.getMonthEntries failed: $e');
+      AppLog.error('EntryRepository.getMonthEntries', e);
       return [];
     }
   }
@@ -399,7 +399,7 @@ class EntryRepository {
       await (_db.delete(_db.journalEntries)
         ..where((t) => t.id.equals(id))).go();
     } catch (e) {
-      debugPrint('EntryRepository.deleteEntry failed: $e');
+      AppLog.error('EntryRepository.deleteEntry', e);
       rethrow;
     }
   }

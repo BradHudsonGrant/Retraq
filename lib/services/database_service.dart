@@ -10,6 +10,7 @@ import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 // sqlite3 v3 uses build hooks instead of manual library overrides.
+import 'app_log.dart';
 import 'entry_repository.dart';
 import 'migration_strategy.dart';
 import 'secure_storage.dart';
@@ -124,14 +125,15 @@ class DatabaseService {
   DatabaseService._();
   static final DatabaseService instance = DatabaseService._();
 
-  /// Log errors from stream watchers. Uses debugPrint in debug mode;
-  /// in release builds Flutter strips debugPrint, so this is a no-op
-  /// unless a crash-reporting callback is registered.
+  /// Log errors from stream watchers. Routes through [AppLog.error] so
+  /// records survive release builds when `RETRAQ_LOG=true` is set, and
+  /// so any registered [AppLog.sink] (tests / future Sentry adapter)
+  /// can observe them.
   static void Function(String message)? onStreamError;
 
   static void logStreamError(String method, Object error) {
     final msg = 'DatabaseService.$method failed: $error';
-    debugPrint(msg);
+    AppLog.error('DatabaseService.$method', error);
     onStreamError?.call(msg);
   }
 

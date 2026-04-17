@@ -2,11 +2,11 @@
 
 import 'dart:io';
 import 'package:drift/drift.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user.dart';
+import 'app_log.dart';
 import 'database_service.dart';
 import 'secure_storage.dart';
 
@@ -53,7 +53,7 @@ class UserRepository {
             );
       }
     } catch (e) {
-      debugPrint('UserRepository.saveUser failed: $e');
+      AppLog.error('UserRepository.saveUser', e);
       rethrow;
     }
   }
@@ -71,7 +71,7 @@ class UserRepository {
         createdAt: row.createdAt.toLocal(),
       );
     } catch (e) {
-      debugPrint('UserRepository.getUser failed: $e');
+      AppLog.error('UserRepository.getUser', e);
       return null;
     }
   }
@@ -152,7 +152,7 @@ class UserRepository {
         }
       }
     } catch (e) {
-      debugPrint('UserRepository.deleteAllData failed: $e');
+      AppLog.error('UserRepository.deleteAllData', e);
       rethrow;
     }
   }
@@ -176,7 +176,7 @@ class UserRepository {
             ),
           );
     } catch (e) {
-      debugPrint('UserRepository.saveConsentRecord failed: $e');
+      AppLog.error('UserRepository.saveConsentRecord', e);
       rethrow;
     }
   }
@@ -207,7 +207,7 @@ class UserRepository {
           !hasCurrentTerms ||
           !hasCurrentHealthDisclaimer;
     } catch (e) {
-      debugPrint('UserRepository.needsReconsent failed: $e');
+      AppLog.error('UserRepository.needsReconsent', e);
       return true; // Fail safe: require re-consent if we can't check
     }
   }
@@ -220,7 +220,7 @@ class UserRepository {
             ..orderBy([(t) => OrderingTerm.desc(t.acceptedAt)])).get();
       return rows;
     } catch (e) {
-      debugPrint('UserRepository.getConsentRecords failed: $e');
+      AppLog.error('UserRepository.getConsentRecords', e);
       return [];
     }
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'app_log.dart';
 
 /// Controls Android's `WindowManager.LayoutParams.FLAG_SECURE`, which blocks
 /// screenshots, screen recording, and Recent Apps thumbnails while the app is
@@ -34,7 +35,7 @@ class ScreenSecurityService {
         enabled ? 'addFlagSecure' : 'clearFlagSecure',
       );
     } catch (e) {
-      debugPrint('FLAG_SECURE toggle failed: $e');
+      AppLog.error('ScreenSecurityService.setSecure', e);
     }
   }
 }

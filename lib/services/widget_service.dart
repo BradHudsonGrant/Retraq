@@ -1,6 +1,6 @@
-import 'package:flutter/foundation.dart';
 import 'package:home_widget/home_widget.dart';
 
+import 'app_log.dart';
 import 'database_service.dart';
 
 /// Pushes journal stats to the native home screen widget.
@@ -43,7 +43,7 @@ class WidgetService {
     try {
       HomeWidget.setAppGroupId(_appGroupId);
     } catch (e) {
-      debugPrint('WidgetService init failed (non-fatal): $e');
+      AppLog.warn('WidgetService.init', 'non-fatal init failure: $e');
     }
   }
 
@@ -78,7 +78,7 @@ class WidgetService {
 
       await HomeWidget.updateWidget(androidName: _androidWidgetName);
     } catch (e) {
-      debugPrint('WidgetService update failed (non-fatal): $e');
+      AppLog.warn('WidgetService.update', 'non-fatal update failure: $e');
     }
   }
 }

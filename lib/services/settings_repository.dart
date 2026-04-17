@@ -1,8 +1,8 @@
 // ignore_for_file: prefer_single_quotes
 
 import 'package:drift/drift.dart';
-import 'package:flutter/foundation.dart';
 import '../models/user_settings.dart';
+import 'app_log.dart';
 import 'database_service.dart';
 
 /// Settings CRUD operations (singleton row pattern).
@@ -50,7 +50,7 @@ class SettingsRepository {
           .insert(UserSettingsTableCompanion.insert());
       return defaults;
     } catch (e) {
-      debugPrint('SettingsRepository.getSettings failed: $e');
+      AppLog.error('SettingsRepository.getSettings', e);
       return UserSettings();
     }
   }
@@ -93,7 +93,7 @@ class SettingsRepository {
       });
       // Drift's watch auto-emits on writes — no manual notification needed.
     } catch (e) {
-      debugPrint('SettingsRepository.saveSettings failed: $e');
+      AppLog.error('SettingsRepository.saveSettings', e);
       rethrow;
     }
   }
