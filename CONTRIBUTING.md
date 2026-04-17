@@ -58,8 +58,40 @@ is commented as such.
 - Every new widget with non-trivial behavior gets a widget test.
 - Every new ARB key gets covered by at least one test pumping the
   widget with a non-default locale.
-- Run `flutter test` before pushing. 445+ tests should pass.
+- Run `flutter test` before pushing. 525+ tests should pass
+  (the session-wide Epic 6 expansion added ~170 cases; see
+  `docs/plans/epic-06-testing.md`).
 - Pre-existing failures tracked in `docs/external-blockers.md#d-4`.
+
+### Test harness patterns (Task 6.19 + 6.26)
+
+Use the helpers in `test/test_helpers.dart` — do NOT build your
+own `MaterialApp` root in a widget test unless you have a
+specific reason:
+
+- **`wrapWidget(child)`** — MaterialApp + l10n delegates + Scaffold
+  + reduce-motion MediaQuery. Default for most widget tests.
+- **`wrapScreen(child)`** — same without the Scaffold, for widgets
+  that bring their own (LockScreen, SplashScreen).
+- **`wrapScrollable(child)`** — wraps in SingleChildScrollView for
+  tall widgets (WeekDayList) that overflow the 600px test viewport.
+- **`flushDriftTimers(tester)`** — call at the end of any test that
+  subscribes to a Drift stream. Drains `StreamQueryStore` zero-
+  duration timers that would otherwise trigger "pending timers"
+  warnings.
+- **`setUpFakeSecureStorage()`** — mocks the FlutterSecureStorage
+  MethodChannel only; SQLite stays real. If you're tempted to
+  mock SQLite too, don't — the "real DB + mock platform channels"
+  line is what makes our migration tests meaningful.
+
+New tests should use `find.byKey(TestKeys.foo)` (see
+`lib/utils/test_keys.dart`) rather than `find.text('...')` for
+tappable surfaces. Key-based finders survive ARB edits, rebranding,
+and theme changes.
+
+If you MUST bypass a helper, add an inline comment explaining why
+(e.g., `// direct pumpWidget — this test asserts MaterialApp itself`)
+so the pattern is auditable during reviews.
 
 ## Commits and pushes
 
