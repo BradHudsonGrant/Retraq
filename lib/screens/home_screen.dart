@@ -23,6 +23,7 @@ import '../widgets/molecules/empty_recent_state.dart';
 import '../widgets/molecules/mood_selector.dart';
 import '../widgets/molecules/progress_bar.dart';
 import '../widgets/molecules/segmented_pill.dart';
+import '../widgets/molecules/title_field.dart';
 import '../widgets/organisms/save_success_overlay.dart';
 import 'home/journal_text_area.dart';
 import '../widgets/atoms/app_snack_bar.dart';
@@ -351,9 +352,10 @@ class _HomeScreenState extends State<HomeScreen>
         const SizedBox(height: AppSpacing.md),
       ],
 
-      // Entry title (optional)
+      // Entry title (optional).
+      // Task 1.2 — molecule extraction; see lib/widgets/molecules/title_field.dart.
       if (_settings?.showEntryTitle ?? false) ...[
-        _buildTitleField(cs, tt, l10n),
+        TitleField(controller: _titleController),
         const SizedBox(height: AppSpacing.sm),
       ],
 
@@ -580,40 +582,6 @@ class _HomeScreenState extends State<HomeScreen>
               ),
             ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildTitleField(ColorScheme cs, TextTheme tt, L10n l10n) {
-    return Container(
-      decoration: BoxDecoration(
-        color: cs.surfaceContainerHigh,
-        borderRadius: AppSpacing.borderRadiusLg,
-        border: Border.all(color: cs.outlineVariant.withValues(alpha: 0.3)),
-      ),
-      child: TextField(
-        key: TestKeys.homeTitleField,
-        controller: _titleController,
-        textCapitalization: TextCapitalization.sentences,
-        style: tt.titleMedium?.copyWith(fontWeight: FontWeight.w600),
-        decoration: InputDecoration(
-          hintText: l10n.entryTitleHint,
-          labelText: l10n.entryTitleLabel,
-          floatingLabelBehavior: FloatingLabelBehavior.never,
-          // Task 7.1 — alpha 0.75 to meet WCAG 1.4.3 AA contrast.
-          hintStyle: tt.titleMedium?.copyWith(
-            fontWeight: FontWeight.w600,
-            color: cs.onSurfaceVariant.withValues(alpha: 0.75),
-          ),
-          filled: false,
-          border: InputBorder.none,
-          enabledBorder: InputBorder.none,
-          focusedBorder: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.lg,
-            vertical: AppSpacing.md,
-          ),
-        ),
       ),
     );
   }
