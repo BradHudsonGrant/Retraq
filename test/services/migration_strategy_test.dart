@@ -543,5 +543,75 @@ void main() {
         await db.close();
       }
     });
+
+    // Task 6.16 — explicit v13→v14 direct-hop assertions. The chain
+    // test above exercises the full v3→v14 sequence; these two focused
+    // tests pin down exactly what the v13→v14 migration introduces,
+    // which is the concrete risk surface for a user who installed
+    // the v13 build yesterday and hits today's v14 update.
+    test('v13→v14 creates journal_entries_fts table + 3 triggers', () async {
+      final db = openV3WithFixtures((_) {});
+      try {
+        // Force the migration chain to run.
+        await db.customSelect('SELECT 1').get();
+
+        // 1. journal_entries_fts exists.
+        final ftsExists = await db
+            .customSelect(
+              "SELECT name FROM sqlite_master "
+              "WHERE type='table' AND name='journal_entries_fts'",
+            )
+            .get();
+        expect(ftsExists, hasLength(1),
+            reason:
+                'v14 migration must create the journal_entries_fts table');
+
+        // 2. All three FTS sync triggers exist (AI / AU / AD).
+        // Names follow the journal_entries_{ai,au,ad} pattern; see
+        // lib/services/migration_strategy.dart around the v13→v14 block.
+        final triggers = await db
+            .customSelect(
+              "SELECT name FROM sqlite_master "
+              "WHERE type='trigger' AND tbl_name='journal_entries'",
+            )
+            .get();
+        final names = triggers.map((r) => r.read<String>('name')).toSet();
+        expect(
+          names,
+          containsAll({
+            'journal_entries_ai',
+            'journal_entries_au',
+            'journal_entries_ad',
+          }),
+          reason:
+              'v14 migration must install the AI/AU/AD FTS sync triggers '
+              'on journal_entries — found: $names',
+        );
+      } finally {
+        await db.close();
+      }
+    });
+
+    test('v13→v14 leaves schema_version at 14', () async {
+      final db = openV3WithFixtures((_) {});
+      try {
+        await db.customSelect('SELECT 1').get();
+
+        final row =
+            await db.customSelect('PRAGMA user_version').getSingle();
+        final version = row.data.values.first as int;
+        expect(
+          version,
+          14,
+          reason:
+              'After v3→v14 migration, PRAGMA user_version must be exactly '
+              '14. A mismatch here means the migration stopped short and '
+              'the v14-only invariants (FTS triggers, indices) cannot be '
+              'relied upon by application code.',
+        );
+      } finally {
+        await db.close();
+      }
+    });
   });
 }
