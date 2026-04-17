@@ -397,6 +397,18 @@
   "@discardAndSwitchButton": {
     "description": "Task 2.8 — Middle action in the AM/PM switch dialog shown when the user has typed entry text. Drops the typed text and flips the day period without saving."
   },
+  "plaintextExportWarningTitle": "Share this file?",
+  "@plaintextExportWarningTitle": {
+    "description": "Task 3.9 — Title of the warning dialog shown before invoking the share sheet for a plaintext export."
+  },
+  "plaintextExportWarningBody": "This file contains your journal in a readable format. The app you pick will receive everything you've written. Only share with apps you trust, like your own file manager or cloud drive.",
+  "@plaintextExportWarningBody": {
+    "description": "Task 3.9 — Body copy of the plaintext-export warning dialog. Reads in the brand voice: plain, non-alarmist, informative."
+  },
+  "plaintextExportShareAnyway": "Share anyway",
+  "@plaintextExportShareAnyway": {
+    "description": "Task 3.9 — Confirm button on the plaintext-export warning dialog."
+  },
   "viewLabel": "View",
   "@viewLabel": {
     "description": "Task 2.7 — Trailing button on the onboarding consent row that opens the legal document. Separated from the checkbox label tap target to avoid accidental navigation when toggling consent."

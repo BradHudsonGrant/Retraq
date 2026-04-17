@@ -127,6 +127,14 @@ class DataSection extends StatelessWidget {
     if (!context.mounted) return;
     final exportAll = await _showExportScopeDialog(context);
     if (exportAll == null || !context.mounted) return;
+    // Task 3.9 — require explicit consent before handing a plaintext
+    // file to the OS share sheet. The destination app (Gmail, Drive,
+    // random editor) would otherwise receive decrypted journal text
+    // with no visible warning. This dialog is additive to the export-
+    // scope picker; the scope dialog answers "what", this one answers
+    // "are you sure you want to hand it to another app?".
+    final confirmedShare = await _showPlaintextShareWarning(context);
+    if (!confirmedShare || !context.mounted) return;
     try {
       if (json) {
         await ExportService.instance.exportAsJson(exportAll: exportAll);
@@ -142,6 +150,31 @@ class DataSection extends StatelessWidget {
       final l10n = L10n.of(context)!;
       AppSnackBar.error(context, l10n.exportFailed);
     }
+  }
+
+  /// Task 3.9 — Confirmation dialog shown before a plaintext export is
+  /// handed to the share sheet. Returns true when the user explicitly
+  /// chose "Share anyway"; false on cancel or barrier dismiss.
+  Future<bool> _showPlaintextShareWarning(BuildContext context) async {
+    final l10n = L10n.of(context)!;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.plaintextExportWarningTitle),
+        content: Text(l10n.plaintextExportWarningBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l10n.cancelLabel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l10n.plaintextExportShareAnyway),
+          ),
+        ],
+      ),
+    );
+    return confirmed == true;
   }
 
   Future<bool?> _showExportScopeDialog(BuildContext context) {

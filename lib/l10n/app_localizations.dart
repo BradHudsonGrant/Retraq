@@ -1573,6 +1573,24 @@ abstract class L10n {
   /// **'Discard & Switch'**
   String get discardAndSwitchButton;
 
+  /// Task 3.9 — Title of the warning dialog shown before invoking the share sheet for a plaintext export.
+  ///
+  /// In en, this message translates to:
+  /// **'Share this file?'**
+  String get plaintextExportWarningTitle;
+
+  /// Task 3.9 — Body copy of the plaintext-export warning dialog. Reads in the brand voice: plain, non-alarmist, informative.
+  ///
+  /// In en, this message translates to:
+  /// **'This file contains your journal in a readable format. The app you pick will receive everything you\'ve written. Only share with apps you trust, like your own file manager or cloud drive.'**
+  String get plaintextExportWarningBody;
+
+  /// Task 3.9 — Confirm button on the plaintext-export warning dialog.
+  ///
+  /// In en, this message translates to:
+  /// **'Share anyway'**
+  String get plaintextExportShareAnyway;
+
   /// Task 2.7 — Trailing button on the onboarding consent row that opens the legal document. Separated from the checkbox label tap target to avoid accidental navigation when toggling consent.
   ///
   /// In en, this message translates to:

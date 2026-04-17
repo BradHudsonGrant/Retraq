@@ -853,6 +853,16 @@ class L10nEn extends L10n {
   String get discardAndSwitchButton => 'Discard & Switch';
 
   @override
+  String get plaintextExportWarningTitle => 'Share this file?';
+
+  @override
+  String get plaintextExportWarningBody =>
+      'This file contains your journal in a readable format. The app you pick will receive everything you\'ve written. Only share with apps you trust, like your own file manager or cloud drive.';
+
+  @override
+  String get plaintextExportShareAnyway => 'Share anyway';
+
+  @override
   String get viewLabel => 'View';
 
   @override
