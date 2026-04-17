@@ -1,3 +1,5 @@
+import 'package:drift/drift.dart' show QueryRow;
+
 /// Data model for a single journal entry.
 /// Plain Dart class — Drift table definition lives in database_service.dart.
 class JournalEntry {
@@ -34,6 +36,33 @@ class JournalEntry {
     this.userId,
     DateTime? createdAt,
   }) : createdAt = createdAt ?? DateTime.now();
+
+  /// Task 1.8 — Build a [JournalEntry] from an untyped Drift [QueryRow],
+  /// used by paths that issue a `customSelect` (e.g. FTS search) and
+  /// therefore cannot use the typed `rowToEntry(JournalEntryRow)` mapper.
+  ///
+  /// Reads columns by name so adding/reordering columns in the Drift
+  /// table definition cannot silently skew the mapping. Normalizes
+  /// `date` to the user's local midnight (same as `rowToEntry`) so
+  /// search results and list results agree on what day an entry
+  /// belongs to.
+  factory JournalEntry.fromRawRow(QueryRow row) {
+    final dateRaw = row.read<int>('date');
+    final createdRaw = row.read<int>('created_at');
+    final localDate =
+        DateTime.fromMillisecondsSinceEpoch(dateRaw * 1000).toLocal();
+    return JournalEntry(
+      id: row.read<int>('id'),
+      date: DateTime(localDate.year, localDate.month, localDate.day),
+      entry: row.readNullable<String>('entry'),
+      label: row.readNullable<String>('label'),
+      title: row.readNullable<String>('title'),
+      mood: row.readNullable<int>('mood'),
+      createdAt:
+          DateTime.fromMillisecondsSinceEpoch(createdRaw * 1000).toLocal(),
+      userId: row.readNullable<int>('user_id'),
+    );
+  }
 
   /// Convenience: the display text
   static const Object _sentinel = Object();

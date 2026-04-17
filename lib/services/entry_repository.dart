@@ -426,28 +426,10 @@ class EntryRepository {
               readsFrom: {_db.journalEntries},
             )
             .get();
-    return rows
-        .map(
-          (row) => JournalEntry(
-            id: row.read<int>('id'),
-            date: () {
-              final localDate =
-                  DateTime.fromMillisecondsSinceEpoch(
-                    row.read<int>('date') * 1000,
-                  ).toLocal();
-              return DateTime(localDate.year, localDate.month, localDate.day);
-            }(),
-            entry: row.readNullable<String>('entry'),
-            label: row.readNullable<String>('label'),
-            title: row.readNullable<String>('title'),
-            mood: row.readNullable<int>('mood'),
-            createdAt:
-                DateTime.fromMillisecondsSinceEpoch(
-                  row.read<int>('created_at') * 1000,
-                ).toLocal(),
-          ),
-        )
-        .toList();
+    // Task 1.8 — delegate to the shared factory so FTS search stays
+    // in sync with `rowToEntry`. Previously this inline mapper was
+    // missing `userId`, a silent divergence the factory now prevents.
+    return rows.map(JournalEntry.fromRawRow).toList();
   }
 
   /// Convert a free-form user query into an FTS5 MATCH expression.
