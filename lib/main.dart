@@ -37,10 +37,23 @@ const _sentryDsn = String.fromEnvironment(
       'https://844023f9d58cc7de383a324b205ba9aa@o4511236634443776.ingest.us.sentry.io/4511236638572544',
 );
 
+/// Task 10.1 — Sentry environment tag. Overridable via
+/// `--dart-define=SENTRY_ENVIRONMENT=...` so CI can split events by
+/// release track (e.g. `beta`, `testflight-internal`, `prod`). Empty
+/// default routes to the kReleaseMode-based fallback inside init,
+/// which uses `'beta'` for release builds until the public launch.
+/// Flip the fallback to `'prod'` in the same commit that submits to
+/// App Store / Play Store — that way pre-launch events stay out of
+/// the production bucket.
+const _sentryEnvironmentOverride = String.fromEnvironment(
+  'SENTRY_ENVIRONMENT',
+  defaultValue: '',
+);
+
 /// Task 10.1 — opt-in gate. The privacy policy promises "no analytics,
 /// no telemetry, no tracking of any kind" — Sentry events are therefore
 /// blocked in `beforeSend` unless this SharedPreferences flag is `true`.
-/// Default false; a future Settings toggle (follow-up commit) flips it.
+/// Default false; the Settings → Data → Diagnostics toggle flips it.
 /// Reading it synchronously keeps the hot-path on `beforeSend` fast;
 /// the flag is primed on app start and refreshed on any toggle.
 const _sentryOptInKey = 'sentry_opt_in';
@@ -87,7 +100,15 @@ void main() async {
       // Sentry's UI. Free-tier 5k-event/mo quota burns fast at 1.0
       // sample rates; drop to 10% in release mode and keep 100% in
       // debug so local dev still sees full telemetry.
-      options.environment = kReleaseMode ? 'prod' : 'dev';
+      //
+      // Environment fallback: explicit --dart-define override wins;
+      // otherwise release builds tag as 'beta' (pre-launch) and
+      // debug builds as 'dev'. When the public launch ships, flip
+      // the 'beta' here to 'prod' in the same commit that submits
+      // to App Store / Play Store.
+      options.environment = _sentryEnvironmentOverride.isNotEmpty
+          ? _sentryEnvironmentOverride
+          : (kReleaseMode ? 'beta' : 'dev');
       options.tracesSampleRate = kReleaseMode ? 0.1 : 1.0;
       // ignore: experimental_member_use
       options.profilesSampleRate = kReleaseMode ? 0.1 : 1.0;

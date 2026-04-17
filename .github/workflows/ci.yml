@@ -174,8 +174,31 @@ jobs:
 
       - name: Check coverage threshold
         run: |
-          # Strip generated files from coverage before calculating.
-          grep -v -E '\.g\.dart|\.freezed\.dart|\.gen\.dart|app_localizations' coverage/lcov.info > coverage/lcov_filtered.info || true
+          # Strip from coverage before calculating:
+          # - Generated files (.g.dart, .freezed.dart, .gen.dart,
+          #   app_localizations*) — codegen output, not author-owned.
+          # - lib/main.dart — bootstrap code that initializes
+          #   platform plugins (Sentry, Drift, SystemChrome, etc.).
+          #   Industry-standard exclusion because you can't unit test
+          #   a void main() without a full app harness, and the
+          #   platform-channel setup noise would sink coverage every
+          #   time a new SDK is wired. The boot path is exercised by
+          #   the existing integration_test/app_test.dart smoke.
+          # Block-based awk filter: when we see an SF: line matching
+          # one of the excluded patterns, `skip` stays true until the
+          # next SF: line. The previous `grep -v` only dropped the
+          # SF: line but kept the DA: lines under it — undercounting
+          # the excluded file's dilution of total coverage.
+          #
+          # `main.dart$` matches both lib/main.dart (Linux CI) and
+          # lib\main.dart (Windows local runs) since the separator
+          # differs by platform but the filename ends identical.
+          awk '
+            /^SF:/ {
+              skip = ($0 ~ /\.g\.dart|\.freezed\.dart|\.gen\.dart|app_localizations|main\.dart$/)
+            }
+            !skip { print }
+          ' coverage/lcov.info > coverage/lcov_filtered.info || true
 
           # Parse lcov_filtered.info and calculate line coverage percentage.
           TOTAL_LINES=$(grep -c "^DA:" coverage/lcov_filtered.info || echo 0)
