@@ -458,6 +458,17 @@ class L10nEn extends L10n {
       'Biometric check failed. Try again or cancel.';
 
   @override
+  String resetAppUndoToast(int seconds) {
+    return 'Erasing in ${seconds}s — tap to cancel';
+  }
+
+  @override
+  String get resetAppUndoCancel => 'Cancel';
+
+  @override
+  String get resetAppCancelled => 'Reset cancelled. Your data is safe.';
+
+  @override
   String wrongPinMessage(int remaining) {
     String _temp0 = intl.Intl.pluralLogic(
       remaining,

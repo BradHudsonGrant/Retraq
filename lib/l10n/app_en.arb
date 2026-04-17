@@ -245,6 +245,21 @@
     "description": "Biometric prompt shown before the destructive reset-app action fires."
   },
   "resetAppBiometricFailed": "Biometric check failed. Try again or cancel.",
+  "resetAppUndoToast": "Erasing in {seconds}s — tap to cancel",
+  "@resetAppUndoToast": {
+    "description": "Task 3.2 — non-dismissible SnackBar shown for 10 seconds after the user confirms a Forgot-PIN reset. Tapping the action cancels the timer and leaves all data intact.",
+    "placeholders": {
+      "seconds": { "type": "int" }
+    }
+  },
+  "resetAppUndoCancel": "Cancel",
+  "@resetAppUndoCancel": {
+    "description": "SnackBar action label on the reset-countdown toast. Task 3.2."
+  },
+  "resetAppCancelled": "Reset cancelled. Your data is safe.",
+  "@resetAppCancelled": {
+    "description": "Confirmation toast after the user cancels the reset within the 10-second undo window. Task 3.2."
+  },
   "wrongPinMessage": "Wrong PIN. {remaining, plural, =1{1 attempt} other{{remaining} attempts}} remaining.",
   "@wrongPinMessage": {
     "placeholders": {

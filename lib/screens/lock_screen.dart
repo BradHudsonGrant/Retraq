@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../l10n/app_localizations.dart';
@@ -257,9 +259,14 @@ class _LockScreenState extends State<LockScreen> {
     final useBiometric = _settings?.biometricEnabled == true;
 
     if (useBiometric) {
+      // Task 3.2 — allow device-credential (PIN/pattern/passcode)
+      // fallback so a user whose fingerprint / Face ID fails
+      // temporarily (wet finger, low light, mask) can still prove
+      // physical possession. `biometricOnly: false` tells the OS to
+      // offer its own credential-entry sheet on a biometric miss.
       final outcome = await _auth.authenticate(
         reason: l10n.resetAppBiometricReason,
-        biometricOnly: true,
+        biometricOnly: false,
       );
       if (outcome != BiometricOutcome.success) {
         if (!mounted) return;
@@ -271,6 +278,58 @@ class _LockScreenState extends State<LockScreen> {
     if (!mounted) return;
     final confirmed = await DeleteConfirmDialog.show(context);
     if (confirmed != true) return;
+    if (!mounted) return;
+    await _scheduleResetWithUndoWindow();
+  }
+
+  /// Task 3.2 — 10-second cancellable undo window between the typed
+  /// "DELETE" confirmation and the actual wipe. Covers "fat-finger"
+  /// regret — the user has already passed biometric + typed DELETE,
+  /// but may still want a last escape.
+  ///
+  /// Flow:
+  /// 1. Show a non-dismissible SnackBar with countdown copy.
+  /// 2. Start a periodic timer that ticks the visible countdown.
+  /// 3. If the user taps "Cancel" → clear timer, show confirmation.
+  /// 4. If the timer elapses → run the wipe.
+  ///
+  /// The timer and SnackBar controller are kept on the state so
+  /// lifecycle teardown (dispose, navigating away) can cancel both.
+  Future<void> _scheduleResetWithUndoWindow() async {
+    const totalSeconds = 10;
+    final l10n = L10n.of(context)!;
+    final messenger = ScaffoldMessenger.of(context);
+    var remaining = totalSeconds;
+    var cancelled = false;
+
+    final controller = messenger.showSnackBar(SnackBar(
+      content: Text(l10n.resetAppUndoToast(remaining)),
+      duration: const Duration(seconds: totalSeconds),
+      behavior: SnackBarBehavior.floating,
+      action: SnackBarAction(
+        label: l10n.resetAppUndoCancel,
+        onPressed: () {
+          cancelled = true;
+        },
+      ),
+    ));
+
+    final ticker = Timer.periodic(const Duration(seconds: 1), (t) {
+      remaining -= 1;
+      if (remaining <= 0 || cancelled) t.cancel();
+    });
+
+    // Wait for the SnackBar to close (either natural dismiss,
+    // Cancel tap, or widget teardown).
+    final reason = await controller.closed;
+    ticker.cancel();
+
+    if (cancelled || reason == SnackBarClosedReason.action) {
+      if (!mounted) return;
+      AppSnackBar.show(context, l10n.resetAppCancelled);
+      return;
+    }
+
     await DatabaseService.instance.userRepo.deleteAllData();
   }
 

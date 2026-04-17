@@ -877,6 +877,24 @@ abstract class L10n {
   /// **'Biometric check failed. Try again or cancel.'**
   String get resetAppBiometricFailed;
 
+  /// Task 3.2 — non-dismissible SnackBar shown for 10 seconds after the user confirms a Forgot-PIN reset. Tapping the action cancels the timer and leaves all data intact.
+  ///
+  /// In en, this message translates to:
+  /// **'Erasing in {seconds}s — tap to cancel'**
+  String resetAppUndoToast(int seconds);
+
+  /// SnackBar action label on the reset-countdown toast. Task 3.2.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get resetAppUndoCancel;
+
+  /// Confirmation toast after the user cancels the reset within the 10-second undo window. Task 3.2.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset cancelled. Your data is safe.'**
+  String get resetAppCancelled;
+
   /// No description provided for @wrongPinMessage.
   ///
   /// In en, this message translates to:
