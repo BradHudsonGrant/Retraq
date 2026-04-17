@@ -133,6 +133,32 @@ jobs:
             exit 1
           fi
 
+      # Task 12.9 — Android backup lint. The Delete-All-Data
+      # irrevocability contract relies on android:allowBackup="false"
+      # so that adb backup / Google cross-device transfer cannot
+      # scoop the SQLCipher file off a wiped device. If anyone ever
+      # flips this to true (or drops the attribute entirely) the
+      # right-to-be-forgotten guarantee is silently weakened. Fail
+      # the build loudly instead.
+      #
+      # See docs/legal/right-to-be-forgotten.md for the full
+      # contract + test pointer.
+      - name: Android backup-disabled lint
+        shell: bash
+        run: |
+          set -euo pipefail
+          manifest=android/app/src/main/AndroidManifest.xml
+          if ! grep -q 'android:allowBackup="false"' "$manifest"; then
+            echo "::error::$manifest must declare android:allowBackup=\"false\"."
+            echo "         See docs/legal/right-to-be-forgotten.md (Task 12.9)."
+            exit 1
+          fi
+          if ! grep -q 'android:fullBackupContent="false"' "$manifest"; then
+            echo "::error::$manifest must declare android:fullBackupContent=\"false\"."
+            echo "         See docs/legal/right-to-be-forgotten.md (Task 12.9)."
+            exit 1
+          fi
+
       - name: Check formatting
         run: dart format --set-exit-if-changed .
 
