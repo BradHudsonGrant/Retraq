@@ -798,8 +798,13 @@ class _HomeScreenState extends State<HomeScreen>
     // Check for in-app review prompt (fires once at 5th entry)
     ReviewService.instance.checkAndPrompt(totalCount);
 
-    // Refresh home screen widget with latest data
-    WidgetService.instance.update();
+    // Refresh home screen widget with latest data.
+    // Task 8.11 — explicit fire-and-forget. The update hops a platform
+    // channel and can spend a few ms marshalling; we don't want the
+    // save-tap UI path blocked on it, and the save-success overlay is
+    // already visible by this point. Errors inside update() are
+    // swallowed and logged via AppLog (Task 1.13).
+    unawaited(WidgetService.instance.update());
 
     // Cancel/reschedule today's reminder so users who already journaled
     // don't get nagged again.
