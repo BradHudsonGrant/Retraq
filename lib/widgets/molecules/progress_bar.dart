@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
+import '../../theme/app_colors.dart';
 import '../../theme/app_spacing.dart';
 import '../atoms/bionic_text.dart';
 
@@ -33,6 +34,7 @@ class ProgressBar extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
     final l10n = L10n.of(context)!;
+    final hasStreak = (weekCount ?? 0) > 0;
 
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -46,11 +48,16 @@ class ProgressBar extends StatelessWidget {
       child: Row(
         children: [
           Icon(
-            (weekCount ?? 0) > 0
-                ? Icons.local_fire_department
-                : Icons.edit_note,
+            hasStreak ? Icons.local_fire_department : Icons.edit_note,
             size: 18,
-            color: cs.primary,
+            // Task 13.3 — warm amber flame when the streak is active
+            // (2nd sanctioned accent-amber usage alongside the
+            // milestone chip in SaveSuccessOverlay). The edit-note
+            // placeholder stays in the primary green so the icon's
+            // color itself signals "momentum present" vs "get started".
+            color: hasStreak
+                ? AppColors.accentAmber(Theme.of(context).brightness)
+                : cs.primary,
           ),
           const SizedBox(width: AppSpacing.sm),
           Expanded(

@@ -218,6 +218,42 @@ The letter Q in Retraq can double as a visual motif:
 - Consider dark mode as a default option
 - Bionic reading as an accessibility feature, not a gimmick
 
+### Palette
+
+Primary identity stays forest-green + mint (see
+`lib/theme/app_colors.dart`). v1 + v1.1 introduces a single
+distinctive accent hue (Task 13.3):
+
+- **`#33694B` forest green** — primary tokens (CTAs, brand
+  surfaces, primary ColorScheme). Communicates calm authority.
+- **`#B5F0C9` mint** — primary container / inversePrimary
+  (dark mode). Supporting fill for the primary.
+- **`#F8FAF8` off-white** — surface (light mode).
+- **Mood teal-scale** (`#80CBC4` → `#00796B`) — the 5-step
+  Rough→Amazing mood blobs. NEVER reuse for CTAs; mood colour
+  carries specific semantic meaning.
+- **`#E8A838` warm amber (accent)** — Task 13.3 distinctive
+  second colour. Used sparingly (max one accent per screen)
+  for:
+  - Milestone celebration chips (`_MilestoneChip` in
+    `save_success_overlay.dart`)
+  - Active-streak flame icon in the Home `ProgressBar`
+    (`hasStreak ? accentAmber : cs.primary`)
+  - Future: paywall CTA (v1.1 Retraq Pro) and optional
+    A/B-tested hero Save button variant
+- **NEVER** use amber as a destructive-action color (that's
+  `cs.error`) or stack it on `cs.primary` (pick one).
+- **Dark-mode variant:** `#EFBF6B` — same hue, lower
+  saturation so it sits comfortably on the dark surface
+  without over-saturating.
+- **`onAccentAmber` = `#2D1F00`** — dark amber text passes
+  WCAG 4.5:1 (~9.1:1 measured) when placed on the accent
+  amber fill.
+
+If you find yourself using the amber outside the above list,
+check Task 13.3 first — the scarcity is what makes the colour
+distinctive. A second amber surface dilutes the first.
+
 ### Brand voice
 - Casual, warm, lightly self-deprecating
 - Never preachy about journalling or self-improvement

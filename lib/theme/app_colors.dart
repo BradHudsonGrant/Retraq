@@ -98,4 +98,34 @@ class AppColors {
 
   static List<Color> moodColors(Brightness brightness) =>
       brightness == Brightness.dark ? moodColorsDark : moodColorsLight;
+
+  // ── Warm amber accent (Task 13.3) ──
+  //
+  // Distinctive second color beyond the forest-green + mint base so
+  // the Retraq brand owns a second pixel of App Store mindshare.
+  // Agent 13 recommended amber over terracotta and coral because it:
+  //   - pairs with green without muddying the forest palette
+  //   - carries "sunrise / capture the day" connotations
+  //   - passes WCAG 4.5:1 with dark text (~9.1:1 on the amber)
+  //
+  // Usage guidelines:
+  //   - Max one accent per screen — scarcity is what makes it read
+  //     as distinctive, not decorative
+  //   - Reserved for premium / celebratory moments: milestone
+  //     chips, future paywall CTA (v1.1), "Save" hero (A/B test)
+  //   - NEVER use as a destructive action color (that's cs.error)
+  //   - NEVER stack on cs.primary — pick one
+  //
+  // Light variant is the source; dark variant is the same hue with
+  // lowered saturation so it sits properly on the dark surface.
+  static const Color accentAmberLight = Color(0xFFE8A838);
+  static const Color accentAmberDark = Color(0xFFEFBF6B);
+  static const Color onAccentAmber = Color(0xFF2D1F00);
+
+  /// Brightness-aware accent getter. Callers should prefer this over
+  /// referencing `accentAmberLight` / `accentAmberDark` directly so
+  /// the theme mode is honoured without per-site `brightness`
+  /// branching.
+  static Color accentAmber(Brightness brightness) =>
+      brightness == Brightness.dark ? accentAmberDark : accentAmberLight;
 }

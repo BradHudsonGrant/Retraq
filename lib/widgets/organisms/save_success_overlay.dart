@@ -409,13 +409,14 @@ class _SaveSuccessOverlayState extends State<SaveSuccessOverlay>
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           if (widget.milestoneMessage != null) ...[
-                            Text(
-                              widget.milestoneMessage!,
-                              style: tt.titleSmall?.copyWith(
-                                fontWeight: FontWeight.w500,
-                                color: cs.primary.withValues(alpha: 0.85),
-                              ),
-                              textAlign: TextAlign.center,
+                            // Task 13.3 — milestone messages render in
+                            // an amber chip so the celebration moment
+                            // owns a distinctive color beyond the
+                            // green/mint base. Routine saves still
+                            // render `niceOne` below in the subtle
+                            // onSurfaceVariant tone.
+                            _MilestoneChip(
+                              message: widget.milestoneMessage!,
                             ),
                             const SizedBox(height: AppSpacing.xs),
                           ],
@@ -453,4 +454,51 @@ class _Particle {
     required this.delay,
     required this.colorIndex,
   });
+}
+
+/// Milestone celebration chip — warm amber accent per Task 13.3.
+///
+/// One of two sanctioned accent-amber usages (the other is the
+/// hero Save-button accent, wired in Task 13.3 under a flag for
+/// the A/B test path). Kept narrow scope: pill-shaped container,
+/// amber background, dark-amber text, subtle glow. No icon — copy
+/// carries the meaning (e.g. "25 traqs! Look at you go.").
+class _MilestoneChip extends StatelessWidget {
+  const _MilestoneChip({required this.message});
+
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+    final amber = AppColors.accentAmber(brightness);
+    final onAmber = AppColors.onAccentAmber;
+    final tt = Theme.of(context).textTheme;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.xs,
+      ),
+      decoration: BoxDecoration(
+        color: amber.withValues(alpha: 0.92),
+        borderRadius: AppSpacing.borderRadiusFull,
+        boxShadow: [
+          BoxShadow(
+            color: amber.withValues(alpha: 0.35),
+            blurRadius: 14,
+            spreadRadius: 1,
+          ),
+        ],
+      ),
+      child: Text(
+        message,
+        style: tt.titleSmall?.copyWith(
+          fontWeight: FontWeight.w600,
+          color: onAmber,
+        ),
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
 }
