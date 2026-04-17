@@ -106,8 +106,12 @@ jobs:
       - name: Analyze
         run: flutter analyze
 
-      - name: Run tests
-        run: flutter test --coverage
+      # Task 6.12 — PR lane runs unit + widget tests only, skipping
+      # anything tagged `integration` in dart_test.yaml. Integration
+      # tests run separately in the dedicated integration lane
+      # (integration-test job below).
+      - name: Run unit + widget tests
+        run: flutter test --exclude-tags integration --coverage
 
       - name: Check coverage threshold
         run: |

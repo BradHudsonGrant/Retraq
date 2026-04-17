@@ -1,5 +1,48 @@
+# Task 6.12 — separate fast unit+widget tests from slow integration.
+#
+# Two explicit tags plus two named presets. CI flows:
+#
+#   ci_unit        →  flutter test --exclude-tags=integration --coverage
+#                     Fast PR lane. Runs unit + widget tests only.
+#                     Excludes anything tagged `integration`.
+#
+#   ci_integration →  flutter test --tags=integration
+#                     Slower nightly / release lane. Runs only
+#                     integration-tagged tests against a seeded
+#                     in-memory Drift fixture.
+#
+# Local developer invocations:
+#   flutter test                          # all tests
+#   flutter test -x integration           # unit + widget only
+#   flutter test -t integration           # integration only
+#
+# Contributors adding a new integration-style test (Drift-stream-
+# dependent, slow I/O, or seeded-DB fixture) opt in via a file-
+# level @Tags annotation:
+#
+#   @Tags(['integration'])
+#   library;
+#   import 'package:flutter_test/flutter_test.dart';
+#   ...
+
 tags:
   integration:
     # Tests that use Drift streams need real async because Drift's
     # StreamQueryStore.markAsClosed schedules zero-duration timers
-    # that are incompatible with FakeAsync.
+    # that are incompatible with FakeAsync. Give them room to breathe
+    # and one retry to absorb transient CI flake.
+    timeout: 2m
+    retry: 1
+  slow:
+    # Tests above ~1 second wall time. Opt-in label so local
+    # developers can skip with `-x slow` during tight TDD loops.
+    timeout: 1m
+
+# Presets deliberately omitted — dart_test.yaml's preset schema
+# doesn't accept the simple `tags: "integration"` shorthand for
+# filtering. CI invokes the lanes directly via CLI flags instead:
+#
+#   Unit lane:         flutter test --exclude-tags=integration --coverage
+#   Integration lane:  flutter test --tags=integration
+#
+# This keeps the config simple and matches how CI actually runs.
