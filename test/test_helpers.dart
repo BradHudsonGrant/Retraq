@@ -1,3 +1,39 @@
+// ─────────────────────────────────────────────────────────────────────────
+// Test helper reference — preserved per review-2026-04-16 Agent 6 (Task 6.19).
+//
+// The four patterns defined here are deliberate architectural choices; do
+// NOT bypass them without understanding why they exist:
+//
+//   1. `wrapWidget` / `wrapScreen` / `wrapScrollable` — MaterialApp +
+//      l10n delegates + reduce-motion MediaQuery by default. New tests
+//      that build their own MaterialApp miss localization + lose the
+//      reduce-motion guard, leading to flaky pumpAndSettle runs.
+//
+//   2. `setUpFakeSecureStorage` — mocks ONLY the FlutterSecureStorage
+//      MethodChannel. SQLite stays real (via Drift in-memory). This
+//      catches migration/FK/trigger regressions that a fully-mocked
+//      test suite would silently pass. If you're tempted to stub
+//      SQLite too: don't — the 'real DB + mock platform channels'
+//      line is what makes our migration tests meaningful.
+//
+//   3. `flushDriftTimers` — pumps one post-empty-tree frame to drain
+//      Drift's StreamQueryStore.markAsClosed zero-duration timers.
+//      Call at the end of ANY test that subscribes to a Drift stream.
+//      Skipping it surfaces as 'pending timers' warnings and, over
+//      time, hidden flakiness under FakeAsync.
+//
+//   4. TestKeys pattern (see lib/utils/test_keys.dart) — every
+//      tappable surface has a Key in production code, and tests use
+//      find.byKey(TestKeys.foo) instead of find.text('...'). This
+//      makes copy refactors (ARB edits, rebranding) zero-impact on
+//      tests. When adding a new screen, add a TestKey for every
+//      meaningful tap target before writing the test.
+//
+// See Agent 6's review (2026-04-16) for the full rationale. Task 6.19
+// exists specifically to make sure this file and its usage pattern
+// survive future test-file consolidations.
+// ─────────────────────────────────────────────────────────────────────────
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
