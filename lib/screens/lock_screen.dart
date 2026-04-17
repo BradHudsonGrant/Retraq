@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:local_auth/local_auth.dart';
 import '../l10n/app_localizations.dart';
 import '../models/user_settings.dart';
+import '../services/biometric_auth.dart';
 import '../services/database_service.dart';
 import '../services/export_service.dart';
 import '../services/lockout_controller.dart';
@@ -22,9 +22,17 @@ import '../widgets/organisms/pin_setup_sheet.dart' show pinLengthPrefKey;
 /// Full-screen lock that shows on app open when app lock is enabled.
 /// Supports PIN entry, optional biometric unlock, and brute-force protection.
 class LockScreen extends StatefulWidget {
-  const LockScreen({super.key, required this.onUnlocked});
+  const LockScreen({
+    super.key,
+    required this.onUnlocked,
+    this.biometric,
+  });
 
   final VoidCallback onUnlocked;
+
+  /// Task 6.3 — injectable biometric authenticator for tests.
+  /// Production callers omit this and get [PlatformBiometricAuthenticator].
+  final BiometricAuthenticator? biometric;
 
   @override
   State<LockScreen> createState() => _LockScreenState();
@@ -32,7 +40,8 @@ class LockScreen extends StatefulWidget {
 
 class _LockScreenState extends State<LockScreen> {
   final SettingsRepository _settingsRepo = DatabaseService.instance.settings;
-  final _auth = LocalAuthentication();
+  late final BiometricAuthenticator _auth =
+      widget.biometric ?? PlatformBiometricAuthenticator();
 
   late final LockoutController _lockout;
 
@@ -77,17 +86,18 @@ class _LockScreenState extends State<LockScreen> {
     if (_lockout.isLockedOut) return;
     if (!mounted) return;
     final reason = L10n.of(context)!.unlockBiometric;
-    try {
-      final didAuth = await _auth.authenticate(
-        localizedReason: reason,
-        persistAcrossBackgrounding: true,
-        biometricOnly: true,
-      );
-      if (didAuth && mounted) {
-        widget.onUnlocked();
-      }
-    } on PlatformException catch (e) {
-      debugPrint('Biometric auth failed: $e');
+    // Task 6.3 — outcome enum replaces a raw bool so test harnesses
+    // can distinguish cancel-vs-success paths. Production UX stays
+    // identical: only `success` navigates; every other outcome falls
+    // through to the PIN pad without a surfaced error (a wrong-attempt
+    // tally would be a brute-force escalation path).
+    final outcome = await _auth.authenticate(
+      reason: reason,
+      persistAcrossBackgrounding: true,
+      biometricOnly: true,
+    );
+    if (outcome == BiometricOutcome.success && mounted) {
+      widget.onUnlocked();
     }
   }
 
@@ -247,18 +257,11 @@ class _LockScreenState extends State<LockScreen> {
     final useBiometric = _settings?.biometricEnabled == true;
 
     if (useBiometric) {
-      try {
-        final authed = await _auth.authenticate(
-          localizedReason: l10n.resetAppBiometricReason,
-          biometricOnly: true,
-        );
-        if (!authed) {
-          if (!mounted) return;
-          AppSnackBar.show(context, l10n.resetAppBiometricFailed);
-          return;
-        }
-      } on PlatformException catch (e) {
-        debugPrint('Reset-app biometric auth failed: $e');
+      final outcome = await _auth.authenticate(
+        reason: l10n.resetAppBiometricReason,
+        biometricOnly: true,
+      );
+      if (outcome != BiometricOutcome.success) {
         if (!mounted) return;
         AppSnackBar.show(context, l10n.resetAppBiometricFailed);
         return;

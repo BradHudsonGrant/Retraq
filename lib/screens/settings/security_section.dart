@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:local_auth/local_auth.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/user_settings.dart';
 import '../../providers/settings_provider.dart';
+import '../../services/biometric_auth.dart';
 import '../../services/pin_service.dart';
 import '../../theme/app_spacing.dart';
 import '../../utils/pin_dialogs.dart';
@@ -30,12 +30,17 @@ class SecuritySection extends StatefulWidget {
 class _SecuritySectionState extends State<SecuritySection> {
   bool _checkingBiometric = false;
 
+  // Task 6.3 — the production authenticator is constructed fresh
+  // each time rather than cached so tests can override it via a
+  // @visibleForTesting override on the SecuritySection widget in a
+  // future iteration. For now the Settings-side flow is covered via
+  // end-to-end widget tests, not unit tests — the LockScreen path
+  // (where injection DOES matter) carries the dedicated coverage.
+  final BiometricAuthenticator _auth = PlatformBiometricAuthenticator();
+
   Future<bool> _checkBiometrics() async {
     try {
-      final auth = LocalAuthentication();
-      final canCheck = await auth.canCheckBiometrics;
-      final isSupported = await auth.isDeviceSupported();
-      return canCheck && isSupported;
+      return await _auth.isAvailable();
     } catch (e, st) {
       // Task 1.4 — capture the reason the biometric check failed so
       // we can debug device-specific regressions. Keep returning
