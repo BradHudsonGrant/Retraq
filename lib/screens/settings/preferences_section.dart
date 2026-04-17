@@ -75,7 +75,12 @@ class PreferencesSection extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.md),
 
-        // Mood tracking
+        // Mood tracking — Task 4.5: single-switch UX per Run 7 survey.
+        // The `moodRequired` and `moodOnlyEntries` DB columns are still
+        // in the schema (no migration) but hidden from UI; they always
+        // default to `false` alongside the parent toggle. If user
+        // demand for these sub-behaviors re-emerges in v1.1, re-expose
+        // them here — but start with zero cognitive overhead.
         SettingsRow(
           title: l10n.moodTracking,
           subtitle: l10n.moodTrackingSubtitle,
@@ -87,52 +92,24 @@ class PreferencesSection extends StatelessWidget {
                   (v) => onSettingsChanged(
                     s.copyWith(
                       moodEnabled: v,
-                      // Disable dependent settings when mood is turned off
-                      moodRequired: v ? s.moodRequired : false,
-                      moodOnlyEntries: v ? s.moodOnlyEntries : false,
+                      // Always force the sub-toggles to the Run 7
+                      // defaults. Enabling mood does not re-surface
+                      // `moodRequired` or `moodOnlyEntries` — users
+                      // who had them ON in a prior build see them
+                      // reset to OFF on next settings write.
+                      moodRequired: false,
+                      moodOnlyEntries: false,
                     ),
                   ),
               activeThumbColor: cs.primary,
             ),
           ),
         ),
-
-        if (s.moodEnabled) ...[
-          const SizedBox(height: AppSpacing.sm),
-          Padding(
-            padding: const EdgeInsets.only(left: AppSpacing.md),
-            child: SettingsRow(
-              title: l10n.requireMood,
-              subtitle: l10n.requireMoodSubtitle,
-              trailing: Semantics(
-                label: l10n.requireMood,
-                child: Switch(
-                  value: s.moodRequired,
-                  onChanged:
-                      (v) => onSettingsChanged(s.copyWith(moodRequired: v)),
-                  activeThumbColor: cs.primary,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          Padding(
-            padding: const EdgeInsets.only(left: AppSpacing.md),
-            child: SettingsRow(
-              title: l10n.moodOnlyEntries,
-              subtitle: l10n.moodOnlyEntriesSubtitle,
-              trailing: Semantics(
-                label: l10n.moodOnlyEntries,
-                child: Switch(
-                  value: s.moodOnlyEntries,
-                  onChanged:
-                      (v) => onSettingsChanged(s.copyWith(moodOnlyEntries: v)),
-                  activeThumbColor: cs.primary,
-                ),
-              ),
-            ),
-          ),
-        ],
+        // TODO(v1.1): if 4-week post-launch telemetry shows users
+        // asking for "require mood before save" or "mood-only entries",
+        // re-expose the two hidden toggles here under a "Mood options"
+        // expandable row. Do NOT restore the always-visible cascade —
+        // the Run 7 survey was unambiguous about cognitive overhead.
         const SizedBox(height: AppSpacing.md),
 
         // Bionic Reading

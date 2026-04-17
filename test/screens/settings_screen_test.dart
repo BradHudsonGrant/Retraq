@@ -175,6 +175,37 @@ void main() {
       await flushDriftTimers(tester);
     });
 
+    testWidgets(
+      'Task 4.5 — enabling mood does not surface sub-toggles',
+      (tester) async {
+        // Pre-4.5 behavior: enabling mood would reveal two extra rows
+        // (Require Mood, Mood-Only Entries). After Task 4.5 the mood
+        // feature is a single switch; sub-toggles are retained in the
+        // schema but never rendered.
+        await tester.pumpWidget(
+          wrapWidget(
+            SettingsScreen(
+              onThemeModeChanged: (_) async {},
+              themeMode: ThemeMode.system,
+            ),
+            // Mood ON + both sub-toggles set ON to simulate an install
+            // from a prior build.
+            settings: const UserSettings(
+              moodEnabled: true,
+              moodRequired: true,
+              moodOnlyEntries: true,
+            ),
+          ),
+        );
+        await tester.pump(const Duration(milliseconds: 200));
+
+        // Still exactly 6 rows — no "Require Mood" / "Mood-Only" rows
+        // appear even though the settings say they're enabled.
+        expect(find.byType(SettingsRow), findsNWidgets(6));
+        await flushDriftTimers(tester);
+      },
+    );
+
     testWidgets('theme toggle callback fires', (tester) async {
       int? selectedMode;
       await tester.pumpWidget(
