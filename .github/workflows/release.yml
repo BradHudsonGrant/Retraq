@@ -133,6 +133,34 @@ jobs:
         if: always()
         run: rm -f release-keystore.jks
 
+      # Task 10.1 — dSYM + Dart source upload for Sentry symbolication.
+      # Without this, stack traces in Sentry show hex addresses instead
+      # of source lines. `--obfuscate --split-debug-info` (above) writes
+      # the needed mapping tables under build/debug-info/; sentry-cli
+      # ships them to the Sentry backend so the next event arrives
+      # already deobfuscated.
+      #
+      # Gated on SENTRY_AUTH_TOKEN being present — if the secret is
+      # empty (e.g. on a fork) the step short-circuits via the `if:`
+      # guard so release builds don't fail for missing telemetry.
+      - name: Upload debug info to Sentry (Android)
+        if: ${{ secrets.SENTRY_AUTH_TOKEN != '' }}
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: retraq
+          SENTRY_PROJECT: flutter
+        run: |
+          curl -sL https://sentry.io/get-cli/ | bash
+          sentry-cli debug-files upload --include-sources build/debug-info
+          # ProGuard mapping — obfuscated Kotlin/Java stack traces
+          # need this too. Path is emitted by `flutter build appbundle
+          # --obfuscate` into the Android Gradle mapping directory.
+          if [ -f "build/app/outputs/mapping/release/mapping.txt" ]; then
+            sentry-cli upload-proguard \
+              --android-manifest android/app/src/main/AndroidManifest.xml \
+              build/app/outputs/mapping/release/mapping.txt
+          fi
+
       - name: Upload AAB artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
@@ -182,6 +210,26 @@ jobs:
         # Task 10.1 — iOS half of the SENTRY_DSN pipe. Same semantics
         # as the Android build above; empty secret → inert Sentry.
         run: flutter build ios --no-codesign --release --obfuscate --split-debug-info=build/debug-info --build-name=${{ steps.version.outputs.build_name }} --build-number=${{ steps.version.outputs.build_number }} --dart-define=SENTRY_DSN=${{ secrets.SENTRY_DSN }}
+
+      # Task 10.1 — iOS debug-file upload. Flutter's --obfuscate +
+      # --split-debug-info emits Dart-side symbols; we also want the
+      # native iOS dSYMs that ship inside the .app bundle. Both get
+      # uploaded to Sentry so Swift + Dart stack traces symbolicate.
+      # Gated on SENTRY_AUTH_TOKEN so forks without the secret don't
+      # break the release job.
+      - name: Upload debug info to Sentry (iOS)
+        if: ${{ secrets.SENTRY_AUTH_TOKEN != '' }}
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: retraq
+          SENTRY_PROJECT: flutter
+        run: |
+          curl -sL https://sentry.io/get-cli/ | bash
+          sentry-cli debug-files upload --include-sources build/debug-info
+          # Native iOS dSYMs live inside the .app bundle under
+          # Frameworks/App.framework.dSYM — upload the whole
+          # .app directory and sentry-cli will find every dSYM.
+          sentry-cli debug-files upload build/ios/iphoneos/Runner.app
 
       - name: Upload iOS build artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1

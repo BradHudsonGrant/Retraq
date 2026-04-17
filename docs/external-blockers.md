@@ -18,9 +18,11 @@ Budget totals: see [`implementation_plan.md` Appendix D](../implementation_plan.
 including a real lockout-controller concurrency bugfix surfaced
 through Task 6.4 race-coverage testing).
 
-**Active external blockers (24 total, 1 partially resolved):**
-- **B-1** ✅ Sentry account created + Task 10.1 code hardening shipped;
-  CI secrets + opt-in toggle UI still needed (see below)
+**Active external blockers (24 total, 2 resolved):**
+- **B-1** ✅ **RESOLVED 2026-04-18** — Sentry account created; DSN
+  + auth-token + dSYM upload pipeline live end-to-end. Only gate
+  remaining is the user-facing Settings opt-in toggle (tracked
+  as a normal code task, not an external blocker).
 - **B-2** RevenueCat account — gates Task 4.9 / 12.10 / 5.5 paywall work
 - **B-3** Apple Developer account — gates any iOS submission
 - **B-4** Play Console account — gates any Play submission
@@ -43,7 +45,10 @@ through Task 6.4 race-coverage testing).
 - **B-21** ADHDTok creator list — gates Task 5.8 seeding
 - **B-22** r/ADHD mod outreach — gates Task 5.8 seeding
 - **B-23** Therapist referral partnerships — gates Task 5.7 + 5.8
-- **B-24** Codecov token — **NEW 2026-04-17** — activates Task 10.8 upload
+- **B-24** ✅ **RESOLVED 2026-04-18** — Codecov repo configured,
+  `CODECOV_TOKEN` in GitHub Secrets. Task 10.8 upload step now
+  activates on every PR; 70% patch-coverage gate from `codecov.yml`
+  is live.
 
 **Internal deferred (D-#):**
 - D-1 through D-7 — see scattered entries below for current state.
@@ -54,43 +59,41 @@ through Task 6.4 race-coverage testing).
 
 ## Infrastructure & accounts
 
-### [x] B-1. Sentry account + DSN  _(partially resolved 2026-04-18 — Task 10.1 wiring landed)_
+### [x] B-1. Sentry account + DSN  ✅ **RESOLVED 2026-04-18**
 
-**Status:** Sentry account created, DSN checked in as a default fallback
-in `lib/main.dart`. Task 10.1 hardening shipped:
+**What landed:**
 
-- DSN read at build time via `--dart-define=SENTRY_DSN=...` with the
-  current DSN as a default so local `flutter run` keeps working.
-- `release.yml` passes `${{ secrets.SENTRY_DSN }}` on Android + iOS
-  release builds. If the GitHub secret is empty the dart-define
-  resolves to `''` and Sentry init short-circuits (no events ship).
-- Release sample rates dropped from `1.0` → `0.1` (traces + profiles)
-  to stay inside the 5k event/month free tier. Debug mode keeps
-  `1.0` for local dev visibility.
-- `environment` tag set to `'prod'` / `'dev'` based on `kReleaseMode`.
-- `beforeSend` scrubs `contexts.device.name` (PII-adjacent on iOS —
-  "Brad's iPhone") and short-circuits returns null when the opt-in
-  flag is false.
-- `DatabaseService.onStreamError` wired to `Sentry.captureMessage`
-  so background Drift stream failures now land in Sentry.
+- ✅ Sentry account created (org `retraq`, project `flutter`)
+- ✅ DSN wired into `lib/main.dart` as `--dart-define` default
+- ✅ GitHub Secret `SENTRY_DSN` added; `release.yml` passes it to
+  both Android + iOS builds. Empty-secret path degrades gracefully
+  (no events ship, no build errors)
+- ✅ GitHub Secret `SENTRY_AUTH_TOKEN` added; `release.yml` runs
+  `sentry-cli debug-files upload --include-sources` on both
+  platforms post-build, plus `sentry-cli upload-proguard` for
+  Android Kotlin/Java stack traces. Obfuscated traces now
+  symbolicate end-to-end in Sentry UI.
+- ✅ `kReleaseMode ? 0.1 : 1.0` sample rates — prod stays inside
+  5k-event/month free-tier quota, dev gets full visibility
+- ✅ `environment: 'prod' / 'dev'` tag for bucketing
+- ✅ `beforeSend` PII scrub (`contexts.device.name`)
+- ✅ `DatabaseService.onStreamError` → `Sentry.captureMessage`
+  wire (Task 1.4 extension point lands home)
 
-**Still needed for full B-1 resolution:**
+**Follow-up work (tracked as code tasks, not external blockers):**
 
-- [ ] Add `SENTRY_DSN` as a GitHub Actions secret so CI release
-      builds actually send events (currently the default DSN in
-      main.dart ships with every release-mode AAB — works, but
-      ships ONE DSN for all builds; env-driven secret lets dev vs
-      prod projects split cleanly).
-- [ ] Add `SENTRY_AUTH_TOKEN` GitHub secret for dSYM / symbol
-      upload in CI. Without this, obfuscated stack traces in Sentry
-      are unreadable.
-- [ ] Ship the user-facing Settings → Data toggle that flips
-      `sentry_opt_in` in SharedPreferences. Until this lands, NO
-      events ship in release (opt-in defaults to false, honouring
-      the "no telemetry by default" privacy-policy promise).
-- [ ] Update `lib/legal/privacy_policy.dart` to describe the
-      opt-in crash-reporting flow; bump `currentPrivacyPolicyVersion`
-      to trigger re-consent.
+- Ship the Settings → Data opt-in toggle that flips
+  `sentry_opt_in` in SharedPreferences. Until this lands, release
+  builds ship Sentry inert (flag defaults false → `beforeSend`
+  returns null → nothing leaves device). This keeps us compliant
+  with the current "no telemetry by default" privacy-policy
+  promise while preparing for opt-in UX.
+- Update `lib/legal/privacy_policy.dart` to describe the opt-in
+  crash-reporting flow; bump `currentPrivacyPolicyVersion` to
+  trigger re-consent for existing users.
+
+**Commits:** `5125af8` (code hardening + release.yml DSN pipe),
+dSYM upload step (next commit).
 
 **Cost:** Free tier suffices initially. Team plan ~$26/mo if volume grows.
 
@@ -335,16 +338,21 @@ Per the audit, this is already in place — just needs verification.
 
 ---
 
-### [ ] B-24. Codecov token  _(activates Task 10.8 upload step)_
+### [x] B-24. Codecov token  ✅ **RESOLVED 2026-04-18**
 
-**What I need from you:**
-- Codecov.io account (free tier — public repos unlimited; private repos free under 5 users)
-- Add the Retraq repo
-- Copy the repo token from Codecov → add to GitHub Secrets as `CODECOV_TOKEN`
+**What landed:**
+- ✅ Codecov.io account linked to `BradHudsonGrant/Retraq` (private
+  repo, 1 user, free-tier Developer plan)
+- ✅ Codecov GitHub App installed scoped to the Retraq repo only
+- ✅ `CODECOV_TOKEN` in GitHub Secrets
+- ✅ `ci.yml` upload step (commit `8790891`) now runs with the
+  token on every PR — Codecov bot will post coverage comparison
+  comments
+- ✅ `codecov.yml`'s 70% patch-coverage target is now a real gate;
+  `fail_ci_if_error: false` stays so Codecov outages don't brick
+  merges
 
-**Why:** `ci.yml` now uploads `coverage/lcov_filtered.info` to Codecov on every PR (commit `8790891`). Without the token the action runs but silently no-ops — that's intentional (`fail_ci_if_error: false`). Adding the secret flips on the 70% patch-coverage gate already configured in `codecov.yml`.
-
-**Cost:** Free.
+**Cost:** Free for this repo forever (private repo, ≤5 users).
 
 ---
 
