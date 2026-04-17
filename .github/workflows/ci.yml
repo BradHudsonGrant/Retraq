@@ -44,6 +44,23 @@ jobs:
       - name: Format generated code
         run: dart format $(find . -name '*.g.dart' -o -name '*.freezed.dart' -o -name '*.gen.dart')
 
+      # Task 10.9 — fail loud if an ARB edit wasn't followed by
+      # `flutter gen-l10n`. `pub get` above already triggers l10n
+      # codegen when l10n.yaml is present, so any diff here means the
+      # checked-in app_localizations*.dart files are stale relative
+      # to the .arb source of truth. The diff is printed so reviewers
+      # can see exactly what's out of sync.
+      - name: Regenerate l10n and fail on drift
+        shell: bash
+        run: |
+          set -euo pipefail
+          flutter gen-l10n
+          if ! git diff --quiet -- lib/l10n ; then
+            echo "::error::Stale l10n output. Run 'flutter gen-l10n' locally and commit the result."
+            git --no-pager diff -- lib/l10n
+            exit 1
+          fi
+
       - name: Check formatting
         run: dart format --set-exit-if-changed .
 
