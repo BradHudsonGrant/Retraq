@@ -1,4 +1,16 @@
 // ignore_for_file: prefer_single_quotes
+//
+// ─────────────────────────────────────────────────────────────────────────
+// DO NOT DELETE — preserved per review-2026-04-16 Agent 6 (Task 6.17).
+// Column-drop regression suite. Protects against silent data loss during
+// Drift schema migrations (the pre-encryption → encrypted migration
+// previously dropped 5 of 19 columns; that bug is what this file exists
+// to prevent returning).
+//
+// Any future consolidation of migration test files must keep these
+// assertions (or equivalents) intact. Consult Agent 6's review if in
+// doubt.
+// ─────────────────────────────────────────────────────────────────────────
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';

@@ -219,6 +219,14 @@ void main() {
     });
   });
 
+  // ─────────────────────────────────────────────────────────────────────
+  // BEGIN preserve per review-2026-04-16 Agent 6 (Task 6.18).
+  // Boundary / edge-case DB coverage: non-existent-ID delete, FK
+  // violation surfacing, batch save, per-day/most-active-weekday
+  // SQL boundary values. Strong existing coverage Agent 6 explicitly
+  // rated Solid — this marker exists so any future refactor (e.g. a
+  // per-service split) carries these cases forward unchanged.
+  // ─────────────────────────────────────────────────────────────────────
   group('Edge cases', () {
     late DatabaseService db;
 
@@ -285,6 +293,8 @@ void main() {
       expect(start.weekday, 7);
     });
   });
+
+  // END preserve per Task 6.18 (boundary/edge DB data).
 
   group('Watch stream', () {
     late DatabaseService db;
