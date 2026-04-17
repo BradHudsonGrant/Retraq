@@ -13,6 +13,7 @@ import '../services/database_service.dart';
 import '../services/notification_service.dart';
 import '../services/review_service.dart';
 import '../services/widget_service.dart';
+import '../theme/app_motion.dart';
 import '../theme/app_spacing.dart';
 import '../utils/adaptive_layout.dart';
 import '../utils/date_helpers.dart';
@@ -743,7 +744,12 @@ class _HomeScreenState extends State<HomeScreen>
     final hasMood = moodEnabled && _selectedMood != null;
 
     if (!hasText && !(moodOnlyEntries && hasMood)) {
-      _shakeController.forward(from: 0);
+      // Task 7.18 — gate the shake through AppMotion so reduce-motion
+      // users get the validation feedback via the SnackBar only, no
+      // 300ms animation. WCAG 2.3.3 / 2.2.2.
+      if (!AppMotion.reduce(context)) {
+        _shakeController.forward(from: 0);
+      }
       AppSnackBar.show(
         context,
         l10n.writeSomethingFirst,

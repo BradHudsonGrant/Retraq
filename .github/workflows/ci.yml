@@ -61,6 +61,39 @@ jobs:
             exit 1
           fi
 
+      # Task 7.18 — AppMotion bypass lint. Fails the build if any
+      # file under lib/screens/ or lib/widgets/ declares an
+      # AnimationController WITHOUT referencing one of the
+      # reduce-motion guard names (AppMotion, disableAnimations,
+      # reduceMotion). Catches the regression class where a
+      # contributor adds a new animation without honouring the
+      # user's reduce-motion preference (WCAG 2.3.3 / 2.2.2).
+      #
+      # The guard-name heuristic is intentional: accept EITHER
+      # AppMotion.reduce(context) OR a direct MediaQuery
+      # .disableAnimations check — both are legitimate paths.
+      - name: AppMotion bypass lint
+        shell: bash
+        run: |
+          set -euo pipefail
+          files=$(grep -rln 'AnimationController(' \
+            lib/screens/ lib/widgets/ 2>/dev/null || true)
+          bad=""
+          for f in $files; do
+            if ! grep -qE 'AppMotion|disableAnimations|reduceMotion' "$f"; then
+              bad="$bad\n$f"
+            fi
+          done
+          if [ -n "$bad" ]; then
+            echo "::error::AnimationController without a reduce-motion guard:"
+            echo -e "$bad"
+            echo ""
+            echo "Every animation in lib/screens/ or lib/widgets/ must be"
+            echo "gated through AppMotion.reduce(context), AppMotion.aware(),"
+            echo "or a direct MediaQuery.disableAnimations check."
+            exit 1
+          fi
+
       # Task 12.5 — forbidden-claims lint. Fails the build if
       # eight banned health claim terms appear in shipping
       # surfaces: lib/ (minus the disclaimer files that use the
