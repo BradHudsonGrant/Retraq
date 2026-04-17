@@ -34,6 +34,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   int _currentPage = 0;
   bool _ageDenied = false;
   bool _initialized = false;
+  // Task 2.6 — true when a prior consent marker was observed in
+  // hardened secure storage at init time. Flags the "Welcome back"
+  // copy on the consent page.
+  bool _isReturningUser = false;
 
   // Consent state
   bool _privacyAccepted = false;
@@ -41,6 +45,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   bool _healthAccepted = false;
 
   static const _ageVerifiedKey = 'age_verified';
+  // Task 2.6 — cross-install marker. Written on successful consent;
+  // survives uninstall on Android devices that restore hardened
+  // secure storage via Google Auto-Backup. Its presence lets us
+  // collapse the marketing intros to a quick "Welcome back" path
+  // while consent ITSELF remains a regulatory gate (never auto-
+  // accepted). Value is the consent-version string at time of
+  // previous completion — lets us trigger the normal re-consent
+  // flow when versions diverge rather than skipping past it.
+  static const priorConsentSecureKey = 'onboarding_prior_consent_version';
 
   /// Secure-storage key for the COPPA under-13 denial flag.
   ///
@@ -101,9 +114,35 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     final prefs = await SharedPreferences.getInstance();
     final verified = prefs.getBool(_ageVerifiedKey) ?? false;
 
+    // Task 2.6 — if prior consent was recorded (cross-install marker
+    // survives uninstall via Android auto-backup), collapse the
+    // marketing intro pages so the returning user lands directly on
+    // the consent page. Consent itself is NOT skipped — it's still
+    // a regulatory gate — but the 3 intro pages behind it become
+    // friction with no compliance benefit for a user who has seen
+    // them before.
+    String? priorConsent;
+    try {
+      priorConsent = await hardenedSecureStorage.read(
+        key: priorConsentSecureKey,
+      );
+    } catch (e, st) {
+      AppLog.warn('OnboardingScreen.checkPriorConsent', e, st);
+    }
+
     if (denied && mounted) {
       setState(() {
         _ageDenied = true;
+        _initialized = true;
+      });
+    } else if (verified && priorConsent != null && mounted) {
+      // Returning user: skip past age gate + 3 intros, land on consent.
+      final consentPageIndex = _totalPageCount - 1;
+      _controller.dispose();
+      _controller = PageController(initialPage: consentPageIndex);
+      setState(() {
+        _currentPage = consentPageIndex;
+        _isReturningUser = true;
         _initialized = true;
       });
     } else if (verified && mounted) {
@@ -170,6 +209,24 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         acceptedAt: now,
         appVersion: info.appVersion,
       );
+      // Task 2.6 — write the cross-install marker so a subsequent
+      // reinstall (on a device with Google Auto-Backup or iOS
+      // Keychain sync) lands directly on the consent page next time.
+      // The value is a coarse composite of all three versions so any
+      // bump forces the full re-consent flow.
+      try {
+        await hardenedSecureStorage.write(
+          key: priorConsentSecureKey,
+          value: '$currentPrivacyPolicyVersion|'
+              '$currentTermsOfServiceVersion|'
+              '$currentHealthDisclaimerVersion',
+        );
+      } catch (e, st) {
+        // Non-fatal: secure-storage writes can fail on hostile envs
+        // or tests. The consent records in Drift are the source of
+        // truth; this marker is a pure UX shortcut for reinstalls.
+        AppLog.warn('OnboardingScreen.writePriorConsentMarker', e, st);
+      }
       return true;
     } catch (e) {
       debugPrint('Failed to save consent records: $e');
@@ -325,6 +382,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         privacyAccepted: _privacyAccepted,
                         termsAccepted: _termsAccepted,
                         healthAccepted: _healthAccepted,
+                        isReturningUser: _isReturningUser,
                         onPrivacyChanged:
                             (v) =>
                                 setState(() => _privacyAccepted = v ?? false),

@@ -212,6 +212,14 @@
   },
   "ageGateContactGuardian": "If this was entered in error, please contact a parent or guardian.",
   "almostThere": "Almost there!",
+  "welcomeBackTitle": "Welcome back",
+  "@welcomeBackTitle": {
+    "description": "Task 2.6 — Shown on the consent page when the user has prior consent on record (cross-install marker present). Replaces 'Almost there!' so reinstall users feel recognised. Consent itself is still required on every install."
+  },
+  "welcomeBackSubtitle": "We still need you to re-accept these, but we won't walk you through the intros again.",
+  "@welcomeBackSubtitle": {
+    "description": "Task 2.6 — Subtitle on the consent page for the returning-user path explaining why consent is still required."
+  },
   "healthDisclaimer": "Retraq is a personal journaling app — not a medical or therapeutic tool. It does not provide health advice, diagnosis, or treatment. If you are in crisis, please contact a mental health professional or call {crisisContact}.",
   "@healthDisclaimer": {
     "description": "Health-disclaimer body. {crisisContact} is injected from CrisisContacts.formatInline for the user's locale. Task 12.16 — never hardcode the US/Canada 988 number; the helper resolves per-region.",

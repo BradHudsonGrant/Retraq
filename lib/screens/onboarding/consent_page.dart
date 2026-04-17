@@ -22,6 +22,7 @@ class ConsentPage extends StatelessWidget {
     required this.onPrivacyChanged,
     required this.onTermsChanged,
     required this.onHealthChanged,
+    this.isReturningUser = false,
   });
 
   final bool privacyAccepted;
@@ -30,6 +31,12 @@ class ConsentPage extends StatelessWidget {
   final ValueChanged<bool?> onPrivacyChanged;
   final ValueChanged<bool?> onTermsChanged;
   final ValueChanged<bool?> onHealthChanged;
+
+  /// Task 2.6 — true when a cross-install consent marker was
+  /// observed in hardened secure storage. Swaps the title from
+  /// "Almost there!" to "Welcome back" and adds a subtitle
+  /// explaining why consent is still required despite the marker.
+  final bool isReturningUser;
 
   @override
   Widget build(BuildContext context) {
@@ -81,13 +88,33 @@ class ConsentPage extends StatelessWidget {
           const SizedBox(height: AppSpacing.lg),
           Center(
             child: BionicText(
-              text: l10n.almostThere,
+              // Task 2.6 — swap headline for returning users (prior
+              // consent marker present). Consent ITSELF is still a
+              // regulatory gate — only the intros are skipped.
+              text: isReturningUser ? l10n.welcomeBackTitle : l10n.almostThere,
               style: tt.headlineMedium?.copyWith(fontWeight: FontWeight.w700),
               enabled:
                   SettingsProvider.maybeOf(context)?.bionicReadingEnabled ??
                   false,
             ),
           ),
+          if (isReturningUser) ...[
+            const SizedBox(height: AppSpacing.sm),
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md,
+                ),
+                child: Text(
+                  l10n.welcomeBackSubtitle,
+                  textAlign: TextAlign.center,
+                  style: tt.bodyMedium?.copyWith(
+                    color: cs.onSurfaceVariant,
+                  ),
+                ),
+              ),
+            ),
+          ],
           const SizedBox(height: AppSpacing.xl),
 
           // Health disclaimer info

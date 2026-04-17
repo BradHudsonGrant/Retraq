@@ -775,6 +775,18 @@ abstract class L10n {
   /// **'Almost there!'**
   String get almostThere;
 
+  /// Task 2.6 — Shown on the consent page when the user has prior consent on record (cross-install marker present). Replaces 'Almost there!' so reinstall users feel recognised. Consent itself is still required on every install.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome back'**
+  String get welcomeBackTitle;
+
+  /// Task 2.6 — Subtitle on the consent page for the returning-user path explaining why consent is still required.
+  ///
+  /// In en, this message translates to:
+  /// **'We still need you to re-accept these, but we won\'t walk you through the intros again.'**
+  String get welcomeBackSubtitle;
+
   /// Health-disclaimer body. {crisisContact} is injected from CrisisContacts.formatInline for the user's locale. Task 12.16 — never hardcode the US/Canada 988 number; the helper resolves per-region.
   ///
   /// In en, this message translates to:
