@@ -1,5 +1,23 @@
 import 'package:flutter/widgets.dart';
 
+/// Result of validating a draft against the current mood-enablement
+/// settings. Used by [HomeFormController.validate] so the screen
+/// knows whether to proceed with save, or which SnackBar copy to
+/// surface.
+enum HomeFormValidation {
+  /// Draft is savable — either has non-empty text, or has a mood
+  /// selected when mood-only entries are allowed.
+  ok,
+
+  /// Draft is empty (no text) AND mood-only saves are not permitted
+  /// (or no mood is selected). Surface `writeSomethingFirst`.
+  missingText,
+
+  /// Mood is required globally but none is selected. Surface
+  /// `pickMoodToSave`.
+  missingMood,
+}
+
 /// Form-state holder for the Home (Jot) screen's entry draft.
 ///
 /// Task 1.2 — first substantive step of the HomeSaveController lift.
@@ -96,6 +114,38 @@ class HomeFormController extends ChangeNotifier {
     _mood = null;
     _dateOverride = null;
     if (changed) notifyListeners();
+  }
+
+  /// Validate the current draft against the user's mood settings.
+  ///
+  /// [textCleaner] is injected because the canonical "cleaned" entry
+  /// text (trimmed + stripped of trailing whitespace lines) is a
+  /// screen-level concern — see `_cleanText` in home_screen.dart.
+  /// Passing it in keeps the controller independent of that helper
+  /// while still honouring the same empty-text rule.
+  ///
+  /// Ordering:
+  /// 1. If both text AND the mood-only path are empty, fail with
+  ///    [HomeFormValidation.missingText].
+  /// 2. Else if mood is globally required but none is selected,
+  ///    fail with [HomeFormValidation.missingMood].
+  /// 3. Else return [HomeFormValidation.ok].
+  HomeFormValidation validate({
+    required String Function(String) textCleaner,
+    required bool moodEnabled,
+    required bool moodRequired,
+    required bool moodOnlyEntries,
+  }) {
+    final hasText = textCleaner(entryCtrl.text).isNotEmpty;
+    final hasMood = moodEnabled && _mood != null;
+
+    if (!hasText && !(moodOnlyEntries && hasMood)) {
+      return HomeFormValidation.missingText;
+    }
+    if (moodRequired && !hasMood) {
+      return HomeFormValidation.missingMood;
+    }
+    return HomeFormValidation.ok;
   }
 
   @override

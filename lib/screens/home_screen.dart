@@ -684,32 +684,41 @@ class _HomeScreenState extends State<HomeScreen>
     final moodEnabled = _settings?.moodEnabled ?? false;
     final moodRequired = _settings?.moodRequired ?? false;
     final moodOnlyEntries = _settings?.moodOnlyEntries ?? false;
-
-    // Validate: need text OR mood (if mood-only entries allowed)
     final hasText = text.isNotEmpty;
-    final hasMood = moodEnabled && _form.mood != null;
 
-    if (!hasText && !(moodOnlyEntries && hasMood)) {
-      // Task 7.18 — gate the shake through AppMotion so reduce-motion
-      // users get the validation feedback via the SnackBar only, no
-      // 300ms animation. WCAG 2.3.3 / 2.2.2.
-      if (!AppMotion.reduce(context)) {
-        _shakeController.forward(from: 0);
-      }
-      AppSnackBar.show(
-        context,
-        l10n.writeSomethingFirst,
-        duration: const Duration(seconds: 2),
-      );
-      return;
-    }
-    if (moodRequired && !hasMood) {
-      AppSnackBar.show(
-        context,
-        l10n.pickMoodToSave,
-        duration: const Duration(seconds: 2),
-      );
-      return;
+    // Task 1.2 — validation lifted to HomeFormController.validate so
+    // the rule (text OR mood-only-with-mood; mood globally required
+    // when moodRequired) is directly unit-testable without booting
+    // the screen.
+    final validation = _form.validate(
+      textCleaner: _cleanText,
+      moodEnabled: moodEnabled,
+      moodRequired: moodRequired,
+      moodOnlyEntries: moodOnlyEntries,
+    );
+    switch (validation) {
+      case HomeFormValidation.missingText:
+        // Task 7.18 — gate the shake through AppMotion so reduce-motion
+        // users get the validation feedback via the SnackBar only, no
+        // 300ms animation. WCAG 2.3.3 / 2.2.2.
+        if (!AppMotion.reduce(context)) {
+          _shakeController.forward(from: 0);
+        }
+        AppSnackBar.show(
+          context,
+          l10n.writeSomethingFirst,
+          duration: const Duration(seconds: 2),
+        );
+        return;
+      case HomeFormValidation.missingMood:
+        AppSnackBar.show(
+          context,
+          l10n.pickMoodToSave,
+          duration: const Duration(seconds: 2),
+        );
+        return;
+      case HomeFormValidation.ok:
+        break;
     }
 
     FocusScope.of(context).unfocus();
