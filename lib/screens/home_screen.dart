@@ -21,6 +21,7 @@ import '../utils/journal_prompts.dart';
 import '../utils/test_keys.dart';
 import '../widgets/molecules/empty_recent_state.dart';
 import '../widgets/molecules/mood_selector.dart';
+import '../widgets/molecules/progress_bar.dart';
 import '../widgets/molecules/segmented_pill.dart';
 import '../widgets/organisms/save_success_overlay.dart';
 import 'home/journal_text_area.dart';
@@ -395,7 +396,13 @@ class _HomeScreenState extends State<HomeScreen>
       const SizedBox(height: AppSpacing.lg),
 
       // Progress bar
-      _buildProgressBar(cs, tt, l10n),
+      // Task 1.2 — extracted into lib/widgets/molecules/progress_bar.dart
+      // so home_screen stays testable without pulling in its full
+      // state machine.
+      ProgressBar(
+        weekCount: _weekCount,
+        bionicReadingEnabled: _settings?.bionicReadingEnabled ?? false,
+      ),
     ];
   }
 
@@ -607,43 +614,6 @@ class _HomeScreenState extends State<HomeScreen>
             vertical: AppSpacing.md,
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildProgressBar(ColorScheme cs, TextTheme tt, L10n l10n) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.lg,
-        vertical: AppSpacing.md,
-      ),
-      decoration: BoxDecoration(
-        color: cs.surfaceContainerLow,
-        borderRadius: AppSpacing.borderRadiusLg,
-      ),
-      child: Row(
-        children: [
-          Icon(
-            (_weekCount ?? 0) > 0
-                ? Icons.local_fire_department
-                : Icons.edit_note,
-            size: 18,
-            color: cs.primary,
-          ),
-          const SizedBox(width: AppSpacing.sm),
-          Expanded(
-            child: BionicText(
-              text:
-                  _weekCount == null
-                      ? '' // Loading — avoid flash
-                      : _weekCount == 0
-                      ? l10n.progressFirstEntry
-                      : l10n.progressWeekCount(_weekCount!),
-              style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant),
-              enabled: _settings?.bionicReadingEnabled ?? false,
-            ),
-          ),
-        ],
       ),
     );
   }
