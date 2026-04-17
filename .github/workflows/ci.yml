@@ -95,6 +95,20 @@ jobs:
           name: coverage-report
           path: coverage/
 
+      # Task 10.8 — upload filtered LCOV to Codecov so the committed
+      # codecov.yml 70% patch gate actually runs. CODECOV_TOKEN lives
+      # in GitHub Secrets; fail_ci_if_error stays false so Codecov
+      # outages don't block merges. Uses the filtered LCOV (generated
+      # files stripped above) to match the in-CI threshold calculation.
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@ad3126e916f78f00edff4ed0317cf185271ccc2d # v5.4.2
+        if: ${{ !cancelled() }}
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: coverage/lcov_filtered.info
+          fail_ci_if_error: false
+          verbose: true
+
   # Smoke build: debug-signed AAB on every push so we catch release-mode
   # issues (ProGuard, desugaring, R8) early. Real signed releases happen
   # via release.yml on tag push — that workflow enforces KEYSTORE_BASE64.
