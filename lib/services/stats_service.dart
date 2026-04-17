@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart' show listEquals;
+import '../models/journal_entry.dart';
 import '../utils/date_helpers.dart';
 import 'app_log.dart';
 import 'database_service.dart';
@@ -343,6 +344,49 @@ class StatsService {
     } catch (e) {
       AppLog.error('StatsService.getMoodDistribution', e);
       return {};
+    }
+  }
+
+  /// Returns "On This Day" entries — prior-year journal entries matching
+  /// today's month + day. Used by the Stats screen to surface recurring
+  /// memories.
+  ///
+  /// Task 1.3 — previously lived inline inside `stats_screen.dart`,
+  /// which made it untestable without spinning up the whole widget.
+  /// The business rule is small but has two sharp edges worth pinning
+  /// in a dedicated test: leap-day behaviour (Feb 29 from a non-leap
+  /// year) and "entries on the same calendar day" equality across
+  /// timezones.
+  ///
+  /// [today] defaults to `DateTime.now()` and is overridable for tests
+  /// so time-dependent assertions remain deterministic.
+  /// [yearsBack] defaults to 1 (the Stats screen's "one year ago"
+  /// surface). Callers asking for the full "on-this-day N years ago"
+  /// list across many years can iterate this method.
+  Future<List<JournalEntry>> onThisDayEntries({
+    DateTime? today,
+    int yearsBack = 1,
+  }) async {
+    assert(yearsBack > 0, 'yearsBack must be positive');
+    final now = today ?? DateTime.now();
+    // Feb 29 requested from a non-leap target year silently snaps to
+    // Feb 28 — same behaviour as `DateTime(year, 2, 29)` which
+    // Dart normalises into "Mar 1". Snapping to Feb 28 keeps the
+    // surface populated on the 3-out-of-4 non-leap years instead of
+    // jumping to March and surfacing the wrong day.
+    final targetYear = now.year - yearsBack;
+    final isLeapDayRequest = now.month == 2 && now.day == 29;
+    final targetIsLeapYear =
+        targetYear % 4 == 0 && (targetYear % 100 != 0 || targetYear % 400 == 0);
+    final targetDay =
+        (isLeapDayRequest && !targetIsLeapYear) ? 28 : now.day;
+    final target = DateTime(targetYear, now.month, targetDay);
+    try {
+      return await DatabaseService.instance.entries
+          .getEntriesForDate(target);
+    } catch (e) {
+      AppLog.error('StatsService.onThisDayEntries', e);
+      return const [];
     }
   }
 

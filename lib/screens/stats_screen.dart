@@ -91,11 +91,10 @@ class _StatsScreenState extends State<StatsScreen>
   }
 
   Future<void> _loadOnThisDay() async {
-    final now = DateTime.now();
-    final lastYear = DateTime(now.year - 1, now.month, now.day);
-    final entries = await DatabaseService.instance.entries.getEntriesForDate(
-      lastYear,
-    );
+    // Task 1.3 — delegate to StatsService.onThisDayEntries so leap-day
+    // semantics and error handling stay in one place + the rule is
+    // directly unit-testable without booting the whole screen.
+    final entries = await _statsSvc.onThisDayEntries();
     if (!mounted) return;
     if (entries.isNotEmpty) {
       setState(() => _onThisDayEntry = entries.first);
