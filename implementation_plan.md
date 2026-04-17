@@ -19,6 +19,51 @@ The previous `implementation_plan.md` was written against the pre-April-2026 pro
 
 The previous plan's Epics 0–5 (app shell, journaling core, security, stats, recap, onboarding, widget, tablet) shipped or are near-shipping and remain correct at the feature level — they are restated in the [v1 launch sequence](#v1-launch-sequence) below as already-done / in-progress rather than planned.
 
+### 0.1 Shipped v1 features (Task 4.7 cross-reference)
+
+These product features shipped pre-audit and are treated as
+"protected surfaces" (see `CONTRIBUTING.md` Protected surfaces
+section). They do NOT have their own epic in the 13-epic
+engineering-concern-organised index below — the engineering work
+for each one is distributed across multiple epics (UX, security,
+performance, accessibility). Task 4.7 asked for them to be
+explicit here so the plan matches what the README advertises and
+what the app actually ships.
+
+| Feature | What it is | Status | Cross-referenced epics |
+|---|---|---|---|
+| **Hero save flow** | "Open, write, done" — single TextArea on Jot with auto-save + haptic overlay | v1 shipped | Epic 1 (arch refactor targets home_screen around this), Epic 2 (UX polish), Epic 4 (product reference 4.10) |
+| **Home-screen widget (Android)** | AppWidget showing current streak + recent mood; updates after every save via `WidgetService.update()` | v1 shipped | Epic 3 (widget locked when app locked, Task 3.8), Epic 6 (widget coverage gaps, Task 6.11), Epic 8 (fire-and-forget perf, Task 8.11) |
+| **Tablet two-pane layout** | Responsive adaptive split-view (`AdaptiveTwoPane`) on large screens for Jot + Stats | v1 shipped | Epic 2 no-op reference 2.20, in-code via `lib/utils/adaptive_layout.dart` |
+| **FLAG_SECURE + background blur** | Unconditional block on screenshots + Recents thumbnails | v1 shipped | Epic 3 Tasks 3.4 / 3.5 / 3.6 (latter blocked on D-3 iOS native) |
+| **Bionic reading** | Opt-in accessibility aid; partial-bold emphasis via `BionicText` atom | v1 shipped | Epic 4 Task 4.4 (moved into Advanced settings) |
+| **Country-aware age gate** | Locale-driven 13 / 14 / 16 minimum per COPPA / Quebec / GDPR Art. 8 | v1 shipped | Epic 12 Task 12.3, `lib/services/locale_age_threshold.dart` |
+| **Opt-in Sentry crash reporting** | Settings → Data → Diagnostics toggle; default off; PII scrub; dart-define DSN | v1 shipped | Epic 10 Task 10.1 (full end-to-end), Privacy Policy v2026-04-18 |
+| **Stats collapsed into Recap** | 3-tab nav (Jot / Recap / Settings); Entries/Insights pill inside Recap | v1 shipped | Epic 2 Task 2.5 |
+
+Widget V2 (richer mood-picker + quick-save inline) remains v1.1
+scope — see [Part III.4](#iii4-widget-v2-voice-entry-photo-attachments-tags).
+
+### 0.2 Task 4.1 / 4.2 / 4.3 closure note
+
+These three P0 tasks were "rewrite the implementation plan to
+remove stale monetization / cloud-AI Tier 3 / caregiver content"
+work items. They were satisfied by the plan rewrite that this
+file itself represents:
+
+- **§0 "What changed"** table above explicitly supersedes the
+  old §8 (monetization), old Phase 7 (Retraq Care), and old
+  Epic 6 Tier 3 (cloud AI).
+- **Part II** now owns the v1.1 monetization narrative (one-time
+  Retraq Pro + optional Cloud Recap subscription per the April
+  2026 feature decisions).
+- **Part III** owns the v2 dropped scope (caregiver tier, cloud
+  sync, Cloud AI Tier 3, family sharing) so nothing gets
+  accidentally reintroduced without its gating prerequisites.
+
+No further plan edits are required for 4.1 / 4.2 / 4.3; they
+close on this commit.
+
 ---
 
 ## 1. Document conventions
