@@ -148,6 +148,32 @@ class NotificationService {
     return generalMessages[day % generalMessages.length];
   }
 
+  /// Task 6.8 — compute the next fire time for a daily-recurring
+  /// notification at [hour]:[minute] local, relative to [now].
+  /// Exposed as a pure static helper so the schedule-math can be
+  /// unit-tested without mocking the flutter_local_notifications
+  /// plugin. If the target wall time has already passed today,
+  /// rolls forward one day; otherwise fires today.
+  ///
+  /// Production callers pass no args — defaults are `tz.local` +
+  /// `tz.TZDateTime.now(tz.local)`. Tests pass a fixed [now] in a
+  /// specified [location] to exercise DST + timezone boundaries.
+  @visibleForTesting
+  static tz.TZDateTime computeNextFireTime(
+    int hour, {
+    int minute = 0,
+    tz.TZDateTime? now,
+    tz.Location? location,
+  }) {
+    final loc = location ?? tz.local;
+    final n = now ?? tz.TZDateTime.now(loc);
+    var scheduled = tz.TZDateTime(loc, n.year, n.month, n.day, hour, minute);
+    if (scheduled.isBefore(n)) {
+      scheduled = scheduled.add(const Duration(days: 1));
+    }
+    return scheduled;
+  }
+
   /// Schedule a daily notification at the given hour (0-23) and minute (0-59).
   /// If [streakAtRisk] is true, picks a streak-warning message.
   Future<void> scheduleDaily(
@@ -157,18 +183,7 @@ class NotificationService {
   }) async {
     await cancel(); // Clear any existing schedule
 
-    final now = tz.TZDateTime.now(tz.local);
-    var scheduled = tz.TZDateTime(
-      tz.local,
-      now.year,
-      now.month,
-      now.day,
-      hour,
-      minute,
-    );
-    if (scheduled.isBefore(now)) {
-      scheduled = scheduled.add(const Duration(days: 1));
-    }
+    final scheduled = computeNextFireTime(hour, minute: minute);
 
     final message = pickMessage(hour, streakAtRisk: streakAtRisk);
 
