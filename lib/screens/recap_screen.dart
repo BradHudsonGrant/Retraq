@@ -19,6 +19,7 @@ import '../utils/entry_action_dialogs.dart';
 import '../utils/test_keys.dart';
 import '../widgets/atoms/glow_box.dart';
 import '../widgets/molecules/segmented_pill.dart';
+import 'active_tab_scope.dart';
 import 'recap/month_view.dart';
 import 'recap/search_view.dart';
 import 'recap/week_view.dart';
@@ -100,6 +101,32 @@ class _RecapScreenState extends State<RecapScreen>
         _weekOffset = 0;
         _subscribeWeekEntries(s.weekStartDay);
       }
+    }
+
+    // Task 8.5 — pause the 3 Drift watcher subscriptions when the
+    // Recap tab is not visible. Mirrors Task 8.6's HomeScreen
+    // pattern via the shared ActiveTabScope. Recap tab index is 1
+    // in the 3-tab layout (Jot/Recap/Settings after Task 2.5).
+    final isActive = ActiveTabScope.isActive(context, tabIndex: 1);
+    if (isActive != _isTabActive) {
+      _isTabActive = isActive;
+      _applyTabActiveState();
+    }
+  }
+
+  /// Whether the Recap tab is currently visible. Drives stream
+  /// pause/resume (Task 8.5).
+  bool _isTabActive = true;
+
+  void _applyTabActiveState() {
+    if (_isTabActive) {
+      _weekEntriesSub?.resume();
+      _monthEntriesSub?.resume();
+      _entrySub?.resume();
+    } else {
+      _weekEntriesSub?.pause();
+      _monthEntriesSub?.pause();
+      _entrySub?.pause();
     }
   }
 
