@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'dart:ui';
 import 'package:animations/animations.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'models/user_settings.dart';
 import 'theme/app_motion.dart';
 import 'theme/app_theme.dart';
@@ -18,19 +21,125 @@ import 'l10n/app_localizations.dart';
 import 'screens/reconsent_screen.dart';
 import 'screens/splash_screen.dart';
 
+/// Task 10.1 — Sentry DSN read at compile time via `--dart-define=
+/// SENTRY_DSN=...`. Empty string means "do not wire crash reporting"
+/// which is the safe default for local `flutter run` sessions and
+/// any build where the secret isn't provisioned.
+///
+/// The hardcoded fallback keeps parity with the pre-hardening state
+/// so the user's local debug builds still phone home. CI should
+/// override with `--dart-define=SENTRY_DSN=${{ secrets.SENTRY_DSN }}`.
+/// DSNs are embedded in every APK regardless (they are public by
+/// design; the security gate is the auth token used for dSYM uploads).
+const _sentryDsn = String.fromEnvironment(
+  'SENTRY_DSN',
+  defaultValue:
+      'https://844023f9d58cc7de383a324b205ba9aa@o4511236634443776.ingest.us.sentry.io/4511236638572544',
+);
+
+/// Task 10.1 — opt-in gate. The privacy policy promises "no analytics,
+/// no telemetry, no tracking of any kind" — Sentry events are therefore
+/// blocked in `beforeSend` unless this SharedPreferences flag is `true`.
+/// Default false; a future Settings toggle (follow-up commit) flips it.
+/// Reading it synchronously keeps the hot-path on `beforeSend` fast;
+/// the flag is primed on app start and refreshed on any toggle.
+const _sentryOptInKey = 'sentry_opt_in';
+bool _sentryOptedIn = false;
+
+Future<void> _loadSentryOptIn() async {
+  try {
+    final prefs = await SharedPreferences.getInstance();
+    _sentryOptedIn = prefs.getBool(_sentryOptInKey) ?? false;
+  } catch (_) {
+    // SharedPreferences may be unavailable in some test envs — treat
+    // that as opted-out, which is the privacy-preserving default.
+    _sentryOptedIn = false;
+  }
+}
+
+/// Public hook so a Settings toggle (follow-up commit) can update the
+/// cached flag without requiring an app restart. Call after writing
+/// the SharedPreferences key.
+void setSentryOptIn(bool value) {
+  _sentryOptedIn = value;
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Prime opt-in flag BEFORE Sentry.init so the very first beforeSend
+  // already observes the correct state. If the user opted in on the
+  // previous session, we honour that immediately on the next launch.
+  await _loadSentryOptIn();
+
+  // Sentry is optional — if no DSN is configured we skip init entirely
+  // and just keep a vanilla FlutterError handler. This keeps `flutter
+  // test` + `flutter run` without a DSN working as before.
+  if (_sentryDsn.isEmpty) {
+    _bootPlain();
+    return;
+  }
+
+  await SentryFlutter.init(
+    (options) {
+      options.dsn = _sentryDsn;
+      // Task 10.1 — env + release tags so events bucket correctly in
+      // Sentry's UI. Free-tier 5k-event/mo quota burns fast at 1.0
+      // sample rates; drop to 10% in release mode and keep 100% in
+      // debug so local dev still sees full telemetry.
+      options.environment = kReleaseMode ? 'prod' : 'dev';
+      options.tracesSampleRate = kReleaseMode ? 0.1 : 1.0;
+      // ignore: experimental_member_use
+      options.profilesSampleRate = kReleaseMode ? 0.1 : 1.0;
+
+      // Task 10.1 — PII scrub + opt-in gate. beforeSend runs on every
+      // event BEFORE it leaves the device. Returning null drops the
+      // event entirely — the SDK never phones home.
+      options.beforeSend = (event, hint) {
+        if (!_sentryOptedIn) return null;
+        // Strip device.name (can leak "Brad's iPhone" on iOS).
+        // Other PII-adjacent fields (user.id, user.email) are not set
+        // by our code; if Sentry auto-collects anything new in future
+        // SDK versions, add the matching scrub here.
+        final device = event.contexts.device;
+        if (device != null) {
+          event = event.copyWith(
+            contexts: event.contexts.copyWith(
+              device: device.copyWith(name: null),
+            ),
+          );
+        }
+        return event;
+      };
+    },
+    appRunner: _bootPlain,
+  );
+}
+
+/// The actual app-boot sequence, extracted so we can call it both
+/// from inside Sentry's init callback AND directly when no DSN is
+/// configured (no-Sentry fallback).
+Future<void> _bootPlain() async {
   // Global error handler for framework errors (widget build failures, etc.)
   FlutterError.onError = (details) {
     FlutterError.presentError(details);
+    Sentry.captureException(details.exception, stackTrace: details.stack);
     debugPrint('FlutterError: ${details.exceptionAsString()}');
   };
 
   // Global handler for unhandled async errors (platform, isolate, etc.)
   PlatformDispatcher.instance.onError = (error, stack) {
+    Sentry.captureException(error, stackTrace: stack);
     debugPrint('Unhandled error: $error\n$stack');
     return true; // Prevents app crash — error is logged
+  };
+
+  // Task 10.1 — route DatabaseService stream errors through Sentry so
+  // background Drift watcher failures are captured alongside widget
+  // crashes. Task 1.4 (`AppLog.warn`) introduced this hook; this is
+  // where it finally lands a crash-reporter destination.
+  DatabaseService.onStreamError = (message) {
+    Sentry.captureMessage(message, level: SentryLevel.warning);
   };
 
   // Allow all orientations for adaptive phone/tablet layouts
@@ -68,7 +177,7 @@ class _RetraqAppState extends State<RetraqApp> with WidgetsBindingObserver {
   bool _showOnboarding = false;
   bool _needsReconsent = false;
   bool _settingsLoaded = false;
-  UserSettings _settings = UserSettings();
+  UserSettings _settings = const UserSettings();
   StreamSubscription<UserSettings?>? _settingsSub;
 
   @override

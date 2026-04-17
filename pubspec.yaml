@@ -76,6 +76,7 @@ dependencies:
 
   # Value equality (Task 1.9 — UserSettings / future models)
   equatable: ^2.0.5
+  sentry_flutter: ^8.14.2
 
 dev_dependencies:
   flutter_test:

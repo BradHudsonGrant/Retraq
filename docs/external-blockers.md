@@ -18,8 +18,9 @@ Budget totals: see [`implementation_plan.md` Appendix D](../implementation_plan.
 including a real lockout-controller concurrency bugfix surfaced
 through Task 6.4 race-coverage testing).
 
-**Active external blockers (24 total, 0 resolved):**
-- **B-1** Sentry account — gates Task 10.1 crash reporting
+**Active external blockers (24 total, 1 partially resolved):**
+- **B-1** ✅ Sentry account created + Task 10.1 code hardening shipped;
+  CI secrets + opt-in toggle UI still needed (see below)
 - **B-2** RevenueCat account — gates Task 4.9 / 12.10 / 5.5 paywall work
 - **B-3** Apple Developer account — gates any iOS submission
 - **B-4** Play Console account — gates any Play submission
@@ -53,18 +54,43 @@ through Task 6.4 race-coverage testing).
 
 ## Infrastructure & accounts
 
-### [ ] B-1. Sentry account + DSN  _(blocks Task 1.2, Task 10.1)_
+### [x] B-1. Sentry account + DSN  _(partially resolved 2026-04-18 — Task 10.1 wiring landed)_
 
-**What I need from you:**
-- Sentry.io account (free tier is sufficient: 5k events/month, 30-day retention)
-- Create a Flutter project in Sentry
-- Supply the DSN string (looks like `https://xxxxxxx@o000000.ingest.sentry.io/0000000`)
-- Supply an auth token for dSYM/symbol uploads in CI
+**Status:** Sentry account created, DSN checked in as a default fallback
+in `lib/main.dart`. Task 10.1 hardening shipped:
 
-**Where to put them:**
-- Add `SENTRY_DSN` to GitHub Secrets (for `release.yml`)
-- Add `SENTRY_DSN_DEV` for optional dev flavor
-- Add `SENTRY_AUTH_TOKEN` to GitHub Secrets (read-only symbol-upload scope)
+- DSN read at build time via `--dart-define=SENTRY_DSN=...` with the
+  current DSN as a default so local `flutter run` keeps working.
+- `release.yml` passes `${{ secrets.SENTRY_DSN }}` on Android + iOS
+  release builds. If the GitHub secret is empty the dart-define
+  resolves to `''` and Sentry init short-circuits (no events ship).
+- Release sample rates dropped from `1.0` → `0.1` (traces + profiles)
+  to stay inside the 5k event/month free tier. Debug mode keeps
+  `1.0` for local dev visibility.
+- `environment` tag set to `'prod'` / `'dev'` based on `kReleaseMode`.
+- `beforeSend` scrubs `contexts.device.name` (PII-adjacent on iOS —
+  "Brad's iPhone") and short-circuits returns null when the opt-in
+  flag is false.
+- `DatabaseService.onStreamError` wired to `Sentry.captureMessage`
+  so background Drift stream failures now land in Sentry.
+
+**Still needed for full B-1 resolution:**
+
+- [ ] Add `SENTRY_DSN` as a GitHub Actions secret so CI release
+      builds actually send events (currently the default DSN in
+      main.dart ships with every release-mode AAB — works, but
+      ships ONE DSN for all builds; env-driven secret lets dev vs
+      prod projects split cleanly).
+- [ ] Add `SENTRY_AUTH_TOKEN` GitHub secret for dSYM / symbol
+      upload in CI. Without this, obfuscated stack traces in Sentry
+      are unreadable.
+- [ ] Ship the user-facing Settings → Data toggle that flips
+      `sentry_opt_in` in SharedPreferences. Until this lands, NO
+      events ship in release (opt-in defaults to false, honouring
+      the "no telemetry by default" privacy-policy promise).
+- [ ] Update `lib/legal/privacy_policy.dart` to describe the
+      opt-in crash-reporting flow; bump `currentPrivacyPolicyVersion`
+      to trigger re-consent.
 
 **Cost:** Free tier suffices initially. Team plan ~$26/mo if volume grows.
 

@@ -116,7 +116,12 @@ jobs:
           echo "build_number=$BUILD_NUMBER" >> "$GITHUB_OUTPUT"
 
       - name: Build release AAB
-        run: flutter build appbundle --release --obfuscate --split-debug-info=build/debug-info --build-name=${{ steps.version.outputs.build_name }} --build-number=${{ steps.version.outputs.build_number }}
+        # Task 10.1 — pass SENTRY_DSN as dart-define so release
+        # builds phone home with crash reports when the secret is set.
+        # When the secret is empty the dart-define resolves to '' and
+        # main.dart's SentryFlutter.init is short-circuited — no
+        # events ship, no errors thrown.
+        run: flutter build appbundle --release --obfuscate --split-debug-info=build/debug-info --build-name=${{ steps.version.outputs.build_name }} --build-number=${{ steps.version.outputs.build_number }} --dart-define=SENTRY_DSN=${{ secrets.SENTRY_DSN }}
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
@@ -174,7 +179,9 @@ jobs:
           echo "build_number=$BUILD_NUMBER" >> "$GITHUB_OUTPUT"
 
       - name: Build iOS (no codesign)
-        run: flutter build ios --no-codesign --release --obfuscate --split-debug-info=build/debug-info --build-name=${{ steps.version.outputs.build_name }} --build-number=${{ steps.version.outputs.build_number }}
+        # Task 10.1 — iOS half of the SENTRY_DSN pipe. Same semantics
+        # as the Android build above; empty secret → inert Sentry.
+        run: flutter build ios --no-codesign --release --obfuscate --split-debug-info=build/debug-info --build-name=${{ steps.version.outputs.build_name }} --build-number=${{ steps.version.outputs.build_number }} --dart-define=SENTRY_DSN=${{ secrets.SENTRY_DSN }}
 
       - name: Upload iOS build artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
