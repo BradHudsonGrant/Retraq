@@ -14,21 +14,14 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR/.."
 
-# ── Prerequisite checks (Task 10.6) ───────────────────────────────────
+# Task 10.6 — shared prereq helpers.
+source "$SCRIPT_DIR/_prereq.sh"
+
 echo "==> Checking prerequisites..."
-command -v flutter >/dev/null 2>&1 || {
-  echo "ERROR: flutter CLI not found in PATH."
-  exit 1
-}
-if ! command -v xcodebuild >/dev/null 2>&1; then
-  echo "ERROR: Xcode command-line tools not found."
-  echo "Install with: xcode-select --install"
-  exit 1
-fi
-command -v pod >/dev/null 2>&1 || {
-  echo "WARN: CocoaPods (pod) not found. Install with: sudo gem install cocoapods"
-  echo "      Continuing — flutter will attempt to invoke pod install itself."
-}
+require_cmd flutter
+require_xcode
+require_cocoapods_optional
+require_flutter_version "3.41.6"
 
 # ── Clean + deps + codegen ────────────────────────────────────────────
 echo "==> Cleaning previous build..."

@@ -19,16 +19,13 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR/.."
 
-# ── Prerequisite checks (Task 10.6) ───────────────────────────────────
+# Task 10.6 — shared prereq helpers.
+source "$SCRIPT_DIR/_prereq.sh"
+
 echo "==> Checking prerequisites..."
-command -v flutter >/dev/null 2>&1 || {
-  echo "ERROR: flutter CLI not found in PATH."
-  exit 1
-}
-command -v java >/dev/null 2>&1 || {
-  echo "ERROR: java not found in PATH (needed for Gradle)."
-  exit 1
-}
+require_cmd flutter
+require_java
+require_flutter_version "3.41.6"
 
 # ── Signing check ─────────────────────────────────────────────────────
 echo "==> Checking key.properties..."
