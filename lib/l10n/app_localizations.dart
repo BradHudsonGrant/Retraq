@@ -889,6 +889,24 @@ abstract class L10n {
   /// **'Biometric check failed. Try again or cancel.'**
   String get resetAppBiometricFailed;
 
+  /// Task 10.1 — Settings → Data section heading for the Sentry opt-in toggle.
+  ///
+  /// In en, this message translates to:
+  /// **'Diagnostics'**
+  String get diagnosticsLabel;
+
+  /// Task 10.1 — Settings row title for the crash-reporting opt-in toggle.
+  ///
+  /// In en, this message translates to:
+  /// **'Help improve Retraq'**
+  String get helpImproveRetraq;
+
+  /// Task 10.1 — Settings row subtitle explaining the opt-in scope. Keep it short and truthful; the full details live in the privacy policy.
+  ///
+  /// In en, this message translates to:
+  /// **'Send anonymous crash reports so we can fix bugs. No traq content, mood, or timestamps are ever included.'**
+  String get helpImproveRetraqBody;
+
   /// Task 3.2 — non-dismissible SnackBar shown for 10 seconds after the user confirms a Forgot-PIN reset. Tapping the action cancels the timer and leaves all data intact.
   ///
   /// In en, this message translates to:

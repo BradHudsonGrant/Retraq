@@ -11,6 +11,14 @@ The project uses [semantic versioning](https://semver.org/): MAJOR.MINOR.PATCH.
 ## [Unreleased]
 
 ### Added
+- **Privacy:** opt-in "Help improve Retraq" toggle under Settings →
+  Data → Diagnostics. Off by default. When on, anonymous crash
+  stack traces are sent to Sentry (sentry.io) to help us fix bugs.
+  No traq content, mood, timestamps, or PII leave the device — only
+  Dart exception types, stack traces, OS + app version, and device
+  model category. PII-adjacent fields (e.g. iOS device names like
+  "Brad's iPhone") are scrubbed before upload. See Privacy Policy
+  §"Optional Diagnostics (Crash Reporting)".
 - Widget taxonomy guide and `CONTRIBUTING.md` covering atoms / molecules /
   organisms layering rules, ARB hygiene, and the AppSnackBar helper.
 - `AppLog` release-safe diagnostics wrapper over `dart:developer.log`
@@ -74,6 +82,22 @@ The project uses [semantic versioning](https://semver.org/): MAJOR.MINOR.PATCH.
   silently swallowed.
 
 ### Security
+- **Privacy Policy v2026-04-18** — bumped from 2026-04-16 to
+  disclose the new opt-in Sentry crash reporting. Existing users
+  are walked through the re-consent flow on next launch.
+- **LockoutController race fix** — 10 concurrent failed PIN
+  attempts could previously compound `_lockoutCount` 6× under the
+  old code, multiplying the NEXT lockout's exponential backoff
+  window by up to 6×. Now gated on `!_isLockedOut` so exactly one
+  threshold crossing advances the counter.
+- **Forgot-PIN undo window** — 10-second cancellable SnackBar
+  between typed-DELETE confirmation and actual wipe, plus device-
+  credential fallback on biometric miss (`biometricOnly: false`).
+- **Sentry crash reporting (opt-in only, default OFF)** — DSN via
+  `--dart-define=SENTRY_DSN`; `beforeSend` returns null unless
+  the `sentry_opt_in` flag is set; PII scrub of device.name.
+  `DatabaseService.onStreamError` now routes through
+  `Sentry.captureMessage`.
 - Raised PBKDF2 iterations from 100K → 250K. See "Changed" above.
 - Documented controller disclosure and EU/Canada supervisory
   authority complaint routes in the privacy policy

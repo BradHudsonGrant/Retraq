@@ -11,10 +11,15 @@ import 'database_service.dart';
 import 'secure_storage.dart';
 
 /// Current document versions — bump when legal text changes.
-// Bumped 2026-04-16 for Task 12.2 — added controller disclosure
-// improvements + supervisory-authority complaint routes (OPC Canada,
-// CAI Quebec, CNIL/EDPB, ICO UK, CPPA California, OAIC Australia).
-const String currentPrivacyPolicyVersion = '2026-04-16';
+// Bumped 2026-04-18 for Task 10.1 — added the "Optional Diagnostics
+// (Crash Reporting)" section disclosing the new Sentry opt-in, plus
+// amended Data Collection + Third-Party Services to note Sentry as
+// the sole potential third party (off by default). Existing users
+// walk through the reconsent flow on next launch.
+// Prior bump 2026-04-16 for Task 12.2 — controller disclosure +
+// supervisory-authority complaint routes (OPC Canada, CAI Quebec,
+// CNIL/EDPB, ICO UK, CPPA California, OAIC Australia).
+const String currentPrivacyPolicyVersion = '2026-04-18';
 // Bumped 2026-04-16 for Task 12.6 — added mandatory consumer-law
 // carve-out to the Governing Law section. Existing users will be
 // walked through the re-consent flow on next launch.

@@ -1,6 +1,8 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../l10n/app_localizations.dart';
+import '../../main.dart' show setSentryOptIn;
 import '../../services/database_service.dart';
 import '../../services/app_log.dart';
 import '../../services/export_service.dart';
@@ -8,11 +10,60 @@ import '../../theme/app_spacing.dart';
 import '../../widgets/atoms/app_snack_bar.dart';
 import '../../widgets/organisms/delete_confirm_dialog.dart';
 
-class DataSection extends StatelessWidget {
+/// Settings → Data section.
+///
+/// Task 10.1 — hosts the Sentry opt-in toggle. The toggle writes to
+/// SharedPreferences under key `sentry_opt_in` and calls
+/// `setSentryOptIn(bool)` in main.dart so the cached flag that
+/// `beforeSend` checks is updated without an app restart. Default OFF.
+class DataSection extends StatefulWidget {
   const DataSection({super.key, required this.verifyPinIfNeeded});
 
   /// Callback that returns true if the user verified their PIN (or lock is disabled).
   final Future<bool> Function(BuildContext context) verifyPinIfNeeded;
+
+  @override
+  State<DataSection> createState() => _DataSectionState();
+}
+
+class _DataSectionState extends State<DataSection> {
+  static const _sentryOptInKey = 'sentry_opt_in';
+  bool _diagnosticsEnabled = false;
+  bool _diagnosticsLoaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadDiagnostics();
+  }
+
+  Future<void> _loadDiagnostics() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      if (!mounted) return;
+      setState(() {
+        _diagnosticsEnabled = prefs.getBool(_sentryOptInKey) ?? false;
+        _diagnosticsLoaded = true;
+      });
+    } catch (e, st) {
+      AppLog.warn('DataSection.loadDiagnostics', e, st);
+      if (!mounted) return;
+      setState(() => _diagnosticsLoaded = true);
+    }
+  }
+
+  Future<void> _setDiagnostics(bool value) async {
+    setState(() => _diagnosticsEnabled = value);
+    // Update the in-process cached flag synchronously so the very
+    // next beforeSend call observes the new state — no app restart.
+    setSentryOptIn(value);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(_sentryOptInKey, value);
+    } catch (e, st) {
+      AppLog.warn('DataSection.setDiagnostics', e, st);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,6 +149,41 @@ class DataSection extends StatelessWidget {
 
           const SizedBox(height: AppSpacing.lg),
 
+          // Task 10.1 — Diagnostics (Sentry opt-in toggle). Sits
+          // above the danger zone but below Import because it's a
+          // standing preference, not a destructive action.
+          Divider(color: cs.outlineVariant.withValues(alpha: 0.4)),
+          const SizedBox(height: AppSpacing.sm),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              l10n.diagnosticsLabel,
+              style: tt.labelMedium?.copyWith(color: cs.onSurfaceVariant),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          if (_diagnosticsLoaded)
+            SwitchListTile.adaptive(
+              contentPadding: EdgeInsets.zero,
+              title: Text(
+                l10n.helpImproveRetraq,
+                style: tt.bodyLarge,
+              ),
+              subtitle: Padding(
+                padding: const EdgeInsets.only(top: AppSpacing.xs),
+                child: Text(
+                  l10n.helpImproveRetraqBody,
+                  style: tt.bodySmall?.copyWith(
+                    color: cs.onSurfaceVariant,
+                  ),
+                ),
+              ),
+              value: _diagnosticsEnabled,
+              onChanged: _setDiagnostics,
+            ),
+
+          const SizedBox(height: AppSpacing.lg),
+
           // Danger zone
           Divider(color: cs.outlineVariant.withValues(alpha: 0.4)),
           const SizedBox(height: AppSpacing.sm),
@@ -123,7 +209,7 @@ class DataSection extends StatelessWidget {
   }
 
   Future<void> _handleExport(BuildContext context, {required bool json}) async {
-    if (!await verifyPinIfNeeded(context)) return;
+    if (!await widget.verifyPinIfNeeded(context)) return;
     if (!context.mounted) return;
     final exportAll = await _showExportScopeDialog(context);
     if (exportAll == null || !context.mounted) return;

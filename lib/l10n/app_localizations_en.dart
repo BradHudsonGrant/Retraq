@@ -465,6 +465,16 @@ class L10nEn extends L10n {
       'Biometric check failed. Try again or cancel.';
 
   @override
+  String get diagnosticsLabel => 'Diagnostics';
+
+  @override
+  String get helpImproveRetraq => 'Help improve Retraq';
+
+  @override
+  String get helpImproveRetraqBody =>
+      'Send anonymous crash reports so we can fix bugs. No traq content, mood, or timestamps are ever included.';
+
+  @override
   String resetAppUndoToast(int seconds) {
     return 'Erasing in ${seconds}s — tap to cancel';
   }

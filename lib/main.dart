@@ -51,8 +51,8 @@ Future<void> _loadSentryOptIn() async {
     final prefs = await SharedPreferences.getInstance();
     _sentryOptedIn = prefs.getBool(_sentryOptInKey) ?? false;
   } catch (_) {
-    // SharedPreferences may be unavailable in some test envs — treat
-    // that as opted-out, which is the privacy-preserving default.
+    // SharedPreferences may be unavailable in some test envs — fall
+    // back to opted-out, which is the privacy-preserving default.
     _sentryOptedIn = false;
   }
 }

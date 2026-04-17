@@ -9,7 +9,7 @@ Retraq ("the App") is a personal daily log application designed to help people w
 
 ## Data Collection
 
-Retraq does **not** collect any personal data. There are no accounts, no sign-ups, no analytics, no telemetry, and no tracking of any kind. Your data never leaves your device.
+Retraq does **not** collect any personal data by default. There are no accounts, no sign-ups, no analytics, and no tracking of any kind. Your data never leaves your device unless you explicitly opt in to the single diagnostic feature described in the "Optional Diagnostics" section below.
 
 ## Data Stored Locally on Your Device
 
@@ -28,7 +28,23 @@ All traqs, settings, and security credentials remain on your device at all times
 
 ## Third-Party Services
 
-Retraq does not currently use any third-party services, SDKs, analytics platforms, or advertising networks. No data is shared with any third party.
+Retraq does not use any advertising networks, analytics platforms, or general-purpose tracking services. The only third-party service the App can connect to is **Sentry** (sentry.io), and only when you explicitly enable it under the "Optional Diagnostics" section below — which is off by default.
+
+## Optional Diagnostics (Crash Reporting)
+
+Retraq includes a single, **opt-in**, off-by-default diagnostic feature: crash reporting via Sentry.
+
+**What it does:** if you enable "Help improve Retraq" in Settings → Data, the App will send crash stack traces and technical error details to Sentry (sentry.io) when the App encounters a bug. This helps us fix crashes before they affect more users.
+
+**What is sent:** Dart exception type and stack trace, Flutter framework version, Retraq version, operating system version, device model category (e.g. "Pixel 10 Pro"), and the approximate moment the crash occurred. We scrub device-specific PII (for example, iOS auto-generated device names like "Brad's iPhone") before the event leaves your device.
+
+**What is NEVER sent:** traq text, titles, mood selections, dates, timestamps of your entries, biometric data, PIN hash, IP address (Sentry sees the HTTPS connection's IP but we do not attach it to the event), contact info, email, or any field you have typed into the App. Stack traces are code-level only.
+
+**How to opt out:** toggle "Help improve Retraq" to off in Settings → Data at any time. New events stop immediately. Sentry's data retention for already-uploaded events is 30 days on the free tier we use; after that they are purged automatically. You can request earlier deletion by contacting us.
+
+**Who operates Sentry:** Functional Software, Inc. d/b/a Sentry — a US-based company. For EU users, uploaded events cross the border; the scrubbing described above means no personal data of yours is transferred, but the HTTPS connection itself does reach US infrastructure. If this matters to you, leave the toggle off — the App functions identically without it.
+
+**Default state:** off. You must actively toggle it on. We will never enable it without your explicit action.
 
 ## Data Export
 
