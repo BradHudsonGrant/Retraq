@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import '../l10n/app_localizations.dart';
+import '../utils/entry_text_cleaner.dart';
 import '../models/journal_entry.dart';
 import '../models/user_settings.dart';
 import '../providers/settings_provider.dart';
@@ -667,15 +668,10 @@ class _HomeScreenState extends State<HomeScreen>
     _form.titleCtrl.clear();
   }
 
-  String _cleanText(String raw) {
-    final lines =
-        raw
-            .split('\n')
-            .map((l) => l.trim())
-            .where((l) => l != '•' && l != '')
-            .toList();
-    return lines.join('\n').trim();
-  }
+  // Task 1.2 — lifted to `lib/utils/entry_text_cleaner.dart`
+  // (pure function, unit-tested). Kept as a thin instance forwarder
+  // so existing call sites don't need to change.
+  String _cleanText(String raw) => cleanEntryText(raw);
 
   Future<void> _saveEntry() async {
     final l10n = L10n.of(context)!;
