@@ -75,7 +75,8 @@ app/
 │   ├── screens/           HomeScreen (Jot), RecapScreen, StatsScreen,
 │   │                      SettingsScreen, LockScreen, OnboardingScreen,
 │   │                      SplashScreen
-│   ├── widgets/           atoms/ molecules/ organisms/ (atomic design)
+│   ├── widgets/           atoms/ molecules/ organisms/ (atomic design;
+│   │                      see docs/widget-taxonomy.md for layer rules)
 │   ├── theme/             AppTheme, AppColors, AppSpacing, AppText,
 │   │                      AppMotion (reduce-motion-aware)
 │   ├── utils/             DateHelpers, AdaptiveLayout, JournalPrompts,
@@ -96,8 +97,12 @@ app/
 │                          integration tests) + release (tag-driven,
 │                          signed Android, unsigned iOS pending Task 10.2)
 ├── implementation_plan.md Authoritative roadmap
+├── CONTRIBUTING.md        Widget taxonomy, commit conventions, testing
 └── README.md
 ```
+
+For contribution guidelines (widget layer rules, ARB hygiene, the
+AppSnackBar helper, etc.), see [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ## Tech stack
 
