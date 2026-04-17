@@ -152,6 +152,37 @@ jobs:
           fail_ci_if_error: false
           verbose: true
 
+  # Task 6.20 — supply-chain pin audit. All GitHub Actions in this
+  # file (and release.yml) must be SHA-pinned, never '@v1' or '@main'.
+  # A supply-chain attack on an unpinned action could inject arbitrary
+  # code into our release binary. This job fails loud if anyone
+  # accidentally introduces an unpinned ref.
+  ci-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Verify all Actions are SHA-pinned
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Match `uses: vendor/action@<ref>` lines. An unpinned ref is
+          # anything that doesn't look like a 40-char hex SHA — semver
+          # tags (@v1, @v4.2.2), branch names (@main), or relative
+          # paths all fail the check.
+          violations=$(grep -rnE '^\s*(-\s+)?uses:\s+[^@]+@[^# ]+' \
+            .github/workflows/ | \
+            grep -vE '@[0-9a-f]{40}' || true)
+          if [ -n "$violations" ]; then
+            echo "::error::Unpinned GitHub Action(s) detected — SHA-pin required."
+            echo "$violations"
+            echo ""
+            echo "Replace '@v1' / '@main' with the full 40-char commit SHA."
+            echo "Keep the '# vX.Y.Z' trailing comment so humans can read it."
+            exit 1
+          fi
+          echo "All Actions are SHA-pinned."
+
   # Smoke build: debug-signed AAB on every push so we catch release-mode
   # issues (ProGuard, desugaring, R8) early. Real signed releases happen
   # via release.yml on tag push — that workflow enforces KEYSTORE_BASE64.
