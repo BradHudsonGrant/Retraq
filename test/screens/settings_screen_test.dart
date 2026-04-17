@@ -169,9 +169,9 @@ void main() {
       );
       await tester.pump(const Duration(milliseconds: 200));
 
-      // Visible: All Day Notes, Opening Prompt, Journal Entry Title, Mood Tracking, Bionic Reading, App Lock = 6
-      // Hidden in collapsed Advanced: Enter to Save, Bullet Points, Week Starts On
-      expect(find.byType(SettingsRow), findsNWidgets(6));
+      // Visible: All Day Notes, Opening Prompt, Journal Entry Title, Mood Tracking, App Lock = 5
+      // Hidden in collapsed Advanced (Task 4.4): Bionic Reading, Enter to Save, Bullet Points, Week Starts On
+      expect(find.byType(SettingsRow), findsNWidgets(5));
       await flushDriftTimers(tester);
     });
 
@@ -199,9 +199,10 @@ void main() {
         );
         await tester.pump(const Duration(milliseconds: 200));
 
-        // Still exactly 6 rows — no "Require Mood" / "Mood-Only" rows
-        // appear even though the settings say they're enabled.
-        expect(find.byType(SettingsRow), findsNWidgets(6));
+        // Still exactly 5 rows (Task 4.4 moved Bionic Reading into
+        // Advanced) — no "Require Mood" / "Mood-Only" rows appear
+        // even though the settings say they're enabled.
+        expect(find.byType(SettingsRow), findsNWidgets(5));
         await flushDriftTimers(tester);
       },
     );

@@ -112,20 +112,12 @@ class PreferencesSection extends StatelessWidget {
         // the Run 7 survey was unambiguous about cognitive overhead.
         const SizedBox(height: AppSpacing.md),
 
-        // Bionic Reading
-        SettingsRow(
-          title: l10n.bionicReading,
-          subtitle: l10n.bionicReadingSubtitle,
-          trailing: Semantics(
-            label: l10n.bionicReading,
-            child: Switch(
-              value: s.bionicReadingEnabled,
-              onChanged:
-                  (v) => onSettingsChanged(s.copyWith(bionicReadingEnabled: v)),
-              activeThumbColor: cs.primary,
-            ),
-          ),
-        ),
+        // Task 4.4 — Bionic Reading moved inside the Advanced expansion
+        // tile. Per the Run 7 simplicity brief for v1, top-level
+        // Preferences stays focused on theme, mood, all-day mode,
+        // opening prompt, entry title, and app lock. Power-user
+        // reading ergonomics live under Advanced with enter-to-save,
+        // bullet-points-on-enter, week start day, and AM/PM cutoff.
         const SizedBox(height: AppSpacing.md),
 
         // Advanced settings
@@ -142,6 +134,25 @@ class PreferencesSection extends StatelessWidget {
             tilePadding: EdgeInsets.zero,
             childrenPadding: EdgeInsets.zero,
             children: [
+              // Task 4.4 — Bionic Reading now lives here. Settings key
+              // `bionicReadingEnabled` is unchanged, so users who had
+              // it enabled see their preference preserved.
+              SettingsRow(
+                title: l10n.bionicReading,
+                subtitle: l10n.bionicReadingSubtitle,
+                trailing: Semantics(
+                  label: l10n.bionicReading,
+                  child: Switch(
+                    value: s.bionicReadingEnabled,
+                    onChanged: (v) => onSettingsChanged(
+                      s.copyWith(bionicReadingEnabled: v),
+                    ),
+                    activeThumbColor: cs.primary,
+                  ),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.md),
+
               SettingsRow(
                 title: l10n.enterToSave,
                 subtitle: l10n.enterToSaveSubtitle,
