@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import '../l10n/app_localizations.dart';
 import '../utils/entry_text_cleaner.dart';
+import '../utils/milestones.dart';
 import '../models/journal_entry.dart';
 import '../models/user_settings.dart';
 import '../providers/settings_provider.dart';
@@ -757,7 +758,9 @@ class _HomeScreenState extends State<HomeScreen>
     // without waiting for the stream event.
     final totalCount = _totalCount + 1;
 
-    final milestone = _milestoneForCount(totalCount, l10n);
+    // Task 1.2 — milestone copy resolved by the `milestones.dart`
+    // utility so it can be exercised independently of this screen.
+    final milestone = milestoneMessageFor(totalCount, l10n);
 
     FocusScope.of(context).unfocus();
 
@@ -804,18 +807,7 @@ class _HomeScreenState extends State<HomeScreen>
     }
   }
 
-  static String? _milestoneForCount(int count, L10n l10n) {
-    final milestones = <int, String>{
-      1: l10n.milestone1,
-      5: l10n.milestone5,
-      10: l10n.milestone10,
-      25: l10n.milestone25,
-      50: l10n.milestone50,
-      100: l10n.milestone100,
-      250: l10n.milestone250,
-      500: l10n.milestone500,
-      1000: l10n.milestone1000,
-    };
-    return milestones[count];
-  }
+  // Task 1.2 — `_milestoneForCount` lifted to
+  // `lib/utils/milestones.dart::milestoneMessageFor`. Screen callers
+  // use that utility directly; test coverage lives beside it.
 }
