@@ -739,29 +739,29 @@ abstract class L10n {
   /// **'Sorry!'**
   String get ageGateDeniedTitle;
 
-  /// No description provided for @ageGateMessage.
+  /// Task 12.3 — country-aware age threshold. {minAge} is resolved from the device locale (13 / 14 / 16 per COPPA + GDPR Art. 8 + Quebec Law 25). See locale_age_threshold.dart for the full table.
   ///
   /// In en, this message translates to:
-  /// **'Retraq is designed for users\naged 13 and older.'**
-  String get ageGateMessage;
+  /// **'Retraq is designed for users\naged {minAge} and older.'**
+  String ageGateMessage(int minAge);
 
-  /// No description provided for @ageGateDenied.
+  /// Task 12.3 — country-aware denial message matching ageGateMessage threshold.
   ///
   /// In en, this message translates to:
-  /// **'Retraq requires users to be 13 years or older.\nPlease come back when you\'re old enough!'**
-  String get ageGateDenied;
+  /// **'Retraq requires users to be {minAge} years or older.\nPlease come back when you\'re old enough!'**
+  String ageGateDenied(int minAge);
 
-  /// No description provided for @ageConfirmButton.
+  /// Task 12.3 — country-aware confirm label reflecting the regional threshold.
   ///
   /// In en, this message translates to:
-  /// **'I am 13 or older'**
-  String get ageConfirmButton;
+  /// **'I am {minAge} or older'**
+  String ageConfirmButton(int minAge);
 
-  /// No description provided for @ageDenyButton.
+  /// Task 12.3 — country-aware deny label.
   ///
   /// In en, this message translates to:
-  /// **'I am under 13'**
-  String get ageDenyButton;
+  /// **'I am under {minAge}'**
+  String ageDenyButton(int minAge);
 
   /// No description provided for @ageGateContactGuardian.
   ///

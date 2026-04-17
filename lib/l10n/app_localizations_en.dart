@@ -373,18 +373,24 @@ class L10nEn extends L10n {
   String get ageGateDeniedTitle => 'Sorry!';
 
   @override
-  String get ageGateMessage =>
-      'Retraq is designed for users\naged 13 and older.';
+  String ageGateMessage(int minAge) {
+    return 'Retraq is designed for users\naged $minAge and older.';
+  }
 
   @override
-  String get ageGateDenied =>
-      'Retraq requires users to be 13 years or older.\nPlease come back when you\'re old enough!';
+  String ageGateDenied(int minAge) {
+    return 'Retraq requires users to be $minAge years or older.\nPlease come back when you\'re old enough!';
+  }
 
   @override
-  String get ageConfirmButton => 'I am 13 or older';
+  String ageConfirmButton(int minAge) {
+    return 'I am $minAge or older';
+  }
 
   @override
-  String get ageDenyButton => 'I am under 13';
+  String ageDenyButton(int minAge) {
+    return 'I am under $minAge';
+  }
 
   @override
   String get ageGateContactGuardian =>

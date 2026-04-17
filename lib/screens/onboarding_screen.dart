@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../l10n/app_localizations.dart';
 import '../services/app_log.dart';
 import '../services/database_service.dart';
+import '../services/locale_age_threshold.dart';
 import '../services/notification_service.dart';
 import '../services/secure_storage.dart';
 import '../services/user_repository.dart';
@@ -300,10 +301,20 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (_, i) {
                       if (i == 0) {
+                        // Task 12.3 — resolve the country-aware age
+                        // threshold from the device locale at build
+                        // time. Falls back to the COPPA baseline 13
+                        // when the platform provides no region.
+                        final localeTag = Localizations.localeOf(
+                          context,
+                        ).toLanguageTag();
+                        final region = regionFromLocaleTag(localeTag);
+                        final minAge = ageThresholdForCountry(region);
                         return AgeGatePage(
                           onConfirm: _confirmAge,
                           onDeny: _denyAge,
                           isDenied: _ageDenied,
+                          minAge: minAge,
                         );
                       }
                       if (i <= pages.length) {

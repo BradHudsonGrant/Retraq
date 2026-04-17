@@ -8,17 +8,24 @@ import '../../widgets/atoms/bionic_text.dart';
 import '../../widgets/atoms/glow_box.dart';
 
 /// Age verification page shown at the start of onboarding.
+///
+/// Task 12.3 — [minAge] is resolved from the device locale (13 / 14 /
+/// 16 per COPPA + GDPR Art. 8 + Quebec Law 25). See
+/// `lib/services/locale_age_threshold.dart` for the full table and
+/// callers in `onboarding_screen.dart` for resolution.
 class AgeGatePage extends StatelessWidget {
   const AgeGatePage({
     super.key,
     required this.onConfirm,
     required this.onDeny,
     required this.isDenied,
+    this.minAge = 13,
   });
 
   final VoidCallback onConfirm;
   final VoidCallback onDeny;
   final bool isDenied;
+  final int minAge;
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +83,9 @@ class AgeGatePage extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           BionicText(
-            text: isDenied ? l10n.ageGateDenied : l10n.ageGateMessage,
+            text: isDenied
+                ? l10n.ageGateDenied(minAge)
+                : l10n.ageGateMessage(minAge),
             textAlign: TextAlign.center,
             style: tt.bodyLarge?.copyWith(
               color: cs.onSurfaceVariant,
@@ -105,7 +114,7 @@ class AgeGatePage extends StatelessWidget {
                   ),
                 ),
                 child: Text(
-                  l10n.ageConfirmButton,
+                  l10n.ageConfirmButton(minAge),
                   style: tt.labelLarge?.copyWith(color: cs.onPrimary),
                 ),
               ),
@@ -114,7 +123,7 @@ class AgeGatePage extends StatelessWidget {
             TextButton(
               onPressed: onDeny,
               child: Text(
-                l10n.ageDenyButton,
+                l10n.ageDenyButton(minAge),
                 style: tt.labelLarge?.copyWith(color: cs.onSurfaceVariant),
               ),
             ),

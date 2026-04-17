@@ -182,10 +182,34 @@
   "getStartedButton": "Drop your first traq",
   "ageGateTitle": "Before we begin",
   "ageGateDeniedTitle": "Sorry!",
-  "ageGateMessage": "Retraq is designed for users\naged 13 and older.",
-  "ageGateDenied": "Retraq requires users to be 13 years or older.\nPlease come back when you're old enough!",
-  "ageConfirmButton": "I am 13 or older",
-  "ageDenyButton": "I am under 13",
+  "ageGateMessage": "Retraq is designed for users\naged {minAge} and older.",
+  "@ageGateMessage": {
+    "description": "Task 12.3 — country-aware age threshold. {minAge} is resolved from the device locale (13 / 14 / 16 per COPPA + GDPR Art. 8 + Quebec Law 25). See locale_age_threshold.dart for the full table.",
+    "placeholders": {
+      "minAge": { "type": "int", "example": "13" }
+    }
+  },
+  "ageGateDenied": "Retraq requires users to be {minAge} years or older.\nPlease come back when you're old enough!",
+  "@ageGateDenied": {
+    "description": "Task 12.3 — country-aware denial message matching ageGateMessage threshold.",
+    "placeholders": {
+      "minAge": { "type": "int", "example": "13" }
+    }
+  },
+  "ageConfirmButton": "I am {minAge} or older",
+  "@ageConfirmButton": {
+    "description": "Task 12.3 — country-aware confirm label reflecting the regional threshold.",
+    "placeholders": {
+      "minAge": { "type": "int", "example": "13" }
+    }
+  },
+  "ageDenyButton": "I am under {minAge}",
+  "@ageDenyButton": {
+    "description": "Task 12.3 — country-aware deny label.",
+    "placeholders": {
+      "minAge": { "type": "int", "example": "13" }
+    }
+  },
   "ageGateContactGuardian": "If this was entered in error, please contact a parent or guardian.",
   "almostThere": "Almost there!",
   "healthDisclaimer": "Retraq is a personal journaling app — not a medical or therapeutic tool. It does not provide health advice, diagnosis, or treatment. If you are in crisis, please contact a mental health professional or call {crisisContact}.",
