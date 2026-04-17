@@ -11,6 +11,23 @@ The project uses [semantic versioning](https://semver.org/): MAJOR.MINOR.PATCH.
 ## [Unreleased]
 
 ### Added
+- **UX:** Recap's new top-level **Entries / Insights** pill.
+  Insights shows the stats cards (streaks, trends, mood
+  distribution, "on this day") inline so the bottom nav drops
+  from 4 tabs to 3 (Jot / Recap / Settings). Stats has one
+  familiar home instead of two.
+- **UX:** subtle teal edge-glow on rejected horizontal swipes
+  between tabs. Signals "we heard you, use the tabs" instead of
+  looking frozen. Honours reduce-motion — no glow for users
+  with that system preference on.
+- **UX:** 10-second cancellable undo countdown after confirming
+  a Forgot-PIN reset. Covers fat-finger regret after typing
+  DELETE. Cancel button stops the wipe and restores the app.
+- **UX:** "Welcome back" consent page for returning users whose
+  prior consent survived uninstall via secure-storage backup.
+  Collapses the 3 intro pages while keeping consent itself
+  required on every install (GDPR / PIPEDA meaningful-consent
+  compliance preserved).
 - **Privacy:** opt-in "Help improve Retraq" toggle under Settings →
   Data → Diagnostics. Off by default. When on, anonymous crash
   stack traces are sent to Sentry (sentry.io) to help us fix bugs.
@@ -39,6 +56,28 @@ The project uses [semantic versioning](https://semver.org/): MAJOR.MINOR.PATCH.
   assumption.
 
 ### Changed
+- **Architecture:** `home_screen.dart` shrinks 870 → 808 LOC via
+  two molecule extractions (`ProgressBar`, `TitleField`) with
+  dedicated tests. Sets the pattern for the full
+  `HomeSaveController` lift still planned for a future release.
+- **Architecture:** `StatsScreen` now takes an `embedded` flag
+  so the same widget renders inside Recap's Insights pane
+  (no chrome) as stands on its own (full gradient + header).
+  One code path, two surfaces.
+- **Security:** Forgot-PIN biometric challenge now allows
+  device-credential (PIN / pattern / passcode) fallback so users
+  with flaky biometric (wet finger, low light, mask) can still
+  legitimately confirm a reset.
+- **Observability:** Sentry environment tag flipped from `'prod'`
+  to `'beta'` for pre-launch. Keeps TestFlight / Internal
+  Testing noise from polluting the bucket that real-user events
+  will land in after public submission. Flipped back to `'prod'`
+  in the same commit as the App Store / Play Store launch.
+- **CI:** coverage-filter bug fixed — previous `grep -v` filter
+  was only dropping SF: headers of generated files and still
+  counting their DA: lines, silently under-counting measured
+  coverage. New awk-based block filter actually excludes the
+  full SF block. Floor raised 45% → 47% as a result.
 - **Security:** PIN hashes now use PBKDF2 with 250 000 iterations (v4).
   Existing v3 (100K) and v2 (600K) hashes auto-upgrade on next
   successful unlock.
