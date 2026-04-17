@@ -10,6 +10,7 @@ import '../services/database_service.dart';
 import '../services/stats_service.dart';
 import '../theme/app_motion.dart';
 import '../theme/app_spacing.dart';
+import '../widgets/atoms/app_snack_bar.dart';
 import '../widgets/atoms/bionic_text.dart';
 import '../widgets/atoms/glow_box.dart';
 import '../widgets/atoms/mood_blob.dart';
@@ -82,15 +83,11 @@ class _StatsScreenState extends State<StatsScreen>
     // Task 2.3 — localized ICU plural ("no entries" / "1 entry" /
     // "{count} entries") via weekEntryCountSnackbar ARB key.
     final l10n = L10n.of(context)!;
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        SnackBar(
-          content: Text(l10n.weekEntryCountSnackbar(range, count)),
-          behavior: SnackBarBehavior.floating,
-          duration: const Duration(seconds: 2),
-        ),
-      );
+    AppSnackBar.show(
+      context,
+      l10n.weekEntryCountSnackbar(range, count),
+      duration: const Duration(seconds: 2),
+    );
   }
 
   Future<void> _loadOnThisDay() async {

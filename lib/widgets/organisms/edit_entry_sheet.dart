@@ -5,6 +5,7 @@ import '../../models/journal_entry.dart';
 import '../../services/database_service.dart';
 import '../../theme/app_motion.dart';
 import '../../theme/app_spacing.dart';
+import '../atoms/app_snack_bar.dart';
 import '../atoms/retraq_button.dart';
 import '../molecules/mood_selector.dart';
 
@@ -241,9 +242,7 @@ class _EditEntrySheetState extends State<EditEntrySheet> {
 
     // Block saving a completely empty entry (no text, no title, no mood).
     if (titleText.isEmpty && entryText.isEmpty && _mood == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.entryEmptyMessage)));
+      AppSnackBar.show(context, l10n.entryEmptyMessage);
       return;
     }
 
@@ -268,9 +267,7 @@ class _EditEntrySheetState extends State<EditEntrySheet> {
       debugPrint('EditEntrySheet._save failed: $e');
       if (!mounted) return;
       setState(() => _isSaving = false);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.saveFailedMessage)));
+      AppSnackBar.error(context, l10n.saveFailedMessage);
     }
   }
 
@@ -302,9 +299,7 @@ class _EditEntrySheetState extends State<EditEntrySheet> {
                   } catch (e) {
                     debugPrint('EditEntrySheet._confirmDelete failed: $e');
                     if (!mounted) return;
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(l10n.deleteFailedMessage)),
-                    );
+                    AppSnackBar.error(context, l10n.deleteFailedMessage);
                   }
                 },
                 child: Text(

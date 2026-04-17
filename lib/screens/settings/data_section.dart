@@ -4,6 +4,7 @@ import '../../l10n/app_localizations.dart';
 import '../../services/database_service.dart';
 import '../../services/export_service.dart';
 import '../../theme/app_spacing.dart';
+import '../../widgets/atoms/app_snack_bar.dart';
 import '../../widgets/organisms/delete_confirm_dialog.dart';
 
 class DataSection extends StatelessWidget {
@@ -133,18 +134,8 @@ class DataSection extends StatelessWidget {
       }
     } catch (_) {
       if (!context.mounted) return;
-      final cs = Theme.of(context).colorScheme;
       final l10n = L10n.of(context)!;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.exportFailed),
-          backgroundColor: cs.errorContainer,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: AppSpacing.borderRadiusLg,
-          ),
-        ),
-      );
+      AppSnackBar.error(context, l10n.exportFailed);
     }
   }
 
@@ -185,18 +176,8 @@ class DataSection extends StatelessWidget {
       file = result.files.single;
     } catch (e) {
       if (!context.mounted) return;
-      final cs = Theme.of(context).colorScheme;
       final l10n = L10n.of(context)!;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.filePickerFailed),
-          backgroundColor: cs.errorContainer,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: AppSpacing.borderRadiusLg,
-          ),
-        ),
-      );
+      AppSnackBar.error(context, l10n.filePickerFailed);
       return;
     }
     if (!context.mounted) return;
@@ -214,29 +195,11 @@ class DataSection extends StatelessWidget {
       final errors = summary['errors'] ?? 0;
       final l10n = L10n.of(context)!;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.importSuccess(imported, skipped, errors)),
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: AppSpacing.borderRadiusLg,
-          ),
-        ),
-      );
+      AppSnackBar.show(context, l10n.importSuccess(imported, skipped, errors));
     } catch (e) {
       if (!context.mounted) return;
-      final cs = Theme.of(context).colorScheme;
       final l10n = L10n.of(context)!;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.importFailed),
-          backgroundColor: cs.errorContainer,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: AppSpacing.borderRadiusLg,
-          ),
-        ),
-      );
+      AppSnackBar.error(context, l10n.importFailed);
     }
   }
 
@@ -264,7 +227,6 @@ class DataSection extends StatelessWidget {
   }
 
   Future<void> _confirmDeleteAllData(BuildContext context) async {
-    final cs = Theme.of(context).colorScheme;
     final confirmed = await DeleteConfirmDialog.show(context);
     if (confirmed != true || !context.mounted) return;
 
@@ -272,33 +234,11 @@ class DataSection extends StatelessWidget {
       await DatabaseService.instance.userRepo.deleteAllData();
       if (!context.mounted) return;
       final l10n = L10n.of(context)!;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.allDataDeleted),
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: AppSpacing.borderRadiusLg,
-          ),
-        ),
-      );
+      AppSnackBar.show(context, l10n.allDataDeleted);
     } catch (e) {
       if (!context.mounted) return;
       final l10n = L10n.of(context)!;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            l10n.deleteDataFailed,
-            style: Theme.of(
-              context,
-            ).textTheme.bodyMedium?.copyWith(color: cs.onErrorContainer),
-          ),
-          backgroundColor: cs.errorContainer,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: AppSpacing.borderRadiusLg,
-          ),
-        ),
-      );
+      AppSnackBar.error(context, l10n.deleteDataFailed);
     }
   }
 }

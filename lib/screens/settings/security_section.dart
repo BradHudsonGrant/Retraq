@@ -6,6 +6,7 @@ import '../../providers/settings_provider.dart';
 import '../../services/pin_service.dart';
 import '../../theme/app_spacing.dart';
 import '../../utils/pin_dialogs.dart';
+import '../../widgets/atoms/app_snack_bar.dart';
 import '../../widgets/atoms/bionic_text.dart';
 import '../../widgets/molecules/settings_row.dart';
 import '../../widgets/organisms/pin_setup_sheet.dart';
@@ -166,25 +167,13 @@ class _SecuritySectionState extends State<SecuritySection> {
                         : (v) async {
                           if (v) {
                             setState(() => _checkingBiometric = true);
-                            final messenger = ScaffoldMessenger.of(context);
                             final canAuth = await _checkBiometrics();
                             if (!mounted) return;
                             setState(() => _checkingBiometric = false);
                             if (!canAuth) {
-                              messenger.showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    l10n.biometricUnavailable,
-                                    style: tt.bodyMedium?.copyWith(
-                                      color: cs.onErrorContainer,
-                                    ),
-                                  ),
-                                  backgroundColor: cs.errorContainer,
-                                  behavior: SnackBarBehavior.floating,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: AppSpacing.borderRadiusLg,
-                                  ),
-                                ),
+                              AppSnackBar.error(
+                                context,
+                                l10n.biometricUnavailable,
                               );
                               return;
                             }
@@ -197,6 +186,11 @@ class _SecuritySectionState extends State<SecuritySection> {
                             s.copyWith(biometricEnabled: v),
                           );
                           if (v && context.mounted) {
+                            // Task 1.7 — inline on purpose: this is the
+                            // only success-coloured SnackBar in the app
+                            // (primaryContainer background). Adding a
+                            // success variant to AppSnackBar for a
+                            // single caller would be over-abstraction.
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(

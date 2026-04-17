@@ -22,6 +22,7 @@ import '../widgets/molecules/mood_selector.dart';
 import '../widgets/molecules/segmented_pill.dart';
 import '../widgets/organisms/save_success_overlay.dart';
 import 'home/journal_text_area.dart';
+import '../widgets/atoms/app_snack_bar.dart';
 import '../widgets/atoms/bionic_text.dart';
 import '../widgets/atoms/retraq_logo.dart';
 import 'home/recent_day_card.dart';
@@ -531,18 +532,13 @@ class _HomeScreenState extends State<HomeScreen>
                     _selectedMood = null;
                   });
                   if (entryId != null) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(l10n.entrySaved),
-                        behavior: SnackBarBehavior.floating,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: AppSpacing.borderRadiusLg,
-                        ),
-                        duration: const Duration(seconds: 4),
-                        action: SnackBarAction(
-                          label: l10n.undoLabel,
-                          onPressed: () => _entries.deleteEntry(entryId),
-                        ),
+                    AppSnackBar.show(
+                      context,
+                      l10n.entrySaved,
+                      duration: const Duration(seconds: 4),
+                      action: SnackBarAction(
+                        label: l10n.undoLabel,
+                        onPressed: () => _entries.deleteEntry(entryId),
                       ),
                     );
                   }
@@ -722,28 +718,18 @@ class _HomeScreenState extends State<HomeScreen>
 
     if (!hasText && !(moodOnlyEntries && hasMood)) {
       _shakeController.forward(from: 0);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.writeSomethingFirst),
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: AppSpacing.borderRadiusLg,
-          ),
-          duration: const Duration(seconds: 2),
-        ),
+      AppSnackBar.show(
+        context,
+        l10n.writeSomethingFirst,
+        duration: const Duration(seconds: 2),
       );
       return;
     }
     if (moodRequired && !hasMood) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.pickMoodToSave),
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: AppSpacing.borderRadiusLg,
-          ),
-          duration: const Duration(seconds: 2),
-        ),
+      AppSnackBar.show(
+        context,
+        l10n.pickMoodToSave,
+        duration: const Duration(seconds: 2),
       );
       return;
     }
@@ -774,21 +760,7 @@ class _HomeScreenState extends State<HomeScreen>
     } catch (e) {
       if (!mounted) return;
       setState(() => _isSaving = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            l10n.saveFailedMessage,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Theme.of(context).colorScheme.onErrorContainer,
-            ),
-          ),
-          backgroundColor: Theme.of(context).colorScheme.errorContainer,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: AppSpacing.borderRadiusLg,
-          ),
-        ),
-      );
+      AppSnackBar.error(context, l10n.saveFailedMessage);
       return;
     }
 

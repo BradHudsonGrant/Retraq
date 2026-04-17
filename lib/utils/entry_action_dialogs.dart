@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/journal_entry.dart';
 import '../services/database_service.dart';
+import '../widgets/atoms/app_snack_bar.dart';
 import '../widgets/organisms/edit_entry_sheet.dart';
 
 /// Shared confirmation dialogs for editing and deleting journal entries.
@@ -54,9 +55,7 @@ Future<bool> confirmAndDeleteEntry(
   } catch (e) {
     debugPrint('confirmAndDeleteEntry failed: $e');
     if (!context.mounted) return false;
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Failed to delete. Please try again.')),
-    );
+    AppSnackBar.error(context, 'Failed to delete. Please try again.');
     return false;
   }
 }

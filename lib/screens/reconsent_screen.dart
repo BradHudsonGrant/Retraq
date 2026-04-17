@@ -9,6 +9,7 @@ import '../services/user_repository.dart';
 import '../theme/app_motion.dart';
 import '../theme/app_spacing.dart';
 import '../utils/app_info.dart' as info;
+import '../widgets/atoms/app_snack_bar.dart';
 import '../widgets/atoms/glow_box.dart';
 import 'legal_screen.dart';
 
@@ -58,9 +59,7 @@ class _ReconsentScreenState extends State<ReconsentScreen> {
       debugPrint('Failed to save consent records: $e');
       if (mounted) {
         final l10n = L10n.of(context)!;
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(l10n.consentSaveFailed)));
+        AppSnackBar.show(context, l10n.consentSaveFailed);
       }
     }
   }

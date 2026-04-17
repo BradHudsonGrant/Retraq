@@ -11,6 +11,7 @@ import '../services/settings_repository.dart';
 import '../providers/settings_provider.dart';
 import '../theme/app_spacing.dart';
 import '../widgets/atoms/animated_mesh_background.dart';
+import '../widgets/atoms/app_snack_bar.dart';
 import '../widgets/atoms/bionic_text.dart';
 import '../widgets/atoms/glow_box.dart';
 import '../widgets/atoms/retraq_logo.dart';
@@ -225,9 +226,7 @@ class _LockScreenState extends State<LockScreen> {
     } on Object catch (e) {
       debugPrint('Export before reset failed: $e');
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Export failed: $e')),
-      );
+      AppSnackBar.error(context, 'Export failed: $e');
     }
   }
 
@@ -255,17 +254,13 @@ class _LockScreenState extends State<LockScreen> {
         );
         if (!authed) {
           if (!mounted) return;
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(l10n.resetAppBiometricFailed)),
-          );
+          AppSnackBar.show(context, l10n.resetAppBiometricFailed);
           return;
         }
       } on PlatformException catch (e) {
         debugPrint('Reset-app biometric auth failed: $e');
         if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.resetAppBiometricFailed)),
-        );
+        AppSnackBar.show(context, l10n.resetAppBiometricFailed);
         return;
       }
     }

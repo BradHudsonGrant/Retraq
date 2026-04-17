@@ -7,6 +7,7 @@ import '../services/secure_storage.dart';
 import '../services/user_repository.dart';
 import '../theme/app_spacing.dart';
 import '../widgets/atoms/animated_mesh_background.dart';
+import '../widgets/atoms/app_snack_bar.dart';
 import '../widgets/atoms/glow_box.dart';
 import '../widgets/atoms/retraq_logo.dart';
 import '../widgets/molecules/page_indicator_dots.dart';
@@ -169,9 +170,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     } catch (e) {
       debugPrint('Failed to save consent records: $e');
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(L10n.of(context)!.consentSaveFailed)),
-        );
+        AppSnackBar.show(context, L10n.of(context)!.consentSaveFailed);
       }
       return false;
     }
