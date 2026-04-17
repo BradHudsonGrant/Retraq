@@ -68,6 +68,18 @@ void main() {
   // which returns null in Flutter's in-memory test SQLite (no localtime support).
   // The service catches the error and returns 0. These tests verify the fallback
   // behavior and data model. Full streak logic requires on-device integration tests.
+  //
+  // Task 6.7 — the positive-path streak assertions (streak=14, streak=7
+  // after a gap, etc.) live in the on-device integration suite at
+  // `integration_test/streak_sql_on_device_test.dart` (TODO: land
+  // this file when the Task 6.1 emulator journey lane is established;
+  // it needs the same harness). Per Agent 6's review, running streak
+  // SQL on the real Android/iOS SQLite is the only way to exercise the
+  // `localtime` window-function branch — `flutter_test`'s in-memory
+  // SQLite silently falls back to 0, so any regression in the streak
+  // math is invisible here. Do NOT convert the on-device suite into
+  // in-memory assertions: the whole point is to catch regressions
+  // the in-memory harness misses.
 
   group('Streak forgiveness (freeze) — data model', () {
     test('empty database returns streak of 0', () async {
