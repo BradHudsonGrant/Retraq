@@ -15,6 +15,7 @@ import '../services/database_service.dart';
 import '../services/notification_service.dart';
 import '../services/review_service.dart';
 import '../services/widget_service.dart';
+import 'active_tab_scope.dart';
 import 'home/home_form_controller.dart';
 import '../theme/app_motion.dart';
 import '../theme/app_spacing.dart';
@@ -140,6 +141,40 @@ class _HomeScreenState extends State<HomeScreen>
         _isAm = DateTime.now().hour < s.amPmCutoffHour;
       }
       if (oldAskAboutToday != s.askAboutToday) _subscribeRecentDays();
+    }
+
+    // Task 8.6 — pause our 4 Drift watcher subscriptions when the
+    // user is on another tab (Recap or Settings). AppShell installs
+    // the `ActiveTabScope`; when its `activeIndex` flips away from
+    // 0 (Jot), Flutter calls this method and we pause so off-screen
+    // stream emissions don't trigger rebuild work. Resuming restores
+    // the subscriptions and Drift re-emits the latest snapshot.
+    //
+    // Unit tests that pump HomeScreen without an AppShell ancestor
+    // see `isActive == true` (no scope → no pausing), matching the
+    // pre-8.6 behaviour.
+    final isActive = ActiveTabScope.isActive(context, tabIndex: 0);
+    if (isActive != _isTabActive) {
+      _isTabActive = isActive;
+      _applyTabActiveState();
+    }
+  }
+
+  /// Whether the Home tab is currently the visible one. Drives
+  /// stream-subscription pause/resume (Task 8.6).
+  bool _isTabActive = true;
+
+  void _applyTabActiveState() {
+    if (_isTabActive) {
+      _weekCountSub?.resume();
+      _totalCountSub?.resume();
+      _yesterdaySub?.resume();
+      _dayBeforeSub?.resume();
+    } else {
+      _weekCountSub?.pause();
+      _totalCountSub?.pause();
+      _yesterdaySub?.pause();
+      _dayBeforeSub?.pause();
     }
   }
 
