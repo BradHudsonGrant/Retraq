@@ -10,13 +10,24 @@ import 'package:flutter/foundation.dart';
 class PinService {
   PinService._();
 
-  // 100K iterations is appropriate for on-device PIN verification where:
-  // - PINs are 4-6 digits (limited keyspace already protected by lockout)
-  // - Brute-force protection caps attempts at 5 before exponential lockout
-  // - Pure Dart crypto is ~10-50x slower than native (600K caused multi-second lag)
-  static const _defaultPbkdf2Iterations = 100000;
+  // Task 3.7 — raised from 100K (v3) to 250K (v4).
+  //
+  // Rationale: for a 4-digit PIN (10K keyspace), 100K PBKDF2 iterations
+  // cracks in seconds on modern GPUs if the DB hash + salt are ever
+  // exfiltrated together. The lockout controller protects online
+  // attacks but not this offline-forensic scenario. 250K is the middle
+  // ground the Agent-3 security review recommended — still comfortably
+  // under the multi-second lag budget that forced the earlier drop
+  // from v2's 600K because verification runs in a compute() isolate
+  // (see hashPin/verifyPin below) and so never blocks the UI frame.
+  //
+  // v2 (legacy SHA-256), v3 (100K PBKDF2), and v4 (250K PBKDF2) all
+  // verify correctly; v2 and v3 hashes auto-upgrade to v4 on the
+  // user's next successful unlock via isLegacyPinHash() below.
+  static const _defaultPbkdf2Iterations = 250000;
   static int _pbkdf2Iterations = _defaultPbkdf2Iterations;
   static const _pbkdf2KeyLength = 32; // bytes
+  static const _hashVersionV4 = 'v4';
 
   @visibleForTesting
   static bool useIsolateForPin = true;
@@ -55,7 +66,7 @@ class PinService {
   static const _v2LegacyIterations = 600000;
 
   /// Hash a PIN using PBKDF2-HMAC-SHA256.
-  /// Stored as "v3:iterations:base64salt:base64hash".
+  /// Stored as "v4:iterations:base64salt:base64hash" (Task 3.7).
   /// Runs in an isolate via compute() to avoid blocking the UI.
   static Future<String> hashPin(String pin) {
     if (!useIsolateForPin) return Future.value(_hashPinIsolate(pin));
@@ -69,11 +80,12 @@ class PinService {
   static String _hashPinIsolate(String pin) {
     final salt = List<int>.generate(16, (_) => Random.secure().nextInt(256));
     final hash = _pbkdf2(pin, salt);
-    return 'v3:$_pbkdf2Iterations:${base64Encode(salt)}:${base64Encode(hash)}';
+    return '$_hashVersionV4:$_pbkdf2Iterations:${base64Encode(salt)}:${base64Encode(hash)}';
   }
 
   /// Verify a PIN against a stored hash.
-  /// Supports legacy SHA-256, v2 PBKDF2 (600K), and v3 PBKDF2 (with stored iterations).
+  /// Supports legacy SHA-256, v2 PBKDF2 (600K), v3 PBKDF2 (100K), and
+  /// v4 PBKDF2 (250K, current — Task 3.7).
   /// Uses constant-time comparison to prevent timing attacks.
   /// Runs in an isolate via compute() to avoid blocking the UI.
   static Future<bool> verifyPin(String pin, String stored) {
@@ -89,8 +101,11 @@ class PinService {
       _verifyPinIsolate(_PinVerifyArgs(pin, stored));
 
   static bool _verifyPinIsolate(_PinVerifyArgs args) {
-    if (args.stored.startsWith('v3:')) {
-      // v3 format: "v3:iterations:base64salt:base64hash"
+    if (args.stored.startsWith('v4:') || args.stored.startsWith('v3:')) {
+      // v3 + v4 share the same format: "vN:iterations:base64salt:base64hash".
+      // Only the default iteration count differs; the stored iteration
+      // count is the source of truth so existing v3 hashes still verify
+      // with their original 100K count until they're upgraded to v4.
       final parts = args.stored.split(':');
       if (parts.length != 4) return false;
       final iterations = int.tryParse(parts[1]);
@@ -119,9 +134,13 @@ class PinService {
     }
   }
 
-  /// Check if a stored hash uses a legacy format (SHA-256 or v2 PBKDF2 with 600K).
-  /// Used to trigger auto-upgrade on successful unlock.
-  static bool isLegacyPinHash(String stored) => !stored.startsWith('v3:');
+  /// Check if a stored hash uses a legacy format. Triggers the caller
+  /// to re-hash with [hashPin] on next successful unlock and persist.
+  ///
+  /// Task 3.7: v3 (100K PBKDF2) is now considered legacy alongside
+  /// SHA-256 and v2, so existing v3 hashes auto-upgrade to v4 (250K).
+  /// Only hashes prefixed with v4: are treated as current.
+  static bool isLegacyPinHash(String stored) => !stored.startsWith('v4:');
 
   /// Constant-time string comparison to prevent timing attacks.
   static bool _constantTimeEquals(String a, String b) {
