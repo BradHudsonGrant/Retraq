@@ -8,7 +8,9 @@ import '../models/user_settings.dart';
 import '../providers/settings_provider.dart';
 import '../services/database_service.dart';
 import '../services/entry_repository.dart';
-import '../services/recap_service.dart';
+// Task 1.14 — WeeklySummary type still flows through this screen; pulled
+// from the service file.
+import '../services/recap_service.dart' show WeeklySummary;
 import '../theme/app_motion.dart';
 import '../theme/app_spacing.dart';
 import '../utils/date_helpers.dart';
@@ -35,7 +37,11 @@ class _RecapScreenState extends State<RecapScreen>
   bool get wantKeepAlive => true;
 
   final EntryRepository _entries = DatabaseService.instance.entries;
-  final _recapService = RecapService(DatabaseService.instance.entries);
+  // Task 1.14 — pull RecapService from the DatabaseService facade
+  // instead of instantiating locally. Keeps recap access consistent
+  // with db.entries / db.stats / etc., and lets future tests inject
+  // a fake by swapping the DatabaseService instance.
+  final _recapService = DatabaseService.instance.recap;
 
   // View toggle
   bool _isWeekView = true;

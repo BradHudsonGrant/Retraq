@@ -13,6 +13,7 @@ import 'package:path_provider/path_provider.dart';
 import 'app_log.dart';
 import 'entry_repository.dart';
 import 'migration_strategy.dart';
+import 'recap_service.dart';
 import 'secure_storage.dart';
 import 'settings_repository.dart';
 import 'stats_service.dart';
@@ -146,6 +147,7 @@ class DatabaseService {
   late SettingsRepository settings;
   late UserRepository userRepo;
   late StatsService stats;
+  late RecapService recap;
   // PinService remains static (no DB dependency) — import pin_service.dart directly.
 
   static const _secureStorage = hardenedSecureStorage;
@@ -432,6 +434,11 @@ class DatabaseService {
     settings = SettingsRepository(_db);
     userRepo = UserRepository(_db);
     stats = StatsService(_db);
+    // Task 1.14 — expose RecapService on the facade so screens can
+    // use db.recap.getWeeklySummary(...) instead of instantiating
+    // their own RecapService(db.entries). Keeps the service surface
+    // consistent with entries/settings/userRepo/stats.
+    recap = RecapService(entries);
   }
 
   /// Clean up resources. Called when the app shuts down.
