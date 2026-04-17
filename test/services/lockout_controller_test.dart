@@ -179,4 +179,145 @@ void main() {
       c2.dispose();
     },
   );
+
+  // Task 6.15 — symmetry with the clock-rewind test above: forward-
+  // legitimate elapsed time past the lockout window must RELEASE the
+  // lockout. Guards against an off-by-one error (< vs <=) that would
+  // leave users permanently locked out past the boundary.
+
+  test('lockout auto-releases after the timer has legitimately elapsed',
+      () async {
+    final lockoutTime = DateTime(2026, 4, 6, 12, 0, 0);
+    var fakeNow = lockoutTime;
+
+    final c1 = LockoutController(
+      storage: const FlutterSecureStorage(),
+      now: () => fakeNow,
+    );
+
+    // Trigger the 30-second initial lockout (5 failures).
+    for (var i = 0; i < 5; i++) {
+      c1.recordFailedAttempt();
+      await c1.pendingWrites;
+    }
+    expect(c1.isLockedOut, true);
+    c1.dispose();
+
+    // Advance 60 seconds — well past the 30s initial window.
+    fakeNow = lockoutTime.add(const Duration(seconds: 60));
+
+    final c2 = LockoutController(
+      storage: const FlutterSecureStorage(),
+      now: () => fakeNow,
+    );
+    await c2.loadState();
+
+    expect(
+      c2.isLockedOut,
+      false,
+      reason:
+          'Forward-legitimate clock advance past the lockout window must '
+          'release the lockout. A bug in the boundary check (<= vs <) '
+          'here would leave users permanently locked out.',
+    );
+    c2.dispose();
+  });
+
+  test(
+    'lockout one second before the window expires is still active',
+    () async {
+      // Symmetric boundary check: 29s after a 30s lockout should
+      // still be locked. (30s > 29s, not yet elapsed.)
+      final lockoutTime = DateTime(2026, 4, 6, 12, 0, 0);
+      var fakeNow = lockoutTime;
+
+      final c1 = LockoutController(
+        storage: const FlutterSecureStorage(),
+        now: () => fakeNow,
+      );
+      for (var i = 0; i < 5; i++) {
+        c1.recordFailedAttempt();
+        await c1.pendingWrites;
+      }
+      expect(c1.isLockedOut, true);
+      c1.dispose();
+
+      // Advance 29 seconds — still inside the 30-second window.
+      fakeNow = lockoutTime.add(const Duration(seconds: 29));
+
+      final c2 = LockoutController(
+        storage: const FlutterSecureStorage(),
+        now: () => fakeNow,
+      );
+      await c2.loadState();
+
+      expect(
+        c2.isLockedOut,
+        true,
+        reason:
+            'Lockout must still be active inside the 30-second initial '
+            'window (29s < 30s).',
+      );
+      c2.dispose();
+    },
+  );
+
+  test(
+    'second lockout in a row uses the doubled window (60s)',
+    () async {
+      // First lockout 30s, second 60s (30 * 2^1 = 60). Advance 45s
+      // after the second lockout — inside the 60s window, still
+      // locked.
+      final startTime = DateTime(2026, 4, 6, 12, 0, 0);
+      var fakeNow = startTime;
+
+      final c1 = LockoutController(
+        storage: const FlutterSecureStorage(),
+        now: () => fakeNow,
+      );
+      // First lockout.
+      for (var i = 0; i < 5; i++) {
+        c1.recordFailedAttempt();
+        await c1.pendingWrites;
+      }
+      expect(c1.isLockedOut, true);
+
+      // Jump 60s forward — past the first window.
+      fakeNow = startTime.add(const Duration(seconds: 60));
+      // Re-verify state on a fresh controller reflects release.
+      c1.dispose();
+      final c2 = LockoutController(
+        storage: const FlutterSecureStorage(),
+        now: () => fakeNow,
+      );
+      await c2.loadState();
+      expect(c2.isLockedOut, false, reason: 'first lockout should have expired');
+
+      // Trigger a SECOND lockout round. Now _lockoutCount == 1 →
+      // duration = 30 * 2^1 = 60 seconds.
+      for (var i = 0; i < 5; i++) {
+        c2.recordFailedAttempt();
+        await c2.pendingWrites;
+      }
+      expect(c2.isLockedOut, true);
+      c2.dispose();
+
+      // Advance only 45 seconds past the second lockout start —
+      // still inside the 60s window.
+      fakeNow = fakeNow.add(const Duration(seconds: 45));
+      final c3 = LockoutController(
+        storage: const FlutterSecureStorage(),
+        now: () => fakeNow,
+      );
+      await c3.loadState();
+      expect(
+        c3.isLockedOut,
+        true,
+        reason:
+            'Second lockout uses the doubled 60s window — 45s elapsed is '
+            'still inside.',
+      );
+      c3.dispose();
+    },
+  );
 }
