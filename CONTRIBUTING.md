@@ -109,3 +109,31 @@ so the pattern is auditable during reviews.
   `GitHub Secrets`.
 - See `docs/external-blockers.md` for the full "needs a human"
   checklist.
+
+## Protected surfaces (do not regress)
+
+Some UX choices are load-bearing for the Retraq promise and are NOT
+up for iteration without an explicit product decision. Changing
+these surfaces requires an issue + discussion before any PR lands.
+
+- **Hero save flow** (`lib/screens/home_screen.dart` hero-prompt
+  area, single TextArea, auto-save, haptic save overlay) — "open,
+  write, done" is the core promise. Do not add mandatory fields,
+  extra confirmation dialogs, or mid-flow modal interruptions.
+  Reference: Epic 4 Task 4.10 (Agent 4 ship-it rating).
+- **3-checkbox consent flow** (`lib/screens/onboarding/consent_page.dart`)
+  — legally required under PIPEDA / Apple 1.3 / FTC neutral age
+  screen. Don't simplify to a single "I agree" or auto-tick any
+  row. Reference: Epic 4 Task 4.17, Epic 12 Tasks 12.3 / 12.5.
+- **"Data Not Collected" v1 privacy posture** — no analytics / no
+  telemetry. Any SDK addition that changes this triggers the v1.1
+  privacy-label rewrite (see
+  [`docs/store-listing/privacy-labels-v1.1.md`](docs/store-listing/privacy-labels-v1.1.md))
+  and cannot be bundled with unrelated work.
+- **Local-only storage**
+  (`lib/services/database_service.dart` SQLCipher path) — never
+  add a cloud sync shim in v1. The zero-network invariant is the
+  defining differentiator. Reference: Epic 3 Task 3.10 (v2 gate).
+
+If you propose a change that brushes up against one of these
+surfaces, open an issue first and link it from the PR.
