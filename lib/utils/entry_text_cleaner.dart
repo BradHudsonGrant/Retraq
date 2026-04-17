@@ -15,7 +15,7 @@
 ///   4. Join with single newlines.
 ///   5. Trim the final result.
 ///
-/// Rationale: the save flow should treat a "      \n• \n\n" draft
+/// Rationale: the save flow should handle a "      \n• \n\n" draft
 /// as empty, not as a savable entry with five whitespace lines.
 /// This keeps the DB clean and matches what the user visually
 /// typed (nothing).

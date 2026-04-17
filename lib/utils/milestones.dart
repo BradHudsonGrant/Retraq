@@ -30,7 +30,7 @@ const List<int> milestoneThresholds = [
 ];
 
 /// Returns the celebration copy for [count] or `null` when the count
-/// is not on a milestone threshold. Callers should treat `null` as
+/// is not on a milestone threshold. Callers should handle `null` as
 /// "routine save — use standard overlay hold".
 String? milestoneMessageFor(int count, L10n l10n) {
   final milestones = <int, String>{
