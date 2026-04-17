@@ -1,6 +1,15 @@
+import 'package:equatable/equatable.dart';
+
 /// User settings — singleton pattern.
 /// Plain Dart class — Drift table definition lives in database_service.dart.
-class UserSettings {
+///
+/// Task 1.9 — equality now comes from [Equatable] via [props]. The manual
+/// `==` / `hashCode` pair previously enumerated 18 fields; the matching
+/// props list below is the single source of truth and a dedicated test
+/// (`test/models/user_settings_equatable_test.dart`) guards the count so
+/// any new setting that forgets to update `props` fails loudly rather
+/// than silently breaking the RetraqApp settings-stream rebuild.
+class UserSettings extends Equatable {
   // 0 = system (default), 1 = light, 2 = dark
   static const int themeModeSystem = 0;
   static const int themeModeLight = 1;
@@ -25,7 +34,7 @@ class UserSettings {
   final bool moodOnlyEntries; // Allow mood-only entries (no text)
   final bool bionicReadingEnabled; // Bold start of each word for faster reading
 
-  UserSettings({
+  const UserSettings({
     this.themeMode = 0,
     this.isAllDayMode = true,
     this.askAboutToday = true,
@@ -91,30 +100,7 @@ class UserSettings {
   }
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is UserSettings &&
-          themeMode == other.themeMode &&
-          isAllDayMode == other.isAllDayMode &&
-          askAboutToday == other.askAboutToday &&
-          showEntryTitle == other.showEntryTitle &&
-          weekStartDay == other.weekStartDay &&
-          nudgeHour == other.nudgeHour &&
-          nudgeMinute == other.nudgeMinute &&
-          appLockEnabled == other.appLockEnabled &&
-          pinHash == other.pinHash &&
-          biometricEnabled == other.biometricEnabled &&
-          onboardingComplete == other.onboardingComplete &&
-          enterToSave == other.enterToSave &&
-          bulletPointsOnEnter == other.bulletPointsOnEnter &&
-          amPmCutoffHour == other.amPmCutoffHour &&
-          moodEnabled == other.moodEnabled &&
-          moodRequired == other.moodRequired &&
-          moodOnlyEntries == other.moodOnlyEntries &&
-          bionicReadingEnabled == other.bionicReadingEnabled;
-
-  @override
-  int get hashCode => Object.hash(
+  List<Object?> get props => [
     themeMode,
     isAllDayMode,
     askAboutToday,
@@ -133,5 +119,5 @@ class UserSettings {
     moodRequired,
     moodOnlyEntries,
     bionicReadingEnabled,
-  );
+  ];
 }

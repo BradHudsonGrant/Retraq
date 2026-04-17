@@ -74,6 +74,9 @@ dependencies:
   flutter_animate: ^4.5.0
   animations: ^2.0.11
 
+  # Value equality (Task 1.9 — UserSettings / future models)
+  equatable: ^2.0.5
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
