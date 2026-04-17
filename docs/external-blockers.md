@@ -10,11 +10,13 @@ I'll then execute the implementation half of the task inside the repo.
 
 Budget totals: see [`implementation_plan.md` Appendix D](../implementation_plan.md#appendix-d--budget-summary) — $5.6k–$18.6k CAD for v1 launch, up to ~$44k for the full plan.
 
-## Current status snapshot — 2026-04-17
+## Current status snapshot — 2026-04-18
 
-**Plan progress:** ~111 of 260 tasks closed across every epic. See
-[`docs/sessions/2026-04-17.md`](sessions/2026-04-17.md) for the
-full task-by-task session ledger.
+**Plan progress:** ~122 of 260 tasks closed across every epic. See
+[`docs/sessions/2026-04-18.md`](sessions/2026-04-18.md) for the
+2026-04-18 session ledger (11 commits / 9 distinct tasks closed,
+including a real lockout-controller concurrency bugfix surfaced
+through Task 6.4 race-coverage testing).
 
 **Active external blockers (24 total, 0 resolved):**
 - **B-1** Sentry account — gates Task 10.1 crash reporting
