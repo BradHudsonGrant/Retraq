@@ -88,10 +88,20 @@ class LockoutController extends ChangeNotifier {
   }
 
   /// Records a failed attempt and starts lockout if threshold reached.
-  /// Returns true if lockout was triggered.
+  /// Returns true if lockout was triggered (either this call started
+  /// the lockout, or an earlier concurrent call did and we are now
+  /// inside the active window).
   ///
   /// Persistence happens asynchronously in the background; tests can await
   /// [pendingWrites] to flush pending writes before asserting on storage.
+  ///
+  /// Concurrency contract (Task 6.4):
+  /// - Each call increments `_failedAttempts` by exactly one.
+  /// - Among N concurrent calls that cross the threshold, exactly one
+  ///   advances `_lockoutCount` and starts the countdown — subsequent
+  ///   calls observe `_isLockedOut == true` and short-circuit. Without
+  ///   this guard, 10 concurrent failures would multiply the lockout
+  ///   duration 6× (calls 5..10 each invoking `_startLockout`).
   bool recordFailedAttempt() {
     _failedAttempts++;
     // Persist on EVERY failure (not just the 5th) so that a force-stop
@@ -99,7 +109,12 @@ class LockoutController extends ChangeNotifier {
     // queued on [_pendingWrite] so tests can flush it deterministically.
     _pendingWrite = _persistFailedAttempts();
     if (_failedAttempts >= maxAttempts) {
-      _pendingWrite = _startLockout();
+      // Concurrency guard: only the first crossing of the threshold
+      // starts a new lockout. Subsequent concurrent callers still
+      // observe `true` (a lockout IS active) but must not compound it.
+      if (!_isLockedOut) {
+        _pendingWrite = _startLockout();
+      }
       return true;
     }
     notifyListeners();
