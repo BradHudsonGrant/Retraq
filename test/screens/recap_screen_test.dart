@@ -24,15 +24,70 @@ void main() {
       await flushDriftTimers(tester);
     });
 
-    testWidgets('shows Week/Month toggle', (tester) async {
-      await tester.pumpWidget(wrapWidget(const RecapScreen()));
-      await tester.pump(const Duration(milliseconds: 200));
+    testWidgets(
+      'shows both Entries/Insights pill and Week/Month toggle in browse mode',
+      (tester) async {
+        // Task 2.5 — RecapScreen now has TWO SegmentedPills in browse
+        // mode: the top-level Entries/Insights toggle and the
+        // existing Week/Month toggle inside the Entries pane.
+        await tester.pumpWidget(wrapWidget(const RecapScreen()));
+        await tester.pump(const Duration(milliseconds: 200));
 
-      expect(find.byType(SegmentedPill), findsOneWidget);
-      expect(find.text('Week'), findsOneWidget);
-      expect(find.text('Month'), findsOneWidget);
-      await flushDriftTimers(tester);
-    });
+        expect(find.byType(SegmentedPill), findsNWidgets(2));
+        expect(find.text('Entries'), findsOneWidget);
+        expect(find.text('Insights'), findsOneWidget);
+        expect(find.text('Week'), findsOneWidget);
+        expect(find.text('Month'), findsOneWidget);
+        await flushDriftTimers(tester);
+      },
+    );
+
+    testWidgets(
+      'tapping Insights hides Week/Month pill and shows Stats content',
+      (tester) async {
+        // Task 2.5 — the Entries pane's Week/Month pill is scoped
+        // INSIDE the Entries branch; switching to Insights collapses
+        // that whole branch.
+        await tester.pumpWidget(wrapWidget(const RecapScreen()));
+        await tester.pump(const Duration(milliseconds: 200));
+
+        // Sanity: both pills present in default Entries mode.
+        expect(find.text('Week'), findsOneWidget);
+
+        // Tap Insights.
+        await tester.tap(find.text('Insights'));
+        await tester.pump(const Duration(milliseconds: 300));
+
+        // Week/Month pill gone; Entries pill still visible.
+        expect(find.text('Week'), findsNothing,
+            reason:
+                'Insights pane must hide the Week/Month toggle so the '
+                'top-level pill is the only visible nav surface.');
+        expect(find.text('Entries'), findsOneWidget);
+        expect(find.text('Insights'), findsOneWidget);
+        await flushDriftTimers(tester);
+      },
+    );
+
+    testWidgets(
+      'tapping Entries restores the Week/Month pill from Insights',
+      (tester) async {
+        await tester.pumpWidget(wrapWidget(const RecapScreen()));
+        await tester.pump(const Duration(milliseconds: 200));
+
+        await tester.tap(find.text('Insights'));
+        await tester.pump(const Duration(milliseconds: 300));
+        expect(find.text('Week'), findsNothing);
+
+        await tester.tap(find.text('Entries'));
+        await tester.pump(const Duration(milliseconds: 300));
+
+        // Week/Month pill is back.
+        expect(find.text('Week'), findsOneWidget);
+        expect(find.text('Month'), findsOneWidget);
+        await flushDriftTimers(tester);
+      },
+    );
 
     testWidgets('defaults to week view with empty state (no entries)', (
       tester,
