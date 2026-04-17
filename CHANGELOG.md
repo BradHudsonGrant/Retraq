@@ -83,6 +83,83 @@ The project uses [semantic versioning](https://semver.org/): MAJOR.MINOR.PATCH.
 - `StatsService.onStreamError` et al. now route through `AppLog`
   so release-mode crash-adjacent diagnostics can be wired to a sink
   without touching callers.
+- **Country-aware age gate** — onboarding now reads the device
+  locale and enforces 13 / 14 / 16 as the minimum self-attestation
+  age per COPPA (US/CA/GB/AU/NZ: 13), Quebec Law 25 (QC: 14), and
+  GDPR Art. 8 member-state choices (DE/NL/FR/IT/LU/IE/RO/HU/HR/SI:
+  16; AT/BG/CY/LT/ES: 14). Backed by a 13-country regulatory table
+  with 12 unit tests. No IP geolocation — uses the platform's
+  `Localizations.localeOf(context)` region only, keeping the
+  zero-network promise.
+- **CI health-claim lint (Task 12.5)** — builds now fail if any
+  of six banned terms (`cure`, `treat`, `diagnose`, `FDA-approved`,
+  `HIPAA-compliant`, `clinically proven`) appear in shipping
+  surfaces. Five exempt paths cover the disclaimer files that
+  legitimately negate these terms.
+- **CI AppMotion bypass lint (Task 7.18)** — any file under
+  `lib/screens/` or `lib/widgets/` declaring an `AnimationController`
+  without referencing a reduce-motion guard fails the build.
+  Honours WCAG 2.3.3 + 2.2.2.
+- **CI SHA-pinning audit (Task 6.20)** — every GitHub Action in
+  `.github/workflows/*.yml` must pin to a 40-char commit SHA,
+  never `@v1` or `@main`. Guards against supply-chain attacks on
+  unpinned actions.
+- **CI l10n drift check (Task 10.9)** — PRs with stale
+  `lib/l10n/app_localizations*.dart` (i.e., ARB edited without
+  running `flutter gen-l10n`) now fail immediately instead of
+  landing silent translation gaps.
+
+### Testing
+- Expanded the test suite from ~445 to **~617 cases** across Epic 6:
+  - Direct `entry_repository` + `settings_repository` tests (+20)
+  - Dedicated `pin_service_test.dart` extracted with async/isolate
+    coverage (+25)
+  - Timezone / DST edge cases for `date_helpers` (+17)
+  - AppShell + SplashScreen smoke tests (+11)
+  - Notification schedule-time math with DST coverage (+7)
+  - All 6 Task 6.11 widget coverage gaps closed (MoodBlob,
+    GlassCard, ThemeCard, WeeklyTrendChart, WeekDayList,
+    AnimatedMeshBackground) (+45)
+  - Concurrent-write race coverage for EntryRepository (+5)
+  - ExportService real-invocation tests (import path) (+7)
+  - Lockout post-timer expiry + doubled-window (+3)
+  - Explicit v13→v14 migration assertions (+2)
+  - 48dp touch-target accessibility verification (+6)
+  - Task 1.9 Equatable props-length guard (+8)
+  - AppLog test sink (+6)
+  - Locale age threshold table (+12)
+- **dart_test.yaml split** into unit + integration tags so the PR
+  lane can run `--exclude-tags=integration` for fast feedback while
+  the emulator lane runs integration-tagged journey tests.
+
+### Strategy / documentation
+- Full Epic 5 GTM cluster shipped: positioning one-pager +
+  narrative hook + privacy narrative + five competitor battlecards
+  (Daylio, Apple Journal, Inflow, Rosebud/Mindsera, Quick Journal)
+  + Android-first launch rationale + engagement hook spec + share
+  card visual brief + engagement copy review + trial-length
+  decision & A/B plan + Day One price anchoring + Lifetime SKU
+  decision + anti-dark-pattern paywall audit.
+- Full Epic 9 store-listing cluster: categories + Play Health
+  Apps declaration, health-claim red/yellow/green guardrails,
+  iOS + Android + caregiver-uplift age rating, IAP posture
+  (v1 free / v1.1 RevenueCat three-SKU), v1 launch plan (4-phase
+  staged rollout), subtitle A/B test plan.
+- Legal: AI transparency + Quebec PIA templates, Canadian entity
+  disclosure template, forbidden-claims blocklist.
+- Brand: sub-brand decision tree for v2 caregiver ("Retraq for
+  Family" standalone recommendation), competitor visual-positioning
+  battlecard.
+- Analytics: architecture doc establishing the no-caregiver-metrics
+  commitment and the "Help improve Retraq" opt-in-export exit door.
+
+### Deferred / blocked
+- **PR #22 (AGP 9.1.1)** — closed. Blocked upstream by Flutter
+  3.41.6's Gradle plugin lacking AGP 9 support. Revisit when
+  Flutter SDK ships AGP 9 compatibility.
+- **B-24 Codecov token** — new external-blocker item. Codecov
+  upload step landed (commit `8790891`) but is silent until the
+  `CODECOV_TOKEN` secret is added to GitHub Secrets.
 
 ## [1.0.0+2] — 2026-04-14
 

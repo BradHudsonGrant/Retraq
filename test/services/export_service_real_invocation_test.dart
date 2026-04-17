@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:retraq/models/journal_entry.dart';
 import 'package:retraq/services/database_service.dart';
 import 'package:retraq/services/export_service.dart';
 

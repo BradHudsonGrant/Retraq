@@ -10,6 +10,43 @@ I'll then execute the implementation half of the task inside the repo.
 
 Budget totals: see [`implementation_plan.md` Appendix D](../implementation_plan.md#appendix-d--budget-summary) — $5.6k–$18.6k CAD for v1 launch, up to ~$44k for the full plan.
 
+## Current status snapshot — 2026-04-17
+
+**Plan progress:** ~111 of 260 tasks closed across every epic. See
+[`docs/sessions/2026-04-17.md`](sessions/2026-04-17.md) for the
+full task-by-task session ledger.
+
+**Active external blockers (24 total, 0 resolved):**
+- **B-1** Sentry account — gates Task 10.1 crash reporting
+- **B-2** RevenueCat account — gates Task 4.9 / 12.10 / 5.5 paywall work
+- **B-3** Apple Developer account — gates any iOS submission
+- **B-4** Play Console account — gates any Play submission
+- **B-5** Canadian business entity — gates Apple Paid Agreement + entity disclosure (Task 12.11)
+- **B-6** Privacy counsel (v1 basic) — gates Task 12.4/12.13 AI-tier legal
+- **B-7** Icon designer — gates Task 13.1 + v1 visual identity
+- **B-8** Privacy counsel (subscription review) — gates Task 12.10
+- **B-9** Brand / logo licensing check — part of Task 13.1 process
+- **B-10** Privacy counsel (caregiver pre-build) — gates Task 12.12 v2 work
+- **B-11** Accessibility audit — gates Task 12.14 EU release
+- **B-12** Icon shelf test — part of Task 13.1
+- **B-13** _(was Icon shelf test; reassigned — see B-12)_
+- **B-14** Sub-brand decision (v2 caregiver) — gates Task 13.5 execution
+- **B-15** CIPO (Canada) trademark filing — gates Task 13.6 ® in CA
+- **B-16** USPTO (US) trademark filing — gates Task 13.6 ® in US
+- **B-17** Screenshot vendor — gates Task 9.1 + launch Phase A
+- **B-18** ASO vendor (iOS) — gates post-launch iOS tuning
+- **B-19** ASO vendor (Play) — gates post-launch Play tuning
+- **B-20** Android keystore — mostly done per audit; verification only
+- **B-21** ADHDTok creator list — gates Task 5.8 seeding
+- **B-22** r/ADHD mod outreach — gates Task 5.8 seeding
+- **B-23** Therapist referral partnerships — gates Task 5.7 + 5.8
+- **B-24** Codecov token — **NEW 2026-04-17** — activates Task 10.8 upload
+
+**Internal deferred (D-#):**
+- D-1 through D-7 — see scattered entries below for current state.
+  D-7 (AGP 9.1.1 / PR #22) **closed** as of 2026-04-16 with full
+  investigation on file. Next AGP bump re-opens this entry.
+
 ---
 
 ## Infrastructure & accounts
