@@ -270,6 +270,19 @@ Per the audit, this is already in place — just needs verification.
 
 ---
 
+### [ ] B-24. Codecov token  _(activates Task 10.8 upload step)_
+
+**What I need from you:**
+- Codecov.io account (free tier — public repos unlimited; private repos free under 5 users)
+- Add the Retraq repo
+- Copy the repo token from Codecov → add to GitHub Secrets as `CODECOV_TOKEN`
+
+**Why:** `ci.yml` now uploads `coverage/lcov_filtered.info` to Codecov on every PR (commit `8790891`). Without the token the action runs but silently no-ops — that's intentional (`fail_ci_if_error: false`). Adding the secret flips on the 70% patch-coverage gate already configured in `codecov.yml`.
+
+**Cost:** Free.
+
+---
+
 ## Recommended ordering
 
 **Earliest (before v1 submission):**
