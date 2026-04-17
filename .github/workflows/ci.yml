@@ -209,8 +209,13 @@ jobs:
           fi
           COVERAGE=$((HIT_LINES * 100 / TOTAL_LINES))
           echo "Coverage: ${COVERAGE}% (${HIT_LINES}/${TOTAL_LINES} lines)"
-          if [ "$COVERAGE" -lt 45 ]; then
-            echo "::error::Coverage ${COVERAGE}% is below 45% threshold"
+          # Task 6.13 — floor raised 45% → 47% on 2026-04-18 after the
+          # filter-bug fix (543686a) and the Task 1.2 / 6.3 / 6.4 test
+          # expansions brought coverage to 48% locally. The 1% margin
+          # leaves room for a small regression without immediately
+          # breaking CI; bump again once 55%+ is sustained.
+          if [ "$COVERAGE" -lt 47 ]; then
+            echo "::error::Coverage ${COVERAGE}% is below 47% threshold"
             exit 1
           fi
 
