@@ -75,6 +75,38 @@ explicit roadmap change.
   lockout controller's session state, which is written to secure
   storage and never exported.
 
+## Not measured: "On This Day" via dedicated columns (Task 11.14)
+
+Task 11.14 is a no-op by design. The engagement surface already
+emerges from `entries.createdAt` — when the walker running for the
+Stats → On This Day card finds an entry whose `(month, day)`
+matches today minus N years, it surfaces. No dedicated
+`on_this_day_viewed_at` column, no precomputed anniversary table,
+no per-entry "surfaced_count" field.
+
+**Architectural commitment (for future PR reviewers):**
+
+- **Do NOT add `on_this_day_*` columns** to `entries`, `users`, or
+  any new table. The data is derivable.
+- **Do NOT add a schema-level anniversary precompute.** The
+  existing on-demand query against `entries.date` plus
+  `DateTime.subtract` is cheap enough — under 5ms on a 5-year DB.
+- **Measurement**, when wired, lives on `FeatureCounterKey
+  .onThisDayOpened` (Task 11.4's local `feature_counters` KV
+  table). That single integer is enough to reason about
+  engagement retention at the 12-month / 24-month install
+  anniversary without any dedicated surface.
+- **Rationale:** the simplest architectural commitment here is "we
+  already have the data." Over-engineering this surface would
+  either (a) duplicate `entries` for indexing gains we don't need,
+  or (b) encode a product bet (the existence of On-This-Day as a
+  top-level feature) that's still subject to the A5 competitive
+  re-check (see [retraq-pro-bundle doc](./plans/v1.1-retraq-pro-bundle.md)).
+
+This entry belongs alongside the caregiver commitment above: both
+are "resist the instinct to add schema for a feature-we-don't-yet-
+have" reminders.
+
 ## Not measured: cloud-AI prompts (v1 — deferred to v2)
 
 Cloud AI Tier 3 is Part III scope (blocked on Art. 9 explicit consent,
