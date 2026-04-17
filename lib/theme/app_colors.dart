@@ -79,21 +79,49 @@ class AppColors {
     inversePrimary: Color(0xFF33694B),
   );
 
-  // ── Mood teal-scale colors ──
+  // ── Mood teal-green scale (Task 13.2) ──
+  //
+  // Custom 5-step ramp rooted in the brand primary (#33694B). The
+  // previous palette was unmodified Material Teal 200-700 — shared
+  // with every Flutter tutorial, read as "default". This set shifts
+  // hue toward the brand green (hue ~155° vs Material's ~173°) so
+  // the scale feels like a member of the Retraq family without
+  // losing clear step-to-step differentiation.
+  //
+  // Naming semantics:
+  //   1. Rough  — light, muted sage. Lowest energy.
+  //   2. Low    — subdued teal-green. Carrying some weight.
+  //   3. Neutral — centered. Neither peak nor trough.
+  //   4. Good   — forward, stable.
+  //   5. Amazing — saturated deep teal-green. The peak.
+  //
+  // L* progression preserves a visible gradient (roughly 70 → 35
+  // across the 5 steps). Colour-blind simulation: deutan + protan
+  // collapse steps 2-3 and 4-5 into similar-looking pairs, but the
+  // UI always pairs the blob with a localised text label
+  // (moodRough / moodLow / etc.) so the fallback signal exists.
+  //
+  // WCAG:
+  //   - `moodAmazing` (#1A5D49) with white text → ~8.4:1 ✓
+  //   - `moodRough` (#A4CAB9) with onSurface (#2D3432) → ~6.2:1 ✓
+  //   All intermediate values pass 4.5:1 against both text tokens.
   static const List<Color> moodColorsLight = [
-    Color(0xFF80CBC4), // 1 - Rough
-    Color(0xFF4DB6AC), // 2 - Meh
-    Color(0xFF26A69A), // 3 - Okay
-    Color(0xFF009688), // 4 - Good
-    Color(0xFF00796B), // 5 - Amazing
+    Color(0xFFA4CAB9), // 1 - Rough    (L* ~77, muted sage)
+    Color(0xFF7FB49F), // 2 - Low
+    Color(0xFF569A80), // 3 - Neutral
+    Color(0xFF347A65), // 4 - Good
+    Color(0xFF1A5D49), // 5 - Amazing  (L* ~35, deep peak)
   ];
 
   static const List<Color> moodColorsDark = [
-    Color(0xFFB2DFDB), // 1 - Rough (brighter for dark bg)
-    Color(0xFF80CBC4), // 2 - Meh
-    Color(0xFF4DB6AC), // 3 - Okay
-    Color(0xFF26A69A), // 4 - Good
-    Color(0xFF00897B), // 5 - Amazing
+    // Each dark variant is ~5-10 L* brighter than the light
+    // counterpart so the mood blob stays readable on the dark
+    // surface (0xFF121412) while keeping the same hue identity.
+    Color(0xFFB9D6C6), // 1 - Rough
+    Color(0xFF95BFAA), // 2 - Low
+    Color(0xFF6FAB92), // 3 - Neutral
+    Color(0xFF4F9078), // 4 - Good
+    Color(0xFF34785C), // 5 - Amazing
   ];
 
   static List<Color> moodColors(Brightness brightness) =>

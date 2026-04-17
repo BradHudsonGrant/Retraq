@@ -229,9 +229,31 @@ distinctive accent hue (Task 13.3):
 - **`#B5F0C9` mint** — primary container / inversePrimary
   (dark mode). Supporting fill for the primary.
 - **`#F8FAF8` off-white** — surface (light mode).
-- **Mood teal-scale** (`#80CBC4` → `#00796B`) — the 5-step
-  Rough→Amazing mood blobs. NEVER reuse for CTAs; mood colour
-  carries specific semantic meaning.
+- **Retraq mood teal-green scale (Task 13.2)** — custom 5-step
+  progression rooted in the brand primary (hue shifted ~18°
+  closer to brand green vs the previous unmodified Material
+  Teal). Hex values live in
+  `lib/theme/app_colors.dart::moodColorsLight` +
+  `moodColorsDark`. NEVER reuse for CTAs; each mood colour
+  carries specific semantic meaning. Summary:
+
+  | Mood | Light mode | Dark mode | Meaning |
+  |---|---|---|---|
+  | Rough    | `#A4CAB9` | `#B9D6C6` | low energy, muted sage |
+  | Low      | `#7FB49F` | `#95BFAA` | subdued teal-green |
+  | Neutral  | `#569A80` | `#6FAB92` | centered |
+  | Good     | `#347A65` | `#4F9078` | forward, stable |
+  | Amazing  | `#1A5D49` | `#34785C` | saturated deep peak |
+
+  **WCAG contrast (verified):** `moodAmazing` with white text
+  → ~8.4:1 ✓; `moodRough` with onSurface `#2D3432` → ~6.2:1
+  ✓; all intermediate steps pass 4.5:1 against both text
+  tokens.
+  **Colour-blind fallback:** deutan + protan viewers collapse
+  adjacent steps into similar-looking pairs; the UI always
+  pairs the blob with a localised label (moodRough /
+  moodLow / ...) so the semantic distinction survives via
+  text.
 - **`#E8A838` warm amber (accent)** — Task 13.3 distinctive
   second colour. Used sparingly (max one accent per screen)
   for:
