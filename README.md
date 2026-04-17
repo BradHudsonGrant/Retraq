@@ -98,6 +98,7 @@ app/
 │                          signed Android, unsigned iOS pending Task 10.2)
 ├── implementation_plan.md Authoritative roadmap
 ├── CONTRIBUTING.md        Widget taxonomy, commit conventions, testing
+├── CHANGELOG.md           Release notes — feeds App Store / Play "What's New"
 └── README.md
 ```
 
