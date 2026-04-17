@@ -302,8 +302,20 @@ class _LockScreenState extends State<LockScreen> {
     var remaining = totalSeconds;
     var cancelled = false;
 
+    // StatefulBuilder gives us a setState we can call from the
+    // periodic ticker to rebuild the countdown text. Without this,
+    // `Text(l10n.resetAppUndoToast(remaining))` is a one-shot
+    // snapshot at snackbar-show time and the seconds number sits
+    // frozen for the entire 10-second window.
+    StateSetter? rebuildCountdown;
+
     final controller = messenger.showSnackBar(SnackBar(
-      content: Text(l10n.resetAppUndoToast(remaining)),
+      content: StatefulBuilder(
+        builder: (context, setState) {
+          rebuildCountdown = setState;
+          return Text(l10n.resetAppUndoToast(remaining));
+        },
+      ),
       duration: const Duration(seconds: totalSeconds),
       behavior: SnackBarBehavior.floating,
       action: SnackBarAction(
@@ -316,6 +328,11 @@ class _LockScreenState extends State<LockScreen> {
 
     final ticker = Timer.periodic(const Duration(seconds: 1), (t) {
       remaining -= 1;
+      // Force the StatefulBuilder to rebuild so the user sees
+      // 9 → 8 → 7 ticks. setState is a no-op closure here because
+      // `remaining` is a closure-captured var — the rebuild just
+      // re-reads it.
+      rebuildCountdown?.call(() {});
       if (remaining <= 0 || cancelled) t.cancel();
     });
 
