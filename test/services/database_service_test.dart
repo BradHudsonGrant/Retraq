@@ -18,10 +18,10 @@ void main() {
   });
 
   group('PIN Security', () {
-    test('hashPin produces v3:iterations:salt:hash format', () {
+    test('hashPin produces v4:iterations:salt:hash format (Task 3.7)', () {
       final hash = PinService.hashPinSync('1234');
 
-      expect(hash.startsWith('v3:'), true);
+      expect(hash.startsWith('v4:'), true);
       final parts = hash.split(':');
       expect(parts.length, 4);
       expect(int.tryParse(parts[1]), isNotNull); // iterations
@@ -75,13 +75,15 @@ void main() {
       expect(PinService.verifyPinSync('12AB', stored), true);
     });
 
-    test('isLegacyPinHash detects old format', () {
+    test('isLegacyPinHash detects old format (Task 3.7 = v4 current)', () {
       // Old SHA-256 format: hex_salt:hex_hash
       expect(PinService.isLegacyPinHash('abc123:def456'), true);
-      // v2 PBKDF2 (600K) is also legacy — needs upgrade to v3
+      // v2 PBKDF2 (600K) is legacy — upgrade needed
       expect(PinService.isLegacyPinHash('v2:abc123:def456'), true);
-      // v3 format with stored iterations is current
-      expect(PinService.isLegacyPinHash('v3:100000:abc123:def456'), false);
+      // v3 PBKDF2 (100K) is now also legacy per Task 3.7
+      expect(PinService.isLegacyPinHash('v3:100000:abc123:def456'), true);
+      // v4 PBKDF2 (250K) is current
+      expect(PinService.isLegacyPinHash('v4:250000:abc123:def456'), false);
     });
   });
 
@@ -568,10 +570,10 @@ void main() {
       expect(PinService.verifyPinSync('3456', stored), false);
     });
 
-    test('v3 format stores iteration count for future-proofing', () {
+    test('v4 format stores iteration count for future-proofing', () {
       final hash = PinService.hashPinSync('9999');
       final parts = hash.split(':');
-      expect(parts[0], 'v3');
+      expect(parts[0], 'v4');
       final iterations = int.parse(parts[1]);
       // Should be the test iteration count (100) since we called setPbkdf2Iterations(100)
       expect(iterations, 100);
@@ -587,9 +589,11 @@ void main() {
       expect(PinService.isLegacyPinHash('v2:YWJjMTIz:ZGVmNDU2'), true);
     });
 
-    test('v3 PBKDF2 format is NOT detected as legacy', () {
+    test('v4 PBKDF2 format is NOT detected as legacy (Task 3.7)', () {
       final hash = PinService.hashPinSync('5555');
       expect(PinService.isLegacyPinHash(hash), false);
+      // v3 is now legacy since we bumped iteration counts.
+      expect(PinService.isLegacyPinHash('v3:100000:salt:hash'), true);
     });
 
     test('same PIN with different salts produces different hashes', () {
@@ -606,7 +610,7 @@ void main() {
   // ── Group 2c: PIN auto-upgrade end-to-end ─────────────────
 
   group('PIN auto-upgrade end-to-end', () {
-    test('legacy SHA-256 hash verifies, upgrades to v3, and re-verifies', () {
+    test('legacy SHA-256 hash verifies, upgrades to v4, and re-verifies', () {
       const pin = '4321';
 
       // Step (a): Create a legacy SHA-256 hash manually.
@@ -623,12 +627,12 @@ void main() {
       // Step (c): Confirm isLegacyPinHash detects it as legacy.
       expect(PinService.isLegacyPinHash(legacyStored), true);
 
-      // Step (d): Hash the PIN with the current algorithm (v3).
+      // Step (d): Hash the PIN with the current algorithm (v4 per Task 3.7).
       final upgradedHash = PinService.hashPinSync(pin);
 
       // Step (e): The new hash should NOT be legacy format.
       expect(PinService.isLegacyPinHash(upgradedHash), false);
-      expect(upgradedHash.startsWith('v3:'), true);
+      expect(upgradedHash.startsWith('v4:'), true);
 
       // Step (f): Verify the PIN against the upgraded hash — should pass.
       expect(PinService.verifyPinSync(pin, upgradedHash), true);
@@ -636,7 +640,7 @@ void main() {
       expect(PinService.verifyPinSync('0000', upgradedHash), false);
     });
 
-    test('legacy v2 PBKDF2 hash verifies, upgrades to v3, and re-verifies', () {
+    test('legacy v2 PBKDF2 hash verifies, upgrades to v4, and re-verifies', () {
       // This test uses setPbkdf2Iterations(100) already set in setUpAll,
       // but v2 always uses 600K internally — so we construct a v2 hash
       // by calling the verify path. We can't easily construct one without
@@ -646,12 +650,12 @@ void main() {
       // Since constructing a real v2 hash requires the private _pbkdf2
       // method, we test the format upgrade logic:
       const pin = '9876';
-      final v3Hash = PinService.hashPinSync(pin);
+      final currentHash = PinService.hashPinSync(pin);
 
-      // Simulate: after upgrade, the hash is v3
-      expect(v3Hash.startsWith('v3:'), true);
-      expect(PinService.isLegacyPinHash(v3Hash), false);
-      expect(PinService.verifyPinSync(pin, v3Hash), true);
+      // Simulate: after upgrade, the hash is v4
+      expect(currentHash.startsWith('v4:'), true);
+      expect(PinService.isLegacyPinHash(currentHash), false);
+      expect(PinService.verifyPinSync(pin, currentHash), true);
 
       // A v2 prefix is always detected as legacy
       expect(PinService.isLegacyPinHash('v2:anySalt:anyHash'), true);

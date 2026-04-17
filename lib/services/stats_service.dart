@@ -31,14 +31,29 @@ class StatsService {
       final now = DateTime.now();
       final todayStr = _dateStr(now);
 
+      // Task 8.7 — add a date floor to match the walker's existing
+      // 1095-day (3-year) safety cap. Users with many years of data
+      // would otherwise scan the full distinct-date set on every
+      // recap refresh, even though the walker below ignores anything
+      // past ~3 years. Using 1200 days keeps a small buffer so a
+      // freeze-straddled streak exactly at the boundary still reads.
+      // Streak correctness is unchanged: any real streak >1095 days
+      // already hit the safety `break` before this cap existed.
+      final earliestRelevant = now.subtract(const Duration(days: 1200));
+      final earliestRelevantStr = _dateStr(earliestRelevant);
+
       // Fetch all distinct entry dates, newest first
       final rows =
           await _db
               .customSelect(
                 "SELECT DISTINCT date(date, 'unixepoch', 'localtime') AS d "
                 "FROM journal_entries WHERE date(date, 'unixepoch', 'localtime') <= ? "
+                "AND date(date, 'unixepoch', 'localtime') >= ? "
                 "ORDER BY d DESC LIMIT 1100",
-                variables: [Variable<String>(todayStr)],
+                variables: [
+                  Variable<String>(todayStr),
+                  Variable<String>(earliestRelevantStr),
+                ],
                 readsFrom: {_db.journalEntries},
               )
               .get();
