@@ -212,6 +212,12 @@ class L10nEn extends L10n {
   String get monthLabel => 'Month';
 
   @override
+  String get entriesLabel => 'Entries';
+
+  @override
+  String get insightsLabel => 'Insights';
+
+  @override
   String get weeklyRecap => 'Week Retraqd';
 
   @override

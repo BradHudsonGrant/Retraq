@@ -22,6 +22,7 @@ import '../widgets/molecules/segmented_pill.dart';
 import 'recap/month_view.dart';
 import 'recap/search_view.dart';
 import 'recap/week_view.dart';
+import 'stats_screen.dart' show StatsScreen;
 
 /// Recap screen — browse entries by week/month and search.
 class RecapScreen extends StatefulWidget {
@@ -45,6 +46,12 @@ class _RecapScreenState extends State<RecapScreen>
 
   // View toggle
   bool _isWeekView = true;
+
+  // Task 2.5 — top-level Entries/Insights pill state. When true,
+  // the embedded StatsScreen renders instead of the Week/Month
+  // browse view. Search view is always Entries-only (search results
+  // don't belong in the Insights pane).
+  bool _showInsights = false;
 
   // Search state
   final _searchController = TextEditingController();
@@ -369,20 +376,43 @@ class _RecapScreenState extends State<RecapScreen>
           if (!_showSearch) ...[
             const SizedBox(height: AppSpacing.md),
 
-            // ── Week / Month toggle ──
+            // Task 2.5 — top-level Entries / Insights pill. Replaces
+            // the removed Stats bottom-nav tab. Browse body swaps
+            // between the existing Week/Month entries view and the
+            // embedded StatsScreen(embedded: true).
             Center(
               child: SegmentedPill(
-                key: TestKeys.recapWeekMonthToggle,
-                // Task 2.2 — localize via existing ARB keys.
-                leftLabel: l10n.weekLabel,
-                rightLabel: l10n.monthLabel,
-                isRightActive: !_isWeekView,
-                onTapLeft: () => setState(() => _isWeekView = true),
-                onTapRight: () => setState(() => _isWeekView = false),
+                key: TestKeys.recapEntriesInsightsPill,
+                leftLabel: l10n.entriesLabel,
+                rightLabel: l10n.insightsLabel,
+                isRightActive: _showInsights,
+                onTapLeft: () => setState(() => _showInsights = false),
+                onTapRight: () => setState(() => _showInsights = true),
               ),
             ),
 
-            const SizedBox(height: AppSpacing.lg),
+            const SizedBox(height: AppSpacing.md),
+
+            // ── Insights pane ──
+            if (_showInsights)
+              const StatsScreen(embedded: true),
+
+            // ── Entries pane (Week/Month toggle + views) ──
+            if (!_showInsights) ...[
+              // ── Week / Month toggle ──
+              Center(
+                child: SegmentedPill(
+                  key: TestKeys.recapWeekMonthToggle,
+                  // Task 2.2 — localize via existing ARB keys.
+                  leftLabel: l10n.weekLabel,
+                  rightLabel: l10n.monthLabel,
+                  isRightActive: !_isWeekView,
+                  onTapLeft: () => setState(() => _isWeekView = true),
+                  onTapRight: () => setState(() => _isWeekView = false),
+                ),
+              ),
+
+              const SizedBox(height: AppSpacing.lg),
 
             // ── Week view ──
             if (_isWeekView)
@@ -408,21 +438,22 @@ class _RecapScreenState extends State<RecapScreen>
                 },
               ),
 
-            // ── Month view ──
-            if (!_isWeekView)
-              RecapMonthView(
-                selectedMonth: _selectedMonth,
-                entryDays: _entryDays,
-                dayMoods: _dayMoods,
-                selectedDay: _selectedDay,
-                monthEntries: _monthEntries,
-                selectedEntries: _selectedEntries,
-                weekStartDay: weekStartDay,
-                onDaySelected: _onDaySelected,
-                onPreviousMonth: _goToPreviousMonth,
-                onNextMonth: _goToNextMonth,
-              ),
-          ],
+              // ── Month view ──
+              if (!_isWeekView)
+                RecapMonthView(
+                  selectedMonth: _selectedMonth,
+                  entryDays: _entryDays,
+                  dayMoods: _dayMoods,
+                  selectedDay: _selectedDay,
+                  monthEntries: _monthEntries,
+                  selectedEntries: _selectedEntries,
+                  weekStartDay: weekStartDay,
+                  onDaySelected: _onDaySelected,
+                  onPreviousMonth: _goToPreviousMonth,
+                  onNextMonth: _goToNextMonth,
+                ),
+            ], // end Entries pane
+          ], // end Browse view
 
           // ── Bottom padding for nav bar ──
           const SizedBox(height: AppSpacing.navBarClearance),

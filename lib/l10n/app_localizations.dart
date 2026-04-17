@@ -453,6 +453,18 @@ abstract class L10n {
   /// **'Month'**
   String get monthLabel;
 
+  /// Task 2.5 — left label on the top-level Entries/Insights pill on the Recap screen. Swaps the body between the browse view (Week/Month entries) and the embedded Stats content.
+  ///
+  /// In en, this message translates to:
+  /// **'Entries'**
+  String get entriesLabel;
+
+  /// Task 2.5 — right label on the Entries/Insights pill, shows the collapsed Stats content inside Recap.
+  ///
+  /// In en, this message translates to:
+  /// **'Insights'**
+  String get insightsLabel;
+
   /// No description provided for @weeklyRecap.
   ///
   /// In en, this message translates to:

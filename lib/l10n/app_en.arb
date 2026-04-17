@@ -104,6 +104,14 @@
   "noSearchResults": "No traqs found. Try different words.",
   "weekLabel": "Week",
   "monthLabel": "Month",
+  "entriesLabel": "Entries",
+  "@entriesLabel": {
+    "description": "Task 2.5 — left label on the top-level Entries/Insights pill on the Recap screen. Swaps the body between the browse view (Week/Month entries) and the embedded Stats content."
+  },
+  "insightsLabel": "Insights",
+  "@insightsLabel": {
+    "description": "Task 2.5 — right label on the Entries/Insights pill, shows the collapsed Stats content inside Recap."
+  },
   "weeklyRecap": "Week Retraqd",
   "weeklyRecapStats": "{totalEntries} traqs · {activeDays} days · {preferredTime}",
   "@weeklyRecapStats": {

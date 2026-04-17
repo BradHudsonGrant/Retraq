@@ -22,7 +22,15 @@ import '../widgets/molecules/weekly_trend_chart.dart';
 
 /// Stats screen — journaling statistics and trends.
 class StatsScreen extends StatefulWidget {
-  const StatsScreen({super.key});
+  const StatsScreen({super.key, this.embedded = false});
+
+  /// Task 2.5 — when true, skip the Stats-specific outer chrome
+  /// (top gradient, header row, page padding, nav-bar clearance) so
+  /// this widget can live INSIDE the RecapScreen "Insights" pane
+  /// without visually fighting Recap's own header + scroll. Callers
+  /// on AppShell leave this false (default) to get the full
+  /// standalone page.
+  final bool embedded;
 
   @override
   State<StatsScreen> createState() => _StatsScreenState();
@@ -569,6 +577,14 @@ class _StatsScreenState extends State<StatsScreen>
     final tt = Theme.of(context).textTheme;
     final l10n = L10n.of(context)!;
 
+    // Task 2.5 — when embedded inside RecapScreen's Insights pane,
+    // the outer chrome (gradient, SafeArea, page padding, Stats
+    // header, nav-bar bottom padding) all come from the enclosing
+    // Recap screen. Render just the stats Column directly.
+    if (widget.embedded) {
+      return _buildStatsColumn(cs, tt, l10n, embedded: true);
+    }
+
     // Gradient sits OUTSIDE SafeArea so it paints behind the status bar,
     // flowing the system chrome into the Stats header. Only the scroll
     // view respects the safe-area insets.
@@ -637,63 +653,75 @@ class _StatsScreenState extends State<StatsScreen>
 
                 const SizedBox(height: AppSpacing.lg),
 
-                // ── Loading skeleton ──
-                if (_isLoading)
-                  _buildLoadingSkeleton(cs)
-                // ── Empty state ──
-                else if (_stats.totalEntries == 0) ...[
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: AppSpacing.xxl,
-                    ),
-                    child: Center(
-                      child: Column(
-                        children: [
-                          Icon(
-                            Icons.bar_chart,
-                            size: 48,
-                            color: cs.onSurfaceVariant.withValues(alpha: 0.75),
-                          ),
-                          const SizedBox(height: AppSpacing.md),
-                          Text(
-                            l10n.noStatsYet,
-                            style: tt.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: cs.onSurfaceVariant,
-                            ),
-                          ),
-                          const SizedBox(height: AppSpacing.xs),
-                          BionicText(
-                            text: l10n.noStatsYetMessage,
-                            textAlign: TextAlign.center,
-                            style: tt.bodyMedium?.copyWith(
-                              color: cs.onSurfaceVariant.withValues(
-                                alpha: 0.75,
-                              ),
-                            ),
-                            enabled:
-                                SettingsProvider.maybeOf(
-                                  context,
-                                )?.bionicReadingEnabled ??
-                                false,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ] else ...[
-                  _buildOnThisDayCard(cs, tt),
-                  if (isTablet(context))
-                    _buildTabletStats(cs, tt)
-                  else
-                    _buildPhoneStats(cs, tt),
-                ], // end stats content
+                _buildStatsColumn(cs, tt, l10n, embedded: false),
                 // ── Bottom padding for nav bar ──
                 const SizedBox(height: AppSpacing.navBarClearance),
               ],
             ),
           ),
         ),
+      ],
+    );
+  }
+
+  /// Stats content column — extracted from the build tree so it can
+  /// render either inside StatsScreen's own chrome (embedded=false)
+  /// or inside RecapScreen's Insights pane (embedded=true).
+  Widget _buildStatsColumn(
+    ColorScheme cs,
+    TextTheme tt,
+    L10n l10n, {
+    required bool embedded,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // ── Loading skeleton ──
+        if (_isLoading)
+          _buildLoadingSkeleton(cs)
+        // ── Empty state ──
+        else if (_stats.totalEntries == 0) ...[
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxl),
+            child: Center(
+              child: Column(
+                children: [
+                  Icon(
+                    Icons.bar_chart,
+                    size: 48,
+                    color: cs.onSurfaceVariant.withValues(alpha: 0.75),
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  Text(
+                    l10n.noStatsYet,
+                    style: tt.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: cs.onSurfaceVariant,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                  BionicText(
+                    text: l10n.noStatsYetMessage,
+                    textAlign: TextAlign.center,
+                    style: tt.bodyMedium?.copyWith(
+                      color:
+                          cs.onSurfaceVariant.withValues(alpha: 0.75),
+                    ),
+                    enabled: SettingsProvider.maybeOf(context)
+                            ?.bionicReadingEnabled ??
+                        false,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ] else ...[
+          _buildOnThisDayCard(cs, tt),
+          if (isTablet(context))
+            _buildTabletStats(cs, tt)
+          else
+            _buildPhoneStats(cs, tt),
+        ],
       ],
     );
   }

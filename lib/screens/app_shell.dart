@@ -5,10 +5,16 @@ import '../utils/test_keys.dart';
 import '../widgets/atoms/morph_icon.dart';
 import 'home_screen.dart';
 import 'recap_screen.dart';
-import 'stats_screen.dart';
 import 'settings_screen.dart';
 
-/// Root navigation shell — manages the four-tab layout.
+/// Root navigation shell — manages the three-tab layout.
+///
+/// Task 2.5 — Stats was previously a top-level tab; now collapsed
+/// into Recap via the Entries/Insights pill. The embedded
+/// StatsScreen(embedded: true) renders inside RecapScreen when the
+/// user taps Insights. This bottom nav carries Jot / Recap /
+/// Settings only.
+///
 /// Receives theme toggle callback from RetraqApp.
 class AppShell extends StatefulWidget {
   const AppShell({
@@ -71,7 +77,6 @@ class _AppShellState extends State<AppShell> {
         children: [
           const HomeScreen(),
           const RecapScreen(),
-          const StatsScreen(),
           SettingsScreen(
             onThemeModeChanged: widget.onThemeModeChanged,
             themeMode: widget.themeMode,
@@ -122,21 +127,11 @@ class _AppShellState extends State<AppShell> {
                   label: l10n.navRecap,
                 ),
                 NavigationDestination(
-                  key: TestKeys.navStatsTab,
-                  icon: MorphIcon(
-                    icon: Icons.bar_chart_outlined,
-                    selectedIcon: Icons.bar_chart,
-                    selected: _currentIndex == 2,
-                  ),
-                  selectedIcon: const Icon(Icons.bar_chart),
-                  label: l10n.navStats,
-                ),
-                NavigationDestination(
                   key: TestKeys.navSettingsTab,
                   icon: MorphIcon(
                     icon: Icons.settings_outlined,
                     selectedIcon: Icons.settings,
-                    selected: _currentIndex == 3,
+                    selected: _currentIndex == 2,
                   ),
                   selectedIcon: const Icon(Icons.settings),
                   label: l10n.navSettings,
