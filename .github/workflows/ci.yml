@@ -61,6 +61,45 @@ jobs:
             exit 1
           fi
 
+      # Task 12.5 — forbidden-claims lint. Fails the build if
+      # eight banned health claim terms appear in shipping
+      # surfaces: lib/ (minus the disclaimer files that use the
+      # terms in negated form), docs/store-listing/ (minus the
+      # two meta-docs that document the blocklist itself),
+      # docs/gtm/ (minus ai-non-claims.md), and assets/.
+      #
+      # Internal engineering / planning docs (docs/plans/,
+      # docs/legal/, docs/brand/, docs/sessions/) are NOT
+      # scanned — they legitimately reference the terms when
+      # documenting the policy, and scanning them creates
+      # false-positive churn without any shipping-surface
+      # protection benefit.
+      #
+      # See docs/legal/forbidden-claims.md for rationale +
+      # exemption process.
+      - name: Forbidden-claims lint
+        shell: bash
+        run: |
+          set -euo pipefail
+          if rg -i \
+               -e '\bcures?\b' \
+               -e '\btreats?\b' \
+               -e '\btreating\b' \
+               -e '\bdiagnoses?\b' \
+               -e '\bdiagnosing\b' \
+               -e '\bFDA[- ]approved\b' \
+               -e '\bHIPAA[- ]compliant\b' \
+               -e '\bclinically proven\b' \
+               --glob '!lib/legal/terms_of_service.dart' \
+               --glob '!lib/legal/health_disclaimer.dart' \
+               --glob '!docs/gtm/ai-non-claims.md' \
+               --glob '!docs/store-listing/health-claim-guardrails.md' \
+               --glob '!docs/store-listing/categories-and-health-declaration.md' \
+               lib/ assets/ docs/gtm/ docs/store-listing/; then
+            echo "::error::Forbidden health-claim term detected. See docs/legal/forbidden-claims.md"
+            exit 1
+          fi
+
       - name: Check formatting
         run: dart format --set-exit-if-changed .
 

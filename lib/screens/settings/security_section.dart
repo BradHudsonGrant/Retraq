@@ -38,7 +38,7 @@ class _SecuritySectionState extends State<SecuritySection> {
       return canCheck && isSupported;
     } catch (e, st) {
       // Task 1.4 — capture the reason the biometric check failed so
-      // we can diagnose device-specific regressions. Keep returning
+      // we can debug device-specific regressions. Keep returning
       // false so the UI degrades gracefully (no biometric offered).
       AppLog.warn('SecuritySection.checkBiometrics', e, st);
       return false;

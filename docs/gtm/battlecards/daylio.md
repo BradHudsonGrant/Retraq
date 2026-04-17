@@ -124,7 +124,7 @@ attack.
 >
 > **Internal note to self:** Confirm this import path is built
 > before making the public claim. If not, the honest copy is:
-> "Not yet, but it's on the v1.1 roadmap. For now, treat Retraq
+> "Not yet, but it's on the v1.1 roadmap. For now, use Retraq
 > as your go-forward log and Daylio as your archive."
 
 ### "Does Retraq have the mood grid?"

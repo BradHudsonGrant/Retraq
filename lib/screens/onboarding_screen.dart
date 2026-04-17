@@ -94,7 +94,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     } catch (e, st) {
       // Task 1.4 — secure storage unavailability in tests is expected;
       // log it via AppLog so real prod failures surface while keeping
-      // the graceful treat-as-not-denied fallback.
+      // the graceful handle-as-not-denied fallback.
       AppLog.warn('OnboardingScreen.checkAgeDenied', e, st);
     }
 
