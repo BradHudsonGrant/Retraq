@@ -13,6 +13,7 @@ import '../services/database_service.dart';
 import '../services/notification_service.dart';
 import '../services/review_service.dart';
 import '../services/widget_service.dart';
+import 'home/home_form_controller.dart';
 import '../theme/app_motion.dart';
 import '../theme/app_spacing.dart';
 import '../utils/adaptive_layout.dart';
@@ -48,14 +49,18 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   bool get wantKeepAlive => true;
 
-  final _entryController = TextEditingController();
-  final _titleController = TextEditingController();
+  // Task 1.2 — form state (text, mood, date override, last saved id)
+  // lives on a ChangeNotifier so it's independently testable and
+  // shared cleanly between the input widgets, validation flow, and
+  // post-save overlay. Screen attaches a listener in initState and
+  // calls setState inside it so the existing rebuild loop is
+  // preserved.
+  late final HomeFormController _form;
   final _entryFocus = FocusNode();
   final EntryRepository _entries = DatabaseService.instance.entries;
   final SettingsRepository _settingsRepo = DatabaseService.instance.settings;
 
   int? _weekCount;
-  int? _selectedMood;
   bool _isSaving = false;
   bool _showSaveSuccess = false;
   String? _milestoneMessage;
@@ -64,8 +69,6 @@ class _HomeScreenState extends State<HomeScreen>
   // routine power-user saves.
   Duration _overlayHoldDuration = const Duration(milliseconds: 1000);
   bool _isAm = true;
-  DateTime? _selectedDate;
-  int? _lastSavedEntryId;
   UserSettings? _settings;
   StreamSubscription<int>? _weekCountSub;
   StreamSubscription<int>? _totalCountSub;
@@ -95,8 +98,19 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   void initState() {
     super.initState();
+    _form = HomeFormController();
+    // Task 1.2 — rebuild when the form's mood / date override /
+    // last-saved-id changes. Text-controller rebuilds continue to
+    // flow through their own Listenable chain (TextField listens to
+    // the controller directly).
+    _form.addListener(_onFormChanged);
     WidgetsBinding.instance.addObserver(this);
     _initStreams();
+  }
+
+  void _onFormChanged() {
+    if (!mounted) return;
+    setState(() {});
   }
 
   @override
@@ -201,8 +215,8 @@ class _HomeScreenState extends State<HomeScreen>
     _yesterdaySub?.cancel();
     _dayBeforeSub?.cancel();
     _shakeController.dispose();
-    _titleController.dispose();
-    _entryController.dispose();
+    _form.removeListener(_onFormChanged);
+    _form.dispose(); // Disposes title + entry controllers internally.
     _entryFocus.dispose();
     super.dispose();
   }
@@ -214,7 +228,7 @@ class _HomeScreenState extends State<HomeScreen>
     return today.subtract(const Duration(days: 1));
   }
 
-  DateTime get _entryDate => _selectedDate ?? _defaultDate;
+  DateTime get _entryDate => _form.entryDate;
   bool get _isAllDayMode => _settings?.isAllDayMode ?? true;
   String get _accentWord =>
       '${formatDateLabel(_entryDate, capitalize: false)}?';
@@ -276,62 +290,61 @@ class _HomeScreenState extends State<HomeScreen>
       const SizedBox(height: AppSpacing.sm),
 
       // Date chip
-      Semantics(
-        button: true,
-        label: l10n.changeDateLabel(
-          _selectedDate != null
-              ? DateFormat('MMM d, yyyy').format(_entryDate)
-              : formatDateLabel(_entryDate),
-        ),
-        excludeSemantics: true,
-        child: InkWell(
-          key: TestKeys.homeDateChip,
-          onTap: _pickDate,
-          borderRadius: AppSpacing.borderRadiusLg,
-          child: Chip(
-            avatar: Icon(
-              Icons.calendar_today,
-              size: 16,
-              color: cs.onSurfaceVariant,
-            ),
-            label: Text(
-              _selectedDate != null
-                  ? DateFormat('MMM d, yyyy').format(_entryDate)
-                  : formatDateLabel(_entryDate),
-              style: tt.labelLarge?.copyWith(color: cs.onSurfaceVariant),
-            ),
-            backgroundColor: cs.surfaceContainerHigh,
-            side: BorderSide(
-              color:
-                  _selectedDate != null
-                      ? cs.primary.withValues(alpha: 0.5)
-                      : cs.outlineVariant.withValues(alpha: 0.3),
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: AppSpacing.borderRadiusLg,
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
-            // Task 2.9 — when a non-default date is selected, show a
-            // reset X so users have an explicit way to return to today
-            // without reopening the picker. Additive to the border-
-            // colour signal, not a replacement.
-            onDeleted: _selectedDate != null
-                ? () => setState(() {
-                      _selectedDate = null;
-                    })
-                : null,
-            deleteIcon: _selectedDate != null
-                ? Icon(
-                    Icons.close_rounded,
-                    size: 16,
-                    color: cs.onSurfaceVariant,
-                  )
-                : null,
-            deleteButtonTooltipMessage:
-                _selectedDate != null ? l10n.resetToTodayLabel : null,
+      Builder(builder: (context) {
+        final hasOverride = _form.dateOverride != null;
+        return Semantics(
+          button: true,
+          label: l10n.changeDateLabel(
+            hasOverride
+                ? DateFormat('MMM d, yyyy').format(_entryDate)
+                : formatDateLabel(_entryDate),
           ),
-        ),
-      ),
+          excludeSemantics: true,
+          child: InkWell(
+            key: TestKeys.homeDateChip,
+            onTap: _pickDate,
+            borderRadius: AppSpacing.borderRadiusLg,
+            child: Chip(
+              avatar: Icon(
+                Icons.calendar_today,
+                size: 16,
+                color: cs.onSurfaceVariant,
+              ),
+              label: Text(
+                hasOverride
+                    ? DateFormat('MMM d, yyyy').format(_entryDate)
+                    : formatDateLabel(_entryDate),
+                style: tt.labelLarge?.copyWith(color: cs.onSurfaceVariant),
+              ),
+              backgroundColor: cs.surfaceContainerHigh,
+              side: BorderSide(
+                color: hasOverride
+                    ? cs.primary.withValues(alpha: 0.5)
+                    : cs.outlineVariant.withValues(alpha: 0.3),
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: AppSpacing.borderRadiusLg,
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
+              // Task 2.9 — when a non-default date is selected, show a
+              // reset X so users have an explicit way to return to today
+              // without reopening the picker. Additive to the border-
+              // colour signal, not a replacement.
+              onDeleted:
+                  hasOverride ? () => _form.setDateOverride(null) : null,
+              deleteIcon: hasOverride
+                  ? Icon(
+                      Icons.close_rounded,
+                      size: 16,
+                      color: cs.onSurfaceVariant,
+                    )
+                  : null,
+              deleteButtonTooltipMessage:
+                  hasOverride ? l10n.resetToTodayLabel : null,
+            ),
+          ),
+        );
+      }),
 
       const SizedBox(height: AppSpacing.sm),
       BionicText(
@@ -346,8 +359,8 @@ class _HomeScreenState extends State<HomeScreen>
       if (_settings?.moodEnabled ?? false) ...[
         MoodSelector(
           key: TestKeys.homeMoodSelector,
-          selectedMood: _selectedMood,
-          onChanged: (mood) => setState(() => _selectedMood = mood),
+          selectedMood: _form.mood,
+          onChanged: _form.setMood,
         ),
         const SizedBox(height: AppSpacing.md),
       ],
@@ -355,7 +368,7 @@ class _HomeScreenState extends State<HomeScreen>
       // Entry title (optional).
       // Task 1.2 — molecule extraction; see lib/widgets/molecules/title_field.dart.
       if (_settings?.showEntryTitle ?? false) ...[
-        TitleField(controller: _titleController),
+        TitleField(controller: _form.titleCtrl),
         const SizedBox(height: AppSpacing.sm),
       ],
 
@@ -367,7 +380,7 @@ class _HomeScreenState extends State<HomeScreen>
           return Transform.translate(offset: Offset(dx, 0), child: child);
         },
         child: JournalTextArea(
-          controller: _entryController,
+          controller: _form.entryCtrl,
           focusNode: _entryFocus,
           hint:
               _isAllDayMode
@@ -554,18 +567,15 @@ class _HomeScreenState extends State<HomeScreen>
                 holdDuration: _overlayHoldDuration,
                 onDismissed: () {
                   if (!mounted) return;
-                  final entryId = _lastSavedEntryId;
+                  final entryId = _form.lastSavedEntryId;
                   // Clear the form here (deferred from _saveEntry) so the
                   // form rebuild happens during the overlay dismissal frame
                   // rather than competing with its entrance animation.
-                  _titleController.clear();
-                  _entryController.clear();
+                  _form.clearDraft();
+                  _form.setLastSavedEntryId(null);
                   setState(() {
                     _showSaveSuccess = false;
                     _milestoneMessage = null;
-                    _lastSavedEntryId = null;
-                    _selectedDate = null;
-                    _selectedMood = null;
                   });
                   if (entryId != null) {
                     AppSnackBar.show(
@@ -596,9 +606,7 @@ class _HomeScreenState extends State<HomeScreen>
       lastDate: today,
     );
     if (picked != null && mounted) {
-      setState(() {
-        _selectedDate = picked == _defaultDate ? null : picked;
-      });
+      _form.setDateOverride(picked == _defaultDate ? null : picked);
     }
   }
 
@@ -606,7 +614,7 @@ class _HomeScreenState extends State<HomeScreen>
     if (isAm == _isAm) return;
 
     final l10n = L10n.of(context)!;
-    final hasText = _cleanText(_entryController.text).isNotEmpty;
+    final hasText = _cleanText(_form.entryCtrl.text).isNotEmpty;
     if (hasText) {
       // Task 2.8 — add a third "Discard & Switch" action so users who
       // made an accidental entry aren't forced to save it before
@@ -655,8 +663,8 @@ class _HomeScreenState extends State<HomeScreen>
     }
 
     setState(() => _isAm = isAm);
-    _entryController.clear();
-    _titleController.clear();
+    _form.entryCtrl.clear();
+    _form.titleCtrl.clear();
   }
 
   String _cleanText(String raw) {
@@ -671,15 +679,15 @@ class _HomeScreenState extends State<HomeScreen>
 
   Future<void> _saveEntry() async {
     final l10n = L10n.of(context)!;
-    final text = _cleanText(_entryController.text);
-    final titleText = _titleController.text.trim();
+    final text = _cleanText(_form.entryCtrl.text);
+    final titleText = _form.titleCtrl.text.trim();
     final moodEnabled = _settings?.moodEnabled ?? false;
     final moodRequired = _settings?.moodRequired ?? false;
     final moodOnlyEntries = _settings?.moodOnlyEntries ?? false;
 
     // Validate: need text OR mood (if mood-only entries allowed)
     final hasText = text.isNotEmpty;
-    final hasMood = moodEnabled && _selectedMood != null;
+    final hasMood = moodEnabled && _form.mood != null;
 
     if (!hasText && !(moodOnlyEntries && hasMood)) {
       // Task 7.18 — gate the shake through AppMotion so reduce-motion
@@ -720,7 +728,7 @@ class _HomeScreenState extends State<HomeScreen>
       entry: hasText ? text : null,
       label: label,
       title: titleText.isNotEmpty ? titleText : null,
-      mood: moodEnabled ? _selectedMood : null,
+      mood: moodEnabled ? _form.mood : null,
       createdAt: now,
     );
 
@@ -759,11 +767,11 @@ class _HomeScreenState extends State<HomeScreen>
     // so frequent journaling doesn't feel blocked between thoughts.
     final isMilestone = milestone != null;
     final shortDwell = !isMilestone && totalCount > 10;
+    _form.setLastSavedEntryId(savedId);
     setState(() {
       _isSaving = false;
       _showSaveSuccess = true;
       _milestoneMessage = milestone;
-      _lastSavedEntryId = savedId;
       _overlayHoldDuration = shortDwell
           ? const Duration(milliseconds: 400)
           : const Duration(milliseconds: 1000);
