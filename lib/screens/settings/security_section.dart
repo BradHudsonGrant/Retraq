@@ -6,6 +6,7 @@ import '../../providers/settings_provider.dart';
 import '../../services/pin_service.dart';
 import '../../theme/app_spacing.dart';
 import '../../utils/pin_dialogs.dart';
+import '../../services/app_log.dart';
 import '../../widgets/atoms/app_snack_bar.dart';
 import '../../widgets/atoms/bionic_text.dart';
 import '../../widgets/molecules/settings_row.dart';
@@ -35,7 +36,11 @@ class _SecuritySectionState extends State<SecuritySection> {
       final canCheck = await auth.canCheckBiometrics;
       final isSupported = await auth.isDeviceSupported();
       return canCheck && isSupported;
-    } catch (_) {
+    } catch (e, st) {
+      // Task 1.4 — capture the reason the biometric check failed so
+      // we can diagnose device-specific regressions. Keep returning
+      // false so the UI degrades gracefully (no biometric offered).
+      AppLog.warn('SecuritySection.checkBiometrics', e, st);
       return false;
     }
   }

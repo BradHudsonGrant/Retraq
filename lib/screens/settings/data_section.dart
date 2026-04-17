@@ -2,6 +2,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import '../../services/database_service.dart';
+import '../../services/app_log.dart';
 import '../../services/export_service.dart';
 import '../../theme/app_spacing.dart';
 import '../../widgets/atoms/app_snack_bar.dart';
@@ -132,7 +133,11 @@ class DataSection extends StatelessWidget {
       } else {
         await ExportService.instance.exportAsText(exportAll: exportAll);
       }
-    } catch (_) {
+    } catch (e, st) {
+      // Task 1.4 — capture the actual export failure so release-mode
+      // diagnostics survive. Previously the exception was discarded
+      // entirely by `catch (_)`.
+      AppLog.error('DataSection.exportBackup', e, st);
       if (!context.mounted) return;
       final l10n = L10n.of(context)!;
       AppSnackBar.error(context, l10n.exportFailed);

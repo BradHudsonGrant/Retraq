@@ -116,8 +116,12 @@ class UserRepository {
         await prefs.remove('age_denied');
         await prefs.remove('review_prompt_shown');
         await prefs.remove('pin_length');
-      } catch (_) {
-        // SharedPreferences may not be available in test environments.
+      } catch (e, st) {
+        // Task 1.4 — SharedPreferences is unavailable in test envs
+        // and can also fail on hostile storage; log via AppLog so the
+        // failure is captured (and surfaces in release with
+        // RETRAQ_LOG=true) without escalating to the caller.
+        AppLog.warn('UserRepository.deleteAllData.prefs', e, st);
       }
       // Clear secure storage lockout state and PIN length.
       // IMPORTANT: Do NOT use deleteAll() — it would destroy the DB
@@ -128,8 +132,9 @@ class UserRepository {
         await hardenedSecureStorage.delete(key: 'lock_lockout_count');
         await hardenedSecureStorage.delete(key: 'lock_lockout_start');
         await hardenedSecureStorage.delete(key: 'lock_lockout_end');
-      } catch (_) {
-        // SecureStorage may not be available in test environments.
+      } catch (e, st) {
+        // Task 1.4 — secure storage may be unavailable in tests.
+        AppLog.warn('UserRepository.deleteAllData.secureStorage', e, st);
       }
       // Clear home widget data
       try {
@@ -138,8 +143,10 @@ class UserRepository {
         await HomeWidget.saveWidgetData<String>('lastEntryDate', '');
         await HomeWidget.saveWidgetData<int>('mood', 0);
         await HomeWidget.updateWidget(name: 'JournalWidget');
-      } catch (_) {
-        // HomeWidget may not be available in test environments.
+      } catch (e, st) {
+        // Task 1.4 — home widget is Android-only and may not be
+        // available in tests or on iOS; log and continue.
+        AppLog.warn('UserRepository.deleteAllData.homeWidget', e, st);
       }
       // Force-restart the app so the UI reflects the clean state.
       // Skip when running in Flutter test harness.

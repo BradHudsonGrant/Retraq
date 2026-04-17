@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../l10n/app_localizations.dart';
+import '../services/app_log.dart';
 import '../services/database_service.dart';
 import '../services/notification_service.dart';
 import '../services/secure_storage.dart';
@@ -89,9 +90,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     try {
       denied =
           (await hardenedSecureStorage.read(key: ageDeniedSecureKey)) == 'true';
-    } catch (_) {
-      // SecureStorage may not be available in test environments;
-      // fall through and treat as not-denied.
+    } catch (e, st) {
+      // Task 1.4 — secure storage unavailability in tests is expected;
+      // log it via AppLog so real prod failures surface while keeping
+      // the graceful treat-as-not-denied fallback.
+      AppLog.warn('OnboardingScreen.checkAgeDenied', e, st);
     }
 
     final prefs = await SharedPreferences.getInstance();
@@ -200,8 +203,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     if (shouldEnable == true) {
       try {
         await NotificationService.instance.requestPermission();
-      } catch (_) {
-        // Non-fatal — some platforms may not support this
+      } catch (e, st) {
+        // Task 1.4 — permission request failures shouldn't block
+        // onboarding, but we still want them captured so we can spot
+        // platform regressions. Non-fatal; continue.
+        AppLog.warn('OnboardingScreen.requestNotificationPermission', e, st);
       }
     }
   }
@@ -227,8 +233,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     // the age screen must be neutral and must not nudge a user to re-declare.
     try {
       await hardenedSecureStorage.write(key: ageDeniedSecureKey, value: 'true');
-    } catch (_) {
-      // SecureStorage may not be available in test environments.
+    } catch (e, st) {
+      // Task 1.4 — log but continue; the in-memory _ageDenied flag
+      // still guards the UI for this session even if persistence
+      // fails (secure storage may be unavailable in tests or on
+      // hostile devices).
+      AppLog.warn('OnboardingScreen.persistAgeDenial', e, st);
     }
     if (!mounted) return;
     setState(() => _ageDenied = true);
