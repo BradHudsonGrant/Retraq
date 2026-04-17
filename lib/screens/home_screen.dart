@@ -6,6 +6,7 @@ import '../l10n/app_localizations.dart';
 import '../models/journal_entry.dart';
 import '../models/user_settings.dart';
 import '../providers/settings_provider.dart';
+import '../services/app_log.dart';
 import '../services/entry_repository.dart';
 import '../services/settings_repository.dart';
 import '../services/database_service.dart';
@@ -64,8 +65,14 @@ class _HomeScreenState extends State<HomeScreen>
   int? _lastSavedEntryId;
   UserSettings? _settings;
   StreamSubscription<int>? _weekCountSub;
+  StreamSubscription<int>? _totalCountSub;
   StreamSubscription<List<JournalEntry>>? _yesterdaySub;
   StreamSubscription<List<JournalEntry>>? _dayBeforeSub;
+  // Task 8.10 — cached total entry count. Sourced from
+  // watchTotalEntryCount() so we don't block the save path on a
+  // synchronous count query. Starts at 0 until the first stream
+  // event arrives (matches the empty-DB state).
+  int _totalCount = 0;
   List<JournalEntry> _yesterdayEntries = [];
   List<JournalEntry> _dayBeforeEntries = [];
   DateTime _lastInitDate = DateTime.now();
@@ -131,10 +138,28 @@ class _HomeScreenState extends State<HomeScreen>
           (weekStartDay) =>
               _entries.watchWeekEntryCount(weekStartDay: weekStartDay),
         )
-        .handleError((e) => debugPrint('watchWeekEntryCount failed: $e'))
+        .handleError(
+          (e) => AppLog.warn('home_screen.watchWeekEntryCount', e),
+        )
         .listen((count) {
           if (!mounted) return;
           setState(() => _weekCount = count);
+        });
+
+    // Task 8.10 — keep a running cache of the total entry count so the
+    // save-tap path doesn't have to await a count() query before
+    // deciding milestone/overlay length. Drift pushes a new value
+    // whenever anything in journal_entries changes, so the cache is
+    // always in sync.
+    _totalCountSub?.cancel();
+    _totalCountSub = _entries
+        .watchTotalEntryCount()
+        .handleError(
+          (e) => AppLog.warn('home_screen.watchTotalEntryCount', e),
+        )
+        .listen((count) {
+          if (!mounted) return;
+          _totalCount = count;
         });
 
     _subscribeRecentDays();
@@ -169,6 +194,7 @@ class _HomeScreenState extends State<HomeScreen>
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _weekCountSub?.cancel();
+    _totalCountSub?.cancel();
     _yesterdaySub?.cancel();
     _dayBeforeSub?.cancel();
     _shakeController.dispose();
@@ -766,9 +792,13 @@ class _HomeScreenState extends State<HomeScreen>
 
     if (!mounted) return;
 
-    // Single count fetch used for milestones and review prompt
-    final totalCount = await _entries.getTotalEntryCount();
-    if (!mounted) return;
+    // Task 8.10 — read the cached total rather than awaiting another
+    // count() query. The watchTotalEntryCount subscription set up in
+    // _initStreams keeps _totalCount current, and Drift will emit the
+    // post-insert value on its next tick. Add 1 optimistically so the
+    // milestone check sees the just-saved entry in the same frame
+    // without waiting for the stream event.
+    final totalCount = _totalCount + 1;
 
     final milestone = _milestoneForCount(totalCount, l10n);
 
