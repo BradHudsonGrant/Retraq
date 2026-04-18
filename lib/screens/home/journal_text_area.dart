@@ -249,8 +249,12 @@ class _JournalTextAreaState extends State<JournalTextArea> {
       duration:
           reduceMotion ? Duration.zero : const Duration(milliseconds: 240),
       curve: AppMotion.standard,
+      // Input field reads as a recessed "well" — surfaceContainerLow
+      // sits below the raised content cards (RecentDayCard) which now
+      // use surfaceContainerHigh. That matches the expected UI idiom
+      // for inputs vs display cards.
       decoration: BoxDecoration(
-        color: cs.surfaceContainerHigh,
+        color: cs.surfaceContainerLow,
         borderRadius: AppSpacing.borderRadiusXl,
         border: Border.all(color: borderColor, width: _hasFocus ? 1.4 : 1.0),
         boxShadow: shadow,

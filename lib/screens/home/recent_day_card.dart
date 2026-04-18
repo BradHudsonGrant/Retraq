@@ -71,13 +71,13 @@ class _RecentDayCardState extends State<RecentDayCard> {
           horizontal: AppSpacing.md,
           vertical: AppSpacing.md,
         ),
-        // Match the Recap tab's day cards: surfaceContainerLow fill
-        // with a crisp minimal outline. The outline carries the
-        // contrast (trendy minimal-border look) so we don't need a
-        // heavier fill — two tabs read as one coherent surface
-        // language.
+        // Raised content tier: surfaceContainerHigh sits a step above
+        // the input field's surfaceContainerLow so Recent reads as
+        // "content I can review" against the "well I'm about to type
+        // into". Minimal 1px outline still anchors the edge against
+        // the ambient gradient.
         decoration: BoxDecoration(
-          color: cs.surfaceContainerLow,
+          color: cs.surfaceContainerHigh,
           borderRadius: AppSpacing.borderRadiusLg,
           border: Border.all(
             color: cs.outlineVariant.withValues(alpha: 0.35),
