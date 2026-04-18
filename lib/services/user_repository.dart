@@ -107,10 +107,13 @@ class UserRepository {
         await _db.delete(_db.userSettingsTable).go();
         await _db.delete(_db.users).go();
         await _db.delete(_db.consentRecords).go();
-        // Re-insert default settings row.
+        // Re-insert default settings row, pinned at id=1 so
+        // SettingsRepository.watchSettings (which filters by id=1) stays
+        // in sync. Without the explicit id, autoincrement would hand the
+        // replacement row id=2+ and the watcher would never re-emit.
         await _db
             .into(_db.userSettingsTable)
-            .insert(UserSettingsTableCompanion.insert());
+            .insert(UserSettingsTableCompanion.insert(id: const Value(1)));
       });
       // Clear SharedPreferences keys related to age verification and reviews.
       // Lockout keys live in hardenedSecureStorage (LockoutController) — do

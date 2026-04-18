@@ -1,6 +1,8 @@
+import 'package:drift/drift.dart' as drift;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:retraq/models/user_settings.dart';
-import 'package:retraq/services/database_service.dart';
+import 'package:retraq/services/database_service.dart'
+    show DatabaseService, UserSettingsTableCompanion;
 
 import '../test_helpers.dart';
 
@@ -123,6 +125,44 @@ void main() {
           .firstWhere((s) => s != null);
       expect(s!.themeMode, 1);
     });
+
+    test(
+      'regression: watch stays in sync when the row lives at id > 1',
+      () async {
+        // Reproduce the autoincrement orphan-row bug: wipe the table
+        // and re-insert without specifying an id. The replacement row
+        // lands at id=2 because AUTOINCREMENT never reuses ids.
+        // Pre-fix, watchSettings filtered by id=1 and the watcher
+        // would go silent forever — toggles in Settings looked dead.
+        final db = DatabaseService.instance.db;
+        await db.delete(db.userSettingsTable).go();
+        await db.into(db.userSettingsTable).insert(
+              UserSettingsTableCompanion.insert(
+                moodEnabled: const drift.Value(true),
+              ),
+            );
+
+        // A save now must trigger the watcher. getSettings() must
+        // also reconcile the orphan back to id=1 on the way in.
+        final s = await DatabaseService.instance.settings.getSettings();
+        expect(s.moodEnabled, true,
+            reason: 'orphan row values must be preserved on reconciliation');
+
+        final stream = DatabaseService.instance.settings
+            .watchSettings()
+            .where((s) => s != null)
+            .cast<UserSettings>();
+        final future = stream.take(2).toList();
+        Future(() async {
+          await DatabaseService.instance.settings.saveSettings(
+            const UserSettings(themeMode: 2, moodEnabled: true),
+          );
+        });
+        final emissions = await future.timeout(const Duration(seconds: 5));
+        expect(emissions[1].themeMode, 2,
+            reason: 'watcher must re-emit after a post-reconciliation save');
+      },
+    );
 
     test('emits a new event after saveSettings mutates the row', () async {
       final stream = DatabaseService.instance.settings
