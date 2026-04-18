@@ -46,18 +46,23 @@ class BrandAmbientBackground extends StatelessWidget {
     // mode primaryContainer (also a light mint) blends into the near-
     // white surface without reading as a dirty forest-green cast.
     final Color haloColor = isDark ? cs.primary : cs.primaryContainer;
-    final double haloAlpha = (isDark ? 0.32 : 0.16) * intensity;
+    final double haloAlpha = (isDark ? 0.45 : 0.22) * intensity;
 
-    // Bottom fade: a darker surface variant that the navbar sits on
-    // seamlessly once extendBody paints the gradient full-screen.
-    // In dark mode surfaceContainerLowest is the near-black token —
-    // the gradient effectively replaces the navbar's own fill so the
-    // two merge without a seam. In light mode surfaceContainerHighest
-    // is slightly darker than the plain surface, giving the bottom a
-    // gentle gray cast for depth on a bright palette.
-    final Color bottomColor =
-        isDark ? cs.surfaceContainerLowest : cs.surfaceContainerHighest;
-    final double bottomAlpha = (isDark ? 1.0 : 0.75) * intensity;
+    // Bottom fade. Earlier passes used surfaceContainerLowest /
+    // surfaceContainerHighest but those tokens are only ~6–30 RGB
+    // levels away from cs.surface — the visible contrast from middle
+    // to bottom came out as "basically the same shade", which matched
+    // the user's "I don't see a difference" note. Switch to pure
+    // Colors.black at per-brightness alphas so the bottom really does
+    // darken into the navbar:
+    //   dark  — 0.9 black over the near-black surface makes the foot
+    //           read as proper black, letting the transparent navbar
+    //           float directly on it.
+    //   light — 0.18 black over the near-white surface gives a soft
+    //           mid-gray fade; enough contrast to register as "darker
+    //           at the bottom" without fighting the bright palette.
+    const Color bottomColor = Colors.black;
+    final double bottomAlpha = (isDark ? 0.9 : 0.18) * intensity;
 
     // Mesh underlay colours.
     final meshColors = <Color>[

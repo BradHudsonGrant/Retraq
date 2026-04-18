@@ -67,7 +67,6 @@ class _AppShellState extends State<AppShell> {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
     final l10n = L10n.of(context)!;
 
     return Scaffold(
@@ -122,29 +121,17 @@ class _AppShellState extends State<AppShell> {
         ),
       ),
       bottomNavigationBar: RepaintBoundary(
-        child: Container(
-          decoration: BoxDecoration(
-            // Fully transparent fill so the BrandAmbientBackground's
-            // bottom darkening shows through the navbar. Keep the thin
-            // top border as a hairline separator — without it the tab
-            // icons can read as floating over the content.
-            color: Colors.transparent,
-            border: Border(
-              top: BorderSide(
-                color: cs.outlineVariant.withValues(alpha: 0.4),
-                width: 0.5,
-              ),
-            ),
-          ),
-          child: ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-            child: NavigationBar(
-              selectedIndex: _currentIndex,
-              onDestinationSelected: _onTabSelected,
-              backgroundColor: Colors.transparent,
-              surfaceTintColor: Colors.transparent,
-              elevation: 0,
-              height: 80,
+        // Fully transparent navbar chrome so the BrandAmbientBackground's
+        // bottom darkening bleeds all the way to the nav icons with no
+        // visible seam — no container fill, no top hairline.
+        child: NavigationBar(
+          selectedIndex: _currentIndex,
+          onDestinationSelected: _onTabSelected,
+          backgroundColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
+          shadowColor: Colors.transparent,
+          elevation: 0,
+          height: 80,
               destinations: [
                 NavigationDestination(
                   key: TestKeys.navJournalTab,
@@ -179,8 +166,6 @@ class _AppShellState extends State<AppShell> {
               ],
             ),
           ),
-        ),
-      ),
     );
   }
 }
