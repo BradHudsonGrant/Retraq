@@ -121,6 +121,14 @@ class WeekDayList extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: cs.surfaceContainerLow,
                     borderRadius: AppSpacing.borderRadiusXl,
+                    // Minimal outline shared with RecentDayCard /
+                    // ProgressBar / WeeklySummaryCard so all cards
+                    // across the shell read with the same edge
+                    // language.
+                    border: Border.all(
+                      color: cs.outlineVariant.withValues(alpha: 0.35),
+                      width: 1,
+                    ),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

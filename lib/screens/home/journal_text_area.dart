@@ -230,17 +230,12 @@ class _JournalTextAreaState extends State<JournalTextArea> {
         _hasFocus
             ? cs.primary.withValues(alpha: 0.55)
             : cs.outlineVariant.withValues(alpha: 0.3);
-    // Two-shadow system so the input lifts off the ambient gradient
-    // even when unfocused: a soft neutral drop shadow for ambient depth
-    // plus the existing primary-tinted focus halo when the field has
-    // focus. Reduce-motion users get the neutral shadow only (no primary
-    // halo) so focus signals remain visual via border width.
+    // Matches the minimal-outline card language used elsewhere in the
+    // shell: rely on the visible outline (already drawn below via
+    // border) for contrast, and only add the primary-tinted halo
+    // when the input has focus. Drops the previous heavy drop shadow
+    // that was making this card read louder than the sibling cards.
     final List<BoxShadow> shadow = [
-      BoxShadow(
-        color: Colors.black.withValues(alpha: 0.14),
-        blurRadius: 12,
-        offset: const Offset(0, 2),
-      ),
       if (_hasFocus && !reduceMotion)
         BoxShadow(
           color: cs.primary.withValues(alpha: 0.22),

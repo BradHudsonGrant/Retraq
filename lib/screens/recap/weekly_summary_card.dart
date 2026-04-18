@@ -25,10 +25,28 @@ class WeeklySummaryCard extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.lg),
+      // Minimal outline shared with the rest of the card system, plus
+      // a 3px primary-coloured left accent that signals "this card is
+      // the weekly summary" — the only card in the app that carries
+      // the branded left stripe.
       decoration: BoxDecoration(
         color: cs.surfaceContainerLow,
         borderRadius: AppSpacing.borderRadiusXl,
-        border: Border(left: BorderSide(color: cs.primary, width: 3)),
+        border: Border(
+          top: BorderSide(
+            color: cs.outlineVariant.withValues(alpha: 0.35),
+            width: 1,
+          ),
+          right: BorderSide(
+            color: cs.outlineVariant.withValues(alpha: 0.35),
+            width: 1,
+          ),
+          bottom: BorderSide(
+            color: cs.outlineVariant.withValues(alpha: 0.35),
+            width: 1,
+          ),
+          left: BorderSide(color: cs.primary, width: 3),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
