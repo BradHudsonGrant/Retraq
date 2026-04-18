@@ -11,11 +11,9 @@ import '../atoms/bionic_text.dart';
 /// independently testable. Zero business logic: renders whatever the
 /// parent passes in.
 ///
-/// States (driven by [weekCount]):
-///   - null  → blank (loading, avoids flash before the first stream
-///             emission lands)
-///   - 0     → "Drop your first traq above." with edit-note icon
-///   - 1..n  → "{n} traqs this week — keep going!" with flame icon
+/// Renders only when [weekCount] is `>= 1` — while the week is blank the
+/// pill collapses to `SizedBox.shrink()` rather than showing an empty
+/// placeholder card that reads as dead space above the composer.
 ///
 /// [bionicReadingEnabled] threads through the same accessibility
 /// preference the rest of the home screen honours.
@@ -35,6 +33,13 @@ class ProgressBar extends StatelessWidget {
     final tt = Theme.of(context).textTheme;
     final l10n = L10n.of(context)!;
     final hasStreak = (weekCount ?? 0) > 0;
+
+    // Hide the pill entirely when no traqs exist this week — otherwise it
+    // renders as an empty/placeholder card that draws the eye without
+    // earning it. The hero message above already nudges first-timers.
+    if (!hasStreak) {
+      return const SizedBox.shrink();
+    }
 
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -57,25 +62,16 @@ class ProgressBar extends StatelessWidget {
       child: Row(
         children: [
           Icon(
-            hasStreak ? Icons.local_fire_department : Icons.edit_note,
+            Icons.local_fire_department,
             size: 18,
-            // Task 13.3 — warm amber flame when the streak is active
-            // (2nd sanctioned accent-amber usage alongside the
-            // milestone chip in SaveSuccessOverlay). The edit-note
-            // placeholder stays in the primary green so the icon's
-            // color itself signals "momentum present" vs "get started".
-            color: hasStreak
-                ? AppColors.accentAmber(Theme.of(context).brightness)
-                : cs.primary,
+            // Task 13.3 — warm amber flame, the 2nd sanctioned accent-amber
+            // usage alongside the milestone chip in SaveSuccessOverlay.
+            color: AppColors.accentAmber(Theme.of(context).brightness),
           ),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: BionicText(
-              text: weekCount == null
-                  ? '' // Loading — avoid flash
-                  : weekCount == 0
-                      ? l10n.progressFirstEntry
-                      : l10n.progressWeekCount(weekCount!),
+              text: l10n.progressWeekCount(weekCount!),
               style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant),
               enabled: bionicReadingEnabled,
             ),

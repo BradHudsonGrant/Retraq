@@ -8,28 +8,25 @@ import 'package:retraq/widgets/molecules/progress_bar.dart';
 import '../../test_helpers.dart';
 
 /// Task 1.2 — extracted ProgressBar molecule needs direct coverage
-/// now that it lives outside home_screen.dart. Three rendering
-/// states, three tests; bionic-reading accessibility flag test-
-/// driven so we don't regress during a future home screen refactor.
+/// now that it lives outside home_screen.dart. Collapses to
+/// SizedBox.shrink while weekCount < 1 so an empty placeholder card
+/// doesn't hang above the composer on a blank week.
 void main() {
   testWidgets(
-    'weekCount=null renders empty text (loading state — avoids flash)',
+    'weekCount=null collapses (no card, no icons)',
     (tester) async {
       await tester.pumpWidget(wrapWidget(
         const ProgressBar(weekCount: null),
       ));
       await tester.pump();
 
-      // The progress bar's Text child is empty while data loads.
-      // We verify by asserting the first-entry prompt is NOT shown.
-      final l10n = await L10n.delegate.load(const Locale('en'));
-      expect(find.text(l10n.progressFirstEntry), findsNothing);
-      expect(find.text(l10n.progressWeekCount(1)), findsNothing);
+      expect(find.byIcon(Icons.local_fire_department), findsNothing);
+      expect(find.byIcon(Icons.edit_note), findsNothing);
     },
   );
 
   testWidgets(
-    'weekCount=0 shows first-entry prompt + edit-note icon',
+    'weekCount=0 collapses — empty card would draw the eye for nothing',
     (tester) async {
       await tester.pumpWidget(wrapWidget(
         const ProgressBar(weekCount: 0),
@@ -37,12 +34,9 @@ void main() {
       await tester.pump();
 
       final l10n = await L10n.delegate.load(const Locale('en'));
-      expect(find.text(l10n.progressFirstEntry), findsOneWidget);
-      expect(find.byIcon(Icons.edit_note), findsOneWidget);
-      expect(find.byIcon(Icons.local_fire_department), findsNothing,
-          reason:
-              'Flame is a momentum signal — must not show until the '
-              'user has at least one entry this week.');
+      expect(find.text(l10n.progressWeekCount(0)), findsNothing);
+      expect(find.byIcon(Icons.local_fire_department), findsNothing);
+      expect(find.byIcon(Icons.edit_note), findsNothing);
     },
   );
 
@@ -57,7 +51,6 @@ void main() {
       final l10n = await L10n.delegate.load(const Locale('en'));
       expect(find.text(l10n.progressWeekCount(3)), findsOneWidget);
       expect(find.byIcon(Icons.local_fire_department), findsOneWidget);
-      expect(find.byIcon(Icons.edit_note), findsNothing);
     },
   );
 
