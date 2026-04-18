@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_single_quotes
 
 import 'package:drift/drift.dart';
+import 'package:flutter/foundation.dart' show listEquals, mapEquals, setEquals;
 import '../models/journal_entry.dart';
 import '../utils/date_helpers.dart';
 import 'app_log.dart';
@@ -106,6 +107,7 @@ class EntryRepository {
           ..orderBy([(t) => OrderingTerm.asc(t.createdAt)]))
         .watch()
         .map((rows) => rows.map(rowToEntry).toList())
+        .distinct(listEquals)
         .handleError(
           (e) => DatabaseService.logStreamError('watchEntriesForDate', e),
         );
@@ -198,6 +200,7 @@ class EntryRepository {
           ..limit(limit))
         .watch()
         .map((rows) => rows.map(rowToEntry).toList())
+        .distinct(listEquals)
         .handleError(
           (e) => DatabaseService.logStreamError('watchRecentEntries', e),
         );
@@ -212,6 +215,7 @@ class EntryRepository {
           ..orderBy([(t) => OrderingTerm.desc(t.createdAt)]))
         .watch()
         .map((rows) => rows.map(rowToEntry).toList())
+        .distinct(listEquals)
         .handleError(
           (e) => DatabaseService.logStreamError('watchWeekEntries', e),
         );
@@ -227,6 +231,7 @@ class EntryRepository {
           ..orderBy([(t) => OrderingTerm.desc(t.createdAt)]))
         .watch()
         .map((rows) => rows.map(rowToEntry).toList())
+        .distinct(listEquals)
         .handleError(
           (e) => DatabaseService.logStreamError('watchWeekEntriesFrom', e),
         );
@@ -263,6 +268,7 @@ class EntryRepository {
     return query
         .watchSingle()
         .map((row) => row.read(count) ?? 0)
+        .distinct()
         .handleError(
           (e) => DatabaseService.logStreamError('watchWeekEntryCount', e),
         );
@@ -288,6 +294,7 @@ class EntryRepository {
     return query
         .watchSingle()
         .map((row) => row.read(count) ?? 0)
+        .distinct()
         .handleError(
           (e) => DatabaseService.logStreamError('watchTotalEntryCount', e),
         );
@@ -304,6 +311,7 @@ class EntryRepository {
         )
         .watchSingle()
         .map((row) => row.read<int>('cnt'))
+        .distinct()
         .handleError(
           (e) => DatabaseService.logStreamError('watchTotalDaysWithEntries', e),
         );
@@ -339,6 +347,7 @@ class EntryRepository {
           ..orderBy([(t) => OrderingTerm.asc(t.date)]))
         .watch()
         .map((rows) => rows.map(rowToEntry).toList())
+        .distinct(listEquals)
         .handleError(
           (e) => DatabaseService.logStreamError('watchMonthEntries', e),
         );
@@ -362,7 +371,8 @@ class EntryRepository {
           readsFrom: {_db.journalEntries},
         )
         .watch()
-        .map((rows) => rows.map((r) => r.read<int>('d')).toSet());
+        .map((rows) => rows.map((r) => r.read<int>('d')).toSet())
+        .distinct(setEquals);
   }
 
   /// Stream mapping day number → mood value for a given month.
@@ -390,7 +400,8 @@ class EntryRepository {
             map[row.read<int>('d')] = row.read<int>('mood');
           }
           return map;
-        });
+        })
+        .distinct(mapEquals);
   }
 
   /// Delete a journal entry by ID.

@@ -13,6 +13,12 @@ MigrationStrategy buildMigrationStrategy(AppDatabase db) {
       // FTS5 schema is not declared in Drift tables — create it manually
       // so fresh installs get the same search index that v14 migrations add.
       await _createFts5Schema(db);
+      // Fresh installs previously started without the performance indexes
+      // that existing users accumulated through migrations v5–v13. That meant
+      // every date-range query (Home recents, Recap week/month, Stats streak)
+      // did a full table scan on day one. Mirror the upgrade-path indexes
+      // here so a brand-new DB is as fast as an upgraded one.
+      await _createPerformanceIndexes(db);
     },
     onUpgrade: (migrator, from, to) async {
       if (from < 2) {
@@ -362,4 +368,23 @@ Future<void> _createFts5Schema(AppDatabase db) async {
       VALUES (new.id, COALESCE(new.entry, ''), COALESCE(new.title, ''));
     END
   ''');
+}
+
+/// All performance indexes on journal_entries. Called from onCreate for fresh
+/// installs so new users don't scan full tables on day-one queries. Upgrade
+/// paths (v5–v13) continue to create these one at a time; IF NOT EXISTS makes
+/// re-running a no-op for anyone who already has them.
+Future<void> _createPerformanceIndexes(AppDatabase db) async {
+  await db.customStatement(
+    'CREATE INDEX IF NOT EXISTS idx_journal_date ON journal_entries(date)',
+  );
+  await db.customStatement(
+    'CREATE INDEX IF NOT EXISTS idx_journal_mood ON journal_entries(mood)',
+  );
+  await db.customStatement(
+    'CREATE INDEX IF NOT EXISTS idx_journal_created_at ON journal_entries(created_at)',
+  );
+  await db.customStatement(
+    'CREATE INDEX IF NOT EXISTS idx_journal_date_mood ON journal_entries(date, mood)',
+  );
 }

@@ -76,10 +76,20 @@ class _RecapScreenState extends State<RecapScreen>
   List<JournalEntry> _monthEntries = []; // all entries for the month
   List<JournalEntry> _selectedEntries = []; // entries for selected day
 
-  // Subscriptions
+  // Subscriptions.
+  //
+  // The month calendar grid needs two lightweight things per month: the set
+  // of days with entries, and the day→mood map for colour dots. Previously
+  // both were derived client-side from the full `watchMonthEntries` stream,
+  // which loaded every entry's text + title + mood + label for a month even
+  // when the user was on Week view or had drilled into a single day. Split
+  // into three subscriptions so the heavy full-entries stream only runs
+  // when the month entry list is actually visible.
   StreamSubscription<List<JournalEntry>>? _weekEntriesSub;
   StreamSubscription<List<JournalEntry>>? _entrySub;
   StreamSubscription<List<JournalEntry>>? _monthEntriesSub;
+  StreamSubscription<Set<int>>? _monthDaysSub;
+  StreamSubscription<Map<int, int>>? _monthMoodsSub;
 
   @override
   void initState() {
@@ -87,7 +97,8 @@ class _RecapScreenState extends State<RecapScreen>
     final now = DateTime.now();
     _selectedMonth = DateTime(now.year, now.month);
 
-    _listenToMonthData();
+    _subscribeMonthMeta();
+    _refreshMonthEntriesSubscription();
   }
 
   @override
@@ -122,10 +133,14 @@ class _RecapScreenState extends State<RecapScreen>
     if (_isTabActive) {
       _weekEntriesSub?.resume();
       _monthEntriesSub?.resume();
+      _monthDaysSub?.resume();
+      _monthMoodsSub?.resume();
       _entrySub?.resume();
     } else {
       _weekEntriesSub?.pause();
       _monthEntriesSub?.pause();
+      _monthDaysSub?.pause();
+      _monthMoodsSub?.pause();
       _entrySub?.pause();
     }
   }
@@ -170,31 +185,45 @@ class _RecapScreenState extends State<RecapScreen>
     _subscribeWeekEntries(_settings?.weekStartDay ?? 1);
   }
 
-  void _listenToMonthData() {
+  /// Lightweight calendar-grid data: day numbers + day→mood map. Always
+  /// active while the Recap tab is. These streams query only indexed
+  /// columns (date, mood) and return primitives, so every save/delete
+  /// triggers at most a tiny diff rather than a full-row rebuild.
+  void _subscribeMonthMeta() {
+    _monthDaysSub?.cancel();
+    _monthMoodsSub?.cancel();
+    _monthDaysSub = _entries.watchMonthEntryDays(_selectedMonth).listen((
+      days,
+    ) {
+      if (!mounted) return;
+      setState(() => _entryDays = days);
+    });
+    _monthMoodsSub = _entries.watchMonthEntryMoods(_selectedMonth).listen((
+      moods,
+    ) {
+      if (!mounted) return;
+      setState(() => _dayMoods = moods);
+    });
+  }
+
+  /// Full-entry stream for the month entry list. Only needed when the user
+  /// is on Month view with no day selected — in Week view or day-drilled
+  /// view the list isn't rendered, so the heavy fetch is wasted work.
+  /// Called whenever view state changes so the subscription stays tight
+  /// to what's actually on screen.
+  void _refreshMonthEntriesSubscription() {
+    final needsFullEntries = !_isWeekView && _selectedDay == null;
+    if (!needsFullEntries) {
+      _monthEntriesSub?.cancel();
+      _monthEntriesSub = null;
+      return;
+    }
     _monthEntriesSub?.cancel();
     _monthEntriesSub = _entries.watchMonthEntries(_selectedMonth).listen((
       entries,
     ) {
       if (!mounted) return;
-
-      // Derive entry days and mood map from the full entries list,
-      // avoiding two extra database queries.
-      final days = <int>{};
-      final moods = <int, int>{};
-      for (final e in entries) {
-        final day = e.date.day;
-        days.add(day);
-        if (e.mood != null) {
-          // Last entry's mood wins (entries are ordered by date ASC).
-          moods[day] = e.mood!;
-        }
-      }
-
-      setState(() {
-        _monthEntries = entries;
-        _entryDays = days;
-        _dayMoods = moods;
-      });
+      setState(() => _monthEntries = entries);
     });
   }
 
@@ -206,6 +235,7 @@ class _RecapScreenState extends State<RecapScreen>
         _selectedEntries = [];
       });
       _entrySub?.cancel();
+      _refreshMonthEntriesSubscription();
       return;
     }
 
@@ -217,6 +247,9 @@ class _RecapScreenState extends State<RecapScreen>
       if (!mounted) return;
       setState(() => _selectedEntries = entries);
     });
+    // Day drilldown hides the month entry list — drop that subscription so
+    // month-wide saves don't trigger rebuild work we can't see.
+    _refreshMonthEntriesSubscription();
   }
 
   void _goToPreviousMonth() {
@@ -226,9 +259,11 @@ class _RecapScreenState extends State<RecapScreen>
       _selectedEntries = [];
       _monthEntries = [];
       _dayMoods = {};
+      _entryDays = {};
     });
     _entrySub?.cancel();
-    _listenToMonthData();
+    _subscribeMonthMeta();
+    _refreshMonthEntriesSubscription();
   }
 
   void _goToNextMonth() {
@@ -249,9 +284,11 @@ class _RecapScreenState extends State<RecapScreen>
       _selectedEntries = [];
       _monthEntries = [];
       _dayMoods = {};
+      _entryDays = {};
     });
     _entrySub?.cancel();
-    _listenToMonthData();
+    _subscribeMonthMeta();
+    _refreshMonthEntriesSubscription();
   }
 
   void _onSearchChanged(String query) {
@@ -309,6 +346,8 @@ class _RecapScreenState extends State<RecapScreen>
     _weekEntriesSub?.cancel();
     _entrySub?.cancel();
     _monthEntriesSub?.cancel();
+    _monthDaysSub?.cancel();
+    _monthMoodsSub?.cancel();
     super.dispose();
   }
 
@@ -434,8 +473,18 @@ class _RecapScreenState extends State<RecapScreen>
                   leftLabel: l10n.weekLabel,
                   rightLabel: l10n.monthLabel,
                   isRightActive: !_isWeekView,
-                  onTapLeft: () => setState(() => _isWeekView = true),
-                  onTapRight: () => setState(() => _isWeekView = false),
+                  onTapLeft: () {
+                    setState(() => _isWeekView = true);
+                    // Leaving month view — drop the heavy full-entries
+                    // stream; week view has its own subscription.
+                    _refreshMonthEntriesSubscription();
+                  },
+                  onTapRight: () {
+                    setState(() => _isWeekView = false);
+                    // Entering month view — re-attach the full-entries
+                    // stream so the month list can render.
+                    _refreshMonthEntriesSubscription();
+                  },
                 ),
               ),
 
@@ -457,11 +506,16 @@ class _RecapScreenState extends State<RecapScreen>
                       date.year != _selectedMonth.year) {
                     setState(() {
                       _selectedMonth = DateTime(date.year, date.month);
+                      _entryDays = {};
+                      _dayMoods = {};
+                      _monthEntries = [];
                     });
-                    _listenToMonthData();
+                    _subscribeMonthMeta();
                   }
                   setState(() => _isWeekView = false);
                   _onDaySelected(date.day);
+                  // _onDaySelected already calls _refreshMonthEntriesSubscription;
+                  // it'll drop the heavy stream because a day is now selected.
                 },
               ),
 

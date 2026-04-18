@@ -92,4 +92,35 @@ class JournalEntry {
   String get displayText => entry ?? '';
 
   bool get isEmpty => entry == null || entry!.isEmpty;
+
+  /// Value equality so Drift stream watchers can use `.distinct()` to
+  /// suppress re-emissions of identical snapshots. Without this, any
+  /// journal_entries mutation re-emits the full list and downstream
+  /// setState calls rebuild the whole Recap/Home trees even when the
+  /// user-visible data hasn't changed.
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is JournalEntry &&
+        other.id == id &&
+        other.date == date &&
+        other.entry == entry &&
+        other.label == label &&
+        other.title == title &&
+        other.mood == mood &&
+        other.createdAt == createdAt &&
+        other.userId == userId;
+  }
+
+  @override
+  int get hashCode => Object.hash(
+        id,
+        date,
+        entry,
+        label,
+        title,
+        mood,
+        createdAt,
+        userId,
+      );
 }
