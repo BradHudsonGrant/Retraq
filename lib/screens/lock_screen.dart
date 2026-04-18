@@ -10,6 +10,7 @@ import '../services/export_service.dart';
 import '../services/lockout_controller.dart';
 import '../services/secure_storage.dart';
 import '../services/settings_repository.dart';
+import '../services/user_repository.dart' show UserRepository;
 import '../widgets/settings_provider.dart';
 import '../theme/app_spacing.dart';
 import '../widgets/atoms/brand_ambient_background.dart';
@@ -348,6 +349,29 @@ class _LockScreenState extends State<LockScreen> {
     }
 
     await DatabaseService.instance.userRepo.deleteAllData();
+    if (!mounted) return;
+    // Mirror the Settings → Delete flow: explicit confirmation dialog
+    // before we close the process, so the user sees the reset took
+    // effect and understands the next launch will start fresh.
+    // Without this the old behaviour was inconsistent — the in-place
+    // SystemNavigator.pop() inside deleteAllData sometimes raced the
+    // lock-screen rebuild so users saw the lock UI linger while the
+    // app tried to exit.
+    await showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.allDataDeletedTitle),
+        content: Text(l10n.allDataDeletedBody),
+        actions: [
+          FilledButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: Text(l10n.closeAppButton),
+          ),
+        ],
+      ),
+    );
+    await UserRepository.requestAppExit();
   }
 
   @override

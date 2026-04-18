@@ -142,8 +142,15 @@ class _JournalTextAreaState extends State<JournalTextArea> {
       ],
       decoration: InputDecoration(
         hintText: widget.bulletPoints ? '• ${widget.hint}' : widget.hint,
-        labelText: l10n.journalEntryLabel,
-        floatingLabelBehavior: FloatingLabelBehavior.auto,
+        // "Tap to traq" lives at the input's resting position and
+        // disappears the moment the user taps in (FloatingLabelBehavior
+        // .never). Previously it floated up as a persistent label
+        // above the field, which stuck around and clashed with the
+        // actual hint copy. This way the label reads as a call-to-
+        // action that steps out of the way the instant it's served
+        // its purpose.
+        labelText: _hasFocus || _hasText ? null : l10n.journalEntryLabel,
+        floatingLabelBehavior: FloatingLabelBehavior.never,
         // Task 7.1 — Previously alpha 0.55 on light surface ~3.5:1,
         // failing WCAG 1.4.3 (4.5:1 minimum for body-size text). 0.75
         // raises the composited contrast comfortably above 4.5:1

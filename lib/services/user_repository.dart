@@ -153,19 +153,36 @@ class UserRepository {
         // available in tests or on iOS; log and continue.
         AppLog.warn('UserRepository.deleteAllData.homeWidget', e, st);
       }
-      // Force-restart the app so the UI reflects the clean state.
-      // Skip when running in Flutter test harness.
-      if (Platform.environment.containsKey('FLUTTER_TEST') == false) {
-        await Future<void>.delayed(const Duration(milliseconds: 500));
-        if (Platform.isAndroid) {
-          SystemNavigator.pop();
-        } else {
-          exit(0);
-        }
-      }
+      // Previously we forced `SystemNavigator.pop()` / `exit(0)` from
+      // inside this method after a 500ms delay. That was graceless —
+      // the app just blinked out of existence before any success
+      // toast the caller queued up could even paint, and it didn't
+      // give the user a chance to read what had happened. Callers are
+      // now responsible for showing a confirmation UI and calling
+      // [requestAppExit] when the user is ready. That lets settings
+      // and the lock-screen forgot-PIN flow run identical post-delete
+      // copy instead of one silently slamming shut.
     } catch (e) {
       AppLog.error('UserRepository.deleteAllData', e);
       rethrow;
+    }
+  }
+
+  /// Close the app cleanly. Use after [deleteAllData] once the user has
+  /// acknowledged the post-delete confirmation dialog, so next launch
+  /// re-derives db state from scratch instead of trying to keep the
+  /// current in-memory tree (with wiped Drift watchers) alive.
+  ///
+  /// Android: Navigator.pop delivers the user back to the launcher.
+  /// iOS: exit(0); iOS doesn't have a blessed "finish app" API, so
+  /// this is the pragmatic compromise the Apple reviewer tends to
+  /// accept for explicit user-initiated data resets.
+  static Future<void> requestAppExit() async {
+    if (Platform.environment.containsKey('FLUTTER_TEST')) return;
+    if (Platform.isAndroid) {
+      await SystemNavigator.pop();
+    } else {
+      exit(0);
     }
   }
 

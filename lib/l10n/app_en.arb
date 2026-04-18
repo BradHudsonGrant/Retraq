@@ -4,7 +4,7 @@
   "appName": "Retraq",
 
   "navJot": "Traq",
-  "navRecap": "Recap",
+  "navRecap": "Retraq",
   "navStats": "Stats",
   "navSettings": "Settings",
 
@@ -96,7 +96,7 @@
     }
   },
 
-  "recapTitle": "Recap",
+  "recapTitle": "Retraq",
   "searchHint": "Search your traqs...",
   "closeSearch": "Close search",
   "searchEntries": "Search your traqs",
@@ -412,6 +412,9 @@
   "typeDeleteError": "Type DELETE to confirm",
   "deleteEverything": "Delete Everything",
   "allDataDeleted": "All data has been deleted.",
+  "allDataDeletedTitle": "All data deleted",
+  "allDataDeletedBody": "Your traqs, settings and consent records have been cleared. Retraq will close now — reopen it to start fresh.",
+  "closeAppButton": "Close Retraq",
   "deleteDataFailed": "Failed to delete data. Please try again.",
 
   "editEntry": "Edit Traq",

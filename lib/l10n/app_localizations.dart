@@ -108,7 +108,7 @@ abstract class L10n {
   /// No description provided for @navRecap.
   ///
   /// In en, this message translates to:
-  /// **'Recap'**
+  /// **'Retraq'**
   String get navRecap;
 
   /// No description provided for @navStats.
@@ -408,7 +408,7 @@ abstract class L10n {
   /// No description provided for @recapTitle.
   ///
   /// In en, this message translates to:
-  /// **'Recap'**
+  /// **'Retraq'**
   String get recapTitle;
 
   /// No description provided for @searchHint.
@@ -1416,6 +1416,24 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'All data has been deleted.'**
   String get allDataDeleted;
+
+  /// No description provided for @allDataDeletedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'All data deleted'**
+  String get allDataDeletedTitle;
+
+  /// No description provided for @allDataDeletedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your traqs, settings and consent records have been cleared. Retraq will close now — reopen it to start fresh.'**
+  String get allDataDeletedBody;
+
+  /// No description provided for @closeAppButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Close Retraq'**
+  String get closeAppButton;
 
   /// No description provided for @deleteDataFailed.
   ///

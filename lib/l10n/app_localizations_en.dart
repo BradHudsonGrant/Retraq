@@ -15,7 +15,7 @@ class L10nEn extends L10n {
   String get navJot => 'Traq';
 
   @override
-  String get navRecap => 'Recap';
+  String get navRecap => 'Retraq';
 
   @override
   String get navStats => 'Stats';
@@ -188,7 +188,7 @@ class L10nEn extends L10n {
   }
 
   @override
-  String get recapTitle => 'Recap';
+  String get recapTitle => 'Retraq';
 
   @override
   String get searchHint => 'Search your traqs...';
@@ -779,6 +779,16 @@ class L10nEn extends L10n {
 
   @override
   String get allDataDeleted => 'All data has been deleted.';
+
+  @override
+  String get allDataDeletedTitle => 'All data deleted';
+
+  @override
+  String get allDataDeletedBody =>
+      'Your traqs, settings and consent records have been cleared. Retraq will close now — reopen it to start fresh.';
+
+  @override
+  String get closeAppButton => 'Close Retraq';
 
   @override
   String get deleteDataFailed => 'Failed to delete data. Please try again.';

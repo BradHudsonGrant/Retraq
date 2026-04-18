@@ -10,6 +10,7 @@ import '../../services/export_service.dart';
 import '../../theme/app_spacing.dart';
 import '../../widgets/atoms/app_snack_bar.dart';
 import '../../widgets/organisms/delete_confirm_dialog.dart';
+import '../../services/user_repository.dart' show UserRepository;
 
 /// Settings → Data section.
 ///
@@ -405,13 +406,40 @@ class _DataSectionState extends State<DataSection> {
     try {
       await DatabaseService.instance.userRepo.deleteAllData();
       if (!context.mounted) return;
-      final l10n = L10n.of(context)!;
-      AppSnackBar.show(context, l10n.allDataDeleted);
+      // Delete succeeded — show a dedicated confirmation dialog that
+      // explains what just happened and asks the user to confirm
+      // before we close the app. The previous behaviour slammed the
+      // app shut with no feedback beyond a snackbar that never got
+      // time to paint.
+      await _showPostDeleteDialog(context);
+      // Whether or not the user tapped the close button above, the
+      // in-memory app state (Drift watchers, cached settings, etc.)
+      // is referring to wiped rows — closing the process here is the
+      // safest path to a fresh next-launch.
+      await UserRepository.requestAppExit();
     } catch (e) {
       if (!context.mounted) return;
       final l10n = L10n.of(context)!;
       AppSnackBar.error(context, l10n.deleteDataFailed);
     }
+  }
+
+  Future<void> _showPostDeleteDialog(BuildContext context) async {
+    final l10n = L10n.of(context)!;
+    await showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.allDataDeletedTitle),
+        content: Text(l10n.allDataDeletedBody),
+        actions: [
+          FilledButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: Text(l10n.closeAppButton),
+          ),
+        ],
+      ),
+    );
   }
 }
 
