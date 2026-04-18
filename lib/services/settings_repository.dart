@@ -32,6 +32,7 @@ class SettingsRepository {
       moodRequired: row.moodRequired,
       moodOnlyEntries: row.moodOnlyEntries,
       bionicReadingEnabled: row.bionicReadingEnabled,
+      useOnDeviceAiForRecaps: row.useOnDeviceAiForRecaps,
     );
   }
 
@@ -102,6 +103,7 @@ class SettingsRepository {
       moodRequired: Value(row.moodRequired),
       moodOnlyEntries: Value(row.moodOnlyEntries),
       bionicReadingEnabled: Value(row.bionicReadingEnabled),
+      useOnDeviceAiForRecaps: Value(row.useOnDeviceAiForRecaps),
     );
   }
 
@@ -131,6 +133,7 @@ class SettingsRepository {
           moodRequired: Value(s.moodRequired),
           moodOnlyEntries: Value(s.moodOnlyEntries),
           bionicReadingEnabled: Value(s.bionicReadingEnabled),
+          useOnDeviceAiForRecaps: Value(s.useOnDeviceAiForRecaps),
         );
 
         // Defensive cleanup: drop any orphans that earlier autoincrement

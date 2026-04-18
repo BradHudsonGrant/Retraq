@@ -1,10 +1,17 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     <!-- Biometric authentication (PIN / fingerprint unlock) -->
     <uses-permission android:name="android.permission.USE_BIOMETRIC"/>
     <uses-permission android:name="android.permission.USE_FINGERPRINT"/>
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
+    <!-- ML Kit GenAI Prompt (Gemini Nano) requires minSdk 26 in its manifest,
+         but the app targets minSdk 24 so users on Android 7 can still use
+         the template recap. The override is safe because OnDeviceAiChannel
+         guards every ML Kit call behind Build.VERSION.SDK_INT >= O and
+         Gemini Nano itself only activates on Android 14+ flagships. -->
+    <uses-sdk tools:overrideLibrary="com.google.mlkit.genai.prompt,com.google.mlkit.genai.common" />
 
     <application
         android:label="Retraq"

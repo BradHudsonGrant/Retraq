@@ -326,6 +326,15 @@ MigrationStrategy buildMigrationStrategy(AppDatabase db) {
           FROM journal_entries
         ''');
       }
+      if (from < 15) {
+        // v14→v15: Add opt-in toggle for the device's built-in AI recap
+        // generator. Defaults OFF so existing users keep the template
+        // observation until they explicitly enable the platform AI in
+        // Settings → Preferences.
+        await db.customStatement(
+          'ALTER TABLE user_settings_table ADD COLUMN use_on_device_ai_for_recaps INTEGER NOT NULL DEFAULT 0',
+        );
+      }
     },
   );
 }

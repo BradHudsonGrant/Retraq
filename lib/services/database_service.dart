@@ -89,6 +89,11 @@ class UserSettingsTable extends Table {
       boolean().withDefault(const Constant(false))();
   BoolColumn get bionicReadingEnabled =>
       boolean().withDefault(const Constant(false))();
+  // v15: opt-in use of the device's built-in AI (Gemini Nano on Android,
+  // Apple Foundation Models on iOS) to generate the weekly recap
+  // observation. Defaults OFF; inference is strictly on-device.
+  BoolColumn get useOnDeviceAiForRecaps =>
+      boolean().withDefault(const Constant(false))();
   IntColumn get userId => integer().nullable()();
 }
 
@@ -112,7 +117,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 14;
+  int get schemaVersion => 15;
 
   @override
   MigrationStrategy get migration => buildMigrationStrategy(this);
@@ -394,6 +399,7 @@ class DatabaseService {
             moodRequired: Value(row.moodRequired),
             moodOnlyEntries: Value(row.moodOnlyEntries),
             bionicReadingEnabled: Value(row.bionicReadingEnabled),
+            useOnDeviceAiForRecaps: Value(row.useOnDeviceAiForRecaps),
             userId: Value(row.userId),
           ),
         );

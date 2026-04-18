@@ -592,7 +592,7 @@ void main() {
       }
     });
 
-    test('v13→v14 leaves schema_version at 14', () async {
+    test('v13→latest leaves schema_version at the current head', () async {
       final db = openV3WithFixtures((_) {});
       try {
         await db.customSelect('SELECT 1').get();
@@ -602,12 +602,13 @@ void main() {
         final version = row.data.values.first as int;
         expect(
           version,
-          14,
+          15,
           reason:
-              'After v3→v14 migration, PRAGMA user_version must be exactly '
-              '14. A mismatch here means the migration stopped short and '
-              'the v14-only invariants (FTS triggers, indices) cannot be '
-              'relied upon by application code.',
+              'After v3→latest migration, PRAGMA user_version must match the '
+              'current schema version (15). A mismatch here means the migration '
+              'stopped short and the head-version invariants (FTS triggers, '
+              'indices, on-device AI toggle column) cannot be relied upon by '
+              'application code.',
         );
       } finally {
         await db.close();

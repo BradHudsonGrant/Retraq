@@ -1,20 +1,40 @@
 import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/user_settings.dart';
+import '../../services/ai/recap_ai_provider.dart';
 import '../../theme/app_spacing.dart';
 import '../../utils/date_helpers.dart';
 import '../../widgets/molecules/segmented_pill.dart';
 import '../../widgets/molecules/settings_row.dart';
 
-class PreferencesSection extends StatelessWidget {
+class PreferencesSection extends StatefulWidget {
   const PreferencesSection({
     super.key,
     required this.settings,
     required this.onSettingsChanged,
+    this.aiProvider,
   });
 
   final UserSettings settings;
   final ValueChanged<UserSettings> onSettingsChanged;
+
+  /// Injection seam for tests. Defaults to [PlatformRecapAiProvider]
+  /// so the capability probe hits the real platform channel.
+  final RecapAiProvider? aiProvider;
+
+  @override
+  State<PreferencesSection> createState() => _PreferencesSectionState();
+}
+
+class _PreferencesSectionState extends State<PreferencesSection> {
+  // Single provider instance reused by the on-device AI row — keeps one
+  // EventChannel subscription for the whole screen lifetime rather than
+  // re-opening on every rebuild.
+  late final RecapAiProvider _aiProviderInstance =
+      widget.aiProvider ?? PlatformRecapAiProvider();
+
+  UserSettings get settings => widget.settings;
+  ValueChanged<UserSettings> get onSettingsChanged => widget.onSettingsChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -153,6 +173,18 @@ class PreferencesSection extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.md),
 
+              // On-device AI recap. Opt-in toggle gated by a live
+              // capability probe — the switch is disabled on devices
+              // that can't run Gemini Nano / Apple Foundation Models.
+              // Inference stays on the device; entries are handed to
+              // the OS's sandboxed AI runtime, not the network.
+              _OnDeviceAiRecapRow(
+                provider: _aiProviderInstance,
+                settings: s,
+                onSettingsChanged: onSettingsChanged,
+              ),
+              const SizedBox(height: AppSpacing.md),
+
               SettingsRow(
                 title: l10n.enterToSave,
                 subtitle: l10n.enterToSaveSubtitle,
@@ -284,5 +316,166 @@ class PreferencesSection extends StatelessWidget {
       default:
         return l10n.mondayName;
     }
+  }
+}
+
+/// Opt-in on-device AI toggle + live download progress.
+///
+/// Listens to [RecapAiProvider.events] so the subtitle + progress bar
+/// reflect the real platform state (downloadable → downloading with
+/// byte count → available). When the user flips the toggle on, we also
+/// kick off `startDownload()` so the model fetch begins immediately
+/// — no waiting for the first recap render to realise it needs to
+/// download something.
+class _OnDeviceAiRecapRow extends StatefulWidget {
+  const _OnDeviceAiRecapRow({
+    required this.provider,
+    required this.settings,
+    required this.onSettingsChanged,
+  });
+
+  final RecapAiProvider provider;
+  final UserSettings settings;
+  final ValueChanged<UserSettings> onSettingsChanged;
+
+  @override
+  State<_OnDeviceAiRecapRow> createState() => _OnDeviceAiRecapRowState();
+}
+
+class _OnDeviceAiRecapRowState extends State<_OnDeviceAiRecapRow> {
+  RecapAiStatus _status = RecapAiStatus.unavailable;
+  int _bytesDownloaded = 0;
+  String? _errorMessage;
+  bool _gotFirstEvent = false;
+
+  late final Stream<RecapAiEvent> _events = widget.provider.events();
+
+  @override
+  void initState() {
+    super.initState();
+    // Prime with a one-shot probe so the row isn't stuck on the
+    // "probing" default until the first EventChannel emission arrives.
+    widget.provider.checkStatus().then((s) {
+      if (!mounted) return;
+      setState(() {
+        _status = s;
+        _gotFirstEvent = true;
+      });
+    });
+  }
+
+  void _onToggle(bool value) {
+    widget.onSettingsChanged(
+      widget.settings.copyWith(useOnDeviceAiForRecaps: value),
+    );
+    // Turning the toggle on kicks off the download so the user sees
+    // immediate feedback. The ML Kit call is idempotent — if the model
+    // is already on device, this no-ops.
+    if (value &&
+        (_status == RecapAiStatus.downloadable ||
+            _status == RecapAiStatus.downloading)) {
+      widget.provider.startDownload();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
+    final l10n = L10n.of(context)!;
+    final s = widget.settings;
+
+    return StreamBuilder<RecapAiEvent>(
+      stream: _events,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          _status = snapshot.data!.status;
+          _bytesDownloaded =
+              snapshot.data!.bytesDownloaded ?? _bytesDownloaded;
+          _errorMessage = snapshot.data!.errorMessage;
+          _gotFirstEvent = true;
+        }
+
+        final supported = _status == RecapAiStatus.available ||
+            _status == RecapAiStatus.downloadable ||
+            _status == RecapAiStatus.downloading;
+        final downloading = _status == RecapAiStatus.downloading &&
+            s.useOnDeviceAiForRecaps;
+
+        String subtitle;
+        if (!_gotFirstEvent) {
+          subtitle = l10n.onDeviceAiRecapSubtitle;
+        } else if (!supported) {
+          subtitle =
+              _errorMessage ?? l10n.onDeviceAiRecapUnavailable;
+        } else if (downloading) {
+          subtitle = _bytesDownloaded > 0
+              ? 'Downloading AI model… ${_formatBytes(_bytesDownloaded)}'
+              : 'Downloading AI model…';
+        } else if (_status == RecapAiStatus.downloadable &&
+            s.useOnDeviceAiForRecaps) {
+          subtitle = 'Starting download…';
+        } else if (_status == RecapAiStatus.available &&
+            s.useOnDeviceAiForRecaps) {
+          subtitle = 'AI model ready on this device.';
+        } else {
+          subtitle = l10n.onDeviceAiRecapSubtitle;
+        }
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SettingsRow(
+              title: l10n.onDeviceAiRecap,
+              subtitle: subtitle,
+              trailing: Semantics(
+                label: l10n.onDeviceAiRecap,
+                child: Switch(
+                  value: supported && s.useOnDeviceAiForRecaps,
+                  onChanged: supported ? _onToggle : null,
+                  activeThumbColor: cs.primary,
+                ),
+              ),
+            ),
+            // Indeterminate progress bar while downloading — ML Kit
+            // doesn't report a denominator so a determinate value
+            // would lie. The pulsing bar + bytes caption communicate
+            // "still working" honestly.
+            if (downloading) ...[
+              const SizedBox(height: AppSpacing.xs),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: LinearProgressIndicator(
+                  minHeight: 4,
+                  backgroundColor: cs.surfaceContainerHigh,
+                  valueColor: AlwaysStoppedAnimation<Color>(cs.primary),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xs),
+              Text(
+                'One-time download. Runs entirely on your device after.',
+                style: tt.labelSmall?.copyWith(
+                  color: cs.onSurfaceVariant.withValues(alpha: 0.7),
+                ),
+              ),
+            ],
+          ],
+        );
+      },
+    );
+  }
+
+  static String _formatBytes(int bytes) {
+    if (bytes <= 0) return '0 B';
+    const units = ['B', 'KB', 'MB', 'GB'];
+    var i = 0;
+    double value = bytes.toDouble();
+    while (value >= 1024 && i < units.length - 1) {
+      value /= 1024;
+      i++;
+    }
+    // Two decimals for MB+; bytes/KB look silly with fractions.
+    final formatted = i >= 2 ? value.toStringAsFixed(1) : value.toStringAsFixed(0);
+    return '$formatted ${units[i]}';
   }
 }

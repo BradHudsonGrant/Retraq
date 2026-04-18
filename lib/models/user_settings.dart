@@ -33,6 +33,12 @@ class UserSettings extends Equatable {
   final bool moodRequired; // Require mood before saving entry
   final bool moodOnlyEntries; // Allow mood-only entries (no text)
   final bool bionicReadingEnabled; // Bold start of each word for faster reading
+  // Opt-in: use the device's built-in on-device AI (Gemini Nano on
+  // supported Android, Apple Foundation Models on supported iOS) to
+  // generate the weekly recap observation. Default OFF — entries stay
+  // on-device either way, but the user explicitly grants use of the
+  // platform AI service.
+  final bool useOnDeviceAiForRecaps;
 
   const UserSettings({
     this.themeMode = 0,
@@ -53,6 +59,7 @@ class UserSettings extends Equatable {
     this.moodRequired = false,
     this.moodOnlyEntries = false,
     this.bionicReadingEnabled = false,
+    this.useOnDeviceAiForRecaps = false,
   });
 
   static const Object _sentinel = Object();
@@ -76,6 +83,7 @@ class UserSettings extends Equatable {
     bool? moodRequired,
     bool? moodOnlyEntries,
     bool? bionicReadingEnabled,
+    bool? useOnDeviceAiForRecaps,
   }) {
     return UserSettings(
       themeMode: themeMode ?? this.themeMode,
@@ -96,6 +104,8 @@ class UserSettings extends Equatable {
       moodRequired: moodRequired ?? this.moodRequired,
       moodOnlyEntries: moodOnlyEntries ?? this.moodOnlyEntries,
       bionicReadingEnabled: bionicReadingEnabled ?? this.bionicReadingEnabled,
+      useOnDeviceAiForRecaps:
+          useOnDeviceAiForRecaps ?? this.useOnDeviceAiForRecaps,
     );
   }
 
@@ -119,5 +129,6 @@ class UserSettings extends Equatable {
     moodRequired,
     moodOnlyEntries,
     bionicReadingEnabled,
+    useOnDeviceAiForRecaps,
   ];
 }

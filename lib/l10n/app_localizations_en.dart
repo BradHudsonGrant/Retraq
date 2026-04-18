@@ -640,6 +640,16 @@ class L10nEn extends L10n {
       'Bolds the start of each word for faster reading';
 
   @override
+  String get onDeviceAiRecap => 'On-Device AI Recap';
+
+  @override
+  String get onDeviceAiRecapSubtitle =>
+      'Use your phone\'s built-in AI to write weekly recaps. Entries never leave your device.';
+
+  @override
+  String get onDeviceAiRecapUnavailable => 'Not supported on this device';
+
+  @override
   String get weekStartsOn => 'Week Starts On';
 
   @override

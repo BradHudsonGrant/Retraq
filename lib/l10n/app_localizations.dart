@@ -1201,6 +1201,24 @@ abstract class L10n {
   /// **'Bolds the start of each word for faster reading'**
   String get bionicReadingSubtitle;
 
+  /// No description provided for @onDeviceAiRecap.
+  ///
+  /// In en, this message translates to:
+  /// **'On-Device AI Recap'**
+  String get onDeviceAiRecap;
+
+  /// No description provided for @onDeviceAiRecapSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Use your phone\'s built-in AI to write weekly recaps. Entries never leave your device.'**
+  String get onDeviceAiRecapSubtitle;
+
+  /// No description provided for @onDeviceAiRecapUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Not supported on this device'**
+  String get onDeviceAiRecapUnavailable;
+
   /// No description provided for @weekStartsOn.
   ///
   /// In en, this message translates to:
