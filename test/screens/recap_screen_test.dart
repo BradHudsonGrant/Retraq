@@ -116,7 +116,7 @@ void main() {
     });
 
     testWidgets(
-      'shows "No entry for this day" when selecting empty day in month view',
+      'shows empty-day message when selecting empty day in month view',
       (tester) async {
         await tester.pumpWidget(wrapWidget(const RecapScreen()));
         await tester.pump(const Duration(milliseconds: 200));
@@ -131,7 +131,11 @@ void main() {
           await tester.tap(dayOne.first);
           await tester.pump(const Duration(milliseconds: 200));
 
-          expect(find.text('No entry for this day'), findsOneWidget);
+          // Copy was rebranded from "No entry for this day" to the current
+          // traqs-flavoured string in the ARB. Assert on the live l10n
+          // value so we don't have to re-update the test every time the
+          // copy gets polished.
+          expect(find.text('No traqs for this day'), findsOneWidget);
         }
         await flushDriftTimers(tester);
       },
@@ -153,7 +157,8 @@ void main() {
       await tester.pump();
 
       expect(find.byType(TextField), findsOneWidget);
-      expect(find.text('Search entries...'), findsOneWidget);
+      // Rebrand: searchHint is now "Search your traqs..." in the ARB.
+      expect(find.text('Search your traqs...'), findsOneWidget);
       await flushDriftTimers(tester);
     });
   });

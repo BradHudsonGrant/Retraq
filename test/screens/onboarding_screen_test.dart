@@ -261,7 +261,15 @@ void main() {
         find.textContaining('not a medical or therapeutic tool'),
         findsOneWidget,
       );
-      expect(find.textContaining('988'), findsOneWidget);
+      // Used to assert on the literal "988" but the consent page now
+      // resolves CrisisContacts by locale — tests run without a country
+      // code, so the fallback "Find a Helpline" URL is injected instead.
+      // Assert on the crisis CTA phrasing that's stable across all
+      // locales ("please contact a mental health professional").
+      expect(
+        find.textContaining('mental health professional'),
+        findsOneWidget,
+      );
     });
 
     testWidgets('consent page shows privacy and terms checkboxes', (

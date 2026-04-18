@@ -26,23 +26,32 @@ void main() {
     ),
   );
 
-  testWidgets('AppShell renders four navigation tabs', (
+  testWidgets('AppShell renders three navigation tabs', (
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(wrapShell());
     await tester.pump(const Duration(milliseconds: 100));
 
     // Shell intentionally has NO top AppBar — each screen owns its own
-    // header for max real-estate. Just verify the nav bar and the four
-    // tab labels are present.
+    // header for max real-estate. Just verify the nav bar and the three
+    // tab labels are present. Stats was collapsed into the Recap tab as
+    // an embedded Insights pane (Task 2.5) and the Jot label was renamed
+    // to Traq to match the rest of the product copy.
     expect(find.byType(AppBar), findsNothing);
     expect(find.byType(NavigationBar), findsOneWidget);
 
-    // Verify all 4 navigation destinations exist
-    expect(find.text('Jot'), findsOneWidget);
-    expect(find.text('Recap'), findsOneWidget);
-    expect(find.text('Stats'), findsOneWidget);
-    expect(find.text('Settings'), findsOneWidget);
+    // Verify the 3 navigation destinations exist. "Traq" now also
+    // appears inside the Home screen body (hero copy uses the brand
+    // term), so scope the tab-label lookup to the NavigationBar itself
+    // via a descendant finder — otherwise findsOneWidget trips on the
+    // body text that lives outside the nav.
+    Finder inNav(String label) => find.descendant(
+          of: find.byType(NavigationBar),
+          matching: find.text(label),
+        );
+    expect(inNav('Traq'), findsOneWidget);
+    expect(inNav('Recap'), findsOneWidget);
+    expect(inNav('Settings'), findsOneWidget);
 
     // Dispose widget and flush Drift's pending zero-duration timers
     await flushDriftTimers(tester);

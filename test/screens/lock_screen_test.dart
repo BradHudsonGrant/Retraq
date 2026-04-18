@@ -65,6 +65,13 @@ void main() {
     WidgetTester tester, {
     VoidCallback? onUnlocked,
   }) async {
+    // Phone-sized surface so the lock screen layout (logo + status line
+    // + PIN dots + number pad + conditional "Forgot PIN?" button) fits
+    // without triggering the ~8px RenderFlex overflow that tripped the
+    // default 800×600 landscape test viewport. Reset at tearDown so
+    // unrelated suites stay on the default viewport.
+    await tester.binding.setSurfaceSize(const Size(400, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
     await tester.pumpWidget(
       wrapScreen(LockScreen(onUnlocked: onUnlocked ?? () {})),
     );

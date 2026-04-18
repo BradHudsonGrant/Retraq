@@ -40,8 +40,9 @@ void main() {
       await tester.pump(const Duration(milliseconds: 800));
 
       expect(find.text('No stats yet'), findsOneWidget);
+      // Rebrand: empty-state copy now reads "Start traqing..." in the ARB.
       expect(
-        find.text('Start journaling to see your patterns and streaks.'),
+        find.text('Start traqing to see your patterns and streaks.'),
         findsOneWidget,
       );
 

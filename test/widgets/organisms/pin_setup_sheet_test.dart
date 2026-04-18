@@ -3,6 +3,7 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:retraq/l10n/app_localizations.dart';
 import 'package:retraq/widgets/organisms/pin_setup_sheet.dart';
 import 'package:retraq/widgets/molecules/number_pad.dart';
 
@@ -11,10 +12,15 @@ import '../../test_helpers.dart';
 void main() {
   // PinSetupSheet is tall (number pad + dots + buttons). We render it
   // directly inside a scrollable scaffold rather than as a bottom sheet
-  // to avoid overflow in the 600×800 test viewport.
-
-  Widget wrap() => const MaterialApp(
-    home: Scaffold(body: SingleChildScrollView(child: PinSetupSheet())),
+  // to avoid overflow in the 600×800 test viewport. L10n delegates are
+  // required because PadButton reads `L10n.of(context)!` for its a11y
+  // labels; without them the null-assertion crashes at build time.
+  Widget wrap() => MaterialApp(
+    localizationsDelegates: L10n.localizationsDelegates,
+    supportedLocales: L10n.supportedLocales,
+    home: const Scaffold(
+      body: SingleChildScrollView(child: PinSetupSheet()),
+    ),
   );
 
   group('PinSetupSheet', () {
