@@ -61,9 +61,14 @@ class CalendarGrid extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
+      // Shared content-card tier.
       decoration: BoxDecoration(
-        color: cs.surfaceContainerLow,
+        color: cs.surfaceContainerHigh,
         borderRadius: AppSpacing.borderRadiusXxl,
+        border: Border.all(
+          color: cs.outlineVariant.withValues(alpha: 0.35),
+          width: 1,
+        ),
       ),
       child: Column(
         children: [

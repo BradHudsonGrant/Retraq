@@ -30,10 +30,18 @@ class ThemeCard extends StatelessWidget {
       duration:
           reduceMotion ? Duration.zero : const Duration(milliseconds: 300),
       padding: const EdgeInsets.all(AppSpacing.sm),
+      // Unselected: shared content-card tier (surfaceContainerHigh +
+      // outlineVariant). Selected: recessed surface + full-opacity
+      // primary outline so the selection state still reads clearly.
       decoration: BoxDecoration(
-        color: isSelected ? cs.surfaceContainerLowest : cs.surfaceContainerLow,
+        color: isSelected ? cs.surfaceContainerLowest : cs.surfaceContainerHigh,
         borderRadius: AppSpacing.borderRadiusLg,
-        border: isSelected ? Border.all(color: cs.primary, width: 2) : null,
+        border: Border.all(
+          color: isSelected
+              ? cs.primary
+              : cs.outlineVariant.withValues(alpha: 0.35),
+          width: isSelected ? 2 : 1,
+        ),
         boxShadow:
             isSelected
                 ? [

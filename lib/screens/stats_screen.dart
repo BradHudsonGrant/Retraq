@@ -137,8 +137,12 @@ class _StatsScreenState extends State<StatsScreen>
           Container(
             height: 160,
             decoration: BoxDecoration(
-              color: cs.surfaceContainerLow,
+              color: cs.surfaceContainerHigh,
               borderRadius: AppSpacing.borderRadiusXl,
+              border: Border.all(
+                color: cs.outlineVariant.withValues(alpha: 0.35),
+                width: 1,
+              ),
             ),
           ),
         ],
@@ -150,8 +154,12 @@ class _StatsScreenState extends State<StatsScreen>
     return Container(
       height: 90,
       decoration: BoxDecoration(
-        color: cs.surfaceContainerLow,
+        color: cs.surfaceContainerHigh,
         borderRadius: AppSpacing.borderRadiusXl,
+        border: Border.all(
+          color: cs.outlineVariant.withValues(alpha: 0.35),
+          width: 1,
+        ),
       ),
     );
   }
@@ -353,8 +361,12 @@ class _StatsScreenState extends State<StatsScreen>
           width: double.infinity,
           padding: const EdgeInsets.all(AppSpacing.lg),
           decoration: BoxDecoration(
-            color: cs.surfaceContainerLow,
+            color: cs.surfaceContainerHigh,
             borderRadius: AppSpacing.borderRadiusXl,
+            border: Border.all(
+              color: cs.outlineVariant.withValues(alpha: 0.35),
+              width: 1,
+            ),
           ),
           child: Row(
             children: [
@@ -457,7 +469,7 @@ class _StatsScreenState extends State<StatsScreen>
       width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: cs.surfaceContainerLow,
+        color: cs.surfaceContainerHigh,
         borderRadius: AppSpacing.borderRadiusXl,
       ),
       child: Column(

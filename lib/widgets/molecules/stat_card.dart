@@ -89,16 +89,16 @@ class StatCard extends StatelessWidget {
       excludeSemantics: true,
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.lg),
+        // Shared content-card tier: surfaceContainerHigh + minimal
+        // 1px outline. Drop the prior faint drop shadow — the outline
+        // carries the contrast now and matches the rest of the cards.
         decoration: BoxDecoration(
-          color: cs.surfaceContainerLow,
+          color: cs.surfaceContainerHigh,
           borderRadius: AppSpacing.borderRadiusXl,
-          boxShadow: [
-            BoxShadow(
-              color: cs.onSurface.withValues(alpha: 0.04),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
+          border: Border.all(
+            color: cs.outlineVariant.withValues(alpha: 0.35),
+            width: 1,
+          ),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

@@ -24,9 +24,14 @@ class SettingsRow extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg + AppSpacing.xxs),
+      // Shared content-card tier used across every tab.
       decoration: BoxDecoration(
-        color: cs.surfaceContainerLow,
+        color: cs.surfaceContainerHigh,
         borderRadius: AppSpacing.borderRadiusLg,
+        border: Border.all(
+          color: cs.outlineVariant.withValues(alpha: 0.35),
+          width: 1,
+        ),
       ),
       child: Row(
         children: [

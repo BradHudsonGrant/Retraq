@@ -123,9 +123,14 @@ class _WeeklyTrendChartState extends State<WeeklyTrendChart>
     final tt = Theme.of(context).textTheme;
 
     return Container(
+      // Shared content-card tier.
       decoration: BoxDecoration(
-        color: cs.surfaceContainerLow,
+        color: cs.surfaceContainerHigh,
         borderRadius: AppSpacing.borderRadiusXxl,
+        border: Border.all(
+          color: cs.outlineVariant.withValues(alpha: 0.35),
+          width: 1,
+        ),
       ),
       padding: const EdgeInsets.fromLTRB(
         AppSpacing.lg,

@@ -158,9 +158,14 @@ class RecapSearchView extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: AppSpacing.sm),
                 child: Container(
                   padding: const EdgeInsets.all(AppSpacing.md),
+                  // Shared content-card tier.
                   decoration: BoxDecoration(
-                    color: cs.surfaceContainerLow,
+                    color: cs.surfaceContainerHigh,
                     borderRadius: AppSpacing.borderRadiusLg,
+                    border: Border.all(
+                      color: cs.outlineVariant.withValues(alpha: 0.35),
+                      width: 1,
+                    ),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

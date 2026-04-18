@@ -25,12 +25,14 @@ class WeeklySummaryCard extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.lg),
-      // Minimal outline shared with the rest of the card system, plus
-      // a 3px primary-coloured left accent that signals "this card is
-      // the weekly summary" — the only card in the app that carries
-      // the branded left stripe.
+      // Raised content tier (surfaceContainerHigh) shared with all
+      // other content cards across the shell. Identified as the
+      // weekly recap card via a soft 2px primary-tinted left accent
+      // that blends with the outlineVariant outline on the other
+      // three sides — the old 3px full-opacity primary bar read as
+      // harsh against the lighter surface.
       decoration: BoxDecoration(
-        color: cs.surfaceContainerLow,
+        color: cs.surfaceContainerHigh,
         borderRadius: AppSpacing.borderRadiusXl,
         border: Border(
           top: BorderSide(
@@ -45,7 +47,10 @@ class WeeklySummaryCard extends StatelessWidget {
             color: cs.outlineVariant.withValues(alpha: 0.35),
             width: 1,
           ),
-          left: BorderSide(color: cs.primary, width: 3),
+          left: BorderSide(
+            color: cs.primary.withValues(alpha: 0.55),
+            width: 2,
+          ),
         ),
       ),
       child: Column(

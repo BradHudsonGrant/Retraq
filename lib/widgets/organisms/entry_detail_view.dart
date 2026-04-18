@@ -127,9 +127,16 @@ class _EntryCard extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.lg),
+      // Shared content-card tier: raised surfaceContainerHigh fill +
+      // 1px outlineVariant outline to match RecentDayCard, day cards,
+      // and the rest of the minimal-border card system.
       decoration: BoxDecoration(
-        color: cs.surfaceContainerLow,
+        color: cs.surfaceContainerHigh,
         borderRadius: AppSpacing.borderRadiusXl,
+        border: Border.all(
+          color: cs.outlineVariant.withValues(alpha: 0.35),
+          width: 1,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
