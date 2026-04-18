@@ -351,7 +351,10 @@ class _HomeScreenState extends State<HomeScreen>
       // Entry title (optional).
       // Task 1.2 — molecule extraction; see lib/widgets/molecules/title_field.dart.
       if (_settings?.showEntryTitle ?? false) ...[
-        TitleField(controller: _form.titleCtrl),
+        TitleField(
+          controller: _form.titleCtrl,
+          nextFocusNode: _entryFocus,
+        ),
         const SizedBox(height: AppSpacing.sm),
       ],
 

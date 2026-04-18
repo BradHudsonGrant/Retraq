@@ -89,4 +89,55 @@ void main() {
             'sentences. Dropping this would regress a previously-landed '
             'UX pass.');
   });
+
+  testWidgets('submitting with nextFocusNode moves focus to the body',
+      (tester) async {
+    final controller = TextEditingController();
+    final next = FocusNode();
+    addTearDown(controller.dispose);
+    addTearDown(next.dispose);
+
+    await tester.pumpWidget(wrapWidget(
+      Column(children: [
+        TitleField(controller: controller, nextFocusNode: next),
+        // The focusable sink below simulates the journal body.
+        TextField(focusNode: next),
+      ]),
+    ));
+    await tester.pump();
+
+    // Tap title, type, submit. After submit, the next FocusNode should
+    // hold focus so the user can keep typing in the journal body.
+    await tester.tap(find.byKey(TestKeys.homeTitleField));
+    await tester.pump();
+    await tester.enterText(find.byKey(TestKeys.homeTitleField), 'Hello');
+    await tester.testTextInput.receiveAction(TextInputAction.next);
+    await tester.pump();
+
+    expect(next.hasFocus, isTrue,
+        reason:
+            'Pressing Enter in the title field should jump focus to the '
+            'journal body so users never have to tap twice to start '
+            'writing. If this breaks, the composer UX regresses.');
+  });
+
+  testWidgets('no nextFocusNode → default "done" action, no focus hop',
+      (tester) async {
+    final controller = TextEditingController();
+    addTearDown(controller.dispose);
+
+    await tester.pumpWidget(wrapWidget(TitleField(controller: controller)));
+    await tester.pump();
+
+    final field = tester.widget<TextField>(
+      find.byKey(TestKeys.homeTitleField),
+    );
+    expect(field.textInputAction, TextInputAction.done,
+        reason:
+            'Without a next target, the keyboard action should be "done" '
+            'so the native dismiss behaviour kicks in rather than a stale '
+            '"next" arrow that goes nowhere.');
+    expect(field.onSubmitted, isNull,
+        reason: 'No nextFocusNode → no submit handler.');
+  });
 }

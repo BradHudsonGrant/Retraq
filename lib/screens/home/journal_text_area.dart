@@ -141,16 +141,15 @@ class _JournalTextAreaState extends State<JournalTextArea> {
         if (!widget.enterToSave && widget.bulletPoints) BulletPointFormatter(),
       ],
       decoration: InputDecoration(
-        hintText: widget.bulletPoints ? '• ${widget.hint}' : widget.hint,
-        // "Tap to traq" lives at the input's resting position and
-        // disappears the moment the user taps in (FloatingLabelBehavior
-        // .never). Previously it floated up as a persistent label
-        // above the field, which stuck around and clashed with the
-        // actual hint copy. This way the label reads as a call-to-
-        // action that steps out of the way the instant it's served
-        // its purpose.
-        labelText: _hasFocus || _hasText ? null : l10n.journalEntryLabel,
-        floatingLabelBehavior: FloatingLabelBehavior.never,
+        // hint-only: the floating label vertical metric doesn't match
+        // the text-entry baseline, so tapping in made the cursor jump
+        // down a few px from where the resting label sat. Swap to a
+        // dual-mode hint so the baseline stays fixed — "Tap to traq"
+        // at rest, the dynamic prompt ("How was today?" etc.) while
+        // focused. Both render via hintText so the cursor never moves.
+        hintText: _hasFocus || _hasText
+            ? (widget.bulletPoints ? '• ${widget.hint}' : widget.hint)
+            : l10n.journalEntryLabel,
         // Task 7.1 — Previously alpha 0.55 on light surface ~3.5:1,
         // failing WCAG 1.4.3 (4.5:1 minimum for body-size text). 0.75
         // raises the composited contrast comfortably above 4.5:1
