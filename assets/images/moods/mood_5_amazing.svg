@@ -1,16 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
-  <!-- Amazing: the character at its most upright. Clearly taller than
-       wide, narrow at the top tapering into a full rounded base —
-       reads as a blob standing tall with its "chin" lifted. No face,
-       no accents; the posture alone carries the mood. -->
-  <path d="M24 5
-           C29 5, 33 9, 33 15
-           C33 19, 34 22, 36 26
-           C37 29, 37 33, 36 36
-           C34 40, 29 43, 24 43
-           C19 43, 14 40, 12 36
-           C11 33, 11 29, 12 26
-           C14 22, 15 19, 15 15
-           C15 9, 19 5, 24 5Z"
+  <!-- Amazing: the peak mood. Now rendered as a plump, full-bodied
+       blob that visibly fills more of the viewBox than the
+       downstream states. Proportions are essentially circular with
+       a soft slightly-taller-than-wide bias, so the character reads
+       as "the same blob, but at its fullest / most buoyant" rather
+       than "stretched upward". No face, no accents — the generous
+       rounded mass alone carries the peak-mood read. -->
+  <path d="M24 3
+           C33 3, 41 10, 41 20
+           C41 28, 39 34, 36 38
+           C33 42, 29 44, 24 44
+           C19 44, 15 42, 12 38
+           C9 34, 7 28, 7 20
+           C7 10, 15 3, 24 3Z"
         fill="currentColor"/>
 </svg>
