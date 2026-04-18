@@ -104,12 +104,14 @@ class BrandAmbientBackground extends StatelessWidget {
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  // Tighter stops than before: the halo fades by 30%
-                  // and the darkening starts at 60% so the bottom
-                  // third of the screen is clearly shaded. Previous
-                  // 0.35/0.70 split left a wide neutral band that
-                  // read as a flat wash instead of a gradient.
-                  stops: const [0.0, 0.30, 0.60, 1.0],
+                  // Stops tuned so the darkening dominates the bottom
+                  // half of the screen: halo fades by 25%, then only a
+                  // ~15%-tall neutral band before the bottom fade
+                  // starts at 40%. The visible "dark zone" now runs
+                  // from mid-screen down to the navbar, giving the
+                  // gradient real top-to-bottom contrast instead of
+                  // reserving the darkening for the last few %.
+                  stops: const [0.0, 0.25, 0.40, 1.0],
                   colors: [
                     haloColor.withValues(alpha: haloAlpha),
                     cs.surface.withValues(alpha: 0),
