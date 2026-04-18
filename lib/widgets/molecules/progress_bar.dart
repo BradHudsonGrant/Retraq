@@ -41,9 +41,24 @@ class ProgressBar extends StatelessWidget {
         horizontal: AppSpacing.lg,
         vertical: AppSpacing.md,
       ),
+      // Same lift treatment as RecentDayCard: surfaceContainerHigh for a
+      // visible step off the ambient gradient, a hairline outline for
+      // a crisp edge, and a soft drop shadow so the pill floats
+      // instead of disappearing into the dark foot of the gradient.
       decoration: BoxDecoration(
-        color: cs.surfaceContainerLow,
+        color: cs.surfaceContainerHigh,
         borderRadius: AppSpacing.borderRadiusLg,
+        border: Border.all(
+          color: cs.outlineVariant.withValues(alpha: 0.18),
+          width: 0.5,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.12),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Row(
         children: [

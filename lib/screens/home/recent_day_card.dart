@@ -71,9 +71,26 @@ class _RecentDayCardState extends State<RecentDayCard> {
           horizontal: AppSpacing.md,
           vertical: AppSpacing.md,
         ),
+        // surfaceContainerLow (only ~8 RGB levels off the base in dark
+        // mode) was disappearing against the ambient gradient's dark
+        // foot. Use surfaceContainerHigh for a clearer lift, add a
+        // low-alpha outline for a crisp edge, and a soft drop shadow
+        // so the card feels raised off the gradient instead of pasted
+        // onto it.
         decoration: BoxDecoration(
-          color: cs.surfaceContainerLow,
+          color: cs.surfaceContainerHigh,
           borderRadius: AppSpacing.borderRadiusLg,
+          border: Border.all(
+            color: cs.outlineVariant.withValues(alpha: 0.18),
+            width: 0.5,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.12),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
