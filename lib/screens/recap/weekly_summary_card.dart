@@ -25,33 +25,32 @@ class WeeklySummaryCard extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.lg),
-      // Raised content tier (surfaceContainerHigh) shared with all
-      // other content cards across the shell. Identified as the
-      // weekly recap card via a soft 2px primary-tinted left accent
-      // that blends with the outlineVariant outline on the other
-      // three sides — the old 3px full-opacity primary bar read as
-      // harsh against the lighter surface.
+      // "Featured card" treatment — deliberately distinct from the
+      // regular content tier so the weekly recap reads as the hero
+      // of the Recap screen:
+      //   • Dark recessed surface (surfaceContainerLow) matching the
+      //     Traq input well, inverting the normal card→content
+      //     hierarchy so the recap feels like a "pocket" of its own.
+      //   • Full 1.5px primary border on all four sides — the green
+      //     now wraps the card instead of living only on the left
+      //     edge, giving it an unmistakable brand frame.
+      //   • Soft primary-tinted glow so the card appears to give off
+      //     a faint halo, reinforcing the "hero tile" read without
+      //     shouting.
       decoration: BoxDecoration(
-        color: cs.surfaceContainerHigh,
+        color: cs.surfaceContainerLow,
         borderRadius: AppSpacing.borderRadiusXl,
-        border: Border(
-          top: BorderSide(
-            color: cs.outlineVariant.withValues(alpha: 0.35),
-            width: 1,
-          ),
-          right: BorderSide(
-            color: cs.outlineVariant.withValues(alpha: 0.35),
-            width: 1,
-          ),
-          bottom: BorderSide(
-            color: cs.outlineVariant.withValues(alpha: 0.35),
-            width: 1,
-          ),
-          left: BorderSide(
-            color: cs.primary.withValues(alpha: 0.55),
-            width: 2,
-          ),
+        border: Border.all(
+          color: cs.primary.withValues(alpha: 0.75),
+          width: 1.5,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: cs.primary.withValues(alpha: 0.22),
+            blurRadius: 18,
+            spreadRadius: 0,
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
