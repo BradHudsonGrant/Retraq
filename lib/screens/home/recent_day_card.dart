@@ -64,10 +64,16 @@ class _RecentDayCardState extends State<RecentDayCard> {
       container: true,
       label: l10n.entryForDayPreview(widget.label, entryPreview),
       child: Container(
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        // Tightened from lg/lg to md/md — a one-word entry wouldn't
+        // fill the card's content area and the 48px vertical padding
+        // made the card feel oversized relative to its payload.
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.md,
+        ),
         decoration: BoxDecoration(
           color: cs.surfaceContainerLow,
-          borderRadius: AppSpacing.borderRadiusXl,
+          borderRadius: AppSpacing.borderRadiusLg,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -75,12 +81,12 @@ class _RecentDayCardState extends State<RecentDayCard> {
             Row(
               children: [
                 ExcludeSemantics(
-                  child: Icon(Icons.history, size: 16, color: cs.primary),
+                  child: Icon(Icons.history, size: 14, color: cs.primary),
                 ),
                 const SizedBox(width: AppSpacing.xs),
                 Text(
                   widget.label,
-                  style: tt.titleSmall?.copyWith(
+                  style: tt.labelLarge?.copyWith(
                     fontWeight: FontWeight.w600,
                     color: cs.primary,
                   ),
@@ -88,39 +94,41 @@ class _RecentDayCardState extends State<RecentDayCard> {
                 const Spacer(),
                 Text(
                   '${sortedEntries.length} ${sortedEntries.length == 1 ? 'entry' : 'entries'}',
-                  style: tt.labelMedium?.copyWith(
+                  style: tt.labelSmall?.copyWith(
                     color: cs.onSurfaceVariant.withValues(alpha: 0.7),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.sm),
             for (var i = 0; i < sortedEntries.length && i < visibleCount; i++) ...[
               if (i > 0)
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
                   child: Divider(
                     height: 1,
                     thickness: 1,
                     color: cs.outlineVariant.withValues(alpha: 0.3),
                   ),
                 ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Label pill + action row
-                  Row(
+              // When an entry has no AM/PM label pill there's no value
+              // in spending a whole row on the action menu — inline it
+              // next to the text via a Stack so single-word entries
+              // don't reserve a 24px action row above their content.
+              if (sortedEntries[i].label != null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: AppSpacing.xs),
+                  child: Row(
                     children: [
-                      if (sortedEntries[i].label != null)
-                        RetraqChip(
-                          label: sortedEntries[i].label!,
-                          color: sortedEntries[i].label == 'AM'
-                              ? cs.primaryContainer
-                              : cs.tertiaryContainer,
-                          textColor: sortedEntries[i].label == 'AM'
-                              ? cs.onPrimaryContainer
-                              : cs.onTertiaryContainer,
-                        ),
+                      RetraqChip(
+                        label: sortedEntries[i].label!,
+                        color: sortedEntries[i].label == 'AM'
+                            ? cs.primaryContainer
+                            : cs.tertiaryContainer,
+                        textColor: sortedEntries[i].label == 'AM'
+                            ? cs.onPrimaryContainer
+                            : cs.onTertiaryContainer,
+                      ),
                       const Spacer(),
                       EntryActionMenu(
                         entry: sortedEntries[i],
@@ -132,28 +140,57 @@ class _RecentDayCardState extends State<RecentDayCard> {
                       ),
                     ],
                   ),
-                  if (sortedEntries[i].label != null)
-                    const SizedBox(height: AppSpacing.xs),
-                  BionicText(
-                    text: sortedEntries[i].displayText,
-                    // When expanded, let long entries breathe rather than
-                    // clip with an ellipsis. The list is already bounded
-                    // by the day so there's no unbounded-height risk.
-                    maxLines: _expanded ? null : 2,
-                    overflow: _expanded
-                        ? TextOverflow.clip
-                        : TextOverflow.ellipsis,
-                    style: tt.bodyMedium?.copyWith(
-                      height: 1.5,
-                      color: cs.onSurface.withValues(alpha: 0.9),
+                ),
+              // Text body + inline trailing action for unlabelled
+              // entries. IntrinsicHeight keeps the menu vertically
+              // aligned with the first text line without stretching.
+              if (sortedEntries[i].label == null)
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: BionicText(
+                        text: sortedEntries[i].displayText,
+                        maxLines: _expanded ? null : 2,
+                        overflow: _expanded
+                            ? TextOverflow.clip
+                            : TextOverflow.ellipsis,
+                        style: tt.bodyMedium?.copyWith(
+                          height: 1.35,
+                          color: cs.onSurface.withValues(alpha: 0.9),
+                        ),
+                        enabled: SettingsProvider.maybeOf(
+                              context,
+                            )?.bionicReadingEnabled ??
+                            false,
+                      ),
                     ),
-                    enabled: SettingsProvider.maybeOf(
-                          context,
-                        )?.bionicReadingEnabled ??
-                        false,
+                    EntryActionMenu(
+                      entry: sortedEntries[i],
+                      onEdit: () => _confirmEdit(context, sortedEntries[i]),
+                      onDelete: () =>
+                          _confirmDelete(context, sortedEntries[i]),
+                      iconSize: 18,
+                      iconAlpha: 0.4,
+                    ),
+                  ],
+                )
+              else
+                BionicText(
+                  text: sortedEntries[i].displayText,
+                  maxLines: _expanded ? null : 2,
+                  overflow: _expanded
+                      ? TextOverflow.clip
+                      : TextOverflow.ellipsis,
+                  style: tt.bodyMedium?.copyWith(
+                    height: 1.35,
+                    color: cs.onSurface.withValues(alpha: 0.9),
                   ),
-                ],
-              ),
+                  enabled: SettingsProvider.maybeOf(
+                        context,
+                      )?.bionicReadingEnabled ??
+                      false,
+                ),
             ],
             if (hasMore)
               Padding(
