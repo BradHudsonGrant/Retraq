@@ -14,7 +14,6 @@ import '../services/recap_service.dart' show WeeklySummary;
 import '../theme/app_motion.dart';
 import '../theme/app_spacing.dart';
 import '../utils/date_helpers.dart';
-import '../widgets/atoms/retraq_logo.dart';
 import '../utils/entry_action_dialogs.dart';
 import '../utils/test_keys.dart';
 import '../widgets/atoms/glow_box.dart';
@@ -379,15 +378,12 @@ class _RecapScreenState extends State<RecapScreen>
               curve: AppMotion.emphasizedDecelerate,
             ),
           ],
-          child: Row(
-            children: [
-              const RetraqLogo(size: 22),
-              const SizedBox(width: AppSpacing.sm),
-              Text(
-                l10n.recapTitle,
-                style: tt.displaySmall?.copyWith(fontWeight: FontWeight.w700),
-              ),
-            ],
+          // Brand mark removed — the "Recap" title anchors the
+          // header on its own now, letting the content below move
+          // up roughly 40px.
+          child: Text(
+            l10n.recapTitle,
+            style: tt.displaySmall?.copyWith(fontWeight: FontWeight.w700),
           ),
         ),
         Animate(

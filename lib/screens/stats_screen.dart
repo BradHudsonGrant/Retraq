@@ -14,7 +14,6 @@ import '../widgets/atoms/app_snack_bar.dart';
 import '../widgets/atoms/bionic_text.dart';
 import '../widgets/atoms/glow_box.dart';
 import '../widgets/atoms/mood_blob.dart';
-import '../widgets/atoms/retraq_logo.dart';
 import '../utils/adaptive_layout.dart';
 import '../widgets/molecules/mood_selector.dart';
 import '../widgets/molecules/stat_card.dart';
@@ -577,17 +576,13 @@ class _StatsScreenState extends State<StatsScreen>
                       curve: AppMotion.emphasizedDecelerate,
                     ),
                   ],
-                  child: Row(
-                    children: [
-                      const RetraqLogo(size: 22),
-                      const SizedBox(width: AppSpacing.sm),
-                      Text(
-                        l10n.statsTitle,
-                        style: tt.displaySmall?.copyWith(
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ],
+                  // Brand mark removed; the Stats title anchors the
+                  // header on its own, matching the other tabs.
+                  child: Text(
+                    l10n.statsTitle,
+                    style: tt.displaySmall?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
                 const SizedBox(height: AppSpacing.xs),

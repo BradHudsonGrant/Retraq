@@ -32,7 +32,6 @@ import '../widgets/organisms/save_success_overlay.dart';
 import 'home/journal_text_area.dart';
 import '../widgets/atoms/app_snack_bar.dart';
 import '../widgets/atoms/bionic_text.dart';
-import '../widgets/atoms/retraq_logo.dart';
 import 'home/recent_day_card.dart';
 
 /// Home / Journal screen — the entry point of the app.
@@ -294,11 +293,11 @@ class _HomeScreenState extends State<HomeScreen>
     return [
       const SizedBox(height: AppSpacing.md),
 
-      // Brand mark
-      const RetraqLogo(size: 22),
-      const SizedBox(height: AppSpacing.lg),
-
       // Hero prompt (Task 7.6 — localized via _resolveHeroPrompt).
+      // Brand mark previously sat here; removed so the hero copy
+      // anchors the top of every tab and the rest of the content
+      // moves up by ~40px. The app-icon-level branding lives on
+      // splash / onboarding / lock where it actually matters.
       Builder(
         builder: (context) {
           final heroPrompt = _resolveHeroPrompt(l10n);
