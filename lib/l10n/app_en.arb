@@ -3,7 +3,7 @@
 
   "appName": "Retraq",
 
-  "navJot": "Jot",
+  "navJot": "Traq",
   "navRecap": "Recap",
   "navStats": "Stats",
   "navSettings": "Settings",
@@ -139,9 +139,6 @@
   "bestStreak": "Best Streak",
   "streaksSection": "Streaks",
   "longestThisMonth": "Longest This Month",
-  "streakFreeze": "Streak Freeze",
-  "streakFreezeAvailable": "1 available",
-  "streakFreezeUsed": "Used this week",
   "entriesPerWeek": "Entries per week",
   "daysSuffix": "days",
   "mostActiveDay": "Most active day: {day}",

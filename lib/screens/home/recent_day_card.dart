@@ -11,11 +11,24 @@ import '../../widgets/atoms/retraq_chip.dart';
 import '../../widgets/molecules/entry_action_menu.dart';
 
 /// Compact card showing a recent day's entries on the home screen.
-class RecentDayCard extends StatelessWidget {
+///
+/// When a day has more than 2 entries the card collapses to the oldest
+/// 2 with a "+N more" affordance. Tapping that affordance expands the
+/// card to show every entry for the day; tapping "Show less" collapses
+/// it again. Preserved as state inside the card so expansion survives
+/// parent rebuilds that happen as other streams emit.
+class RecentDayCard extends StatefulWidget {
   const RecentDayCard({super.key, required this.label, required this.entries});
 
   final String label;
   final List<JournalEntry> entries;
+
+  @override
+  State<RecentDayCard> createState() => _RecentDayCardState();
+}
+
+class _RecentDayCardState extends State<RecentDayCard> {
+  bool _expanded = false;
 
   Future<void> _confirmEdit(BuildContext context, JournalEntry entry) async {
     await confirmAndEditEntry(context, entry);
@@ -34,20 +47,22 @@ class RecentDayCard extends StatelessWidget {
 
     // Always render oldest-first so this card matches the Recap week/month
     // views — reading top-to-bottom gives a chronological story of the day.
-    final sortedEntries = [...entries]
+    final sortedEntries = [...widget.entries]
       ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
 
-    final entryPreview =
-        sortedEntries.isNotEmpty
-            ? sortedEntries.first.displayText.length > 60
-                ? '${sortedEntries.first.displayText.substring(0, 60)}...'
-                : sortedEntries.first.displayText
-            : '';
+    final entryPreview = sortedEntries.isNotEmpty
+        ? sortedEntries.first.displayText.length > 60
+            ? '${sortedEntries.first.displayText.substring(0, 60)}...'
+            : sortedEntries.first.displayText
+        : '';
+
+    final hasMore = sortedEntries.length > 2;
+    final visibleCount =
+        (_expanded || !hasMore) ? sortedEntries.length : 2;
 
     final card = Semantics(
       container: true,
-      // Task 2.11 — localized screen-reader label.
-      label: l10n.entryForDayPreview(label, entryPreview),
+      label: l10n.entryForDayPreview(widget.label, entryPreview),
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
@@ -64,7 +79,7 @@ class RecentDayCard extends StatelessWidget {
                 ),
                 const SizedBox(width: AppSpacing.xs),
                 Text(
-                  label,
+                  widget.label,
                   style: tt.titleSmall?.copyWith(
                     fontWeight: FontWeight.w600,
                     color: cs.primary,
@@ -80,7 +95,7 @@ class RecentDayCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: AppSpacing.md),
-            for (var i = 0; i < sortedEntries.length && i < 2; i++) ...[
+            for (var i = 0; i < sortedEntries.length && i < visibleCount; i++) ...[
               if (i > 0)
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
@@ -99,21 +114,19 @@ class RecentDayCard extends StatelessWidget {
                       if (sortedEntries[i].label != null)
                         RetraqChip(
                           label: sortedEntries[i].label!,
-                          color:
-                              sortedEntries[i].label == 'AM'
-                                  ? cs.primaryContainer
-                                  : cs.tertiaryContainer,
-                          textColor:
-                              sortedEntries[i].label == 'AM'
-                                  ? cs.onPrimaryContainer
-                                  : cs.onTertiaryContainer,
+                          color: sortedEntries[i].label == 'AM'
+                              ? cs.primaryContainer
+                              : cs.tertiaryContainer,
+                          textColor: sortedEntries[i].label == 'AM'
+                              ? cs.onPrimaryContainer
+                              : cs.onTertiaryContainer,
                         ),
                       const Spacer(),
                       EntryActionMenu(
                         entry: sortedEntries[i],
                         onEdit: () => _confirmEdit(context, sortedEntries[i]),
-                        onDelete:
-                            () => _confirmDelete(context, sortedEntries[i]),
+                        onDelete: () =>
+                            _confirmDelete(context, sortedEntries[i]),
                         iconSize: 18,
                         iconAlpha: 0.4,
                       ),
@@ -123,14 +136,18 @@ class RecentDayCard extends StatelessWidget {
                     const SizedBox(height: AppSpacing.xs),
                   BionicText(
                     text: sortedEntries[i].displayText,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                    // When expanded, let long entries breathe rather than
+                    // clip with an ellipsis. The list is already bounded
+                    // by the day so there's no unbounded-height risk.
+                    maxLines: _expanded ? null : 2,
+                    overflow: _expanded
+                        ? TextOverflow.clip
+                        : TextOverflow.ellipsis,
                     style: tt.bodyMedium?.copyWith(
                       height: 1.5,
                       color: cs.onSurface.withValues(alpha: 0.9),
                     ),
-                    enabled:
-                        SettingsProvider.maybeOf(
+                    enabled: SettingsProvider.maybeOf(
                           context,
                         )?.bionicReadingEnabled ??
                         false,
@@ -138,13 +155,39 @@ class RecentDayCard extends StatelessWidget {
                 ],
               ),
             ],
-            if (sortedEntries.length > 2)
+            if (hasMore)
               Padding(
                 padding: const EdgeInsets.only(top: AppSpacing.sm),
-                child: Text(
-                  '+${sortedEntries.length - 2} more',
-                  style: tt.labelMedium?.copyWith(
-                    color: cs.onSurfaceVariant.withValues(alpha: 0.75),
+                child: InkWell(
+                  onTap: () => setState(() => _expanded = !_expanded),
+                  borderRadius: AppSpacing.borderRadiusSm,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: AppSpacing.xs,
+                      horizontal: AppSpacing.xs,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          _expanded
+                              ? Icons.expand_less
+                              : Icons.expand_more,
+                          size: 16,
+                          color: cs.primary,
+                        ),
+                        const SizedBox(width: AppSpacing.xs),
+                        Text(
+                          _expanded
+                              ? 'Show less'
+                              : '+${sortedEntries.length - 2} more',
+                          style: tt.labelMedium?.copyWith(
+                            color: cs.primary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

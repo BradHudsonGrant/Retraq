@@ -102,7 +102,7 @@ abstract class L10n {
   /// No description provided for @navJot.
   ///
   /// In en, this message translates to:
-  /// **'Jot'**
+  /// **'Traq'**
   String get navJot;
 
   /// No description provided for @navRecap.
@@ -582,24 +582,6 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Longest This Month'**
   String get longestThisMonth;
-
-  /// No description provided for @streakFreeze.
-  ///
-  /// In en, this message translates to:
-  /// **'Streak Freeze'**
-  String get streakFreeze;
-
-  /// No description provided for @streakFreezeAvailable.
-  ///
-  /// In en, this message translates to:
-  /// **'1 available'**
-  String get streakFreezeAvailable;
-
-  /// No description provided for @streakFreezeUsed.
-  ///
-  /// In en, this message translates to:
-  /// **'Used this week'**
-  String get streakFreezeUsed;
 
   /// No description provided for @entriesPerWeek.
   ///

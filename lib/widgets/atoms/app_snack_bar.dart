@@ -26,6 +26,12 @@ class AppSnackBar {
   /// background with onErrorContainer foreground — matching the
   /// previous inline `Theme.of(context).colorScheme.errorContainer`
   /// pattern.
+  ///
+  /// Non-error toasts adopt Retraq's brand: the surfaceContainerHighest
+  /// fill with a 1px primary-tinted outline gives the toast a quiet
+  /// chip-like presence that sits on top of the gradient without
+  /// fighting it. Matches the pill / card shapes used across the rest
+  /// of the app.
   static void show(
     BuildContext context,
     String message, {
@@ -35,22 +41,36 @@ class AppSnackBar {
   }) {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
+    final textStyle = error
+        ? tt.bodyMedium?.copyWith(
+            color: cs.onErrorContainer,
+            fontWeight: FontWeight.w500,
+          )
+        : tt.bodyMedium?.copyWith(
+            color: cs.onSurface,
+            fontWeight: FontWeight.w500,
+          );
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(
         SnackBar(
           behavior: SnackBarBehavior.floating,
+          elevation: 4,
           shape: RoundedRectangleBorder(
             borderRadius: AppSpacing.borderRadiusLg,
+            side: BorderSide(
+              color: error
+                  ? cs.error.withValues(alpha: 0.32)
+                  : cs.primary.withValues(alpha: 0.28),
+              width: 1,
+            ),
           ),
-          backgroundColor: error ? cs.errorContainer : null,
-          content: Text(
-            message,
-            style: error
-                ? tt.bodyMedium?.copyWith(color: cs.onErrorContainer)
-                : null,
-          ),
+          backgroundColor: error
+              ? cs.errorContainer
+              : cs.surfaceContainerHighest,
+          content: Text(message, style: textStyle),
           action: action,
+          actionOverflowThreshold: 0.25,
           duration: duration,
         ),
       );

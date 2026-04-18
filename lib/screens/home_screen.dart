@@ -604,7 +604,6 @@ class _HomeScreenState extends State<HomeScreen>
                 holdDuration: _overlayHoldDuration,
                 onDismissed: () {
                   if (!mounted) return;
-                  final entryId = _form.lastSavedEntryId;
                   // Clear the form here (deferred from _saveEntry) so the
                   // form rebuild happens during the overlay dismissal frame
                   // rather than competing with its entrance animation.
@@ -614,17 +613,12 @@ class _HomeScreenState extends State<HomeScreen>
                     _showSaveSuccess = false;
                     _milestoneMessage = null;
                   });
-                  if (entryId != null) {
-                    AppSnackBar.show(
-                      context,
-                      l10n.entrySaved,
-                      duration: const Duration(seconds: 4),
-                      action: SnackBarAction(
-                        label: l10n.undoLabel,
-                        onPressed: () => _entries.deleteEntry(entryId),
-                      ),
-                    );
-                  }
+                  // Save-success overlay already showed "Traq saved" with a
+                  // full-screen animation. Stacking a SnackBar afterwards
+                  // was redundant and could linger on screen until the 4s
+                  // duration elapsed even though the user had already seen
+                  // confirmation. The overlay's onTap handler still routes
+                  // the user back to the newly-saved entry.
                 },
               ),
             ),

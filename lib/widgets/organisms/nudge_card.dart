@@ -76,20 +76,31 @@ class NudgeCard extends StatelessWidget {
                   l10n.dailyAtTime(_formatTime(nudgeHour, nudgeMinute)),
                   style: tt.bodySmall?.copyWith(color: cs.onPrimary),
                 ),
-                GlowBox(
-                  color: cs.surfaceContainerLowest,
-                  glowOpacity: 0.55,
-                  blurRadius: 18,
-                  borderRadius: AppSpacing.borderRadiusFull,
-                  child: FilledButton(
-                    onPressed: onChangeTime,
-                    style: FilledButton.styleFrom(
-                      backgroundColor: cs.surfaceContainerLowest,
-                      foregroundColor: cs.primary,
+                // The button previously wrapped a FilledButton (pill /
+                // StadiumBorder by default) in a GlowBox with a
+                // rounded-rectangle-at-9999 border-radius. Those two
+                // shapes render as visually distinct outlines on top of
+                // the primary-coloured card, giving the impression of
+                // two concentric borders. Dropping the glow and using a
+                // direct FilledButton with an explicit StadiumBorder
+                // resolves to a single crisp pill shape.
+                FilledButton(
+                  onPressed: onChangeTime,
+                  style: FilledButton.styleFrom(
+                    backgroundColor: cs.surfaceContainerLowest,
+                    foregroundColor: cs.primary,
+                    elevation: 0,
+                    shape: const StadiumBorder(),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.lg,
+                      vertical: AppSpacing.sm,
                     ),
-                    // Task 2.14 — Change Time button label localized.
-                    child: Text(l10n.nudgeChangeTime),
+                    textStyle: tt.labelLarge?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
+                  // Task 2.14 — Change Time button label localized.
+                  child: Text(l10n.nudgeChangeTime),
                 ),
               ],
             ),

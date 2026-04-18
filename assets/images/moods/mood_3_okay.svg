@@ -1,10 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
-  <!-- Standard blob - roughly square proportions, balanced organic shape -->
-  <path d="M11 28 C10 21, 12 14, 18 11 C22 9, 27 9, 31 11 C36 14, 38 21, 37 28 C36 34, 32 38, 25 39 C19 40, 13 35, 11 28Z" fill="currentColor"/>
-  <!-- Left eye -->
-  <circle cx="19" cy="22" r="2" fill="white" opacity="0.9"/>
-  <!-- Right eye -->
-  <circle cx="30" cy="22" r="2" fill="white" opacity="0.9"/>
-  <!-- Mouth - neutral, very slightly upturned -->
-  <path d="M20 29 Q25 30.5, 29 29" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.9"/>
+  <!-- Okay = the "baseline" blob. Silhouette: perfectly round-ish, balanced
+       on both axes. Clearly centred between the tilted Meh (2) and the
+       upward-stretching Good (4). -->
+  <circle cx="24" cy="24" r="17" fill="currentColor"/>
+  <!-- Calm round eyes. -->
+  <circle cx="19" cy="22" r="2" fill="white" opacity="0.95"/>
+  <circle cx="29" cy="22" r="2" fill="white" opacity="0.95"/>
+  <!-- Soft content line — just barely upturned so mood 3 reads as
+       "neutral plus" rather than fully neutral. -->
+  <path d="M19 29.5 Q24 31, 29 29.5" stroke="white" stroke-width="1.6" fill="none" stroke-linecap="round" opacity="0.95"/>
 </svg>

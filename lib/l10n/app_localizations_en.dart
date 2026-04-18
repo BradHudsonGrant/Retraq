@@ -12,7 +12,7 @@ class L10nEn extends L10n {
   String get appName => 'Retraq';
 
   @override
-  String get navJot => 'Jot';
+  String get navJot => 'Traq';
 
   @override
   String get navRecap => 'Recap';
@@ -281,15 +281,6 @@ class L10nEn extends L10n {
 
   @override
   String get longestThisMonth => 'Longest This Month';
-
-  @override
-  String get streakFreeze => 'Streak Freeze';
-
-  @override
-  String get streakFreezeAvailable => '1 available';
-
-  @override
-  String get streakFreezeUsed => 'Used this week';
 
   @override
   String get entriesPerWeek => 'Entries per week';
