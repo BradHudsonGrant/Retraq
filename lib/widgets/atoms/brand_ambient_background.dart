@@ -2,52 +2,37 @@ import 'package:flutter/material.dart';
 import '../../theme/app_motion.dart';
 import 'animated_mesh_background.dart';
 
-/// Subtle brand-coloured ambient background used by AppShell across every
-/// tab.
+/// Brand ambient background used by AppShell across every tab.
 ///
-/// The Recap screen previously carried its own top-of-page primary-tinted
-/// linear gradient, which users liked — but it stopped at 280px and only
-/// existed on that one screen. This widget generalises the idea:
+/// The full-screen look is a single vertical gradient:
 ///
-///   • A very-low-opacity [AnimatedMeshBackground] with three brand
-///     colours drifts across the full screen. The effect stays well
-///     below ~10% effective opacity on dark and ~5% on light so card
-///     content remains the focus, not the gradient.
-///   • A static brand-tinted halo sits on top of the mesh, anchored to
-///     the top of the screen, fading out by ~40% of the viewport
-///     height. This is the "glow" the user liked from Recap, now
-///     shared.
+///   • Top       — a brand-tinted halo (the "glow" the user liked from
+///                 the old Recap top gradient).
+///   • Middle    — the plain [ColorScheme.surface] so card / text
+///                 content still reads cleanly.
+///   • Bottom    — a darker tint that blends the screen into the
+///                 bottom navigation bar. Without this the screen
+///                 surface met the navbar at a visible seam; the dark
+///                 fade lets content "recede" into the nav chrome.
 ///
-/// Intensity is brightness-aware by default: light mode uses the
-/// lighter primaryContainer token and runs at roughly half the
-/// intensity of dark mode, because overlaying the dark-green primary on
-/// a near-white surface reads as "muddy" rather than "ambient".
-/// Callers can override via [intensity] if needed.
+/// A very-low-opacity [AnimatedMeshBackground] drifts under the
+/// gradient to add subtle motion without dominating the palette.
 ///
-/// The widget honours reduce-motion (no shader ticker) and plays nicely
-/// on both the light and dark schemes by pulling its colours from the
-/// active [ColorScheme].
+/// Intensity is brightness-aware so the same perceived contrast shows
+/// up on both themes without the dark-green primary muddying the light
+/// surface.
 class BrandAmbientBackground extends StatelessWidget {
   const BrandAmbientBackground({
     super.key,
     required this.child,
-    this.topHaloFraction = 0.42,
     this.intensity = 1.0,
   });
 
-  /// Foreground content painted on top of the ambient background. Use
-  /// Scaffold / SafeArea / CustomScrollView etc. as usual inside [child].
+  /// Foreground content painted on top of the ambient background.
   final Widget child;
 
-  /// How far down the screen the top brand halo extends before fully
-  /// fading into [ColorScheme.surface]. 0.42 = ~42% of the screen height.
-  final double topHaloFraction;
-
-  /// Uniform scale for both the halo and the mesh underlay. 1.0 applies
-  /// the tuned per-brightness defaults; smaller values make the effect
-  /// more subtle, larger values push it brighter. Intended as an escape
-  /// hatch for screens that want more or less ambient tint than the
-  /// shell-default.
+  /// Uniform scale for both ends of the gradient and the mesh
+  /// underlay. 1.0 applies the tuned per-brightness defaults.
   final double intensity;
 
   @override
@@ -56,85 +41,75 @@ class BrandAmbientBackground extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final reduceMotion = AppMotion.reduce(context);
 
-    // Tuned per-brightness defaults. Light mode is noticeably quieter
-    // than dark because a dark-green overlay on a near-white surface
-    // muddies the whole canvas before it reads as "ambient"; dark mode
-    // can carry more because each overlay lifts the deep surface
-    // without fighting on-surface text.
-    final double haloStrength = (isDark ? 0.10 : 0.045) * intensity;
-    final double meshOuter = (isDark ? 0.12 : 0.05) * intensity;
-
-    // Pick three brand-family colours for the mesh. In dark mode the
-    // primary token is the lighter mint so it lifts cleanly off the
-    // deep surface. In light mode we use primaryContainer (also a
-    // light mint) so the mesh blends into the pale surface instead of
-    // dragging it toward the dark forest-green primary.
-    final Color meshSeed1 = isDark ? cs.primary : cs.primaryContainer;
-    final Color meshSeed2 = isDark
-        ? cs.tertiary
-        : cs.tertiaryContainer;
-    final Color meshSeed3 = cs.secondaryContainer;
-
-    // Same rationale for the halo: the lighter on-brand token blends
-    // cleanly into whichever surface is underneath instead of reading
-    // as a dirty colour cast.
+    // Top halo: warm brand colour. In dark mode we use the mint primary
+    // directly because it lifts cleanly off the deep surface; in light
+    // mode primaryContainer (also a light mint) blends into the near-
+    // white surface without reading as a dirty forest-green cast.
     final Color haloColor = isDark ? cs.primary : cs.primaryContainer;
+    final double haloAlpha = (isDark ? 0.22 : 0.10) * intensity;
 
-    // The inner shader alphas combine multiplicatively with meshOuter.
-    // Keeping the per-blob alphas bounded (0.45–0.65) lets the outer
-    // meshOuter be the single knob that controls visible intensity.
+    // Bottom fade: a darker surface variant that the navbar sits on
+    // seamlessly. In dark mode surfaceContainerLowest is the near-
+    // black token — almost matches the navbar. In light mode the
+    // surfaceContainerHighest token is slightly darker than the plain
+    // surface so the screen still darkens toward the navbar for depth
+    // even though the overall palette stays bright.
+    final Color bottomColor =
+        isDark ? cs.surfaceContainerLowest : cs.surfaceContainerHighest;
+    final double bottomAlpha = (isDark ? 0.85 : 0.55) * intensity;
+
+    // Mesh underlay colours.
     final meshColors = <Color>[
-      meshSeed1.withValues(alpha: 0.55),
-      meshSeed2.withValues(alpha: 0.45),
-      meshSeed3.withValues(alpha: 0.55),
+      (isDark ? cs.primary : cs.primaryContainer).withValues(alpha: 0.5),
+      (isDark ? cs.tertiary : cs.tertiaryContainer).withValues(alpha: 0.4),
+      cs.secondaryContainer.withValues(alpha: 0.5),
     ];
+    final double meshOuter = (isDark ? 0.10 : 0.045) * intensity;
 
     return Stack(
       fit: StackFit.expand,
       children: [
-        // Base: scheme surface so the rest of the stack can alpha-composite
-        // over a predictable baseline instead of a transparent window.
+        // Base: scheme surface so the rest of the stack composites
+        // over a predictable baseline.
         ColoredBox(color: cs.surface),
 
-        // Animated mesh underlay. Suppressed when intensity drives the
-        // outer opacity below perceptible; otherwise shown — the widget
-        // itself handles reduce-motion fallback to a static gradient.
+        // Animated mesh underlay (subtle motion). Skipped entirely
+        // when the outer opacity would be imperceptible.
         if (meshOuter > 0.001)
           Positioned.fill(
             child: IgnorePointer(
               child: AnimatedMeshBackground(
                 colors: meshColors,
                 baseColor: cs.surface,
-                // Drop the mesh further under reduce-motion — the
-                // fallback is a crisp static linear gradient which
-                // reads louder than the drifting version at the same
-                // alpha, so compensate.
                 opacity: reduceMotion ? meshOuter * 0.6 : meshOuter,
               ),
             ),
           ),
 
-        // Static top halo — the "glow" the user liked from the old Recap
-        // header, now shared across tabs. Uses a vertical alignment-based
-        // gradient so it scales with the device height.
-        if (haloStrength > 0.001)
-          Positioned.fill(
-            child: IgnorePointer(
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    stops: [0.0, topHaloFraction],
-                    colors: [
-                      haloColor.withValues(alpha: haloStrength),
-                      cs.surface.withValues(alpha: 0),
-                    ],
-                  ),
+        // Single full-screen vertical gradient covering both the top
+        // halo and the bottom navbar-blend fade. Drawn as one
+        // LinearGradient so the mid-screen stays perfectly
+        // transparent-to-surface and the two tinted bands sit at the
+        // extremes where content is sparse.
+        Positioned.fill(
+          child: IgnorePointer(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  stops: const [0.0, 0.35, 0.70, 1.0],
+                  colors: [
+                    haloColor.withValues(alpha: haloAlpha),
+                    cs.surface.withValues(alpha: 0),
+                    cs.surface.withValues(alpha: 0),
+                    bottomColor.withValues(alpha: bottomAlpha),
+                  ],
                 ),
               ),
             ),
           ),
+        ),
 
         // Foreground content.
         child,
