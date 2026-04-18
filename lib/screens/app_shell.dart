@@ -74,6 +74,13 @@ class _AppShellState extends State<AppShell> {
       // Transparent scaffold so BrandAmbientBackground's gradient shows
       // through instead of being masked by the theme's surface colour.
       backgroundColor: Colors.transparent,
+      // extendBody lets the body paint *underneath* the bottom nav so
+      // the ambient gradient flows full-screen. The nav chrome below
+      // uses a transparent background and keeps only a thin top border
+      // as a visual separator — the darkening at the bottom of the
+      // gradient becomes the navbar's effective fill, making the two
+      // blend without a seam.
+      extendBody: true,
       // No top AppBar — each screen owns its own header for max real-estate
       // and a faster, less repaint-heavy shell.
       //
@@ -117,13 +124,14 @@ class _AppShellState extends State<AppShell> {
       bottomNavigationBar: RepaintBoundary(
         child: Container(
           decoration: BoxDecoration(
-            color: cs.surface,
+            // Fully transparent fill so the BrandAmbientBackground's
+            // bottom darkening shows through the navbar. Keep the thin
+            // top border as a hairline separator — without it the tab
+            // icons can read as floating over the content.
+            color: Colors.transparent,
             border: Border(
               top: BorderSide(
-                // WCAG 1.4.11: full-opacity outlineVariant so the nav bar
-                // boundary stays visible. The 0.3-alpha overlay used to crush
-                // effective contrast against dark surface to ~1.4:1.
-                color: cs.outlineVariant,
+                color: cs.outlineVariant.withValues(alpha: 0.4),
                 width: 0.5,
               ),
             ),
@@ -134,6 +142,7 @@ class _AppShellState extends State<AppShell> {
               selectedIndex: _currentIndex,
               onDestinationSelected: _onTabSelected,
               backgroundColor: Colors.transparent,
+              surfaceTintColor: Colors.transparent,
               elevation: 0,
               height: 80,
               destinations: [

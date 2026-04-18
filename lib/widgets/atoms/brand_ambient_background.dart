@@ -46,17 +46,18 @@ class BrandAmbientBackground extends StatelessWidget {
     // mode primaryContainer (also a light mint) blends into the near-
     // white surface without reading as a dirty forest-green cast.
     final Color haloColor = isDark ? cs.primary : cs.primaryContainer;
-    final double haloAlpha = (isDark ? 0.22 : 0.10) * intensity;
+    final double haloAlpha = (isDark ? 0.32 : 0.16) * intensity;
 
     // Bottom fade: a darker surface variant that the navbar sits on
-    // seamlessly. In dark mode surfaceContainerLowest is the near-
-    // black token — almost matches the navbar. In light mode the
-    // surfaceContainerHighest token is slightly darker than the plain
-    // surface so the screen still darkens toward the navbar for depth
-    // even though the overall palette stays bright.
+    // seamlessly once extendBody paints the gradient full-screen.
+    // In dark mode surfaceContainerLowest is the near-black token —
+    // the gradient effectively replaces the navbar's own fill so the
+    // two merge without a seam. In light mode surfaceContainerHighest
+    // is slightly darker than the plain surface, giving the bottom a
+    // gentle gray cast for depth on a bright palette.
     final Color bottomColor =
         isDark ? cs.surfaceContainerLowest : cs.surfaceContainerHighest;
-    final double bottomAlpha = (isDark ? 0.85 : 0.55) * intensity;
+    final double bottomAlpha = (isDark ? 1.0 : 0.75) * intensity;
 
     // Mesh underlay colours.
     final meshColors = <Color>[
@@ -98,7 +99,12 @@ class BrandAmbientBackground extends StatelessWidget {
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  stops: const [0.0, 0.35, 0.70, 1.0],
+                  // Tighter stops than before: the halo fades by 30%
+                  // and the darkening starts at 60% so the bottom
+                  // third of the screen is clearly shaded. Previous
+                  // 0.35/0.70 split left a wide neutral band that
+                  // read as a flat wash instead of a gradient.
+                  stops: const [0.0, 0.30, 0.60, 1.0],
                   colors: [
                     haloColor.withValues(alpha: haloAlpha),
                     cs.surface.withValues(alpha: 0),
