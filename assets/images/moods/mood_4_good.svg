@@ -1,14 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
-  <!-- Good = droplet blob. Silhouette: clearly taller than wide with a
-       rounded dome and a narrower base, like a drop that's landed. Reads
-       "lifted" without going full sparkle (that's reserved for mood 5). -->
-  <path d="M24 4 C30 4, 36 11, 36 22 C36 34, 31 41, 24 41 C17 41, 12 34, 12 22 C12 11, 18 4, 24 4Z" fill="currentColor"/>
-  <!-- Bright upturned crescent eyes — the "happy squint". -->
-  <path d="M16 22 Q19 19, 22 22" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="0.95"/>
-  <path d="M26 22 Q29 19, 32 22" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="0.95"/>
-  <!-- Clear smile. -->
-  <path d="M18 28 Q24 33, 30 28" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="0.95"/>
-  <!-- Rosy cheek highlights to make the shape clearly different from mood 3. -->
-  <circle cx="15" cy="28" r="1.6" fill="white" opacity="0.4"/>
-  <circle cx="33" cy="28" r="1.6" fill="white" opacity="0.4"/>
+  <!-- Good = droplet pointing UP. Mirror of Rough — narrow rounded
+       peak at the top that broadens into a wide round base. Visual
+       rhyme with mood 1 (same shape flipped) so the scale reads as
+       an emotional arc on silhouette alone: dripping down → flat →
+       round → rising → bursting. -->
+  <path d="M24 40
+           C32 40, 38 34, 38 26
+           C38 20, 34 16, 30 13
+           C28 11.5, 26 9, 25 6
+           C24.5 4.5, 23.5 4.5, 23 6
+           C22 9, 20 11.5, 18 13
+           C14 16, 10 20, 10 26
+           C10 34, 16 40, 24 40Z"
+        fill="currentColor"/>
 </svg>

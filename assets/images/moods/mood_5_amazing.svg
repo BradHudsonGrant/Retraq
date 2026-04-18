@@ -1,25 +1,26 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
-  <!-- Amazing = star-burst blob. Silhouette is a rounded four-point
-       "bounce" shape with bumps radiating up/left/right/down. This is the
-       most visually distinct of the five — it reads as sparkle/energy at
-       a glance and contrasts sharply with the round mood 3 and the smooth
-       droplet mood 4. -->
-  <path d="M24 2
-           C26 8, 30 10, 36 10
-           C34 14, 34 18, 40 22
-           C34 26, 34 30, 38 36
-           C32 34, 28 36, 24 44
-           C20 36, 16 34, 10 36
-           C14 30, 14 26, 8 22
-           C14 18, 14 14, 12 10
-           C18 10, 22 8, 24 2Z" fill="currentColor"/>
-  <!-- Big round sparkly eyes with bright catchlights. -->
-  <circle cx="19" cy="20" r="2.6" fill="white" opacity="0.95"/>
-  <circle cx="29" cy="20" r="2.6" fill="white" opacity="0.95"/>
-  <circle cx="19.8" cy="19.3" r="0.9" fill="currentColor" opacity="0.7"/>
-  <circle cx="29.8" cy="19.3" r="0.9" fill="currentColor" opacity="0.7"/>
-  <!-- Wide open grin — toothy curve. -->
-  <path d="M16 27 Q24 36, 32 27" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.95"/>
-  <!-- Tongue hint inside the grin so it reads beyond just a line. -->
-  <path d="M20 31 Q24 34, 28 31" stroke="white" stroke-width="1.4" fill="none" stroke-linecap="round" opacity="0.75"/>
+  <!-- Amazing = four-point sparkle / star-burst. The "radiating" end
+       of the emotional arc — breaks out of the blob family entirely
+       so the peak mood reads as something different in kind, not
+       just "an even bigger blob". Four bumps in the cardinal
+       directions with deep concave arcs between them read clearly
+       as "sparkle" at any size. -->
+  <path d="M24 3
+           C25 11, 27 13, 30 14
+           C33 15, 37 15, 45 16
+           C45 16, 37 17, 34 19
+           C31 21, 28 24, 28 24
+           C28 24, 31 27, 34 29
+           C37 31, 45 32, 45 32
+           C37 33, 33 33, 30 34
+           C27 35, 25 37, 24 45
+           C23 37, 21 35, 18 34
+           C15 33, 11 33, 3 32
+           C3 32, 11 31, 14 29
+           C17 27, 20 24, 20 24
+           C20 24, 17 21, 14 19
+           C11 17, 3 16, 3 16
+           C11 15, 15 15, 18 14
+           C21 13, 23 11, 24 3Z"
+        fill="currentColor"/>
 </svg>

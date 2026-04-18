@@ -11,10 +11,18 @@ const _moodAssets = {
   5: 'assets/images/moods/mood_5_amazing.svg',
 };
 
-/// A custom blob character for a mood level (1-5).
+/// A silhouette-as-emotion mood glyph for a mood level (1-5).
 ///
-/// Renders the appropriate SVG blob tinted with [color].
-/// When [isSelected] becomes true, plays a goopy squish-bounce animation.
+/// The SVG assets themselves now do the emotional lifting — each mood
+/// is a distinct silhouette (downward droplet → flat pill → circle →
+/// upward droplet → sparkle) so the shape is legible at any size
+/// without relying on tiny face details. This widget is responsible
+/// only for tinting, resizing, and a short pop-on-select animation.
+///
+/// Selection animation is intentionally minimal: a brief elastic
+/// scale-up so the tap feels responsive, no goopy squash-and-stretch.
+/// The added glow halo carries most of the "you picked this one"
+/// signal; the scale is just a reinforcing pulse.
 class MoodBlob extends StatefulWidget {
   final int mood;
   final double size;
@@ -36,83 +44,39 @@ class MoodBlob extends StatefulWidget {
 class _MoodBlobState extends State<MoodBlob>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
-  late final Animation<double> _scaleX;
-  late final Animation<double> _scaleY;
+  late final Animation<double> _pop;
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 600),
+      duration: const Duration(milliseconds: 420),
     );
 
-    // Goopy squish: aggressively widen + compress, then wobble back.
-    _scaleX = TweenSequence<double>([
+    // Single-knob minimal animation: scale overshoots slightly on
+    // select, then settles via elasticOut. No separate X/Y axes,
+    // no multi-phase squish — the glyph just "pops" into place.
+    _pop = TweenSequence<double>([
       TweenSequenceItem(
         tween: Tween(
           begin: 1.0,
-          end: 1.45,
-        ).chain(CurveTween(curve: Curves.easeOut)),
-        weight: 15,
+          end: 1.18,
+        ).chain(CurveTween(curve: Curves.easeOutCubic)),
+        weight: 30,
       ),
       TweenSequenceItem(
         tween: Tween(
-          begin: 1.45,
-          end: 0.85,
-        ).chain(CurveTween(curve: Curves.easeInOut)),
-        weight: 20,
-      ),
-      TweenSequenceItem(
-        tween: Tween(
-          begin: 0.85,
-          end: 1.12,
-        ).chain(CurveTween(curve: Curves.easeOut)),
-        weight: 25,
-      ),
-      TweenSequenceItem(
-        tween: Tween(
-          begin: 1.12,
+          begin: 1.18,
           end: 1.0,
         ).chain(CurveTween(curve: Curves.elasticOut)),
-        weight: 40,
+        weight: 70,
       ),
     ]).animate(_controller);
 
-    _scaleY = TweenSequence<double>([
-      TweenSequenceItem(
-        tween: Tween(
-          begin: 1.0,
-          end: 0.6,
-        ).chain(CurveTween(curve: Curves.easeOut)),
-        weight: 15,
-      ),
-      TweenSequenceItem(
-        tween: Tween(
-          begin: 0.6,
-          end: 1.25,
-        ).chain(CurveTween(curve: Curves.easeInOut)),
-        weight: 20,
-      ),
-      TweenSequenceItem(
-        tween: Tween(
-          begin: 1.25,
-          end: 0.92,
-        ).chain(CurveTween(curve: Curves.easeOut)),
-        weight: 25,
-      ),
-      TweenSequenceItem(
-        tween: Tween(
-          begin: 0.92,
-          end: 1.0,
-        ).chain(CurveTween(curve: Curves.elasticOut)),
-        weight: 40,
-      ),
-    ]).animate(_controller);
-
-    // If we start in the selected state (e.g., restoring a saved mood), park
-    // the controller at the end so the glow halo is visible without playing
-    // the squish animation on first frame.
+    // If we mount already-selected (restoring a saved mood), skip the
+    // pop animation — no surprise motion on first paint — and park
+    // the halo at full opacity.
     if (widget.isSelected) {
       _controller.value = 1.0;
     }
@@ -142,9 +106,8 @@ class _MoodBlobState extends State<MoodBlob>
     final blob = AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
-        return Transform(
-          alignment: Alignment.center,
-          transform: Matrix4.diagonal3Values(_scaleX.value, _scaleY.value, 1.0),
+        return Transform.scale(
+          scale: _pop.value,
           child: child,
         );
       },
@@ -163,14 +126,14 @@ class _MoodBlobState extends State<MoodBlob>
     // No glow halo when not selected.
     if (!widget.isSelected) return blob;
 
-    // Mood-coloured glow halo whose opacity rides the squish controller —
-    // fades up to ~0.65 over the same 600ms the blob takes to settle.
+    // Mood-coloured glow halo rides the same controller so it fades
+    // up in sync with the pop.
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
         return GlowBox(
           color: widget.color,
-          glowOpacity: 0.65 * _controller.value.clamp(0.0, 1.0),
+          glowOpacity: 0.6 * _controller.value.clamp(0.0, 1.0),
           blurRadius: 28,
           spreadRadius: 6,
           shape: BoxShape.circle,

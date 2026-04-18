@@ -1,12 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
-  <!-- Meh = lopsided slouch. Silhouette: leans hard to one side, wider on
-       the right than left so the whole shape tips. Clearly different from
-       the mirror-symmetric "Okay" blob at mood 3. -->
-  <path d="M9 32 C8 25, 10 18, 16 15 C21 13, 27 13, 33 16 C38 19, 42 25, 41 32 C40 37, 35 40, 28 41 C21 42, 15 40, 11 37 C9 35, 9 33, 9 32Z" fill="currentColor"/>
-  <!-- Half-lidded eyes — short horizontal dashes so the mood reads as
-       "unimpressed" rather than alert. -->
-  <path d="M16 25 L20 25" stroke="white" stroke-width="1.8" stroke-linecap="round" opacity="0.95"/>
-  <path d="M28 24 L32 24" stroke="white" stroke-width="1.8" stroke-linecap="round" opacity="0.95"/>
-  <!-- Flat mouth with a subtle sideways squiggle: the universal "meh". -->
-  <path d="M18 32 Q21 33, 24 31.5 Q27 30, 30 31.5" stroke="white" stroke-width="1.6" fill="none" stroke-linecap="round" opacity="0.95"/>
+  <!-- Low / Meh = wide flat pill. Much wider than tall, vertically
+       centred — reads as "flatlined / compressed" on silhouette
+       alone. The horizontal dominance is what separates it from the
+       balanced Okay circle one step up. -->
+  <rect x="6" y="19" width="36" height="14" rx="7" fill="currentColor"/>
 </svg>

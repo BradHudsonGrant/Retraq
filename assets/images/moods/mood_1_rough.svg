@@ -1,14 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
-  <!-- Rough = melted puddle. Silhouette: hugs the bottom of the frame, very
-       wide flat base, shallow height. Pronouncedly different profile from
-       the taller, balanced blobs at 3/4/5. -->
-  <path d="M2 40 C2 34, 5 30, 10 29 C14 28, 13 32, 17 32 C21 32, 22 28, 27 28 C32 28, 33 32, 37 33 C42 34, 46 36, 46 40 C46 42, 44 42, 42 42 L6 42 C3 42, 2 41, 2 40Z" fill="currentColor"/>
-  <!-- Half-closed downcast eyes drawn as heavy short arcs (not circles) so
-       they read as "droopy" instead of "neutral dots". -->
-  <path d="M14 37 Q16 35.5, 18 37" stroke="white" stroke-width="1.6" fill="none" stroke-linecap="round" opacity="0.95"/>
-  <path d="M27 37 Q29 35.5, 31 37" stroke="white" stroke-width="1.6" fill="none" stroke-linecap="round" opacity="0.95"/>
-  <!-- Deep frown. -->
-  <path d="M19 41 Q22.5 38.5, 26 41" stroke="white" stroke-width="1.6" fill="none" stroke-linecap="round" opacity="0.95"/>
-  <!-- Teardrop dripping off the left cheek. -->
-  <path d="M9.5 36 C8.5 37, 8.5 38.5, 9.5 39 C10.5 38.5, 10.5 37, 9.5 36Z" fill="white" opacity="0.8"/>
+  <!-- Rough = droplet pointing DOWN. Wide rounded top that tapers into a
+       narrow drip at the bottom. Reads as "sinking / heavy" on pure
+       silhouette without needing any facial features, so it stays
+       legible at the 32px selector size. -->
+  <path d="M24 8
+           C32 8, 38 14, 38 22
+           C38 28, 34 32, 30 35
+           C28 36.5, 26 39, 25 42
+           C24.5 43.5, 23.5 43.5, 23 42
+           C22 39, 20 36.5, 18 35
+           C14 32, 10 28, 10 22
+           C10 14, 16 8, 24 8Z"
+        fill="currentColor"/>
 </svg>

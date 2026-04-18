@@ -1,12 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
-  <!-- Okay = the "baseline" blob. Silhouette: perfectly round-ish, balanced
-       on both axes. Clearly centred between the tilted Meh (2) and the
-       upward-stretching Good (4). -->
-  <circle cx="24" cy="24" r="17" fill="currentColor"/>
-  <!-- Calm round eyes. -->
-  <circle cx="19" cy="22" r="2" fill="white" opacity="0.95"/>
-  <circle cx="29" cy="22" r="2" fill="white" opacity="0.95"/>
-  <!-- Soft content line — just barely upturned so mood 3 reads as
-       "neutral plus" rather than fully neutral. -->
-  <path d="M19 29.5 Q24 31, 29 29.5" stroke="white" stroke-width="1.6" fill="none" stroke-linecap="round" opacity="0.95"/>
+  <!-- Okay / Neutral = perfect circle, geometric centre of the scale.
+       Silhouette alone reads as "balanced / centred" with no vertical
+       or horizontal bias, sitting cleanly between the flat Low pill
+       and the rising Good teardrop. -->
+  <circle cx="24" cy="24" r="15" fill="currentColor"/>
 </svg>
