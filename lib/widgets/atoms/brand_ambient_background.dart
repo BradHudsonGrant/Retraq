@@ -70,7 +70,11 @@ class BrandAmbientBackground extends StatelessWidget {
       (isDark ? cs.tertiary : cs.tertiaryContainer).withValues(alpha: 0.4),
       cs.secondaryContainer.withValues(alpha: 0.5),
     ];
-    final double meshOuter = (isDark ? 0.10 : 0.045) * intensity;
+    // Slight opacity bump so the drifting blobs actually read as
+    // motion rather than an imperceptible haze. Still low enough that
+    // the gradient stays the dominant visual, and still quieter than
+    // the loud hero mesh on splash.
+    final double meshOuter = (isDark ? 0.14 : 0.07) * intensity;
 
     return Stack(
       fit: StackFit.expand,
@@ -88,6 +92,12 @@ class BrandAmbientBackground extends StatelessWidget {
                 colors: meshColors,
                 baseColor: cs.surface,
                 opacity: reduceMotion ? meshOuter * 0.6 : meshOuter,
+                // A modest 1.4x drift speed makes the blobs read as
+                // "alive" at this low opacity. The shader's base
+                // frequencies were tuned for higher-opacity hero use
+                // cases where ~1.0 is enough motion; at ambient-
+                // opacity we need a hair more to avoid looking static.
+                speed: 1.4,
               ),
             ),
           ),

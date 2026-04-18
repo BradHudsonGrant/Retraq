@@ -28,6 +28,7 @@ class AnimatedMeshBackground extends StatefulWidget {
     this.baseColor,
     this.opacity = 1.0,
     this.oneShotDuration,
+    this.speed = 1.0,
   });
 
   /// 3 color stops sampled by the shader (mesh blobs).
@@ -42,6 +43,13 @@ class AnimatedMeshBackground extends StatefulWidget {
   /// If non-null, the time uniform stops advancing after this duration —
   /// useful for splash/onboarding where the screen exits soon after.
   final Duration? oneShotDuration;
+
+  /// Multiplier on the time uniform sent to the shader. 1.0 preserves
+  /// the shader's own drift frequencies; >1.0 makes the blobs move
+  /// faster, <1.0 slower. Exposed so callers can pick a drift speed
+  /// that matches how prominent the mesh is in their composition
+  /// (quiet ambient layer → lower, hero splash → higher).
+  final double speed;
 
   @override
   State<AnimatedMeshBackground> createState() => _AnimatedMeshBackgroundState();
@@ -162,7 +170,11 @@ class _AnimatedMeshBackgroundState extends State<AnimatedMeshBackground>
         child: CustomPaint(
           painter: _MeshShaderPainter(
             shader: _shader!,
-            time: _time,
+            // Scale the time uniform so the same shader can drive a
+            // quiet ambient drift (speed < 1) or a more overtly
+            // animated hero layer (speed > 1) without editing the
+            // shader itself.
+            time: _time * widget.speed,
             colors: widget.colors,
             base: base,
           ),
