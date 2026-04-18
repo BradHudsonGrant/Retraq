@@ -1,7 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
-  <!-- Low / Meh = wide flat pill. Much wider than tall, vertically
-       centred — reads as "flatlined / compressed" on silhouette
-       alone. The horizontal dominance is what separates it from the
-       balanced Okay circle one step up. -->
-  <rect x="6" y="19" width="36" height="14" rx="7" fill="currentColor"/>
+  <!-- Low: same character starting to deflate. Wider than tall now,
+       sitting lower in the viewport — the top of the head has dipped
+       and the sides have spread, like the blob's lost structural
+       tension. Same soft organic language, just squished. -->
+  <path d="M24 16
+           C33 16, 40 20, 41 26
+           C41 30, 40 34, 38 37
+           C35 40, 30 41, 24 41
+           C18 41, 13 40, 10 37
+           C8 34, 7 30, 7 26
+           C8 20, 15 16, 24 16Z"
+        fill="currentColor"/>
 </svg>

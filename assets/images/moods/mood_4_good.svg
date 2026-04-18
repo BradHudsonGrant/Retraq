@@ -1,16 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
-  <!-- Good = droplet pointing UP. Mirror of Rough — narrow rounded
-       peak at the top that broadens into a wide round base. Visual
-       rhyme with mood 1 (same shape flipped) so the scale reads as
-       an emotional arc on silhouette alone: dripping down → flat →
-       round → rising → bursting. -->
-  <path d="M24 40
-           C32 40, 38 34, 38 26
-           C38 20, 34 16, 30 13
-           C28 11.5, 26 9, 25 6
-           C24.5 4.5, 23.5 4.5, 23 6
-           C22 9, 20 11.5, 18 13
-           C14 16, 10 20, 10 26
-           C10 34, 16 40, 24 40Z"
+  <!-- Good: same character, one step relaxed. Still upright and
+       taller than wide, but the "chin" comes down — the top is
+       rounder, the body a touch broader. Same organic language as
+       Amazing, just less stretched. -->
+  <path d="M24 8
+           C30 8, 34 12, 34 17
+           C34 20, 35 23, 36 26
+           C37 29, 37 33, 36 36
+           C34 40, 29 42, 24 42
+           C19 42, 14 40, 12 36
+           C11 33, 11 29, 12 26
+           C13 23, 14 20, 14 17
+           C14 12, 18 8, 24 8Z"
         fill="currentColor"/>
 </svg>

@@ -1,15 +1,21 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
-  <!-- Rough = droplet pointing DOWN. Wide rounded top that tapers into a
-       narrow drip at the bottom. Reads as "sinking / heavy" on pure
-       silhouette without needing any facial features, so it stays
-       legible at the 32px selector size. -->
-  <path d="M24 8
-           C32 8, 38 14, 38 22
-           C38 28, 34 32, 30 35
-           C28 36.5, 26 39, 25 42
-           C24.5 43.5, 23.5 43.5, 23 42
-           C22 39, 20 36.5, 18 35
-           C14 32, 10 28, 10 22
-           C10 14, 16 8, 24 8Z"
+  <!-- Rough: the character has fully melted. No head, no posture —
+       just goop puddled across the bottom of the viewport. Edges are
+       deliberately asymmetric (different bump heights, uneven sag
+       on each side) so the shape reads as "liquid" rather than
+       "shape that happens to be short". Still the same organic
+       language as the healthier states, just fully collapsed. -->
+  <path d="M4 36
+           C4 34, 6 33, 9 32.5
+           C12 32, 12 30, 15 29.5
+           C18 29, 19 31, 22 31
+           C25 31, 26 29.5, 29 30
+           C32 30.5, 33 32, 36 32
+           C39 32, 42 33, 43 35
+           C44 37, 44 40, 42 42
+           C40 43.5, 36 44, 30 44
+           L18 44
+           C12 44, 8 43.5, 6 42
+           C4 40.5, 4 38, 4 36Z"
         fill="currentColor"/>
 </svg>

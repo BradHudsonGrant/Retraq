@@ -1,7 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
-  <!-- Okay / Neutral = perfect circle, geometric centre of the scale.
-       Silhouette alone reads as "balanced / centred" with no vertical
-       or horizontal bias, sitting cleanly between the flat Low pill
-       and the rising Good teardrop. -->
-  <circle cx="24" cy="24" r="15" fill="currentColor"/>
+  <!-- Okay: the character at its neutral baseline. Body is roughly
+       as wide as it is tall — a balanced, symmetric organic shape.
+       Centre of the emotional scale: no vertical lift, no sag, just
+       a relaxed blob at rest. -->
+  <path d="M24 11
+           C31 11, 37 15, 37 22
+           C37 26, 37 30, 36 33
+           C34 38, 30 41, 24 41
+           C18 41, 14 38, 12 33
+           C11 30, 11 26, 11 22
+           C11 15, 17 11, 24 11Z"
+        fill="currentColor"/>
 </svg>
