@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'glow_box.dart';
@@ -32,13 +34,39 @@ class _Keyframe {
   final Curve curve;
 }
 
+/// Spark-burst tuning. Each mood gets its own count + radius + size
+/// ranges so Amazing throws a loud shower while Rough barely sputters
+/// a couple of pinpricks.
+class _SparkTune {
+  const _SparkTune({
+    required this.count,
+    required this.minRadius,
+    required this.maxRadius,
+    required this.minSize,
+    required this.maxSize,
+    required this.alpha,
+  });
+
+  final int count;
+  final double minRadius;
+  final double maxRadius;
+  final double minSize;
+  final double maxSize;
+  final double alpha;
+}
+
 /// Full animation recipe for one mood level. Duration + keyframes
 /// describe the whole gesture; the list MUST start at t=0 and end at
 /// t=1 with both endpoints at the rest pose.
 class _MoodAnim {
-  const _MoodAnim({required this.duration, required this.keyframes});
+  const _MoodAnim({
+    required this.duration,
+    required this.keyframes,
+    required this.sparks,
+  });
   final Duration duration;
   final List<_Keyframe> keyframes;
+  final _SparkTune sparks;
 }
 
 const _restPose = _Pose();
@@ -49,46 +77,34 @@ const _restPose = _Pose();
 /// sad by itself — consistent in structure (anticipation → main
 /// action → follow-through) but radically different in energy:
 ///
-/// **Amazing (5)** — full 12-principles bounce.
-///   1. Anticipation: slight squash down + tiny sink (it's winding up)
-///   2. Main action: vertical stretch + leap upward (dy negative)
-///   3. Peak: volumetric round-out at max scale
-///   4. Follow-through: two diminishing elastic wobbles before rest
-///
-/// **Good (4)** — the same shape at 75% intensity: smaller anticipation,
-/// shorter hang-time, single rebound instead of two.
-///
-/// **Okay (3)** — a centred, symmetric pop. No anticipation, no
-/// translation; just a gentle scale swell and return. Baseline energy.
-///
-/// **Low (2)** — inverted: the blob *spreads wide and sinks* on the
-/// main action (sy < 1, dy positive), settles back heavily with no
-/// overshoot. Reads "tired".
-///
-/// **Rough (1)** — the fullest sad version: deeper sag, wider spread,
-/// bigger downward translation, slow return. Reads "collapsing under
-/// its own weight".
+/// **Amazing (5)** — full 12-principles bounce + big shower of sparks.
+/// **Good (4)**   — same shape at 75% intensity, a healthy spray.
+/// **Okay (3)**   — centred pop, modest sparks.
+/// **Low (2)**    — spreads wide and sinks, a few small sparks.
+/// **Rough (1)**  — heavy collapse, only a couple of tiny pinpricks.
 const _moodAnimations = <int, _MoodAnim>{
   1: _MoodAnim(
     duration: Duration(milliseconds: 640),
+    sparks: _SparkTune(
+      count: 3,
+      minRadius: 4,
+      maxRadius: 10,
+      minSize: 0.9,
+      maxSize: 1.6,
+      alpha: 0.55,
+    ),
     keyframes: [
       _Keyframe(0.00, _restPose),
-      // Initial give — the blob already looks like it can't hold
-      // itself up. Slight sink + tiny horizontal spread.
       _Keyframe(
         0.20,
         _Pose(sx: 1.03, sy: 0.96, dy: 1.5),
         curve: Curves.easeIn,
       ),
-      // Bottom of the sag — wider still, much shorter, clearly
-      // sitting lower.
       _Keyframe(
         0.55,
         _Pose(sx: 1.10, sy: 0.84, dy: 3.5),
         curve: Curves.easeInOut,
       ),
-      // Slow reluctant recovery — volume restores but the motion is
-      // draggy, no overshoot.
       _Keyframe(
         0.85,
         _Pose(sx: 1.02, sy: 0.97, dy: 0.8),
@@ -99,6 +115,14 @@ const _moodAnimations = <int, _MoodAnim>{
   ),
   2: _MoodAnim(
     duration: Duration(milliseconds: 540),
+    sparks: _SparkTune(
+      count: 6,
+      minRadius: 6,
+      maxRadius: 14,
+      minSize: 1.0,
+      maxSize: 1.9,
+      alpha: 0.65,
+    ),
     keyframes: [
       _Keyframe(0.00, _restPose),
       _Keyframe(
@@ -116,36 +140,47 @@ const _moodAnimations = <int, _MoodAnim>{
   ),
   3: _MoodAnim(
     duration: Duration(milliseconds: 420),
+    sparks: _SparkTune(
+      count: 10,
+      minRadius: 8,
+      maxRadius: 20,
+      minSize: 1.2,
+      maxSize: 2.4,
+      alpha: 0.75,
+    ),
     keyframes: [
       _Keyframe(0.00, _restPose),
-      // Centred pop — symmetric scale, no translation. Baseline.
       _Keyframe(0.45, _Pose(sx: 1.12, sy: 1.12), curve: Curves.easeOutCubic),
       _Keyframe(1.00, _restPose, curve: Curves.easeOutCubic),
     ],
   ),
   4: _MoodAnim(
     duration: Duration(milliseconds: 560),
+    sparks: _SparkTune(
+      count: 16,
+      minRadius: 10,
+      maxRadius: 28,
+      minSize: 1.6,
+      maxSize: 3.2,
+      alpha: 0.85,
+    ),
     keyframes: [
       _Keyframe(0.00, _restPose),
-      // Small anticipation squash.
       _Keyframe(
         0.12,
         _Pose(sx: 1.04, sy: 0.94, dy: 0.5),
         curve: Curves.easeOut,
       ),
-      // Stretch-up on the way to the peak — vertical emphasis.
       _Keyframe(
         0.30,
         _Pose(sx: 0.95, sy: 1.14, dy: -2.5),
         curve: Curves.easeOut,
       ),
-      // Peak — volumetric.
       _Keyframe(
         0.50,
         _Pose(sx: 1.22, sy: 1.22, dy: -1.5),
         curve: Curves.easeInOut,
       ),
-      // One rebound dip before rest.
       _Keyframe(
         0.75,
         _Pose(sx: 1.02, sy: 0.98),
@@ -156,33 +191,36 @@ const _moodAnimations = <int, _MoodAnim>{
   ),
   5: _MoodAnim(
     duration: Duration(milliseconds: 720),
+    sparks: _SparkTune(
+      count: 24,
+      minRadius: 12,
+      maxRadius: 38,
+      minSize: 1.8,
+      maxSize: 4.0,
+      alpha: 0.95,
+    ),
     keyframes: [
       _Keyframe(0.00, _restPose),
-      // Anticipation: the blob squashes down like it's loading a jump.
       _Keyframe(
         0.10,
         _Pose(sx: 1.07, sy: 0.90, dy: 1.0),
         curve: Curves.easeOut,
       ),
-      // Stretch-up: narrow + tall, leaping.
       _Keyframe(
         0.28,
         _Pose(sx: 0.92, sy: 1.22, dy: -5.0),
         curve: Curves.easeOutCubic,
       ),
-      // Peak: big round volumetric moment up high.
       _Keyframe(
         0.45,
         _Pose(sx: 1.32, sy: 1.32, dy: -3.0),
         curve: Curves.easeInOut,
       ),
-      // First rebound — counter-squash on the way down.
       _Keyframe(
         0.62,
         _Pose(sx: 0.96, sy: 1.05, dy: -0.5),
         curve: Curves.easeInOut,
       ),
-      // Second rebound — diminishing elastic wobble.
       _Keyframe(
         0.80,
         _Pose(sx: 1.08, sy: 0.96),
@@ -225,6 +263,95 @@ TweenSequence<double> _buildTrack(
   return TweenSequence<double>(items);
 }
 
+/// A single spark — pre-computed at generation time so the animation
+/// just samples a progress value (no allocations in the hot path).
+class _Spark {
+  const _Spark({
+    required this.angle,
+    required this.radius,
+    required this.size,
+  });
+  final double angle;
+  final double radius;
+  final double size;
+}
+
+List<_Spark> _generateSparks(_SparkTune tune, int seed) {
+  final rng = math.Random(seed);
+  final sparks = <_Spark>[];
+  for (var i = 0; i < tune.count; i++) {
+    // Evenly-distributed base angle with jitter so the burst looks
+    // organic rather than a perfect ring.
+    final base = (i / tune.count) * 2 * math.pi;
+    final jitter = (rng.nextDouble() - 0.5) * (2 * math.pi / tune.count) * 0.8;
+    final angle = base + jitter;
+    final radius = tune.minRadius +
+        rng.nextDouble() * (tune.maxRadius - tune.minRadius);
+    final size =
+        tune.minSize + rng.nextDouble() * (tune.maxSize - tune.minSize);
+    sparks.add(_Spark(angle: angle, radius: radius, size: size));
+  }
+  return sparks;
+}
+
+/// Paints the spark burst behind the blob. Sparks fly outward and
+/// fade from full opacity to 0 across the animation's life.
+class _SparkPainter extends CustomPainter {
+  _SparkPainter({
+    required this.sparks,
+    required this.progress,
+    required this.color,
+    required this.alpha,
+  });
+
+  final List<_Spark> sparks;
+
+  /// 0..1 — shared controller progress. Sparks launch on the first
+  /// ~55% of the animation and fade out over the rest.
+  final double progress;
+
+  final Color color;
+  final double alpha;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (progress <= 0) return;
+    // Launch arc: 0 → 1 over the first 55% of the animation. This
+    // is the outward travel curve. easeOutCubic gives a fast lift
+    // then gentle settle.
+    final launch =
+        Curves.easeOutCubic.transform((progress / 0.55).clamp(0.0, 1.0));
+    // Fade: sparks hold full opacity until 30%, then fade to 0 by 100%.
+    final fade = progress < 0.30
+        ? 1.0
+        : (1.0 - ((progress - 0.30) / 0.70)).clamp(0.0, 1.0);
+    if (fade <= 0) return;
+
+    final centre = Offset(size.width / 2, size.height / 2);
+    final paint = Paint()
+      ..style = PaintingStyle.fill
+      ..color = color.withValues(alpha: alpha * fade);
+
+    for (final spark in sparks) {
+      final r = spark.radius * launch;
+      final dx = math.cos(spark.angle) * r;
+      final dy = math.sin(spark.angle) * r;
+      // Sparks shrink a touch as they travel so the burst reads as a
+      // natural energy release rather than hard dots.
+      final shrink = 0.7 + 0.3 * (1.0 - launch);
+      canvas.drawCircle(centre + Offset(dx, dy), spark.size * shrink, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _SparkPainter old) {
+    return old.progress != progress ||
+        old.color != color ||
+        old.sparks != sparks ||
+        old.alpha != alpha;
+  }
+}
+
 /// A silhouette-as-emotion mood glyph for a mood level (1-5).
 ///
 /// Static posture comes from the SVG. Dynamic character comes from a
@@ -255,6 +382,7 @@ class _MoodBlobState extends State<MoodBlob>
   late Animation<double> _sx;
   late Animation<double> _sy;
   late Animation<double> _dy;
+  List<_Spark> _sparks = const [];
 
   _MoodAnim get _anim =>
       _moodAnimations[widget.mood.clamp(1, 5)] ?? _moodAnimations[3]!;
@@ -268,7 +396,7 @@ class _MoodBlobState extends State<MoodBlob>
     if (widget.isSelected) {
       // Mount already-selected (restoring saved mood) — park the
       // controller at end so the glow halo shows immediately and we
-      // don't replay the pop on first paint.
+      // don't replay the pop / sparks on first paint.
       _controller.value = 1.0;
     }
   }
@@ -278,6 +406,9 @@ class _MoodBlobState extends State<MoodBlob>
     _sx = _buildTrack(frames, (p) => p.sx).animate(_controller);
     _sy = _buildTrack(frames, (p) => p.sy).animate(_controller);
     _dy = _buildTrack(frames, (p) => p.dy).animate(_controller);
+    // Re-seed sparks off the mood value so each mood gets a distinct
+    // but stable burst pattern (no flicker on rebuild).
+    _sparks = _generateSparks(_anim.sparks, widget.mood * 977);
   }
 
   @override
@@ -304,8 +435,23 @@ class _MoodBlobState extends State<MoodBlob>
     final asset = _moodAssets[widget.mood.clamp(1, 5)]!;
     final selectedSize = widget.size * 1.15;
     final displaySize = widget.isSelected ? selectedSize : widget.size;
+    // Give the spark painter room to draw beyond the blob bounds.
+    // Twice the max radius covers the furthest spark in any mood.
+    final sparkPad = _anim.sparks.maxRadius + _anim.sparks.maxSize + 4;
+    final canvasSize = displaySize + sparkPad * 2;
 
-    final blob = AnimatedBuilder(
+    final svg = SizedBox(
+      width: displaySize,
+      height: displaySize,
+      child: SvgPicture.asset(
+        asset,
+        colorFilter: ColorFilter.mode(widget.color, BlendMode.srcIn),
+        width: displaySize,
+        height: displaySize,
+      ),
+    );
+
+    final animatedBlob = AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
         return Transform.translate(
@@ -315,29 +461,46 @@ class _MoodBlobState extends State<MoodBlob>
           // middle of the cell.
           child: Transform(
             alignment: Alignment.bottomCenter,
-            transform: Matrix4.diagonal3Values(
-              _sx.value,
-              _sy.value,
-              1.0,
-            ),
+            transform: Matrix4.diagonal3Values(_sx.value, _sy.value, 1.0),
             child: child,
           ),
         );
       },
-      child: SizedBox(
-        width: displaySize,
-        height: displaySize,
-        child: SvgPicture.asset(
-          asset,
-          colorFilter: ColorFilter.mode(widget.color, BlendMode.srcIn),
-          width: displaySize,
-          height: displaySize,
-        ),
+      child: svg,
+    );
+
+    // Stack the sparks behind the blob. CustomPaint gets a canvas
+    // larger than the blob so sparks can fly past its edges.
+    final withSparks = SizedBox(
+      width: canvasSize,
+      height: canvasSize,
+      child: Stack(
+        alignment: Alignment.center,
+        clipBehavior: Clip.none,
+        children: [
+          IgnorePointer(
+            child: AnimatedBuilder(
+              animation: _controller,
+              builder: (context, _) {
+                return CustomPaint(
+                  size: Size(canvasSize, canvasSize),
+                  painter: _SparkPainter(
+                    sparks: _sparks,
+                    progress: _controller.value,
+                    color: widget.color,
+                    alpha: _anim.sparks.alpha,
+                  ),
+                );
+              },
+            ),
+          ),
+          animatedBlob,
+        ],
       ),
     );
 
     // No glow halo when not selected.
-    if (!widget.isSelected) return blob;
+    if (!widget.isSelected) return withSparks;
 
     // Mood-coloured glow halo — opacity rides the same controller so
     // it fades up in sync with the pop.
@@ -353,7 +516,7 @@ class _MoodBlobState extends State<MoodBlob>
           child: child!,
         );
       },
-      child: blob,
+      child: withSparks,
     );
   }
 }
