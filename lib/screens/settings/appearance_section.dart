@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
-import '../../providers/settings_provider.dart';
+import '../../widgets/settings_provider.dart';
 import '../../theme/app_spacing.dart';
 import '../../widgets/atoms/bionic_text.dart';
 import '../../widgets/organisms/theme_card.dart';

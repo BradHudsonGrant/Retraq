@@ -14,7 +14,7 @@ import 'screens/app_shell.dart';
 import 'screens/lock_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'services/database_service.dart';
-import 'providers/settings_provider.dart';
+import 'widgets/settings_provider.dart';
 import 'services/notification_service.dart';
 import 'services/screen_security_service.dart';
 import 'services/widget_service.dart';

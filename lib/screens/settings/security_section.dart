@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/user_settings.dart';
-import '../../providers/settings_provider.dart';
+import '../../widgets/settings_provider.dart';
 import '../../services/biometric_auth.dart';
 import '../../services/pin_service.dart';
 import '../../theme/app_spacing.dart';

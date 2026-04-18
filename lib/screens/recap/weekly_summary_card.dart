@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../providers/settings_provider.dart';
+import '../../widgets/settings_provider.dart';
 import '../../services/recap_service.dart';
 import '../../theme/app_spacing.dart';
 import '../../widgets/atoms/bionic_text.dart';

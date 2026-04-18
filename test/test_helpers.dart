@@ -39,7 +39,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:retraq/l10n/app_localizations.dart';
 import 'package:retraq/models/user_settings.dart';
-import 'package:retraq/providers/settings_provider.dart';
+import 'package:retraq/widgets/settings_provider.dart';
 import 'package:retraq/services/database_service.dart';
 
 /// In-memory backing store for the mocked FlutterSecureStorage channel.

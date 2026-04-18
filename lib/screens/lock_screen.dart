@@ -10,7 +10,7 @@ import '../services/export_service.dart';
 import '../services/lockout_controller.dart';
 import '../services/secure_storage.dart';
 import '../services/settings_repository.dart';
-import '../providers/settings_provider.dart';
+import '../widgets/settings_provider.dart';
 import '../theme/app_spacing.dart';
 import '../widgets/atoms/animated_mesh_background.dart';
 import '../widgets/atoms/app_snack_bar.dart';

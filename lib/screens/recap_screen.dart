@@ -5,7 +5,7 @@ import 'package:retraq/l10n/app_localizations.dart';
 
 import '../models/journal_entry.dart';
 import '../models/user_settings.dart';
-import '../providers/settings_provider.dart';
+import '../widgets/settings_provider.dart';
 import '../services/database_service.dart';
 import '../services/entry_repository.dart';
 // Task 1.14 — WeeklySummary type still flows through this screen; pulled

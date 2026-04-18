@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../models/journal_entry.dart';
-import '../../providers/settings_provider.dart';
+import '../../widgets/settings_provider.dart';
 import '../../services/export_service.dart';
 import '../../theme/app_spacing.dart';
 import '../../utils/entry_action_dialogs.dart';

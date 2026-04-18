@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:retraq/l10n/app_localizations.dart';
 
 import '../models/journal_entry.dart';
-import '../providers/settings_provider.dart';
+import '../widgets/settings_provider.dart';
 import '../services/database_service.dart';
 import '../services/stats_service.dart';
 import '../theme/app_motion.dart';

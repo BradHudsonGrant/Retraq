@@ -7,7 +7,7 @@ import '../utils/entry_text_cleaner.dart';
 import '../utils/milestones.dart';
 import '../models/journal_entry.dart';
 import '../models/user_settings.dart';
-import '../providers/settings_provider.dart';
+import '../widgets/settings_provider.dart';
 import '../services/app_log.dart';
 import '../services/entry_repository.dart';
 import '../services/settings_repository.dart';
