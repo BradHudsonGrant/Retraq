@@ -8,7 +8,7 @@ import '../services/notification_service.dart';
 import '../services/secure_storage.dart';
 import '../services/user_repository.dart';
 import '../theme/app_spacing.dart';
-import '../widgets/atoms/animated_mesh_background.dart';
+import '../widgets/atoms/brand_ambient_background.dart';
 import '../widgets/atoms/app_snack_bar.dart';
 import '../widgets/atoms/glow_box.dart';
 import '../widgets/atoms/retraq_logo.dart';
@@ -317,22 +317,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     }
 
     return Scaffold(
-      backgroundColor: cs.surface,
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          Positioned.fill(
-            child: AnimatedMeshBackground(
-              colors: [
-                cs.primary.withValues(alpha: 0.30),
-                cs.tertiary.withValues(alpha: 0.22),
-                cs.secondaryContainer.withValues(alpha: 0.30),
-              ],
-              baseColor: cs.surface,
-              opacity: 0.45,
-            ),
-          ),
-          SafeArea(
+      // Transparent so the BrandAmbientBackground gradient shows through
+      // to the edges. Onboarding now shares the muted shell background
+      // instead of rendering its own 0.45-opacity mesh which was reading
+      // as "too bright" — especially in light mode, where the old dark-
+      // green overlay muddied the near-white surface.
+      backgroundColor: Colors.transparent,
+      body: BrandAmbientBackground(
+        child: SafeArea(
             child: Column(
               children: [
                 // Header: Logo only (no Skip — consent is required)
@@ -448,7 +440,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ],
             ),
           ),
-        ],
       ),
     );
   }

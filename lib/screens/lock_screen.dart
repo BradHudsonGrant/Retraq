@@ -12,7 +12,7 @@ import '../services/secure_storage.dart';
 import '../services/settings_repository.dart';
 import '../widgets/settings_provider.dart';
 import '../theme/app_spacing.dart';
-import '../widgets/atoms/animated_mesh_background.dart';
+import '../widgets/atoms/brand_ambient_background.dart';
 import '../widgets/atoms/app_snack_bar.dart';
 import '../widgets/atoms/bionic_text.dart';
 import '../widgets/atoms/glow_box.dart';
@@ -357,23 +357,14 @@ class _LockScreenState extends State<LockScreen> {
     final l10n = L10n.of(context)!;
 
     return Scaffold(
-      backgroundColor: cs.surface,
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          // Drifting mesh backdrop — adds depth without distracting from PIN.
-          Positioned.fill(
-            child: AnimatedMeshBackground(
-              colors: [
-                cs.primary.withValues(alpha: 0.35),
-                cs.tertiary.withValues(alpha: 0.25),
-                cs.secondaryContainer.withValues(alpha: 0.30),
-              ],
-              baseColor: cs.surface,
-              opacity: 0.55,
-            ),
-          ),
-          SafeArea(
+      // Transparent so the BrandAmbientBackground gradient fills the full
+      // screen instead of being masked by the scaffold's own surface.
+      // Shared with onboarding + the shell so every chrome-level screen
+      // reads at the same intensity; previously the lock screen ran at
+      // ~0.55 outer opacity which the user flagged as too bright.
+      backgroundColor: Colors.transparent,
+      body: BrandAmbientBackground(
+        child: SafeArea(
             child: Padding(
               padding: AppSpacing.pagePadding,
               child: Column(
@@ -457,7 +448,6 @@ class _LockScreenState extends State<LockScreen> {
               ),
             ),
           ),
-        ],
       ),
     );
   }
