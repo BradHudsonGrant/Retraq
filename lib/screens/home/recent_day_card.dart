@@ -142,27 +142,37 @@ class _RecentDayCardState extends State<RecentDayCard> {
                   ),
                 ),
               // Text body + inline trailing action for unlabelled
-              // entries. IntrinsicHeight keeps the menu vertically
-              // aligned with the first text line without stretching.
+              // entries. The action menu is a 48×48 tap target (for
+              // touch-target a11y), so the row is always at least 48px
+              // tall even if the text is a single word. Center-align
+              // cross-axis so one-line entries read as centred on the
+              // menu icon instead of clinging to the top of the row.
               if (sortedEntries[i].label == null)
                 Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Expanded(
-                      child: BionicText(
-                        text: sortedEntries[i].displayText,
-                        maxLines: _expanded ? null : 2,
-                        overflow: _expanded
-                            ? TextOverflow.clip
-                            : TextOverflow.ellipsis,
-                        style: tt.bodyMedium?.copyWith(
-                          height: 1.35,
-                          color: cs.onSurface.withValues(alpha: 0.9),
+                      child: Padding(
+                        // Nudge the text down a hair so a single line
+                        // lines up with the optical centre of the ⋮
+                        // icon rather than the geometric centre of its
+                        // 48px tap target.
+                        padding: const EdgeInsets.only(left: AppSpacing.xxs),
+                        child: BionicText(
+                          text: sortedEntries[i].displayText,
+                          maxLines: _expanded ? null : 2,
+                          overflow: _expanded
+                              ? TextOverflow.clip
+                              : TextOverflow.ellipsis,
+                          style: tt.bodyMedium?.copyWith(
+                            height: 1.35,
+                            color: cs.onSurface.withValues(alpha: 0.9),
+                          ),
+                          enabled: SettingsProvider.maybeOf(
+                                context,
+                              )?.bionicReadingEnabled ??
+                              false,
                         ),
-                        enabled: SettingsProvider.maybeOf(
-                              context,
-                            )?.bionicReadingEnabled ??
-                            false,
                       ),
                     ),
                     EntryActionMenu(
