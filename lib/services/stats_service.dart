@@ -4,7 +4,6 @@ import 'dart:async';
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart' show listEquals;
 import '../models/journal_entry.dart';
-import '../utils/date_helpers.dart';
 import 'app_log.dart';
 import 'database_service.dart';
 
@@ -14,120 +13,80 @@ class StatsService {
 
   StatsService(this._db);
 
-  /// Count consecutive days with entries ending today or yesterday,
-  /// allowing 1 "streak freeze" (missed day) per 7-day window.
+  /// Count consecutive days with entries ending today or yesterday.
   ///
-  /// Also returns whether a freeze is still available this week via
-  /// [getCurrentStreakWithFreezeInfo].
+  /// Strict streak: any gap breaks the count. The earlier "1 freeze per
+  /// 7-day window" allowance was removed in the Traq rename sweep since
+  /// the UX was confusing (users couldn't tell when a freeze was being
+  /// spent on their behalf) and the extra code paths were carrying
+  /// disproportionate maintenance cost.
   Future<int> getCurrentStreak() async {
-    final info = await getCurrentStreakWithFreezeInfo();
-    return info.streak;
-  }
-
-  /// Returns the current streak length **and** whether the user still has
-  /// a streak freeze available this week (i.e., they haven't used their
-  /// one free missed-day allowance in the last 7 days of the streak).
-  Future<StreakFreezeInfo> getCurrentStreakWithFreezeInfo() async {
     try {
       final now = DateTime.now();
       final todayStr = _dateStr(now);
 
-      // Task 8.7 — add a date floor to match the walker's existing
-      // 1095-day (3-year) safety cap. Users with many years of data
-      // would otherwise scan the full distinct-date set on every
-      // recap refresh, even though the walker below ignores anything
-      // past ~3 years. Using 1200 days keeps a small buffer so a
-      // freeze-straddled streak exactly at the boundary still reads.
-      // Streak correctness is unchanged: any real streak >1095 days
-      // already hit the safety `break` before this cap existed.
+      // Query a modest window back — any real streak longer than ~3
+      // years would already have hit the safety break below, and
+      // limiting the fetch keeps the DB round-trip cheap on big
+      // journals.
       final earliestRelevant = now.subtract(const Duration(days: 1200));
       final earliestRelevantStr = _dateStr(earliestRelevant);
 
-      // Fetch all distinct entry dates, newest first
-      final rows =
-          await _db
-              .customSelect(
-                "SELECT DISTINCT date(date, 'unixepoch', 'localtime') AS d "
-                "FROM journal_entries WHERE date(date, 'unixepoch', 'localtime') <= ? "
-                "AND date(date, 'unixepoch', 'localtime') >= ? "
-                "ORDER BY d DESC LIMIT 1100",
-                variables: [
-                  Variable<String>(todayStr),
-                  Variable<String>(earliestRelevantStr),
-                ],
-                readsFrom: {_db.journalEntries},
-              )
-              .get();
+      final rows = await _db
+          .customSelect(
+            "SELECT DISTINCT date(date, 'unixepoch', 'localtime') AS d "
+            "FROM journal_entries WHERE date(date, 'unixepoch', 'localtime') <= ? "
+            "AND date(date, 'unixepoch', 'localtime') >= ? "
+            "ORDER BY d DESC LIMIT 1100",
+            variables: [
+              Variable<String>(todayStr),
+              Variable<String>(earliestRelevantStr),
+            ],
+            readsFrom: {_db.journalEntries},
+          )
+          .get();
 
-      if (rows.isEmpty) {
-        return const StreakFreezeInfo(streak: 0, freezeAvailable: true);
-      }
+      if (rows.isEmpty) return 0;
 
-      // Parse into a Set for O(1) lookup
       final entryDates = <String>{};
       for (final row in rows) {
         entryDates.add(row.read<String>('d'));
       }
 
-      // The streak must start from today or yesterday
+      // The streak must anchor to today or yesterday — otherwise there's
+      // no "current" streak to report.
       final yesterday = now.subtract(const Duration(days: 1));
       final yesterdayStr = _dateStr(yesterday);
       if (!entryDates.contains(todayStr) &&
           !entryDates.contains(yesterdayStr)) {
-        return const StreakFreezeInfo(streak: 0, freezeAvailable: true);
+        return 0;
       }
 
-      // Walk backwards from today counting streak days.
-      // Allow 1 gap day per rolling 7-day window (freeze).
-      // A freeze is only consumed for gaps WITHIN an active streak,
-      // not at the boundary (e.g., the day before the first-ever entry).
       int streak = 0;
-      bool freezeUsedInWindow = false;
-      int daysSinceLastFreeze = 0;
-      int consecutiveGaps = 0;
-
-      // Start from today and go backwards
       var cursor = DateTime(now.year, now.month, now.day);
       while (true) {
         final cursorStr = _dateStr(cursor);
         if (entryDates.contains(cursorStr)) {
           streak++;
-          daysSinceLastFreeze++;
-          consecutiveGaps = 0;
         } else {
-          consecutiveGaps++;
-
-          // If we haven't started a streak yet (no entries found so far),
-          // or hit 2+ consecutive gaps, the streak ends here.
-          if (streak == 0 || consecutiveGaps > 1) break;
-
-          // Reset freeze allowance every 7 streak days
-          if (daysSinceLastFreeze >= 7) {
-            freezeUsedInWindow = false;
+          if (streak == 0) {
+            // Today is empty but yesterday isn't: skip today and anchor
+            // the streak at yesterday. This keeps the streak visible all
+            // day on the day after the user last journaled, matching the
+            // usual "habit tracker" expectation.
+            cursor = cursor.subtract(const Duration(days: 1));
+            continue;
           }
-
-          if (!freezeUsedInWindow) {
-            // Use the freeze — skip this gap day, streak continues
-            freezeUsedInWindow = true;
-            daysSinceLastFreeze = 0;
-          } else {
-            // Already used freeze in this window — streak breaks
-            break;
-          }
+          break;
         }
         cursor = cursor.subtract(const Duration(days: 1));
-
-        // Safety: don't iterate more than 3 years back
         if (streak > 1095) break;
       }
 
-      return StreakFreezeInfo(
-        streak: streak,
-        freezeAvailable: !freezeUsedInWindow,
-      );
+      return streak;
     } catch (e) {
-      AppLog.error('StatsService.getCurrentStreakWithFreezeInfo', e);
-      return const StreakFreezeInfo(streak: 0, freezeAvailable: true);
+      AppLog.error('StatsService.getCurrentStreak', e);
+      return 0;
     }
   }
 
@@ -205,43 +164,51 @@ class StatsService {
 
   /// Return entry counts per week for the last [weeks] weeks.
   /// Returns a `List<int>` of length [weeks], index 0 = oldest week.
+  ///
+  /// The previous implementation bucketed in SQL with `strftime('%Y-%W', ...)`
+  /// and matched each row against a Dart-computed `strftimeYW(weekStart)`
+  /// label. SQLite's `%W` uses "first Monday of year" numbering which the
+  /// Dart helper approximated as `dayOfYear // 7`, so the two week IDs
+  /// drifted apart: rows could get bucketed into a week the result list
+  /// never asked for, and the visible bars became effectively random.
+  ///
+  /// The fix is to do the bucketing in Dart from raw timestamps. Bucket
+  /// [weeks - 1] (rightmost bar) covers the last 7 days ending today;
+  /// each earlier bucket is the prior 7-day window. This matches what
+  /// the chart labels ("Now", "3w", "6w") actually describe.
   Future<List<int>> getWeeklyEntryCounts({int weeks = 12}) async {
     try {
       final now = DateTime.now();
-      final cutoff = DateTime(
-        now.year,
-        now.month,
-        now.day,
-      ).subtract(Duration(days: weeks * 7));
-      final cutoffEpoch = cutoff.toUtc().millisecondsSinceEpoch ~/ 1000;
+      final today = DateTime(now.year, now.month, now.day);
+      // Last bucket covers [today - 6, today]; earliest covers
+      // [today - weeks*7 + 1, today - (weeks-1)*7]. Include an extra day
+      // in the query window so a midnight-boundary entry doesn't slip
+      // past the cutoff; we recheck ranges in Dart.
+      final windowStart = today.subtract(Duration(days: weeks * 7));
+      final windowStartEpoch =
+          windowStart.toUtc().millisecondsSinceEpoch ~/ 1000;
 
-      final rows =
-          await _db
-              .customSelect(
-                "SELECT strftime('%Y-%W', date, 'unixepoch', 'localtime') as week, "
-                "COUNT(*) as cnt FROM journal_entries "
-                "WHERE date >= ? GROUP BY week ORDER BY week ASC",
-                variables: [Variable.withInt(cutoffEpoch)],
-                readsFrom: {_db.journalEntries},
-              )
-              .get();
+      final rows = await _db
+          .customSelect(
+            'SELECT date FROM journal_entries WHERE date >= ?',
+            variables: [Variable.withInt(windowStartEpoch)],
+            readsFrom: {_db.journalEntries},
+          )
+          .get();
 
-      // Build a map of week-label → count
-      final weekCounts = <String, int>{};
+      final result = List<int>.filled(weeks, 0);
       for (final row in rows) {
-        weekCounts[row.read<String>('week')] = row.read<int>('cnt');
-      }
-
-      // Generate expected week labels for each of the N weeks
-      final result = <int>[];
-      for (var i = weeks - 1; i >= 0; i--) {
-        final weekStart = DateTime(
-          now.year,
-          now.month,
-          now.day,
-        ).subtract(Duration(days: i * 7));
-        final label = strftimeYW(weekStart);
-        result.add(weekCounts[label] ?? 0);
+        final epoch = row.read<int>('date');
+        final entryDate =
+            DateTime.fromMillisecondsSinceEpoch(epoch * 1000).toLocal();
+        final day = DateTime(entryDate.year, entryDate.month, entryDate.day);
+        final daysAgo = today.difference(day).inDays;
+        if (daysAgo < 0 || daysAgo >= weeks * 7) continue;
+        // bucketIdx = weeks - 1 for daysAgo in 0..6, weeks - 2 for 7..13, etc.
+        final bucketIdx = weeks - 1 - (daysAgo ~/ 7);
+        if (bucketIdx >= 0 && bucketIdx < weeks) {
+          result[bucketIdx]++;
+        }
       }
       return result;
     } catch (e) {
@@ -535,7 +502,7 @@ class StatsService {
       //  (remaining 3 unchanged)
       final results = await Future.wait([
         _getBatchCounts(), // 0
-        getCurrentStreakWithFreezeInfo(), // 1
+        getCurrentStreak(), // 1
         _getBatchStreaks(), // 2
         getWeeklyEntryCounts(weeks: weeks), // 3
         getMostActiveWeekday(), // 4
@@ -543,7 +510,7 @@ class StatsService {
       ]);
 
       final counts = results[0] as ({int totalEntries, int totalDays});
-      final freezeInfo = results[1] as StreakFreezeInfo;
+      final currentStreak = results[1] as int;
       final streaks =
           results[2] as ({int longestStreak, int longestStreakThisMonth});
       final moodStats =
@@ -552,14 +519,13 @@ class StatsService {
       return StatsSnapshot(
         totalEntries: counts.totalEntries,
         totalDays: counts.totalDays,
-        currentStreak: freezeInfo.streak,
+        currentStreak: currentStreak,
         longestStreak: streaks.longestStreak,
         weeklyTrends: results[3] as List<int>,
         mostActiveWeekday: results[4] as int,
         averageMood: moodStats.averageMood,
         moodDistribution: moodStats.distribution,
         longestStreakThisMonth: streaks.longestStreakThisMonth,
-        freezeAvailable: freezeInfo.freezeAvailable,
       );
     } catch (e) {
       AppLog.error('StatsService.getAllStats', e);
@@ -632,14 +598,6 @@ class StatsService {
   }
 }
 
-/// Streak + freeze availability info returned by [getCurrentStreakWithFreezeInfo].
-class StreakFreezeInfo {
-  final int streak;
-  final bool freezeAvailable;
-
-  const StreakFreezeInfo({required this.streak, required this.freezeAvailable});
-}
-
 /// Immutable snapshot of all stats — computed once per journal change.
 class StatsSnapshot {
   final int totalEntries;
@@ -647,7 +605,6 @@ class StatsSnapshot {
   final int currentStreak;
   final int longestStreak;
   final int longestStreakThisMonth;
-  final bool freezeAvailable;
   final List<int> weeklyTrends;
   final int mostActiveWeekday;
   final double? averageMood;
@@ -659,7 +616,6 @@ class StatsSnapshot {
     this.currentStreak = 0,
     this.longestStreak = 0,
     this.longestStreakThisMonth = 0,
-    this.freezeAvailable = true,
     this.weeklyTrends = const [],
     this.mostActiveWeekday = 0,
     this.averageMood,
@@ -675,7 +631,6 @@ class StatsSnapshot {
           currentStreak == other.currentStreak &&
           longestStreak == other.longestStreak &&
           longestStreakThisMonth == other.longestStreakThisMonth &&
-          freezeAvailable == other.freezeAvailable &&
           mostActiveWeekday == other.mostActiveWeekday &&
           averageMood == other.averageMood &&
           listEquals(weeklyTrends, other.weeklyTrends) &&
@@ -696,7 +651,6 @@ class StatsSnapshot {
     currentStreak,
     longestStreak,
     longestStreakThisMonth,
-    freezeAvailable,
     mostActiveWeekday,
     averageMood,
     Object.hashAll(weeklyTrends),

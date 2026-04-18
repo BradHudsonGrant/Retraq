@@ -295,69 +295,17 @@ class _StatsScreenState extends State<StatsScreen>
             ],
           ),
           const SizedBox(height: AppSpacing.md),
-          Row(
-            children: [
-              Expanded(
-                child: StatCard(
-                  label: l10n.longestThisMonth,
-                  value: _stats.longestStreakThisMonth,
-                  icon: Icons.date_range,
-                  suffix: l10n.daysSuffix,
-                  delay: 200,
-                ),
-              ),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(child: _buildFreezeIndicator()),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFreezeIndicator() {
-    final cs = Theme.of(context).colorScheme;
-    final tt = Theme.of(context).textTheme;
-    final l10n = L10n.of(context)!;
-    return Container(
-      height: 90,
-      padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: cs.surfaceContainerLow,
-        borderRadius: AppSpacing.borderRadiusXl,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Row(
-            children: [
-              Icon(
-                Icons.shield,
-                size: 16,
-                color:
-                    _stats.freezeAvailable ? cs.primary : cs.onSurfaceVariant,
-              ),
-              const SizedBox(width: AppSpacing.xs),
-              Flexible(
-                child: Text(
-                  l10n.streakFreeze,
-                  style: tt.labelMedium?.copyWith(color: cs.onSurfaceVariant),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.xs),
-          BionicText(
-            text: _stats.freezeAvailable ? l10n.streakFreezeAvailable : l10n.streakFreezeUsed,
-            style: tt.bodyMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: _stats.freezeAvailable ? cs.primary : cs.onSurfaceVariant,
-            ),
-            enabled:
-                SettingsProvider.maybeOf(context)?.bionicReadingEnabled ??
-                false,
+          // Streak freeze card (1 free miss per 7 days) was removed: the
+          // allowance was invisible to users until it had already been
+          // spent, which made streaks feel arbitrary. A single bottom-
+          // spanning StatCard reads cleaner than the old two-column row
+          // with an asymmetric freeze tile on the right.
+          StatCard(
+            label: l10n.longestThisMonth,
+            value: _stats.longestStreakThisMonth,
+            icon: Icons.date_range,
+            suffix: l10n.daysSuffix,
+            delay: 200,
           ),
         ],
       ),

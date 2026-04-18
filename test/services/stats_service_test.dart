@@ -81,35 +81,15 @@ void main() {
   // in-memory assertions: the whole point is to catch regressions
   // the in-memory harness misses.
 
-  group('Streak forgiveness (freeze) — data model', () {
+  group('Streak — data model', () {
     test('empty database returns streak of 0', () async {
       final streak = await db.stats.getCurrentStreak();
       expect(streak, 0);
     });
 
-    test('empty database returns freezeAvailable true', () async {
-      final info = await db.stats.getCurrentStreakWithFreezeInfo();
-      expect(info.streak, 0);
-      expect(info.freezeAvailable, true);
-    });
-
-    test('StreakFreezeInfo holds streak and freeze values', () {
-      const info = StreakFreezeInfo(streak: 7, freezeAvailable: false);
-      expect(info.streak, 7);
-      expect(info.freezeAvailable, false);
-    });
-
-    test('StreakFreezeInfo with freeze available', () {
-      const info = StreakFreezeInfo(streak: 3, freezeAvailable: true);
-      expect(info.streak, 3);
-      expect(info.freezeAvailable, true);
-    });
-
-    test('getAllStats includes freezeAvailable field', () async {
+    test('getAllStats returns zero streak on empty DB', () async {
       final stats = await db.stats.getAllStats();
-      // With no entries, default values
       expect(stats.currentStreak, 0);
-      expect(stats.freezeAvailable, true);
       expect(stats.longestStreakThisMonth, 0);
     });
 
@@ -117,19 +97,16 @@ void main() {
       const a = StatsSnapshot(
         totalEntries: 5,
         currentStreak: 3,
-        freezeAvailable: true,
         longestStreakThisMonth: 3,
       );
       const b = StatsSnapshot(
         totalEntries: 5,
         currentStreak: 3,
-        freezeAvailable: true,
         longestStreakThisMonth: 3,
       );
       const c = StatsSnapshot(
-        totalEntries: 5,
+        totalEntries: 6,
         currentStreak: 3,
-        freezeAvailable: false,
         longestStreakThisMonth: 3,
       );
       expect(a, equals(b));
@@ -143,7 +120,6 @@ void main() {
       expect(stats.currentStreak, 0);
       expect(stats.longestStreak, 0);
       expect(stats.longestStreakThisMonth, 0);
-      expect(stats.freezeAvailable, true);
       expect(stats.weeklyTrends, isEmpty);
       expect(stats.mostActiveWeekday, 0);
       expect(stats.averageMood, isNull);
