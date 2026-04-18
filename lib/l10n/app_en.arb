@@ -273,6 +273,14 @@
   "@helpImproveRetraqBody": {
     "description": "Task 10.1 — Settings row subtitle explaining the opt-in scope. Keep it short and truthful; the full details live in the privacy policy."
   },
+  "keepUsageStats": "Keep usage stats on this device",
+  "@keepUsageStats": {
+    "description": "Task 11.13 — Settings row title for the local-counter kill switch. Controls whether feature counters / session stamps are written to the local DB. Never sent anywhere."
+  },
+  "keepUsageStatsBody": "Local counters only. Never sent anywhere. Off = your taps aren't counted.",
+  "@keepUsageStatsBody": {
+    "description": "Task 11.13 — Settings row subtitle for the usage-stats kill switch. Emphasises the local-only nature to avoid confusion with Diagnostics."
+  },
   "resetAppUndoToast": "Erasing in {seconds}s — tap to cancel",
   "@resetAppUndoToast": {
     "description": "Task 3.2 — non-dismissible SnackBar shown for 10 seconds after the user confirms a Forgot-PIN reset. Tapping the action cancels the timer and leaves all data intact.",

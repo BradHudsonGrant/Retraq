@@ -919,6 +919,18 @@ abstract class L10n {
   /// **'Send anonymous crash reports so we can fix bugs. No traq content, mood, or timestamps are ever included.'**
   String get helpImproveRetraqBody;
 
+  /// Task 11.13 — Settings row title for the local-counter kill switch. Controls whether feature counters / session stamps are written to the local DB. Never sent anywhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep usage stats on this device'**
+  String get keepUsageStats;
+
+  /// Task 11.13 — Settings row subtitle for the usage-stats kill switch. Emphasises the local-only nature to avoid confusion with Diagnostics.
+  ///
+  /// In en, this message translates to:
+  /// **'Local counters only. Never sent anywhere. Off = your taps aren\'t counted.'**
+  String get keepUsageStatsBody;
+
   /// Task 3.2 — non-dismissible SnackBar shown for 10 seconds after the user confirms a Forgot-PIN reset. Tapping the action cancels the timer and leaves all data intact.
   ///
   /// In en, this message translates to:

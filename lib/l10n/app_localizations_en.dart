@@ -481,6 +481,13 @@ class L10nEn extends L10n {
       'Send anonymous crash reports so we can fix bugs. No traq content, mood, or timestamps are ever included.';
 
   @override
+  String get keepUsageStats => 'Keep usage stats on this device';
+
+  @override
+  String get keepUsageStatsBody =>
+      'Local counters only. Never sent anywhere. Off = your taps aren\'t counted.';
+
+  @override
   String resetAppUndoToast(int seconds) {
     return 'Erasing in ${seconds}s — tap to cancel';
   }
