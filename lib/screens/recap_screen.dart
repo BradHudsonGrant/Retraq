@@ -542,33 +542,11 @@ class _RecapScreenState extends State<RecapScreen>
       ),
     );
 
-    // Gradient sits OUTSIDE SafeArea so it extends behind the status bar,
-    // blending the system chrome into the Recap header. Only the scroll
-    // content respects the safe-area insets.
-    return Stack(
-      children: [
-        Positioned(
-          top: 0,
-          left: 0,
-          right: 0,
-          height: 280,
-          child: IgnorePointer(
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    cs.primary.withValues(alpha: 0.16),
-                    cs.surface.withValues(alpha: 0.0),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-        SafeArea(child: scrollView),
-      ],
-    );
+    // The 280px top primary-tinted gradient that used to live here was
+    // generalised into BrandAmbientBackground at the AppShell level so
+    // every tab shares the same subtle glow + animated mesh underlay.
+    // Just render the scroll content inside SafeArea — the background
+    // is painted for us by the shell.
+    return SafeArea(child: scrollView);
   }
 }

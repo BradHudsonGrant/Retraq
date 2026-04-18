@@ -23,6 +23,7 @@ class JournalTextArea extends StatefulWidget {
     required this.isSaving,
     required this.onSave,
     this.topRightWidget,
+    this.topLeftWidget,
     this.enterToSave = false,
     this.bulletPoints = false,
     this.minLines = 6,
@@ -37,6 +38,12 @@ class JournalTextArea extends StatefulWidget {
   final bool isSaving;
   final VoidCallback onSave;
   final Widget? topRightWidget;
+
+  /// Optional chip/control painted inside the top-left of the input.
+  /// Mirrors [topRightWidget] which hosts the AM/PM toggle; the home
+  /// screen uses this slot for the date-override chip so "setting the
+  /// date for this traq" sits right next to where the user types.
+  final Widget? topLeftWidget;
   final bool enterToSave;
   final bool bulletPoints;
   final int minLines;
@@ -146,7 +153,11 @@ class _JournalTextAreaState extends State<JournalTextArea> {
         ),
         contentPadding: EdgeInsets.fromLTRB(
           AppSpacing.lg,
-          widget.topRightWidget != null ? 48 : AppSpacing.lg,
+          // Leave room at the top for any topLeftWidget / topRightWidget
+          // chips so they don't overlap the caret or floating label.
+          (widget.topRightWidget != null || widget.topLeftWidget != null)
+              ? 48
+              : AppSpacing.lg,
           AppSpacing.lg,
           AppSpacing.lg,
         ),
@@ -192,6 +203,12 @@ class _JournalTextAreaState extends State<JournalTextArea> {
     final body = Stack(
       children: [
         textField,
+        if (widget.topLeftWidget != null)
+          Positioned(
+            top: AppSpacing.sm,
+            left: AppSpacing.sm,
+            child: widget.topLeftWidget!,
+          ),
         if (widget.topRightWidget != null)
           Positioned(
             top: AppSpacing.sm,

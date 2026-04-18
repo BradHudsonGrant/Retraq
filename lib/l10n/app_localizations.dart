@@ -210,7 +210,7 @@ abstract class L10n {
   /// No description provided for @journalEntryLabel.
   ///
   /// In en, this message translates to:
-  /// **'Traq'**
+  /// **'Tap to traq'**
   String get journalEntryLabel;
 
   /// No description provided for @amLabel.

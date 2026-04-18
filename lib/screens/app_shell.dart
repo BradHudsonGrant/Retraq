@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import '../theme/app_motion.dart';
 import '../utils/test_keys.dart';
+import '../widgets/atoms/brand_ambient_background.dart';
 import '../widgets/atoms/morph_icon.dart';
 import '../widgets/atoms/tab_swipe_edge_glow.dart';
 import 'active_tab_scope.dart';
@@ -70,6 +71,9 @@ class _AppShellState extends State<AppShell> {
     final l10n = L10n.of(context)!;
 
     return Scaffold(
+      // Transparent scaffold so BrandAmbientBackground's gradient shows
+      // through instead of being masked by the theme's surface colour.
+      backgroundColor: Colors.transparent,
       // No top AppBar — each screen owns its own header for max real-estate
       // and a faster, less repaint-heavy shell.
       //
@@ -84,21 +88,29 @@ class _AppShellState extends State<AppShell> {
       // they're inactive. HomeScreen reads this in
       // `didChangeDependencies` and pauses its 4 Drift watcher subs
       // when the user is on Recap or Settings.
-      body: ActiveTabScope(
-        activeIndex: _currentIndex,
-        child: TabSwipeEdgeGlow(
-          child: PageView(
-            controller: _pageController,
-            onPageChanged: _onPageChanged,
-            physics: const NeverScrollableScrollPhysics(),
-            children: [
-              const HomeScreen(),
-              const RecapScreen(),
-              SettingsScreen(
-                onThemeModeChanged: widget.onThemeModeChanged,
-                themeMode: widget.themeMode,
-              ),
-            ],
+      //
+      // BrandAmbientBackground sits behind every tab's content so the
+      // subtle animated mesh + primary top-halo is shared across Home,
+      // Recap and Settings instead of living only on Recap as a static
+      // 280px gradient. Individual screens no longer need to paint their
+      // own header glow.
+      body: BrandAmbientBackground(
+        child: ActiveTabScope(
+          activeIndex: _currentIndex,
+          child: TabSwipeEdgeGlow(
+            child: PageView(
+              controller: _pageController,
+              onPageChanged: _onPageChanged,
+              physics: const NeverScrollableScrollPhysics(),
+              children: [
+                const HomeScreen(),
+                const RecapScreen(),
+                SettingsScreen(
+                  onThemeModeChanged: widget.onThemeModeChanged,
+                  themeMode: widget.themeMode,
+                ),
+              ],
+            ),
           ),
         ),
       ),

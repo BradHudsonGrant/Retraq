@@ -66,7 +66,7 @@ class L10nEn extends L10n {
   String get saving => 'Saving...';
 
   @override
-  String get journalEntryLabel => 'Traq';
+  String get journalEntryLabel => 'Tap to traq';
 
   @override
   String get amLabel => 'AM';

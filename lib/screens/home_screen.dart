@@ -325,65 +325,12 @@ class _HomeScreenState extends State<HomeScreen>
         },
       ),
       const SizedBox(height: AppSpacing.sm),
-
-      // Date chip
-      Builder(builder: (context) {
-        final hasOverride = _form.dateOverride != null;
-        return Semantics(
-          button: true,
-          label: l10n.changeDateLabel(
-            hasOverride
-                ? DateFormat('MMM d, yyyy').format(_entryDate)
-                : formatDateLabel(_entryDate),
-          ),
-          excludeSemantics: true,
-          child: InkWell(
-            key: TestKeys.homeDateChip,
-            onTap: _pickDate,
-            borderRadius: AppSpacing.borderRadiusLg,
-            child: Chip(
-              avatar: Icon(
-                Icons.calendar_today,
-                size: 16,
-                color: cs.onSurfaceVariant,
-              ),
-              label: Text(
-                hasOverride
-                    ? DateFormat('MMM d, yyyy').format(_entryDate)
-                    : formatDateLabel(_entryDate),
-                style: tt.labelLarge?.copyWith(color: cs.onSurfaceVariant),
-              ),
-              backgroundColor: cs.surfaceContainerHigh,
-              side: BorderSide(
-                color: hasOverride
-                    ? cs.primary.withValues(alpha: 0.5)
-                    : cs.outlineVariant.withValues(alpha: 0.3),
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: AppSpacing.borderRadiusLg,
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
-              // Task 2.9 — when a non-default date is selected, show a
-              // reset X so users have an explicit way to return to today
-              // without reopening the picker. Additive to the border-
-              // colour signal, not a replacement.
-              onDeleted:
-                  hasOverride ? () => _form.setDateOverride(null) : null,
-              deleteIcon: hasOverride
-                  ? Icon(
-                      Icons.close_rounded,
-                      size: 16,
-                      color: cs.onSurfaceVariant,
-                    )
-                  : null,
-              deleteButtonTooltipMessage:
-                  hasOverride ? l10n.resetToTodayLabel : null,
-            ),
-          ),
-        );
-      }),
-
-      const SizedBox(height: AppSpacing.sm),
+      // Date chip used to sit here under the hero — but "How was Today?"
+      // already states the date, so the chip duplicated the word. Moved
+      // into the JournalTextArea's top-left slot (see _buildDateChip
+      // below) so the "set the date for this traq" control lives right
+      // next to where the user types, matching the AM/PM toggle that
+      // already uses the top-right slot.
       BionicText(
         text: l10n.homeSubtitle,
         style: tt.bodyLarge?.copyWith(color: cs.onSurfaceVariant),
@@ -431,6 +378,7 @@ class _HomeScreenState extends State<HomeScreen>
           bulletPoints: _settings?.bulletPointsOnEnter ?? false,
           textFieldKey: TestKeys.homeEntryField,
           saveButtonKey: TestKeys.homeSaveButton,
+          topLeftWidget: _buildDateChip(cs, tt, l10n),
           topRightWidget:
               _isAllDayMode
                   ? null
@@ -456,6 +404,81 @@ class _HomeScreenState extends State<HomeScreen>
         bionicReadingEnabled: _settings?.bionicReadingEnabled ?? false,
       ),
     ];
+  }
+
+  /// Compact date chip used in the top-left slot of the JournalTextArea.
+  /// Mirrors the original below-hero chip but tightened for the embedded
+  /// slot: smaller padding so it sits cleanly alongside the AM/PM toggle
+  /// on the other side of the input.
+  Widget _buildDateChip(ColorScheme cs, TextTheme tt, L10n l10n) {
+    final hasOverride = _form.dateOverride != null;
+    final label = hasOverride
+        ? DateFormat('MMM d').format(_entryDate)
+        : formatDateLabel(_entryDate);
+    final fullLabel = hasOverride
+        ? DateFormat('MMM d, yyyy').format(_entryDate)
+        : formatDateLabel(_entryDate);
+    return Semantics(
+      button: true,
+      label: l10n.changeDateLabel(fullLabel),
+      excludeSemantics: true,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          key: TestKeys.homeDateChip,
+          onTap: _pickDate,
+          borderRadius: AppSpacing.borderRadiusFull,
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.sm,
+              vertical: AppSpacing.xs,
+            ),
+            decoration: BoxDecoration(
+              color: cs.surfaceContainerHighest.withValues(alpha: 0.9),
+              borderRadius: AppSpacing.borderRadiusFull,
+              border: Border.all(
+                color: hasOverride
+                    ? cs.primary.withValues(alpha: 0.55)
+                    : cs.outlineVariant.withValues(alpha: 0.35),
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.calendar_today,
+                  size: 14,
+                  color: hasOverride ? cs.primary : cs.onSurfaceVariant,
+                ),
+                const SizedBox(width: AppSpacing.xs),
+                Text(
+                  label,
+                  style: tt.labelMedium?.copyWith(
+                    color: hasOverride ? cs.primary : cs.onSurfaceVariant,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                if (hasOverride) ...[
+                  const SizedBox(width: AppSpacing.xxs),
+                  InkWell(
+                    onTap: () => _form.setDateOverride(null),
+                    borderRadius: BorderRadius.circular(12),
+                    child: Padding(
+                      padding: const EdgeInsets.all(2),
+                      child: Icon(
+                        Icons.close_rounded,
+                        size: 14,
+                        color: cs.primary,
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _buildJournalPane(ColorScheme cs, TextTheme tt, L10n l10n) {
