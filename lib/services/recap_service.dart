@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_single_quotes
 
+import '../utils/date_helpers.dart';
 import 'ai/recap_ai_provider.dart';
 import 'app_log.dart';
 import 'entry_repository.dart';
@@ -80,18 +81,14 @@ class RecapService {
     }
 
     // Active days (unique days with entries)
-    final activeDaysSet =
-        entries.map((e) {
-          final d = e.date;
-          return DateTime(d.year, d.month, d.day);
-        }).toSet();
+    final activeDaysSet = entries.map((e) => dateOnly(e.date)).toSet();
     final activeDays = activeDaysSet.length;
 
     // Streak: consecutive days with entries starting from weekStart
     int streak = 0;
     for (int i = 0; i < 7; i++) {
       final day = weekStart.add(Duration(days: i));
-      final dayNorm = DateTime(day.year, day.month, day.day);
+      final dayNorm = dateOnly(day);
       if (activeDaysSet.contains(dayNorm)) {
         streak++;
       } else {

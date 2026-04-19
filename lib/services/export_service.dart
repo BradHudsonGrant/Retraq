@@ -115,10 +115,9 @@ class ExportService {
     // Default: current week based on user's weekStartDay setting.
     final settings = await _settingsRepo.getSettings();
     final weekStart = weekStartDate(weekStartDay: settings.weekStartDay);
-    final today = DateTime.now();
     return _entries.getEntriesForDateRange(
       weekStart,
-      DateTime(today.year, today.month, today.day),
+      dateOnly(DateTime.now()),
     );
   }
 
@@ -311,9 +310,9 @@ class ExportService {
       if (dateStr == null || dateStr.isEmpty) continue;
       final d = DateTime.tryParse(dateStr);
       if (d == null) continue;
-      final dayOnly = DateTime(d.year, d.month, d.day);
-      if (minDate == null || dayOnly.isBefore(minDate)) minDate = dayOnly;
-      if (maxDate == null || dayOnly.isAfter(maxDate)) maxDate = dayOnly;
+      final dayOnlyDate = dateOnly(d);
+      if (minDate == null || dayOnlyDate.isBefore(minDate)) minDate = dayOnlyDate;
+      if (maxDate == null || dayOnlyDate.isAfter(maxDate)) maxDate = dayOnlyDate;
     }
 
     // Build a dedup key set of "yyyy-MM-dd|createdAtIso" for O(1) lookup.
@@ -345,10 +344,7 @@ class ExportService {
           continue;
         }
         final tomorrow = DateTime.now().add(const Duration(days: 1));
-        if (date.year < 2000 ||
-            date.isAfter(
-              DateTime(tomorrow.year, tomorrow.month, tomorrow.day),
-            )) {
+        if (date.year < 2000 || date.isAfter(dateOnly(tomorrow))) {
           errors++;
           continue;
         }

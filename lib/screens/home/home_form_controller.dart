@@ -1,5 +1,7 @@
 import 'package:flutter/widgets.dart';
 
+import '../../utils/date_helpers.dart';
+
 /// Result of validating a draft against the current mood-enablement
 /// settings. Used by [HomeFormController.validate] so the screen
 /// knows whether to proceed with save, or which SnackBar copy to
@@ -70,8 +72,7 @@ class HomeFormController extends ChangeNotifier {
   /// midnight local.
   DateTime get entryDate {
     if (_dateOverride != null) return _dateOverride!;
-    final now = DateTime.now();
-    return DateTime(now.year, now.month, now.day);
+    return dateOnly(DateTime.now());
   }
 
   /// Update the mood. Tapping the same mood twice deselects (null)

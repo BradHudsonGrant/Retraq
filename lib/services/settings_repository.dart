@@ -2,6 +2,7 @@
 
 import 'package:drift/drift.dart';
 import '../models/user_settings.dart';
+import '../utils/stream_extensions.dart';
 import 'app_log.dart';
 import 'database_service.dart';
 
@@ -140,6 +141,6 @@ class SettingsRepository {
     return (_db.select(_db.userSettingsTable)..where((t) => t.id.equals(1)))
         .watchSingleOrNull()
         .map((row) => row != null ? _rowToSettings(row) : null)
-        .handleError((e) => DatabaseService.logStreamError('watchSettings', e));
+        .logStreamErrors('watchSettings');
   }
 }

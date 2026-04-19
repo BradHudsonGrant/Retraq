@@ -119,7 +119,7 @@ class _HomeScreenState extends State<HomeScreen>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       final now = DateTime.now();
-      final today = DateTime(now.year, now.month, now.day);
+      final today = dateOnly(now);
       final lastDay = DateTime(
         _lastInitDate.year,
         _lastInitDate.month,
@@ -220,7 +220,7 @@ class _HomeScreenState extends State<HomeScreen>
 
   void _subscribeRecentDays() {
     final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
+    final today = dateOnly(now);
     final askAboutToday = _settings?.askAboutToday ?? true;
 
     final recentDay1 =
@@ -259,7 +259,7 @@ class _HomeScreenState extends State<HomeScreen>
 
   DateTime get _defaultDate {
     final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
+    final today = dateOnly(now);
     if (_settings?.askAboutToday ?? true) return today;
     return today.subtract(const Duration(days: 1));
   }
@@ -652,7 +652,7 @@ class _HomeScreenState extends State<HomeScreen>
 
   Future<void> _pickDate() async {
     final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
+    final today = dateOnly(now);
     final picked = await showDatePicker(
       context: context,
       initialDate: _entryDate,

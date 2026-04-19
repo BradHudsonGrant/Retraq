@@ -4,6 +4,7 @@ import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart' show listEquals, mapEquals, setEquals;
 import '../models/journal_entry.dart';
 import '../utils/date_helpers.dart';
+import '../utils/stream_extensions.dart';
 import 'app_log.dart';
 import 'database_service.dart';
 
@@ -80,7 +81,7 @@ class EntryRepository {
   /// Get entries for a specific date (matches by year/month/day).
   Future<List<JournalEntry>> getEntriesForDate(DateTime date) async {
     try {
-      final startOfDay = DateTime(date.year, date.month, date.day);
+      final startOfDay = dateOnly(date);
       final endOfDay = startOfDay.add(const Duration(days: 1));
 
       final rows =
@@ -98,7 +99,7 @@ class EntryRepository {
 
   /// Watch all entries for a specific date, oldest first.
   Stream<List<JournalEntry>> watchEntriesForDate(DateTime date) {
-    final startOfDay = DateTime(date.year, date.month, date.day);
+    final startOfDay = dateOnly(date);
     final endOfDay = startOfDay.add(const Duration(days: 1));
 
     return (_db.select(_db.journalEntries)
@@ -108,9 +109,7 @@ class EntryRepository {
         .watch()
         .map((rows) => rows.map(rowToEntry).toList())
         .distinct(listEquals)
-        .handleError(
-          (e) => DatabaseService.logStreamError('watchEntriesForDate', e),
-        );
+        .logStreamErrors('watchEntriesForDate');
   }
 
   /// Get all entries, newest first. Used for full exports.
@@ -174,7 +173,7 @@ class EntryRepository {
     DateTime end,
   ) async {
     // Normalize to midnight so the range covers full days
-    final startOfRange = DateTime(start.year, start.month, start.day);
+    final startOfRange = dateOnly(start);
     // Use start of the day after end date with < comparison to include all entries on the end date
     final endExclusive = DateTime(
       end.year,
@@ -201,9 +200,7 @@ class EntryRepository {
         .watch()
         .map((rows) => rows.map(rowToEntry).toList())
         .distinct(listEquals)
-        .handleError(
-          (e) => DatabaseService.logStreamError('watchRecentEntries', e),
-        );
+        .logStreamErrors('watchRecentEntries');
   }
 
   /// Watch entries from the current week, newest first.
@@ -216,9 +213,7 @@ class EntryRepository {
         .watch()
         .map((rows) => rows.map(rowToEntry).toList())
         .distinct(listEquals)
-        .handleError(
-          (e) => DatabaseService.logStreamError('watchWeekEntries', e),
-        );
+        .logStreamErrors('watchWeekEntries');
   }
 
   /// Watch entries for a specific week starting at [weekStart], newest first.
@@ -232,9 +227,7 @@ class EntryRepository {
         .watch()
         .map((rows) => rows.map(rowToEntry).toList())
         .distinct(listEquals)
-        .handleError(
-          (e) => DatabaseService.logStreamError('watchWeekEntriesFrom', e),
-        );
+        .logStreamErrors('watchWeekEntriesFrom');
   }
 
   /// Count of entries this week, respecting the user's weekStartDay setting.
@@ -269,9 +262,7 @@ class EntryRepository {
         .watchSingle()
         .map((row) => row.read(count) ?? 0)
         .distinct()
-        .handleError(
-          (e) => DatabaseService.logStreamError('watchWeekEntryCount', e),
-        );
+        .logStreamErrors('watchWeekEntryCount');
   }
 
   /// Total entry count.
@@ -295,9 +286,7 @@ class EntryRepository {
         .watchSingle()
         .map((row) => row.read(count) ?? 0)
         .distinct()
-        .handleError(
-          (e) => DatabaseService.logStreamError('watchTotalEntryCount', e),
-        );
+        .logStreamErrors('watchTotalEntryCount');
   }
 
   /// Watch count of distinct days that have entries.
@@ -312,9 +301,7 @@ class EntryRepository {
         .watchSingle()
         .map((row) => row.read<int>('cnt'))
         .distinct()
-        .handleError(
-          (e) => DatabaseService.logStreamError('watchTotalDaysWithEntries', e),
-        );
+        .logStreamErrors('watchTotalDaysWithEntries');
   }
 
   /// All entries in a given month (for calendar dot indicators).
@@ -348,9 +335,7 @@ class EntryRepository {
         .watch()
         .map((rows) => rows.map(rowToEntry).toList())
         .distinct(listEquals)
-        .handleError(
-          (e) => DatabaseService.logStreamError('watchMonthEntries', e),
-        );
+        .logStreamErrors('watchMonthEntries');
   }
 
   /// Stream of days with entries for a given month (just the day numbers).

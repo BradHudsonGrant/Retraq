@@ -6,6 +6,7 @@ import '../../models/journal_entry.dart';
 import '../../widgets/settings_provider.dart';
 import '../../theme/app_motion.dart';
 import '../../theme/app_spacing.dart';
+import '../../utils/date_helpers.dart';
 import '../../utils/entry_action_dialogs.dart';
 import '../atoms/bionic_text.dart';
 import '../atoms/retraq_card.dart';
@@ -45,7 +46,7 @@ class WeekDayList extends StatelessWidget {
       return List.generate(7, (i) => referenceDate!.add(Duration(days: i)));
     }
     final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
+    final today = dateOnly(now);
     final weekday = today.weekday; // 1=Mon, 7=Sun
     final offset = (weekday - weekStartDay + 7) % 7;
     final startOfWeek = today.subtract(Duration(days: offset));
@@ -75,7 +76,7 @@ class WeekDayList extends StatelessWidget {
     final dates = _weekDates();
     final grouped = _groupByDate();
     final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
+    final today = dateOnly(now);
     final reduceMotion = AppMotion.reduce(context);
 
     // Skip days after "today" so the current week doesn't render empty

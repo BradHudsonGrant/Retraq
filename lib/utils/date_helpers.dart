@@ -1,9 +1,20 @@
 import 'package:intl/intl.dart';
 
+/// Drop the time component of [dt], returning midnight-local of the
+/// same calendar day. Used anywhere entries are keyed by day or
+/// compared across day boundaries.
+DateTime dateOnly(DateTime dt) => DateTime(dt.year, dt.month, dt.day);
+
+/// Format [dt] as an ISO-8601 date string (`YYYY-MM-DD`). Used for
+/// SQL comparisons, stats keys, and any case where an inline
+/// `'${dt.year}-${dt.month.toString().padLeft(2, '0')}-...'` would
+/// otherwise appear.
+String toIsoDate(DateTime dt) =>
+    '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')}';
+
 String formatDateLabel(DateTime date, {bool capitalize = true}) {
-  final now = DateTime.now();
-  final today = DateTime(now.year, now.month, now.day);
-  final entryDate = DateTime(date.year, date.month, date.day);
+  final today = dateOnly(DateTime.now());
+  final entryDate = dateOnly(date);
   final diff = today.difference(entryDate).inDays;
 
   String label;
@@ -26,6 +37,17 @@ String formatHour(int hour) {
   final period = hour >= 12 ? 'PM' : 'AM';
   final h = hour % 12 == 0 ? 12 : hour % 12;
   return '$h:00 $period';
+}
+
+/// Format an (hour, minute) pair as a 12-hour clock string. Matches
+/// the format used in NudgeCard ("Daily at {time}") and anywhere else
+/// time-of-day is rendered. Falls back to [formatHour] when the
+/// caller only has an hour.
+String formatHourMinute(int hour, int minute) {
+  final period = hour >= 12 ? 'PM' : 'AM';
+  final h = hour % 12 == 0 ? 12 : hour % 12;
+  final m = minute.toString().padLeft(2, '0');
+  return '$h:$m $period';
 }
 
 /// Calculate the start of the current week given a weekStartDay (1=Mon..7=Sun).

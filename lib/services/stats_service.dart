@@ -4,6 +4,8 @@ import 'dart:async';
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart' show listEquals;
 import '../models/journal_entry.dart';
+import '../utils/date_helpers.dart';
+import '../utils/stream_extensions.dart';
 import 'app_log.dart';
 import 'database_service.dart';
 
@@ -23,14 +25,14 @@ class StatsService {
   Future<int> getCurrentStreak() async {
     try {
       final now = DateTime.now();
-      final todayStr = _dateStr(now);
+      final todayStr = toIsoDate(now);
 
       // Query a modest window back — any real streak longer than ~3
       // years would already have hit the safety break below, and
       // limiting the fetch keeps the DB round-trip cheap on big
       // journals.
       final earliestRelevant = now.subtract(const Duration(days: 1200));
-      final earliestRelevantStr = _dateStr(earliestRelevant);
+      final earliestRelevantStr = toIsoDate(earliestRelevant);
 
       final rows = await _db
           .customSelect(
@@ -56,16 +58,16 @@ class StatsService {
       // The streak must anchor to today or yesterday — otherwise there's
       // no "current" streak to report.
       final yesterday = now.subtract(const Duration(days: 1));
-      final yesterdayStr = _dateStr(yesterday);
+      final yesterdayStr = toIsoDate(yesterday);
       if (!entryDates.contains(todayStr) &&
           !entryDates.contains(yesterdayStr)) {
         return 0;
       }
 
       int streak = 0;
-      var cursor = DateTime(now.year, now.month, now.day);
+      var cursor = dateOnly(now);
       while (true) {
-        final cursorStr = _dateStr(cursor);
+        final cursorStr = toIsoDate(cursor);
         if (entryDates.contains(cursorStr)) {
           streak++;
         } else {
@@ -96,7 +98,7 @@ class StatsService {
       final now = DateTime.now();
       final monthStart =
           '${now.year}-${now.month.toString().padLeft(2, '0')}-01';
-      final todayStr = _dateStr(now);
+      final todayStr = toIsoDate(now);
 
       final rows =
           await _db
@@ -127,9 +129,6 @@ class StatsService {
     }
   }
 
-  /// Format a DateTime as 'YYYY-MM-DD'.
-  static String _dateStr(DateTime dt) =>
-      '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')}';
 
   /// Find the longest ever run of consecutive days with entries.
   /// Uses SQL window functions to compute entirely in the database.
@@ -179,7 +178,7 @@ class StatsService {
   Future<List<int>> getWeeklyEntryCounts({int weeks = 12}) async {
     try {
       final now = DateTime.now();
-      final today = DateTime(now.year, now.month, now.day);
+      final today = dateOnly(now);
       // Last bucket covers [today - 6, today]; earliest covers
       // [today - weeks*7 + 1, today - (weeks-1)*7]. Include an extra day
       // in the query window so a midnight-boundary entry doesn't slip
@@ -442,7 +441,7 @@ class StatsService {
       final now = DateTime.now();
       final monthStart =
           '${now.year}-${now.month.toString().padLeft(2, '0')}-01';
-      final todayStr = _dateStr(now);
+      final todayStr = toIsoDate(now);
 
       final rows =
           await _db
@@ -568,7 +567,7 @@ class StatsService {
           return snapshot;
         })
         .distinct()
-        .handleError((e) => DatabaseService.logStreamError('watchAllStats', e));
+        .logStreamErrors('watchAllStats');
   }
 
   /// Debounces a stream: only emits the latest value after [duration] of silence.

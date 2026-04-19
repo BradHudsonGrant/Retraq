@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user.dart';
+import '../utils/stream_extensions.dart';
 import 'app_log.dart';
 import 'database_service.dart';
 import 'secure_storage.dart';
@@ -63,18 +64,22 @@ class UserRepository {
     }
   }
 
-  /// Get the first user (for single-user mode).
-  Future<User?> getUser() async {
-    try {
-      final row = await (_db.select(_db.users)..limit(1)).getSingleOrNull();
-      if (row == null) return null;
-      return User(
+  /// Convert a Drift row to our User model. Centralised so both
+  /// [getUser] and [watchUser] enumerate the same five fields in one
+  /// place instead of rebuilding the constructor twice.
+  User _rowToUser(UserRow row) => User(
         id: row.id,
         displayName: row.displayName,
         email: row.email,
         subscriptionTier: row.subscriptionTier,
         createdAt: row.createdAt.toLocal(),
       );
+
+  /// Get the first user (for single-user mode).
+  Future<User?> getUser() async {
+    try {
+      final row = await (_db.select(_db.users)..limit(1)).getSingleOrNull();
+      return row == null ? null : _rowToUser(row);
     } catch (e) {
       AppLog.error('UserRepository.getUser', e);
       return null;
@@ -85,17 +90,8 @@ class UserRepository {
   Stream<User?> watchUser() {
     return (_db.select(_db.users)..limit(1))
         .watchSingleOrNull()
-        .map((row) {
-          if (row == null) return null;
-          return User(
-            id: row.id,
-            displayName: row.displayName,
-            email: row.email,
-            subscriptionTier: row.subscriptionTier,
-            createdAt: row.createdAt.toLocal(),
-          );
-        })
-        .handleError((e) => DatabaseService.logStreamError('watchUser', e));
+        .map((row) => row == null ? null : _rowToUser(row))
+        .logStreamErrors('watchUser');
   }
 
   /// Delete all journal entries, settings, users, consent records,

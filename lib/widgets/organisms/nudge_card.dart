@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/settings_provider.dart';
 import '../../theme/app_spacing.dart';
+import '../../utils/date_helpers.dart';
 import '../atoms/bionic_text.dart';
 import '../atoms/glow_box.dart';
 
@@ -16,13 +17,6 @@ class NudgeCard extends StatelessWidget {
   final int nudgeHour;
   final int nudgeMinute;
   final VoidCallback onChangeTime;
-
-  String _formatTime(int hour, int minute) {
-    final period = hour >= 12 ? 'PM' : 'AM';
-    final h = hour % 12 == 0 ? 12 : hour % 12;
-    final m = minute.toString().padLeft(2, '0');
-    return '$h:$m $period';
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +67,7 @@ class NudgeCard extends StatelessWidget {
                   // Task 7.9 — localize "Daily at {time}". The
                   // pre-formatted time string keeps locale-specific
                   // time formatting from _formatTime.
-                  l10n.dailyAtTime(_formatTime(nudgeHour, nudgeMinute)),
+                  l10n.dailyAtTime(formatHourMinute(nudgeHour, nudgeMinute)),
                   style: tt.bodySmall?.copyWith(color: cs.onPrimary),
                 ),
                 // The button previously wrapped a FilledButton (pill /
