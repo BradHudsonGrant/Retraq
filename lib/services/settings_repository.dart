@@ -67,43 +67,48 @@ class SettingsRepository {
         await (_db.delete(_db.userSettingsTable)).go();
         final companion =
             orphan != null
-                ? _rowToCompanion(orphan, id: const Value(1))
+                ? _settingsToCompanion(
+                  _rowToSettings(orphan),
+                  id: const Value(1),
+                )
                 : UserSettingsTableCompanion.insert(id: const Value(1));
         await _db.into(_db.userSettingsTable).insert(companion);
-        return orphan != null ? _rowToSettings(orphan) : UserSettings();
+        return orphan != null ? _rowToSettings(orphan) : const UserSettings();
       });
     } catch (e) {
       AppLog.error('SettingsRepository.getSettings', e);
-      return UserSettings();
+      return const UserSettings();
     }
   }
 
-  /// Build a companion from an existing row, optionally overriding id.
-  UserSettingsTableCompanion _rowToCompanion(
-    UserSettingsTableData row, {
+  /// Single source of truth for UserSettings → Drift companion mapping.
+  /// Used by both the orphan-promotion path in [getSettings] and by
+  /// [saveSettings] so the field list is only enumerated once.
+  UserSettingsTableCompanion _settingsToCompanion(
+    UserSettings s, {
     Value<int>? id,
   }) {
     return UserSettingsTableCompanion(
-      id: id ?? Value(row.id),
-      themeMode: Value(row.themeMode),
-      isAllDayMode: Value(row.isAllDayMode),
-      askAboutToday: Value(row.askAboutToday),
-      showEntryTitle: Value(row.showEntryTitle),
-      weekStartDay: Value(row.weekStartDay),
-      nudgeHour: Value(row.nudgeHour),
-      nudgeMinute: Value(row.nudgeMinute),
-      appLockEnabled: Value(row.appLockEnabled),
-      pinHash: Value(row.pinHash),
-      biometricEnabled: Value(row.biometricEnabled),
-      onboardingComplete: Value(row.onboardingComplete),
-      enterToSave: Value(row.enterToSave),
-      bulletPointsOnEnter: Value(row.bulletPointsOnEnter),
-      amPmCutoffHour: Value(row.amPmCutoffHour),
-      moodEnabled: Value(row.moodEnabled),
-      moodRequired: Value(row.moodRequired),
-      moodOnlyEntries: Value(row.moodOnlyEntries),
-      bionicReadingEnabled: Value(row.bionicReadingEnabled),
-      useOnDeviceAiForRecaps: Value(row.useOnDeviceAiForRecaps),
+      id: id ?? const Value.absent(),
+      themeMode: Value(s.themeMode),
+      isAllDayMode: Value(s.isAllDayMode),
+      askAboutToday: Value(s.askAboutToday),
+      showEntryTitle: Value(s.showEntryTitle),
+      weekStartDay: Value(s.weekStartDay),
+      nudgeHour: Value(s.nudgeHour),
+      nudgeMinute: Value(s.nudgeMinute),
+      appLockEnabled: Value(s.appLockEnabled),
+      pinHash: Value(s.pinHash),
+      biometricEnabled: Value(s.biometricEnabled),
+      onboardingComplete: Value(s.onboardingComplete),
+      enterToSave: Value(s.enterToSave),
+      bulletPointsOnEnter: Value(s.bulletPointsOnEnter),
+      amPmCutoffHour: Value(s.amPmCutoffHour),
+      moodEnabled: Value(s.moodEnabled),
+      moodRequired: Value(s.moodRequired),
+      moodOnlyEntries: Value(s.moodOnlyEntries),
+      bionicReadingEnabled: Value(s.bionicReadingEnabled),
+      useOnDeviceAiForRecaps: Value(s.useOnDeviceAiForRecaps),
     );
   }
 
@@ -113,28 +118,7 @@ class SettingsRepository {
   Future<void> saveSettings(UserSettings s) async {
     try {
       await _db.transaction(() async {
-        final companion = UserSettingsTableCompanion(
-          id: const Value(1),
-          themeMode: Value(s.themeMode),
-          isAllDayMode: Value(s.isAllDayMode),
-          askAboutToday: Value(s.askAboutToday),
-          showEntryTitle: Value(s.showEntryTitle),
-          weekStartDay: Value(s.weekStartDay),
-          nudgeHour: Value(s.nudgeHour),
-          nudgeMinute: Value(s.nudgeMinute),
-          appLockEnabled: Value(s.appLockEnabled),
-          pinHash: Value(s.pinHash),
-          biometricEnabled: Value(s.biometricEnabled),
-          onboardingComplete: Value(s.onboardingComplete),
-          enterToSave: Value(s.enterToSave),
-          bulletPointsOnEnter: Value(s.bulletPointsOnEnter),
-          amPmCutoffHour: Value(s.amPmCutoffHour),
-          moodEnabled: Value(s.moodEnabled),
-          moodRequired: Value(s.moodRequired),
-          moodOnlyEntries: Value(s.moodOnlyEntries),
-          bionicReadingEnabled: Value(s.bionicReadingEnabled),
-          useOnDeviceAiForRecaps: Value(s.useOnDeviceAiForRecaps),
-        );
+        final companion = _settingsToCompanion(s, id: const Value(1));
 
         // Defensive cleanup: drop any orphans that earlier autoincrement
         // inserts may have left behind, then upsert the canonical row.
