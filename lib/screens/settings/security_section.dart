@@ -178,7 +178,7 @@ class _SecuritySectionState extends State<SecuritySection> {
                           if (v) {
                             setState(() => _checkingBiometric = true);
                             final canAuth = await _checkBiometrics();
-                            if (!mounted) return;
+                            if (!context.mounted) return;
                             setState(() => _checkingBiometric = false);
                             if (!canAuth) {
                               AppSnackBar.error(

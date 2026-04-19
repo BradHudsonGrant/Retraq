@@ -472,7 +472,7 @@ class _MilestoneChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final brightness = Theme.of(context).brightness;
     final amber = AppColors.accentAmber(brightness);
-    final onAmber = AppColors.onAccentAmber;
+    const onAmber = AppColors.onAccentAmber;
     final tt = Theme.of(context).textTheme;
 
     return Container(
