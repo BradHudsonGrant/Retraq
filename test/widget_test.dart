@@ -50,7 +50,8 @@ void main() {
           matching: find.text(label),
         );
     expect(inNav('Traq'), findsOneWidget);
-    expect(inNav('Recap'), findsOneWidget);
+    // navRecap l10n string is 'Retraq' (brand term), not 'Recap'.
+    expect(inNav('Retraq'), findsOneWidget);
     expect(inNav('Settings'), findsOneWidget);
 
     // Dispose widget and flush Drift's pending zero-duration timers

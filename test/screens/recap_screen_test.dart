@@ -20,7 +20,8 @@ void main() {
       await tester.pumpWidget(wrapWidget(const RecapScreen()));
       await tester.pump(const Duration(milliseconds: 200));
 
-      expect(find.text('Recap'), findsOneWidget);
+      // recapTitle l10n string is 'Retraq' (brand term), not 'Recap'.
+      expect(find.text('Retraq'), findsOneWidget);
       await flushDriftTimers(tester);
     });
 

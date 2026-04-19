@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:retraq/l10n/app_localizations.dart';
 import 'package:retraq/services/database_service.dart';
+import 'package:retraq/screens/home/journal_text_area.dart';
 import 'package:retraq/screens/home_screen.dart';
 import 'package:retraq/utils/journal_prompts.dart';
 
@@ -70,7 +71,12 @@ void main() {
       await tester.pumpWidget(wrapWidget(const HomeScreen()));
       await tester.pump(const Duration(milliseconds: 200));
 
-      expect(find.text(dailyJournalPrompt()), findsOneWidget);
+      // The composer wires the rotating daily prompt through as its
+      // `hint` prop. The inner TextField toggles between "Tap to traq"
+      // (empty + unfocused) and this prompt (focused), so assert at
+      // the JournalTextArea level to avoid relying on focus state.
+      final jta = tester.widget<JournalTextArea>(find.byType(JournalTextArea));
+      expect(jta.hint, dailyJournalPrompt());
 
       await flushDriftTimers(tester);
     });
@@ -84,12 +90,16 @@ void main() {
       await flushDriftTimers(tester);
     });
 
-    testWidgets('shows weekly progress indicator', (tester) async {
+    testWidgets('hides weekly progress pill when the week is blank',
+        (tester) async {
       await tester.pumpWidget(wrapWidget(const HomeScreen()));
       await tester.pump(const Duration(milliseconds: 200));
 
-      // Compact progress bar shows week count message
-      expect(find.textContaining('first traq'), findsOneWidget);
+      // ProgressBar collapses to SizedBox.shrink when weekCount is 0
+      // so the hero doesn't render an empty placeholder card. See
+      // lib/widgets/molecules/progress_bar.dart for the intentional
+      // hide-on-empty behaviour.
+      expect(find.textContaining('first traq'), findsNothing);
 
       await flushDriftTimers(tester);
     });

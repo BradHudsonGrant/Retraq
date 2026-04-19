@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:retraq/widgets/atoms/mood_blob.dart';
 
@@ -65,15 +66,15 @@ void main() {
       );
       await tester.pump();
 
-      // Selected path wraps with a second AnimatedBuilder for the
-      // halo opacity + an inner one for the squish transform.
-      // Unselected path has only the inner one.
+      // Selected tree has three AnimatedBuilders: halo glow, spark
+      // painter, and the inner squish transform. Unselected drops the
+      // halo so the count falls to two.
       expect(
         find.descendant(
           of: find.byType(MoodBlob),
           matching: find.byType(AnimatedBuilder),
         ),
-        findsNWidgets(2),
+        findsNWidgets(3),
       );
     },
   );
@@ -86,13 +87,14 @@ void main() {
       );
       await tester.pump();
 
-      // Only the single scaleX/Y AnimatedBuilder — no halo wrapper.
+      // Two AnimatedBuilders — the spark painter and the scaleX/Y
+      // squish — but no halo wrapper when unselected.
       expect(
         find.descendant(
           of: find.byType(MoodBlob),
           matching: find.byType(AnimatedBuilder),
         ),
-        findsOneWidget,
+        findsNWidgets(2),
       );
     },
   );
@@ -138,10 +140,14 @@ void main() {
       );
       await tester.pump();
 
+      // The SvgPicture's direct SizedBox ancestor carries the blob's
+      // displaySize — the outer SizedBox in MoodBlob's tree is a
+      // larger canvas wrapper for the spark painter, so target the
+      // SVG's ancestor explicitly.
       final sized = tester.widget<SizedBox>(
         find
-            .descendant(
-              of: find.byType(MoodBlob),
+            .ancestor(
+              of: find.byType(SvgPicture),
               matching: find.byType(SizedBox),
             )
             .first,
@@ -166,8 +172,8 @@ void main() {
 
       final sized = tester.widget<SizedBox>(
         find
-            .descendant(
-              of: find.byType(MoodBlob),
+            .ancestor(
+              of: find.byType(SvgPicture),
               matching: find.byType(SizedBox),
             )
             .first,

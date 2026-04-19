@@ -108,8 +108,16 @@ void main() {
             .first,
       );
       final decoration = container.decoration as BoxDecoration;
-      expect(decoration.border, isNull,
-          reason: 'unselected card must not show a selection border');
+      // The unselected card keeps a subtle hairline outline (low-alpha
+      // outlineVariant, width 1) to match the shared content-card
+      // tier. What must NOT appear is the selection border — a full
+      // primary-coloured, 2-width Border. Verify the outline is the
+      // hairline variant rather than asserting `border == null`.
+      final border = decoration.border as Border;
+      expect(border.top.width, 1.0,
+          reason: 'unselected card should use the 1px hairline outline');
+      expect(border.top.color.a, closeTo(0.35, 0.01),
+          reason: 'unselected outline should be the low-alpha outlineVariant');
     },
   );
 
