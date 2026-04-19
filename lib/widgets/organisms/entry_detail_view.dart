@@ -7,6 +7,7 @@ import '../../theme/app_spacing.dart';
 import '../../utils/entry_action_dialogs.dart';
 import '../atoms/bionic_text.dart';
 import '../atoms/mood_blob.dart';
+import '../atoms/retraq_card.dart';
 import '../atoms/retraq_chip.dart';
 import '../molecules/entry_action_menu.dart';
 import '../molecules/mood_selector.dart';
@@ -124,21 +125,15 @@ class _EntryCard extends StatelessWidget {
     final backdatedLabel =
         isBackdated ? DateFormat('MMM d').format(entry.createdAt) : null;
 
-    return Container(
+    return SizedBox(
       width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.lg),
       // Shared content-card tier: raised surfaceContainerHigh fill +
       // 1px outlineVariant outline to match RecentDayCard, day cards,
       // and the rest of the minimal-border card system.
-      decoration: BoxDecoration(
+      child: RetraqCard(
         color: cs.surfaceContainerHigh,
-        borderRadius: AppSpacing.borderRadiusXl,
-        border: Border.all(
-          color: cs.outlineVariant.withValues(alpha: 0.35),
-          width: 1,
-        ),
-      ),
-      child: Column(
+        outlined: true,
+        child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Timestamp + label + actions
@@ -221,6 +216,7 @@ class _EntryCard extends StatelessWidget {
                   false,
             ),
         ],
+      ),
       ),
     );
   }

@@ -3,6 +3,7 @@ import '../../l10n/app_localizations.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_spacing.dart';
 import '../atoms/bionic_text.dart';
+import '../atoms/retraq_card.dart';
 
 /// Weekly-progress pill shown on the Home hero area.
 ///
@@ -41,24 +42,19 @@ class ProgressBar extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    return Container(
+    // Shared "minimal-border card" treatment — matches RecentDayCard
+    // and the Recap day cards so every card in the shell reads with
+    // the same surface language. The 1px outline at 0.35 alpha is
+    // what actually carries the contrast against the ambient
+    // gradient; the fill itself stays understated.
+    return RetraqCard(
+      color: cs.surfaceContainerLow,
+      outlined: true,
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.lg,
         vertical: AppSpacing.md,
       ),
-      // Shared "minimal-border card" treatment — matches RecentDayCard
-      // and the Recap day cards so every card in the shell reads with
-      // the same surface language. The 1px outline at 0.35 alpha is
-      // what actually carries the contrast against the ambient
-      // gradient; the fill itself stays understated.
-      decoration: BoxDecoration(
-        color: cs.surfaceContainerLow,
-        borderRadius: AppSpacing.borderRadiusLg,
-        border: Border.all(
-          color: cs.outlineVariant.withValues(alpha: 0.35),
-          width: 1,
-        ),
-      ),
+      borderRadius: AppSpacing.borderRadiusLg,
       child: Row(
         children: [
           Icon(

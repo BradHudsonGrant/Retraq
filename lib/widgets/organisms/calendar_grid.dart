@@ -6,6 +6,7 @@ import '../../theme/app_motion.dart';
 import '../../theme/app_spacing.dart';
 import '../../utils/test_keys.dart';
 import '../atoms/glow_box.dart';
+import '../atoms/retraq_card.dart';
 
 /// Monthly calendar grid with entry dot indicators.
 /// Respects the user's weekStartDay setting for column order.
@@ -59,17 +60,10 @@ class CalendarGrid extends StatelessWidget {
     final tt = Theme.of(context).textTheme;
     final l10n = L10n.of(context)!;
 
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      // Shared content-card tier.
-      decoration: BoxDecoration(
-        color: cs.surfaceContainerHigh,
-        borderRadius: AppSpacing.borderRadiusXxl,
-        border: Border.all(
-          color: cs.outlineVariant.withValues(alpha: 0.35),
-          width: 1,
-        ),
-      ),
+    return RetraqCard(
+      color: cs.surfaceContainerHigh,
+      outlined: true,
+      borderRadius: AppSpacing.borderRadiusXxl,
       child: Column(
         children: [
           // ── Header with navigation ──

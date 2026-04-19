@@ -6,6 +6,13 @@ import 'glow_box.dart';
 /// Reusable card wrapper matching the prototype rounded card style.
 /// Used as the base for entry cards, stat cards, settings groups, etc.
 /// Includes a subtle press-scale animation when tappable.
+///
+/// The [outlined] flag opts into the shared "content-card tier" look —
+/// `surfaceContainerHigh` + a 1px `outlineVariant` hairline at alpha
+/// 0.35 — used across StatCard, SettingsRow, RecentDayCard and the
+/// rest of the minimal-border card system. Leave it false for the
+/// recessed well variant (e.g. nested groups on Home) or when the
+/// caller wants to drive the border treatment itself.
 class RetraqCard extends StatefulWidget {
   const RetraqCard({
     super.key,
@@ -15,6 +22,7 @@ class RetraqCard extends StatefulWidget {
     this.borderRadius,
     this.onTap,
     this.elevation = 0,
+    this.outlined = false,
     this.semanticLabel,
     this.glowOnTap = false,
     this.glowColor,
@@ -26,6 +34,13 @@ class RetraqCard extends StatefulWidget {
   final BorderRadius? borderRadius;
   final VoidCallback? onTap;
   final double elevation;
+
+  /// When true, paints the shared content-card hairline outline
+  /// (`outlineVariant` at alpha 0.35, width 1). Pair with
+  /// `color: cs.surfaceContainerHigh` for the canonical tier, or
+  /// override `color` for variants. Defaults to false so existing
+  /// recessed-well callers keep their borderless appearance.
+  final bool outlined;
 
   /// Optional label for screen readers. Used when [onTap] is provided.
   final String? semanticLabel;
@@ -76,6 +91,12 @@ class _RetraqCardState extends State<RetraqCard>
       decoration: BoxDecoration(
         color: widget.color ?? cs.surfaceContainerLowest,
         borderRadius: widget.borderRadius ?? AppSpacing.borderRadiusXl,
+        border: widget.outlined
+            ? Border.all(
+                color: cs.outlineVariant.withValues(alpha: 0.35),
+                width: 1,
+              )
+            : null,
         boxShadow:
             widget.elevation > 0
                 ? [

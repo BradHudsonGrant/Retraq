@@ -7,6 +7,7 @@ import '../../theme/app_motion.dart';
 import '../../theme/app_spacing.dart';
 import '../../utils/entry_action_dialogs.dart';
 import '../../widgets/atoms/bionic_text.dart';
+import '../../widgets/atoms/retraq_card.dart';
 import '../../widgets/atoms/retraq_chip.dart';
 import '../../widgets/molecules/entry_action_menu.dart';
 
@@ -63,27 +64,23 @@ class _RecentDayCardState extends State<RecentDayCard> {
     final card = Semantics(
       container: true,
       label: l10n.entryForDayPreview(widget.label, entryPreview),
-      child: Container(
-        // Tightened from lg/lg to md/md — a one-word entry wouldn't
-        // fill the card's content area and the 48px vertical padding
-        // made the card feel oversized relative to its payload.
+      // Raised content tier: surfaceContainerHigh sits a step above
+      // the input field's surfaceContainerLow so Recent reads as
+      // "content I can review" against the "well I'm about to type
+      // into". Minimal 1px outline still anchors the edge against
+      // the ambient gradient.
+      //
+      // Tightened padding from lg/lg to md/md — a one-word entry
+      // wouldn't fill the card's content area and the 48px vertical
+      // padding made the card feel oversized relative to its payload.
+      child: RetraqCard(
+        color: cs.surfaceContainerHigh,
+        outlined: true,
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,
           vertical: AppSpacing.md,
         ),
-        // Raised content tier: surfaceContainerHigh sits a step above
-        // the input field's surfaceContainerLow so Recent reads as
-        // "content I can review" against the "well I'm about to type
-        // into". Minimal 1px outline still anchors the edge against
-        // the ambient gradient.
-        decoration: BoxDecoration(
-          color: cs.surfaceContainerHigh,
-          borderRadius: AppSpacing.borderRadiusLg,
-          border: Border.all(
-            color: cs.outlineVariant.withValues(alpha: 0.35),
-            width: 1,
-          ),
-        ),
+        borderRadius: AppSpacing.borderRadiusLg,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

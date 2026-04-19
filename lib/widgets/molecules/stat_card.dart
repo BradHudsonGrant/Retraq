@@ -7,6 +7,7 @@ import '../../theme/app_motion.dart';
 import '../../theme/app_spacing.dart';
 import '../atoms/glow_box.dart';
 import '../atoms/number_ticker.dart';
+import '../atoms/retraq_card.dart';
 
 /// Animated stat card that displays a label, rolling counter, and icon.
 ///
@@ -87,19 +88,9 @@ class StatCard extends StatelessWidget {
     final Widget cardContent = Semantics(
       label: '$label: $value${suffix != null ? ' $suffix' : ''}',
       excludeSemantics: true,
-      child: Container(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        // Shared content-card tier: surfaceContainerHigh + minimal
-        // 1px outline. Drop the prior faint drop shadow — the outline
-        // carries the contrast now and matches the rest of the cards.
-        decoration: BoxDecoration(
-          color: cs.surfaceContainerHigh,
-          borderRadius: AppSpacing.borderRadiusXl,
-          border: Border.all(
-            color: cs.outlineVariant.withValues(alpha: 0.35),
-            width: 1,
-          ),
-        ),
+      child: RetraqCard(
+        color: cs.surfaceContainerHigh,
+        outlined: true,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

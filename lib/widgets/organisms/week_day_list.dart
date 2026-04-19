@@ -8,6 +8,7 @@ import '../../theme/app_motion.dart';
 import '../../theme/app_spacing.dart';
 import '../../utils/entry_action_dialogs.dart';
 import '../atoms/bionic_text.dart';
+import '../atoms/retraq_card.dart';
 import '../atoms/retraq_chip.dart';
 import '../molecules/entry_action_menu.dart';
 
@@ -115,22 +116,15 @@ class WeekDayList extends StatelessWidget {
               child: InkWell(
                 onTap: () => onDaySelected?.call(date),
                 borderRadius: AppSpacing.borderRadiusXl,
-                child: Container(
+                child: SizedBox(
                   width: double.infinity,
-                  padding: const EdgeInsets.all(AppSpacing.lg),
-                  decoration: BoxDecoration(
+                  // Shared minimal-border content-tier style — matches
+                  // RecentDayCard, StatCard, and the other content
+                  // cards across the shell.
+                  child: RetraqCard(
                     color: cs.surfaceContainerHigh,
-                    borderRadius: AppSpacing.borderRadiusXl,
-                    // Shared minimal-border content-tier style:
-                    // surfaceContainerHigh fill + 1px outlineVariant
-                    // outline. Matches RecentDayCard, StatCard, and
-                    // the other content cards across the shell.
-                    border: Border.all(
-                      color: cs.outlineVariant.withValues(alpha: 0.35),
-                      width: 1,
-                    ),
-                  ),
-                  child: Column(
+                    outlined: true,
+                    child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Day header row (Task 7.4 — localized "Today").
@@ -195,6 +189,7 @@ class WeekDayList extends StatelessWidget {
                         ),
                       ],
                     ],
+                    ),
                   ),
                 ),
               ),

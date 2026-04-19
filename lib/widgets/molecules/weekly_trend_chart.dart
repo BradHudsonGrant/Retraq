@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../../theme/app_spacing.dart';
+import '../atoms/retraq_card.dart';
 
 /// A mini bar chart showing journal entries per week over the last ~12 weeks.
 ///
@@ -122,16 +123,10 @@ class _WeeklyTrendChartState extends State<WeeklyTrendChart>
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
 
-    return Container(
-      // Shared content-card tier.
-      decoration: BoxDecoration(
-        color: cs.surfaceContainerHigh,
-        borderRadius: AppSpacing.borderRadiusXxl,
-        border: Border.all(
-          color: cs.outlineVariant.withValues(alpha: 0.35),
-          width: 1,
-        ),
-      ),
+    return RetraqCard(
+      color: cs.surfaceContainerHigh,
+      outlined: true,
+      borderRadius: AppSpacing.borderRadiusXxl,
       padding: const EdgeInsets.fromLTRB(
         AppSpacing.lg,
         AppSpacing.lg,
