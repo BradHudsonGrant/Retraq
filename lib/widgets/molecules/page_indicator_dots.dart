@@ -29,8 +29,7 @@ class PageIndicatorDots extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final reduceMotion = AppMotion.reduce(context);
-    final dur =
-        reduceMotion ? Duration.zero : const Duration(milliseconds: 280);
+    final dur = AppMotion.aware(context, const Duration(milliseconds: 280));
     final radius = BorderRadius.circular(AppSpacing.borderRadiusFull.topLeft.x);
 
     return Row(

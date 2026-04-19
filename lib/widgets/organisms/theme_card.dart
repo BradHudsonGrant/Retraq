@@ -24,11 +24,9 @@ class ThemeCard extends StatelessWidget {
     final tt = Theme.of(context).textTheme;
     final effectiveDark =
         isDark ?? (Theme.of(context).brightness == Brightness.dark);
-    final reduceMotion = MediaQuery.of(context).disableAnimations;
 
     final card = AnimatedContainer(
-      duration:
-          reduceMotion ? Duration.zero : const Duration(milliseconds: 300),
+      duration: AppMotion.aware(context, const Duration(milliseconds: 300)),
       padding: const EdgeInsets.all(AppSpacing.sm),
       // Unselected: shared content-card tier (surfaceContainerHigh +
       // outlineVariant). Selected: recessed surface + full-opacity
@@ -114,8 +112,7 @@ class ThemeCard extends StatelessWidget {
         onTap: onTap,
         borderRadius: AppSpacing.borderRadiusLg,
         child: AnimatedScale(
-          duration:
-              reduceMotion ? Duration.zero : const Duration(milliseconds: 260),
+          duration: AppMotion.aware(context, const Duration(milliseconds: 260)),
           curve: AppMotion.springSmooth,
           scale: isSelected ? 1.04 : 1.0,
           child: cardWithGlow,

@@ -56,11 +56,9 @@ class _AppShellState extends State<AppShell> {
 
   /// Called by NavigationBar when a tab is tapped.
   void _onTabSelected(int index) {
-    final reduceMotion = AppMotion.reduce(context);
     _pageController.animateToPage(
       index,
-      duration:
-          reduceMotion ? Duration.zero : const Duration(milliseconds: 360),
+      duration: AppMotion.aware(context, const Duration(milliseconds: 360)),
       curve: AppMotion.emphasized,
     );
   }

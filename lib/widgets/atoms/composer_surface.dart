@@ -84,8 +84,7 @@ class _ComposerSurfaceState extends State<ComposerSurface> {
         : cs.outlineVariant.withValues(alpha: 0.3);
 
     return AnimatedContainer(
-      duration:
-          reduceMotion ? Duration.zero : const Duration(milliseconds: 240),
+      duration: AppMotion.aware(context, const Duration(milliseconds: 240)),
       curve: AppMotion.standard,
       decoration: BoxDecoration(
         color: cs.surfaceContainerLow,

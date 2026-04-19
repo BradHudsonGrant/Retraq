@@ -48,9 +48,8 @@ class _SegmentedPillState extends State<SegmentedPill>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final reduceMotion = MediaQuery.of(context).disableAnimations;
     _ctrl.duration =
-        reduceMotion ? Duration.zero : const Duration(milliseconds: 360);
+        AppMotion.aware(context, const Duration(milliseconds: 360));
   }
 
   @override
@@ -78,9 +77,8 @@ class _SegmentedPillState extends State<SegmentedPill>
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
-    final reduceMotion = MediaQuery.of(context).disableAnimations;
     final textAnimDuration =
-        reduceMotion ? Duration.zero : const Duration(milliseconds: 150);
+        AppMotion.aware(context, const Duration(milliseconds: 150));
 
     final labelStyle = tt.labelLarge!.copyWith(
       fontWeight: FontWeight.w500,
