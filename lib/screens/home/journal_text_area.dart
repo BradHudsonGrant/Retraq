@@ -3,6 +3,7 @@ import '../../l10n/app_localizations.dart';
 import '../../theme/app_motion.dart';
 import '../../theme/app_spacing.dart';
 import '../../utils/text_input_formatters.dart';
+import '../../widgets/atoms/composer_surface.dart';
 import '../../widgets/atoms/glow_box.dart';
 import '../../widgets/atoms/retraq_button.dart';
 
@@ -229,43 +230,10 @@ class _JournalTextAreaState extends State<JournalTextArea> {
       ],
     );
 
-    // Outer container with focus glow border. Border colour intensifies and
-    // a soft outer shadow appears when the field has focus, then fades when
-    // the user blurs out. Settles in 240ms — no infinite animation.
-    final borderColor =
-        _hasFocus
-            ? cs.primary.withValues(alpha: 0.55)
-            : cs.outlineVariant.withValues(alpha: 0.3);
-    // Matches the minimal-outline card language used elsewhere in the
-    // shell: rely on the visible outline (already drawn below via
-    // border) for contrast, and only add the primary-tinted halo
-    // when the input has focus. Drops the previous heavy drop shadow
-    // that was making this card read louder than the sibling cards.
-    final List<BoxShadow> shadow = [
-      if (_hasFocus && !reduceMotion)
-        BoxShadow(
-          color: cs.primary.withValues(alpha: 0.22),
-          blurRadius: 22,
-          spreadRadius: 1,
-          blurStyle: BlurStyle.outer,
-        ),
-    ];
-
-    return AnimatedContainer(
-      duration:
-          reduceMotion ? Duration.zero : const Duration(milliseconds: 240),
-      curve: AppMotion.standard,
-      // Input field reads as a recessed "well" — surfaceContainerLow
-      // sits below the raised content cards (RecentDayCard) which now
-      // use surfaceContainerHigh. That matches the expected UI idiom
-      // for inputs vs display cards.
-      decoration: BoxDecoration(
-        color: cs.surfaceContainerLow,
-        borderRadius: AppSpacing.borderRadiusXl,
-        border: Border.all(color: borderColor, width: _hasFocus ? 1.4 : 1.0),
-        boxShadow: shadow,
-      ),
-      child: body,
-    );
+    // ComposerSurface carries the focus-responsive border + halo + the
+    // recessed `surfaceContainerLow` fill. TitleField wraps in the
+    // same atom so focus travel between the two fields reads as one
+    // continuous composer.
+    return ComposerSurface(focusNode: widget.focusNode, child: body);
   }
 }

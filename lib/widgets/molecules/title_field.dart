@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
-import '../../theme/app_motion.dart';
 import '../../theme/app_spacing.dart';
 import '../../utils/test_keys.dart';
+import '../atoms/composer_surface.dart';
 
 /// Optional-title input field shown above the traq body on Home.
 ///
@@ -36,25 +36,11 @@ class TitleField extends StatefulWidget {
 
 class _TitleFieldState extends State<TitleField> {
   final FocusNode _focus = FocusNode();
-  bool _hasFocus = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _focus.addListener(_onFocus);
-  }
 
   @override
   void dispose() {
-    _focus.removeListener(_onFocus);
     _focus.dispose();
     super.dispose();
-  }
-
-  void _onFocus() {
-    if (_focus.hasFocus != _hasFocus) {
-      setState(() => _hasFocus = _focus.hasFocus);
-    }
   }
 
   @override
@@ -62,38 +48,12 @@ class _TitleFieldState extends State<TitleField> {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
     final l10n = L10n.of(context)!;
-    final reduceMotion = MediaQuery.of(context).disableAnimations;
 
-    // Mirror JournalTextArea's focus treatment so the title and body
-    // read as one unified composer: primary-tinted border + soft outer
-    // halo when focused, muted outline when resting. Animation duration
-    // matches JournalTextArea (240ms) so focus travel between the two
-    // fields feels continuous rather than staggered.
-    final borderColor = _hasFocus
-        ? cs.primary.withValues(alpha: 0.55)
-        : cs.outlineVariant.withValues(alpha: 0.3);
-    final List<BoxShadow> shadow = [
-      if (_hasFocus && !reduceMotion)
-        BoxShadow(
-          color: cs.primary.withValues(alpha: 0.22),
-          blurRadius: 22,
-          spreadRadius: 1,
-          blurStyle: BlurStyle.outer,
-        ),
-    ];
-
-    return AnimatedContainer(
-      duration:
-          reduceMotion ? Duration.zero : const Duration(milliseconds: 240),
-      curve: AppMotion.standard,
-      // Match JournalTextArea's recessed-well surface so the title field
-      // reads as part of the same composer, not a separate raised card.
-      decoration: BoxDecoration(
-        color: cs.surfaceContainerLow,
-        borderRadius: AppSpacing.borderRadiusXl,
-        border: Border.all(color: borderColor, width: _hasFocus ? 1.4 : 1.0),
-        boxShadow: shadow,
-      ),
+    // ComposerSurface carries the focus-responsive border + halo so
+    // this field reads as one with JournalTextArea — see that atom
+    // for the shared treatment.
+    return ComposerSurface(
+      focusNode: _focus,
       child: TextField(
         key: TestKeys.homeTitleField,
         controller: widget.controller,
