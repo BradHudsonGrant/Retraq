@@ -564,62 +564,7 @@ class _HomeScreenState extends State<HomeScreen>
                       left: _buildJournalPane(cs, tt, l10n),
                       right: _buildRecentPane(cs, tt, l10n),
                     )
-                    : SingleChildScrollView(
-                      padding: AppSpacing.pagePadding,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ..._buildJournalContent(cs, tt, l10n),
-
-                          // Recent days
-                          const SizedBox(height: AppSpacing.xl),
-                          Text(
-                            l10n.recentLabel,
-                            style: tt.titleSmall?.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: cs.onSurfaceVariant,
-                            ),
-                          ),
-                          const SizedBox(height: AppSpacing.sm),
-                          if (_yesterdayEntries.isNotEmpty)
-                            RecentDayCard(
-                              label:
-                                  (_settings?.askAboutToday ?? true)
-                                      ? l10n.todayLabel
-                                      : l10n.yesterdayLabel,
-                              entries: _yesterdayEntries,
-                            ),
-                          if (_dayBeforeEntries.isNotEmpty) ...[
-                            const SizedBox(height: AppSpacing.md),
-                            RecentDayCard(
-                              label:
-                                  (_settings?.askAboutToday ?? true)
-                                      ? l10n.yesterdayLabel
-                                      : DateFormat('EEEE').format(
-                                        DateTime.now().subtract(
-                                          const Duration(days: 2),
-                                        ),
-                                      ),
-                              entries: _dayBeforeEntries,
-                            ),
-                          ],
-                          if (_yesterdayEntries.isEmpty &&
-                              _dayBeforeEntries.isEmpty)
-                            // Task 2.13 — warmer empty-recent state in
-                            // the phone layout too. Drop the bionic
-                            // wrapper + opacity trick and use the
-                            // dedicated widget.
-                            const Padding(
-                              padding: EdgeInsets.only(
-                                top: AppSpacing.sm,
-                              ),
-                              child: EmptyRecentState(),
-                            ),
-
-                          const SizedBox(height: AppSpacing.navBarClearance),
-                        ],
-                      ),
-                    ),
+                    : _buildPhoneLayout(cs, tt, l10n),
           ),
 
           if (_showSaveSuccess)
@@ -647,6 +592,59 @@ class _HomeScreenState extends State<HomeScreen>
                 },
               ),
             ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPhoneLayout(ColorScheme cs, TextTheme tt, L10n l10n) {
+    return SingleChildScrollView(
+      padding: AppSpacing.pagePadding,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ..._buildJournalContent(cs, tt, l10n),
+
+          // Recent days
+          const SizedBox(height: AppSpacing.xl),
+          Text(
+            l10n.recentLabel,
+            style: tt.titleSmall?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: cs.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          if (_yesterdayEntries.isNotEmpty)
+            RecentDayCard(
+              label:
+                  (_settings?.askAboutToday ?? true)
+                      ? l10n.todayLabel
+                      : l10n.yesterdayLabel,
+              entries: _yesterdayEntries,
+            ),
+          if (_dayBeforeEntries.isNotEmpty) ...[
+            const SizedBox(height: AppSpacing.md),
+            RecentDayCard(
+              label:
+                  (_settings?.askAboutToday ?? true)
+                      ? l10n.yesterdayLabel
+                      : DateFormat('EEEE').format(
+                        DateTime.now().subtract(const Duration(days: 2)),
+                      ),
+              entries: _dayBeforeEntries,
+            ),
+          ],
+          if (_yesterdayEntries.isEmpty && _dayBeforeEntries.isEmpty)
+            // Task 2.13 — warmer empty-recent state in the phone layout
+            // too. Drop the bionic wrapper + opacity trick and use the
+            // dedicated widget.
+            const Padding(
+              padding: EdgeInsets.only(top: AppSpacing.sm),
+              child: EmptyRecentState(),
+            ),
+
+          const SizedBox(height: AppSpacing.navBarClearance),
         ],
       ),
     );
