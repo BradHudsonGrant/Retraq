@@ -1,6 +1,5 @@
 // ignore_for_file: prefer_single_quotes
 //
-// ─────────────────────────────────────────────────────────────────────────
 // DO NOT DELETE — preserved per review-2026-04-16 Agent 6.
 // Column-drop regression suite. Protects against silent data loss during
 // Drift schema migrations (the pre-encryption → encrypted migration
@@ -10,7 +9,6 @@
 // Any future consolidation of migration test files must keep these
 // assertions (or equivalents) intact. Consult Agent 6's review if in
 // doubt.
-// ─────────────────────────────────────────────────────────────────────────
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
@@ -62,7 +60,7 @@ void main() {
     test(
       'copies every UserSettingsTable column — no silent data loss',
       () async {
-        // ── Arrange: insert a settings row into the source whose every
+        // Arrange: insert a settings row into the source whose every
         // column differs from the schema default, so that if any column is
         // missed during the copy we will see the default (not our value).
         //
@@ -112,10 +110,10 @@ void main() {
         expect(sourceRow.moodEnabled, true);
         expect(sourceRow.userId, 4242);
 
-        // ── Act: run the migration copy from source → target.
+        // Act: run the migration copy from source → target.
         await DatabaseService.copyAllTables(source, target);
 
-        // ── Assert: the target settings row contains EVERY non-default value
+        // Assert: the target settings row contains EVERY non-default value
         // we put into the source. If any column is missed by the copy, the
         // assertion for that column will fail because the schema default is
         // the opposite of what we set.

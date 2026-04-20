@@ -23,11 +23,9 @@ import 'package:retraq/services/database_service.dart';
 /// opens the database it sees an existing schema at version N and runs
 /// `onUpgrade(N, schemaVersion)` — i.e. the production migration code.
 void main() {
-  // ────────────────────────────────────────────────────────────────
   // Helper: open AppDatabase pre-loaded with the v3 schema and a [seed]
   // callback that can insert fixture rows. Returns the AppDatabase but
   // does NOT trigger migration yet — the caller must run a query first.
-  // ────────────────────────────────────────────────────────────────
   AppDatabase openV3WithFixtures(void Function(dynamic raw) seed) {
     return AppDatabase(
       NativeDatabase.memory(
@@ -81,12 +79,10 @@ void main() {
     );
   }
 
-  // ────────────────────────────────────────────────────────────────
   // Helper: open AppDatabase pre-loaded with the v6 schema. v6 is the
   // first version where journal_entries has a user_id FK to users(id),
   // so it lets us insert orphans (with PRAGMA foreign_keys = OFF) and
   // confirm the v8→v9 cleanup deletes them.
-  // ────────────────────────────────────────────────────────────────
   AppDatabase openV6WithFixtures(void Function(dynamic raw) seed) {
     return AppDatabase(
       NativeDatabase.memory(
@@ -206,7 +202,7 @@ void main() {
           // and runs onUpgrade(3, 13) — i.e. the entire migration chain.
           await db.customSelect('SELECT 1').get();
 
-          // ── Assert: entries were correctly split + cleaned ──
+          // Assert: entries were correctly split + cleaned
           final entries = await db.select(db.journalEntries).get();
           // 4 valid originals (excluding whitespace) + 1 PM split row = 5
           expect(
@@ -258,7 +254,6 @@ void main() {
             reason: 'v4→v5 cleanup should delete whitespace-only entries',
           );
 
-          // ── Assert: is_dark_mode → theme_mode mapping (v6→v7) ──
           final settings = await db.select(db.userSettingsTable).getSingle();
           expect(
             settings.themeMode,
@@ -266,7 +261,7 @@ void main() {
             reason: 'is_dark_mode=1 should map to theme_mode=2 (dark)',
           );
 
-          // ── Assert: columns added by later migrations exist with defaults ──
+          // Assert: columns added by later migrations exist with defaults
           expect(settings.amPmCutoffHour, 14, reason: 'v5 added');
           expect(settings.nudgeMinute, 0, reason: 'v8 added');
           expect(settings.moodEnabled, false, reason: 'v10 added');
@@ -274,7 +269,7 @@ void main() {
           expect(settings.moodOnlyEntries, false, reason: 'v10 added');
           expect(settings.bionicReadingEnabled, false, reason: 'v12 added');
 
-          // ── Assert: indices added by later migrations all exist ──
+          // Assert: indices added by later migrations all exist
           final indexNames =
               (await db
                       .customSelect(
@@ -295,7 +290,7 @@ void main() {
             reason: 'all v5/v11/v13 journal indices should exist',
           );
 
-          // ── Assert: tables added by later migrations exist + queryable ──
+          // Assert: tables added by later migrations exist + queryable
           // (users was added in v4, consent_records in v8.)
           await db.customSelect('SELECT 1 FROM users LIMIT 1').get();
           await db.customSelect('SELECT 1 FROM consent_records LIMIT 1').get();
@@ -413,7 +408,7 @@ void main() {
         // Trigger the full migration chain (3 → schemaVersion).
         await db.customSelect('SELECT 1').get();
 
-        // ── Backfill: pre-existing rows are findable via FTS5 ──
+        // Backfill: pre-existing rows are findable via FTS5
         final coffeeHits =
             await db
                 .customSelect(
@@ -428,7 +423,6 @@ void main() {
           reason: 'v13→v14 backfill should index existing entries',
         );
 
-        // ── Diacritic insensitivity: "cafe" finds "café" ──
         final cafeHits =
             await db
                 .customSelect(
@@ -443,7 +437,6 @@ void main() {
           reason: 'unicode61 remove_diacritics=2 should fold "café" → "cafe"',
         );
 
-        // ── Title column is also indexed ──
         final titleHits =
             await db
                 .customSelect(
@@ -454,7 +447,7 @@ void main() {
                 .get();
         expect(titleHits.length, 1, reason: 'title column must be indexed');
 
-        // ── INSERT trigger: new rows automatically get indexed ──
+        // INSERT trigger: new rows automatically get indexed
         await db.customStatement(
           "INSERT INTO journal_entries (date, entry, created_at) "
           "VALUES ($day1, 'Sunset over the harbour', $createdAt)",
@@ -473,7 +466,6 @@ void main() {
           reason: 'AI trigger should index newly inserted rows',
         );
 
-        // ── UPDATE trigger: edited content is reindexed ──
         final newRowId = sunsetHits.single.read<int>('rowid');
         await db.customStatement(
           "UPDATE journal_entries SET entry = 'Moonrise over the harbour' "
@@ -502,7 +494,7 @@ void main() {
           reason: 'AU trigger should remove the old indexed terms',
         );
 
-        // ── DELETE trigger: removed rows fall out of the index ──
+        // DELETE trigger: removed rows fall out of the index
         await db.customStatement(
           "DELETE FROM journal_entries WHERE id = $newRowId",
         );

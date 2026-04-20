@@ -210,8 +210,8 @@ class _SaveSuccessOverlayState extends State<SaveSuccessOverlay>
       child: Semantics(
         button: true,
         label: l10n.dismissLabel,
-        // ── Single GestureDetector for tap-to-dismiss. Adding more would
-        // break `find.byType(GestureDetector), findsOneWidget` in tests. ──
+        // Single GestureDetector for tap-to-dismiss. Adding more would
+        // break `find.byType(GestureDetector), findsOneWidget` in tests.
         child: GestureDetector(
           onTap: () async {
             // Tap to dismiss early

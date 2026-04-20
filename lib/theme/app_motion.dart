@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 class AppMotion {
   AppMotion._();
 
-  // ── Durations ─────────────────────────────────────────────────────────
   static const Duration instant = Duration.zero;
   static const Duration micro = Duration(milliseconds: 120);
   static const Duration fast = Duration(milliseconds: 200);
@@ -18,7 +17,6 @@ class AppMotion {
   static const Duration hero = Duration(milliseconds: 800);
   static const Duration epic = Duration(milliseconds: 1200);
 
-  // ── Curves (Material 3 emphasized motion) ─────────────────────────────
   // The Material 3 emphasized curve is the cubic specified in the spec.
   // We hand-roll it as a Cubic to avoid dependency on the newer `Easing`
   // class which may not exist in older Flutter SDKs.
@@ -36,7 +34,6 @@ class AppMotion {
   /// Smooth spring with mild overshoot — the default for "tactile" feel.
   static const Curve springSmooth = Curves.easeOutBack;
 
-  // ── Spring descriptions for physics-based animations ──────────────────
   /// Critically damped spring — no overshoot. Use for press-back, drag release.
   static const SpringDescription tactile = SpringDescription(
     mass: 1,
@@ -51,14 +48,12 @@ class AppMotion {
     damping: 14,
   );
 
-  // ── Stagger defaults ──────────────────────────────────────────────────
   /// Standard delay between cascade items in a list reveal.
   static const Duration staggerStep = Duration(milliseconds: 60);
 
   /// Tighter stagger for grids (calendar cells, etc.).
   static const Duration staggerStepTight = Duration(milliseconds: 20);
 
-  // ── Reduce-motion helpers ─────────────────────────────────────────────
   /// Returns [d] normally, or [Duration.zero] when reduce-motion is enabled.
   ///
   /// Always wrap user-facing durations through this when building widgets so

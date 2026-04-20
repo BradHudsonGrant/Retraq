@@ -219,14 +219,12 @@ void main() {
     });
   });
 
-  // ─────────────────────────────────────────────────────────────────────
   // BEGIN preserve per review-2026-04-16 Agent 6.
   // Boundary / edge-case DB coverage: non-existent-ID delete, FK
   // violation surfacing, batch save, per-day/most-active-weekday
   // SQL boundary values. Strong existing coverage Agent 6 explicitly
   // rated Solid — this marker exists so any future refactor (e.g. a
   // per-service split) carries these cases forward unchanged.
-  // ─────────────────────────────────────────────────────────────────────
   group('Edge cases', () {
     late DatabaseService db;
 
@@ -294,7 +292,6 @@ void main() {
     });
   });
 
-
   group('Watch stream', () {
     late DatabaseService db;
 
@@ -342,8 +339,6 @@ void main() {
       expect(updated.any((e) => e.entry == 'Watch test added'), true);
     });
   });
-
-  // ── Group 1: Database initialization ──────────────────────
 
   group('Database initialization', () {
     late DatabaseService db;
@@ -403,8 +398,6 @@ void main() {
       expect(() async => await db.entries.saveEntry(entry), throwsA(anything));
     });
   });
-
-  // ── Group 2: Encryption key management ────────────────────
 
   group('Encryption key management', () {
     test('base64-encoded 32-byte key has expected length', () {
@@ -499,7 +492,6 @@ void main() {
 
   // PIN cross-format verification + auto-upgrade groups moved to
   // test/services/pin_service_test.dart.
-
 
   group('Database migration data integrity', () {
     late DatabaseService db;

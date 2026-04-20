@@ -66,7 +66,6 @@ class CalendarGrid extends StatelessWidget {
       borderRadius: AppSpacing.borderRadiusXxl,
       child: Column(
         children: [
-          // ── Header with navigation ──
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -103,7 +102,6 @@ class CalendarGrid extends StatelessWidget {
 
           const SizedBox(height: AppSpacing.md),
 
-          // ── Day-of-week labels ──
           Row(
             children:
                 _dayLabels(l10n)
@@ -125,7 +123,6 @@ class CalendarGrid extends StatelessWidget {
 
           const SizedBox(height: AppSpacing.sm),
 
-          // ── Calendar day cells ──
           ..._buildWeeks(context),
         ],
       ),

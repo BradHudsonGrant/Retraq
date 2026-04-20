@@ -44,7 +44,7 @@ class BulletPointFormatter extends TextInputFormatter {
     final oldText = oldValue.text;
     final newText = newValue.text;
 
-    // ── Backspace at a bullet: collapse "\n• " into just "\n" ──
+    // Backspace at a bullet: collapse "\n• " into just "\n"
     if (newText.length < oldText.length) {
       final cursor = newValue.selection.baseOffset;
       // Detect that "\n• " was partially deleted — the user backspaced
@@ -89,7 +89,7 @@ class BulletPointFormatter extends TextInputFormatter {
       return newValue;
     }
 
-    // ── Newline insertion: add bullet prefix ──
+    // Newline insertion: add bullet prefix.
     if (newText.length <= oldText.length) return newValue;
 
     final newChars = newText.length - oldText.length;

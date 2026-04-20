@@ -17,13 +17,13 @@ import 'package:flutter/widgets.dart';
 class TestKeys {
   TestKeys._();
 
-  // ── App shell / navigation ──────────────────────────────────────────────
+  // App shell / navigation.
   static const navJournalTab = Key('nav_tab_journal');
   static const navRecapTab = Key('nav_tab_recap');
   static const navStatsTab = Key('nav_tab_stats');
   static const navSettingsTab = Key('nav_tab_settings');
 
-  // ── Home / Journal screen ───────────────────────────────────────────────
+  // Home / Journal screen.
   static const homeDateChip = Key('home_date_chip');
   static const homeMoodSelector = Key('home_mood_selector');
   static const homeTitleField = Key('home_title_field');
@@ -34,7 +34,7 @@ class TestKeys {
   /// Dynamic key for a mood option button (1..5).
   static Key moodOption(int value) => Key('mood_option_$value');
 
-  // ── Recap screen ────────────────────────────────────────────────────────
+  // Recap screen.
   static const recapSearchToggle = Key('recap_search_toggle');
   static const recapSearchField = Key('recap_search_field');
   // Entries/Insights top-level pill. When right is active,
@@ -54,7 +54,7 @@ class TestKeys {
   /// Dynamic key for a calendar day cell (by day-of-month).
   static Key calendarDay(int day) => Key('calendar_day_$day');
 
-  // ── Settings screen ─────────────────────────────────────────────────────
+  // Settings screen.
   static const settingsAppearanceSection = Key('settings_section_appearance');
   static const settingsPreferencesSection = Key('settings_section_preferences');
   static const settingsSecuritySection = Key('settings_section_security');

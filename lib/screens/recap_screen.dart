@@ -464,10 +464,8 @@ class _RecapScreenState extends State<RecapScreen>
         children: [
           const SizedBox(height: AppSpacing.lg),
 
-          // ── Header with search toggle ──
           headerRow,
 
-          // ── Search view (expandable) ──
           if (_showSearch)
             RecapSearchView(
               searchController: _searchController,
@@ -479,7 +477,6 @@ class _RecapScreenState extends State<RecapScreen>
               onDelete: _confirmDeleteEntry,
             ),
 
-          // ── Browse view (when not searching) ──
           if (!_showSearch) ...[
             const SizedBox(height: AppSpacing.md),
 
@@ -500,13 +497,10 @@ class _RecapScreenState extends State<RecapScreen>
 
             const SizedBox(height: AppSpacing.md),
 
-            // ── Insights pane ──
             if (_showInsights)
               const StatsScreen(embedded: true),
 
-            // ── Entries pane (Week/Month toggle + views) ──
             if (!_showInsights) ...[
-              // ── Week / Month toggle ──
               Center(
                 child: SegmentedPill(
                   key: TestKeys.recapWeekMonthToggle,
@@ -531,7 +525,6 @@ class _RecapScreenState extends State<RecapScreen>
 
               const SizedBox(height: AppSpacing.lg),
 
-            // ── Week view ──
             if (_isWeekView)
               RecapWeekView(
                 weekEntries: _weekEntries,
@@ -561,7 +554,6 @@ class _RecapScreenState extends State<RecapScreen>
                 },
               ),
 
-              // ── Month view ──
               if (!_isWeekView)
                 RecapMonthView(
                   selectedMonth: _selectedMonth,
@@ -578,7 +570,6 @@ class _RecapScreenState extends State<RecapScreen>
             ], // end Entries pane
           ], // end Browse view
 
-          // ── Bottom padding for nav bar ──
           const SizedBox(height: AppSpacing.navBarClearance),
         ],
       ),

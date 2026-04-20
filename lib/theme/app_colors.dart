@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 class AppColors {
   AppColors._();
 
-  // ── Light scheme tokens (from prototypes) ──
   static const Color lightSurfaceContainerLow = Color(0xFFF1F4F2);
   static const Color lightSurfaceContainer = Color(0xFFEAEFEC);
   static const Color lightSurfaceContainerHigh = Color(0xFFE4E9E7);
@@ -46,7 +45,6 @@ class AppColors {
     inversePrimary: Color(0xFFC0FBD4),
   );
 
-  // ── Dark scheme tokens ──
   static const ColorScheme darkScheme = ColorScheme.dark(
     primary: Color(0xFFB5F0C9),
     onPrimary: Color(0xFF0E492D),
@@ -79,7 +77,6 @@ class AppColors {
     inversePrimary: Color(0xFF33694B),
   );
 
-  // ── Mood teal-green scale ──
   //
   // Custom 5-step ramp rooted in the brand primary (#33694B). The
   // previous palette was unmodified Material Teal 200-700 — shared
@@ -127,7 +124,6 @@ class AppColors {
   static List<Color> moodColors(Brightness brightness) =>
       brightness == Brightness.dark ? moodColorsDark : moodColorsLight;
 
-  // ── Warm amber accent ──
   //
   // Distinctive second color beyond the forest-green + mint base so
   // the Retraq brand owns a second pixel of App Store mindshare.

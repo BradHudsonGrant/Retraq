@@ -58,7 +58,6 @@ class StatCard extends StatelessWidget {
     final accent = accentColor ?? cs.primary;
     final counterDuration = Duration(milliseconds: min(800 + value * 2, 1200));
 
-    // ── Icon halo (with optional shimmer) ──
     Widget iconHalo = Container(
       width: 36,
       height: 36,
@@ -84,7 +83,6 @@ class StatCard extends StatelessWidget {
           .shimmer(duration: 2600.ms, color: accent.withValues(alpha: 0.55));
     }
 
-    // ── Card content ──
     final Widget cardContent = Semantics(
       label: '$label: $value${suffix != null ? ' $suffix' : ''}',
       excludeSemantics: true,
@@ -124,7 +122,6 @@ class StatCard extends StatelessWidget {
       ),
     );
 
-    // ── Entrance animation ──
     if (reduceMotion) return cardContent;
 
     return cardContent
@@ -145,9 +142,7 @@ class StatCard extends StatelessWidget {
   }
 }
 
-// ────────────────────────────────────────────────────────────────────
 // Counter row — animated number with optional suffix
-// ────────────────────────────────────────────────────────────────────
 
 class _CounterRow extends StatelessWidget {
   const _CounterRow({

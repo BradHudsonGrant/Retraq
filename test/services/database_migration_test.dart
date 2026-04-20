@@ -40,8 +40,6 @@ void main() {
     await db.dispose();
   });
 
-  // ── Final schema verification ─────────────────────────────
-
   group('Final schema (v13) - journal_entries table', () {
     test('has all expected columns', () async {
       // Verify all v13 columns exist by inserting a row that uses every column
@@ -340,8 +338,6 @@ void main() {
     });
   });
 
-  // ── Migration correctness: whitespace cleanup (v5) ────────
-
   group('V5 migration - whitespace entry cleanup', () {
     test('entries with whitespace-only content are not persisted', () async {
       // The v5 migration deletes existing whitespace-only entries.
@@ -369,8 +365,6 @@ void main() {
       expect(all.length, 2);
     });
   });
-
-  // ── Cross-table relationships (v4 schema) ─────────────────
 
   group('Cross-table relationships (v4 schema)', () {
     test('journal entry can reference a user via userId', () async {
@@ -431,8 +425,6 @@ void main() {
     );
   });
 
-  // ── Database lifecycle ────────────────────────────────────
-
   group('Database lifecycle', () {
     test(
       'initInMemory creates a usable database with correct schema',
@@ -479,7 +471,7 @@ void main() {
     );
   });
 
-  // ── Search uses correct column names (v4 schema) ──────────
+  // Search uses correct column names (v4 schema)
 
   group('Search after migration (v4+ schema)', () {
     test('search finds entries by entry text', () async {
@@ -511,8 +503,6 @@ void main() {
       expect(results.first.title, 'Unique Migration Title XYZ');
     });
   });
-
-  // ── Edge cases for migration-affected columns ─────────────
 
   group('Edge cases for migration-affected columns', () {
     test('entry can store long text', () async {
@@ -1119,8 +1109,6 @@ void main() {
       expect(version, 15);
     });
   });
-
-  // ── Full migration chain verification ────────────────────
 
   group('Full migration chain verification', () {
     late DatabaseService db;

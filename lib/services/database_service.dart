@@ -24,8 +24,6 @@ export 'pin_service.dart' show PinService;
 
 part 'database_service.g.dart';
 
-// ── Drift table definitions ──────────────────────────────
-
 /// SQLite table for journal entries.
 @DataClassName('JournalEntryRow')
 class JournalEntries extends Table {
@@ -108,8 +106,6 @@ class ConsentRecords extends Table {
   TextColumn get appVersion => text().nullable()();
 }
 
-// ── Drift database class ─────────────────────────────────
-
 @DriftDatabase(
   tables: [JournalEntries, Users, UserSettingsTable, ConsentRecords],
 )
@@ -122,8 +118,6 @@ class AppDatabase extends _$AppDatabase {
   @override
   MigrationStrategy get migration => buildMigrationStrategy(this);
 }
-
-// ── Public service wrapper ───────────────────────────────
 
 /// Singleton database service wrapping Drift (SQLite).
 /// Initialises the database and exposes focused repositories.

@@ -52,7 +52,6 @@ class RecapWeekView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // ── Week navigation header ──
         _WeekNavigationHeader(
           weekStart: weekStart,
           weekEnd: weekEnd,

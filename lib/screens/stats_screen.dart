@@ -577,7 +577,6 @@ class _StatsScreenState extends State<StatsScreen>
               children: [
                 const SizedBox(height: AppSpacing.lg),
 
-                // ── Header ──
                 Animate(
                   effects: [
                     FadeEffect(duration: 500.ms, curve: Curves.easeOut),
@@ -609,7 +608,6 @@ class _StatsScreenState extends State<StatsScreen>
                 const SizedBox(height: AppSpacing.lg),
 
                 _buildStatsColumn(cs, tt, l10n, embedded: false),
-                // ── Bottom padding for nav bar ──
                 const SizedBox(height: AppSpacing.navBarClearance),
               ],
             ),
@@ -631,10 +629,8 @@ class _StatsScreenState extends State<StatsScreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // ── Loading skeleton ──
         if (_isLoading)
           _buildLoadingSkeleton(cs)
-        // ── Empty state ──
         else if (_stats.totalEntries == 0) ...[
           Padding(
             padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxl),

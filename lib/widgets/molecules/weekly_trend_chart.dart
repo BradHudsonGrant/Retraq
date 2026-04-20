@@ -264,13 +264,11 @@ class _TrendChartPainter extends CustomPainter {
     final double avg =
         data.isEmpty ? 0 : data.reduce((a, b) => a + b) / data.length;
 
-    // ── Average dashed line ──
     if (maxVal > 0) {
       final double avgY = size.height - (avg / maxVal) * size.height;
       _drawDashedLine(canvas, size.width, avgY);
     }
 
-    // ── Bars ──
     for (int i = 0; i < count; i++) {
       // Staggered interval per bar.
       final double start = i / (count * 2);
@@ -330,7 +328,7 @@ class _TrendChartPainter extends CustomPainter {
 
       canvas.drawRRect(rRect, Paint()..color = barColor);
 
-      // ── Accent glow on latest bar when it's the highest ──
+      // Accent glow on latest bar when it's the highest
       if (isLast && data[i] == maxVal && maxVal > 0 && t > 0.5) {
         const double dotRadius = 3.0;
         final double dotCx = x + barWidth / 2;

@@ -29,7 +29,6 @@ class EntryDetailView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // ── Date divider (once) ──
         Padding(
           padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
           child: Row(
@@ -51,7 +50,6 @@ class EntryDetailView extends StatelessWidget {
           ),
         ),
 
-        // ── Entry cards ──
         ...entries.map(
           (entry) => Padding(
             padding: const EdgeInsets.only(bottom: AppSpacing.md),
@@ -59,7 +57,6 @@ class EntryDetailView extends StatelessWidget {
           ),
         ),
 
-        // ── Share day ──
         if (entries.isNotEmpty)
           Align(
             alignment: Alignment.centerRight,

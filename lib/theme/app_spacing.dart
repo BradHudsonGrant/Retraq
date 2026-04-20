@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 class AppSpacing {
   AppSpacing._();
 
-  // ── Spacing scale ──
   static const double xxs = 2;
   static const double xs = 4;
   static const double sm = 8;
@@ -14,10 +13,8 @@ class AppSpacing {
   static const double xl = 32;
   static const double xxl = 48;
 
-  // ── Page padding ──
   static const EdgeInsets pagePadding = EdgeInsets.symmetric(horizontal: lg);
 
-  // ── Radius tokens (from prototypes' rounded corners) ──
   static const double radiusSm = 8;
   static const double radiusMd = 12;
   static const double radiusLg = 16;
@@ -34,6 +31,5 @@ class AppSpacing {
     radiusFull,
   );
 
-  // ── Clearance for bottom nav bar overlap ──
   static const double navBarClearance = 100;
 }

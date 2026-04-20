@@ -1,4 +1,3 @@
-// ─────────────────────────────────────────────────────────────────────────
 // Test helper reference — preserved per review-2026-04-16 Agent 6.
 //
 // The four patterns defined here are deliberate architectural choices; do
@@ -31,7 +30,6 @@
 //
 // The four patterns below survive across test-file consolidations by
 // design; reach for them first when writing a new test.
-// ─────────────────────────────────────────────────────────────────────────
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
