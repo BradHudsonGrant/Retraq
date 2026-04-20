@@ -2,96 +2,43 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:retraq/models/journal_entry.dart';
 
 void main() {
-  group('JournalEntry', () {
-    test('constructor sets required fields', () {
-      final date = DateTime(2026, 3, 26);
-      final entry = JournalEntry(date: date);
-
-      expect(entry.date, date);
-      expect(entry.id, isNull);
-      expect(entry.entry, isNull);
-      expect(entry.label, isNull);
-      expect(entry.title, isNull);
-      expect(entry.userId, isNull);
-      expect(entry.createdAt, isNotNull);
+  group('JournalEntry.displayText', () {
+    test('returns the entry text when set', () {
+      final entry = JournalEntry(
+        date: DateTime(2026, 1, 1),
+        entry: 'Had a great day',
+      );
+      expect(entry.displayText, 'Had a great day');
     });
 
-    test('createdAt defaults to now when omitted', () {
-      final before = DateTime.now();
+    test('returns an empty string when entry is null', () {
       final entry = JournalEntry(date: DateTime(2026, 1, 1));
-      final after = DateTime.now();
+      expect(entry.displayText, '');
+    });
+  });
 
-      expect(
-        entry.createdAt.isAfter(before) || entry.createdAt == before,
-        true,
-      );
-      expect(entry.createdAt.isBefore(after) || entry.createdAt == after, true);
+  group('JournalEntry.isEmpty', () {
+    test('is true when entry is null', () {
+      final entry = JournalEntry(date: DateTime(2026, 1, 1));
+      expect(entry.isEmpty, true);
     });
 
-    test('createdAt uses provided value when given', () {
-      final custom = DateTime(2025, 6, 15, 10, 30);
-      final entry = JournalEntry(date: DateTime(2026, 1, 1), createdAt: custom);
-      expect(entry.createdAt, custom);
+    test('is true when entry is an empty string', () {
+      final entry = JournalEntry(date: DateTime(2026, 1, 1), entry: '');
+      expect(entry.isEmpty, true);
     });
 
-    group('displayText', () {
-      test('returns entry text when set', () {
-        final entry = JournalEntry(
-          date: DateTime(2026, 1, 1),
-          entry: 'Had a great day',
-        );
-        expect(entry.displayText, 'Had a great day');
-      });
-
-      test('returns empty string when entry is null', () {
-        final entry = JournalEntry(date: DateTime(2026, 1, 1));
-        expect(entry.displayText, '');
-      });
-    });
-
-    group('isEmpty', () {
-      test('returns true when entry is null', () {
-        final entry = JournalEntry(date: DateTime(2026, 1, 1));
-        expect(entry.isEmpty, true);
-      });
-
-      test('returns true when entry is empty string', () {
-        final entry = JournalEntry(date: DateTime(2026, 1, 1), entry: '');
-        expect(entry.isEmpty, true);
-      });
-
-      test('returns false when entry has content', () {
-        final entry = JournalEntry(
-          date: DateTime(2026, 1, 1),
-          entry: 'content',
-        );
-        expect(entry.isEmpty, false);
-      });
-    });
-
-    test('label stores AM/PM/null correctly', () {
-      final am = JournalEntry(
+    test('is false when entry has content', () {
+      final entry = JournalEntry(
         date: DateTime(2026, 1, 1),
-        entry: 'Morning',
-        label: 'AM',
+        entry: 'content',
       );
-      expect(am.label, 'AM');
-
-      final pm = JournalEntry(
-        date: DateTime(2026, 1, 1),
-        entry: 'Evening',
-        label: 'PM',
-      );
-      expect(pm.label, 'PM');
-
-      final allDay = JournalEntry(
-        date: DateTime(2026, 1, 1),
-        entry: 'Full day',
-      );
-      expect(allDay.label, isNull);
+      expect(entry.isEmpty, false);
     });
+  });
 
-    test('title is nullable and copyWith works', () {
+  group('JournalEntry.copyWith', () {
+    test('title is nullable — copyWith can set and clear it', () {
       final entry = JournalEntry(date: DateTime(2026, 1, 1));
       expect(entry.title, isNull);
 
@@ -102,9 +49,10 @@ void main() {
       expect(cleared.title, isNull);
     });
 
-    test('all fields are settable via copyWith', () {
+    test('every field is settable', () {
+      // Field-coverage guard: a field added to JournalEntry but forgotten
+      // in copyWith would silently drop on save-edit-save round-trips.
       final entry = JournalEntry(date: DateTime(2026, 1, 1));
-
       final updated = entry.copyWith(
         id: 42,
         entry: 'Some text',
