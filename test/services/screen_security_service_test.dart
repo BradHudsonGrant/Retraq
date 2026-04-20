@@ -5,7 +5,7 @@ import 'package:retraq/services/screen_security_service.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  const channel = MethodChannel(ScreenSecurityService.channelName);
+  const channel = MethodChannel(flagSecureChannelName);
   final invocations = <String>[];
 
   setUp(() {
@@ -22,25 +22,23 @@ void main() {
         .setMockMethodCallHandler(channel, null);
   });
 
-  group('ScreenSecurityService', () {
-    test('setSecure(true) invokes addFlagSecure', () async {
-      await ScreenSecurityService.instance.setSecure(true);
-      expect(invocations, ['addFlagSecure']);
-    });
+  test('setFlagSecure(true) invokes addFlagSecure', () async {
+    await setFlagSecure(true);
+    expect(invocations, ['addFlagSecure']);
+  });
 
-    test('setSecure(false) invokes clearFlagSecure', () async {
-      await ScreenSecurityService.instance.setSecure(false);
-      expect(invocations, ['clearFlagSecure']);
-    });
+  test('setFlagSecure(false) invokes clearFlagSecure', () async {
+    await setFlagSecure(false);
+    expect(invocations, ['clearFlagSecure']);
+  });
 
-    test('platform channel failure is swallowed, not rethrown', () async {
-      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-          .setMockMethodCallHandler(channel, (call) async {
-            throw PlatformException(code: 'UNAVAILABLE');
-          });
+  test('platform channel failure is swallowed, not rethrown', () async {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(channel, (call) async {
+          throw PlatformException(code: 'UNAVAILABLE');
+        });
 
-      // Should not throw.
-      await ScreenSecurityService.instance.setSecure(true);
-    });
+    // Should not throw.
+    await setFlagSecure(true);
   });
 }

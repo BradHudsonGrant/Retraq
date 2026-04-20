@@ -3,8 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:retraq/services/review_service.dart';
 
-/// Mock the in_app_review plugin channel.
-/// Tracks whether requestReview was called.
+/// Mock the in_app_review plugin channel. Tracks whether requestReview was called.
 bool _reviewRequested = false;
 
 void _mockInAppReview({bool available = true}) {
@@ -32,50 +31,46 @@ void main() {
     _mockInAppReview();
   });
 
-  group('ReviewService.checkAndPrompt', () {
+  group('maybePromptForReview', () {
     test('does nothing when count is not 5', () async {
-      await ReviewService.instance.checkAndPrompt(1);
+      await maybePromptForReview(1);
       expect(_reviewRequested, false);
 
-      await ReviewService.instance.checkAndPrompt(4);
+      await maybePromptForReview(4);
       expect(_reviewRequested, false);
 
-      await ReviewService.instance.checkAndPrompt(6);
+      await maybePromptForReview(6);
       expect(_reviewRequested, false);
     });
 
     test('triggers review at exactly 5 entries', () async {
-      await ReviewService.instance.checkAndPrompt(5);
+      await maybePromptForReview(5);
       expect(_reviewRequested, true);
     });
 
-    test('review prompt only fires once (never repeats)', () async {
-      // First call at count 5 should trigger
-      await ReviewService.instance.checkAndPrompt(5);
+    test('only fires once (never repeats)', () async {
+      await maybePromptForReview(5);
       expect(_reviewRequested, true);
 
-      // Reset tracker
       _reviewRequested = false;
-
-      // Second call at count 5 should NOT trigger (pref already set)
-      await ReviewService.instance.checkAndPrompt(5);
+      await maybePromptForReview(5);
       expect(_reviewRequested, false);
     });
 
     test('does not trigger when already shown (pref pre-set)', () async {
       SharedPreferences.setMockInitialValues({'review_prompt_shown': true});
 
-      await ReviewService.instance.checkAndPrompt(5);
+      await maybePromptForReview(5);
       expect(_reviewRequested, false);
     });
 
     test('does not request review when in_app_review is unavailable', () async {
       _mockInAppReview(available: false);
 
-      await ReviewService.instance.checkAndPrompt(5);
+      await maybePromptForReview(5);
       expect(_reviewRequested, false);
 
-      // But it should still mark as shown so it won't retry
+      // But it should still mark as shown so it won't retry.
       final prefs = await SharedPreferences.getInstance();
       expect(prefs.getBool('review_prompt_shown'), true);
     });

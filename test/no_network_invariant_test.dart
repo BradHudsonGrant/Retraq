@@ -37,7 +37,7 @@ import 'package:retraq/models/user.dart';
 /// which will surface new imports):
 /// - NotificationService (platform channel; does not use HTTP).
 /// - WidgetService (platform channel).
-/// - ScreenSecurityService (platform channel).
+/// - setFlagSecure (platform channel).
 /// - local_auth biometric (platform channel).
 ///
 /// If a future feature legitimately needs HTTP (cloud AI recap, cloud

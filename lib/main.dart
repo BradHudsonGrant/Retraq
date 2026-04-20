@@ -227,7 +227,7 @@ class _RetraqAppState extends State<RetraqApp> with WidgetsBindingObserver {
       // appLockEnabled. Journal content is sensitive even without a PIN:
       // blocking screenshots + Recents thumbnails protects users who
       // have not set up app lock.
-      _updateFlagSecure(true);
+      setFlagSecure(true);
     });
 
     // Defer non-critical service init until after the first frame so the
@@ -260,8 +260,6 @@ class _RetraqAppState extends State<RetraqApp> with WidgetsBindingObserver {
     }
   }
 
-  Future<void> _updateFlagSecure(bool enabled) =>
-      ScreenSecurityService.instance.setSecure(enabled);
 
   @override
   void dispose() {
@@ -321,7 +319,7 @@ class _RetraqAppState extends State<RetraqApp> with WidgetsBindingObserver {
       _settingsLoaded = true;
     });
     // Unconditional (see above).
-    _updateFlagSecure(true);
+    setFlagSecure(true);
     try {
       // init() is idempotent — safe to call here even though the post-frame
       // callback in initState may have already run it.

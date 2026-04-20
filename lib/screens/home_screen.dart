@@ -833,7 +833,7 @@ class _HomeScreenState extends State<HomeScreen>
     });
 
     // Check for in-app review prompt (fires once at 5th entry)
-    ReviewService.instance.checkAndPrompt(totalCount);
+    maybePromptForReview(totalCount);
 
     // Refresh home screen widget with latest data. Explicit
     // fire-and-forget — the update hops a platform channel and can
