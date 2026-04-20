@@ -422,7 +422,7 @@ class EntryRepository {
               readsFrom: {_db.journalEntries},
             )
             .get();
-    // Task 1.8 — delegate to the shared factory so FTS search stays
+    // delegate to the shared factory so FTS search stays
     // in sync with `rowToEntry`. Previously this inline mapper was
     // missing `userId`, a silent divergence the factory now prevents.
     return rows.map(JournalEntry.fromRawRow).toList();

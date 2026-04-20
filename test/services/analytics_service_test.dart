@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:retraq/services/analytics_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Task 11.4 / 11.13 — tests for the AnalyticsService facade + kill
+/// tests for the AnalyticsService facade + kill
 /// switch. Covers:
 ///   1. Default-on behaviour (no SharedPreferences value)
 ///   2. Kill switch flips cached flag + persists

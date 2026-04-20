@@ -9,7 +9,7 @@ import '../../widgets/atoms/glow_box.dart';
 
 /// Age verification page shown at the start of onboarding.
 ///
-/// Task 12.3 — [minAge] is resolved from the device locale (13 / 14 /
+/// [minAge] is resolved from the device locale (13 / 14 /
 /// 16 per COPPA + GDPR Art. 8 + Quebec Law 25). See
 /// `lib/services/locale_age_threshold.dart` for the full table and
 /// callers in `onboarding_screen.dart` for resolution.

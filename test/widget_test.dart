@@ -35,7 +35,7 @@ void main() {
     // Shell intentionally has NO top AppBar — each screen owns its own
     // header for max real-estate. Just verify the nav bar and the three
     // tab labels are present. Stats was collapsed into the Recap tab as
-    // an embedded Insights pane (Task 2.5) and the Jot label was renamed
+    // an embedded Insights pane and the Jot label was renamed
     // to Traq to match the rest of the product copy.
     expect(find.byType(AppBar), findsNothing);
     expect(find.byType(NavigationBar), findsOneWidget);

@@ -4,7 +4,7 @@ import 'package:retraq/services/database_service.dart';
 
 import '../test_helpers.dart';
 
-/// Task 6.6 — Direct tests for `EntryRepository`. Previously only
+/// Direct tests for `EntryRepository`. Previously only
 /// covered transitively through widget tests + database_service_test;
 /// a regression in repo code would surface as a widget-test failure
 /// with an unhelpful stack trace. These tests give the hot path its
@@ -207,18 +207,14 @@ void main() {
     });
 
     test(
-      'Task 1.8 regression: searchEntries maps userId column (null preserved)',
+      'regression: searchEntries maps userId column (null preserved)',
       () async {
-        // Silent divergence fixed by Task 1.8 — the inline mapper
-        // inside searchEntries previously omitted `userId`. We can't
-        // insert a real user_id without violating the users FK (the
-        // users table is empty in this harness), but we CAN verify
-        // the search mapper's column-read path exercises user_id:
-        // the round-trip on a null userId must produce null (not
-        // "unmapped" or thrown). Before Task 1.8 the field was
-        // never read at all, so any regression reintroducing the
-        // inline-mapper drift would also skip the column. The
-        // companion assertion is Task 1.8's own factory test.
+        // Regression guard: an earlier inline mapper inside searchEntries
+        // omitted `userId`. We can't insert a real user_id without
+        // violating the users FK (the users table is empty in this
+        // harness), but we CAN verify the search mapper's column-read
+        // path exercises user_id: the round-trip on a null userId must
+        // produce null (not "unmapped" or thrown).
         await DatabaseService.instance.entries.saveEntry(
           JournalEntry(
             date: DateTime(2026, 4, 1),

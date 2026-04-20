@@ -96,7 +96,7 @@ class _RetraqButtonState extends State<RetraqButton> {
 
     final reduceMotion = MediaQuery.of(context).disableAnimations;
 
-    // Task 7.14 — merge our Semantics with the inner FilledButton /
+    // merge our Semantics with the inner FilledButton /
     // OutlinedButton instead of nesting them. Without `container: true`
     // the outer Semantics would stack on top of the button's own
     // button-role node and screen readers would announce the role

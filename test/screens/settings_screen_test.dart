@@ -170,18 +170,18 @@ void main() {
       await tester.pump(const Duration(milliseconds: 200));
 
       // Visible: All Day Notes, Opening Prompt, Journal Entry Title, Mood Tracking, App Lock = 5
-      // Hidden in collapsed Advanced (Task 4.4): Bionic Reading, Enter to Save, Bullet Points, Week Starts On
+      // Hidden in collapsed Advanced: Bionic Reading, Enter to Save, Bullet Points, Week Starts On
       expect(find.byType(SettingsRow), findsNWidgets(5));
       await flushDriftTimers(tester);
     });
 
     testWidgets(
-      'Task 4.5 — enabling mood does not surface sub-toggles',
+      'enabling mood does not surface sub-toggles',
       (tester) async {
-        // Pre-4.5 behavior: enabling mood would reveal two extra rows
-        // (Require Mood, Mood-Only Entries). After Task 4.5 the mood
-        // feature is a single switch; sub-toggles are retained in the
-        // schema but never rendered.
+        // Earlier behavior: enabling mood revealed two extra rows
+        // (Require Mood, Mood-Only Entries). The mood feature is now
+        // a single switch; sub-toggles are retained in the schema but
+        // never rendered.
         await tester.pumpWidget(
           wrapWidget(
             SettingsScreen(
@@ -199,9 +199,9 @@ void main() {
         );
         await tester.pump(const Duration(milliseconds: 200));
 
-        // Still exactly 5 rows (Task 4.4 moved Bionic Reading into
-        // Advanced) — no "Require Mood" / "Mood-Only" rows appear
-        // even though the settings say they're enabled.
+        // Still exactly 5 rows (Bionic Reading lives in Advanced) —
+        // no "Require Mood" / "Mood-Only" rows appear even though
+        // the settings say they're enabled.
         expect(find.byType(SettingsRow), findsNWidgets(5));
         await flushDriftTimers(tester);
       },

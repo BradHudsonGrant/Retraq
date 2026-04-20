@@ -3,7 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:retraq/services/lockout_controller.dart';
 
-/// Task 6.4 (continuation) — concurrency + race-condition coverage for
+/// concurrency + race-condition coverage for
 /// `LockoutController`. The existing `lockout_controller_test.dart`
 /// covers the sequential happy-path and the persistence/clock-rewind
 /// edges; this file pins the behaviour of the controller under

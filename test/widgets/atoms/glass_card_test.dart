@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:retraq/widgets/atoms/glass_card.dart';
 
-/// Task 6.11 (partial) — GlassCard widget coverage.
+/// GlassCard widget coverage.
 ///
 /// The widget has one real branch: reduce-motion vs normal. Under
 /// reduce-motion, GlassCard falls back to a DecoratedBox with no

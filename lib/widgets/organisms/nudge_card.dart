@@ -48,7 +48,7 @@ class NudgeCard extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.md),
             BionicText(
-              // Task 2.14 — body copy localized.
+              // body copy localized.
               text: l10n.nudgeCardBody,
               style: tt.titleMedium?.copyWith(
                 color: cs.onPrimary,
@@ -64,7 +64,7 @@ class NudgeCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  // Task 7.9 — localize "Daily at {time}". The
+                  // localize "Daily at {time}". The
                   // pre-formatted time string keeps locale-specific
                   // time formatting from _formatTime.
                   l10n.dailyAtTime(formatHourMinute(nudgeHour, nudgeMinute)),
@@ -93,13 +93,13 @@ class NudgeCard extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  // Task 2.14 — Change Time button label localized.
+                  // Change Time button label localized.
                   child: Text(l10n.nudgeChangeTime),
                 ),
               ],
             ),
             const SizedBox(height: AppSpacing.sm),
-            // Task 2.14 — surface the skip-if-journaled behavior so users
+            // surface the skip-if-journaled behavior so users
             // know the reminder won't fire after they've already written
             // something for the day. This fixes the "won't it just nag
             // me if I already journaled?" perception that was causing

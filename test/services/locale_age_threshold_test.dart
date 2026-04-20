@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:retraq/services/locale_age_threshold.dart';
 
-/// Task 12.3 — verifies the country-aware minimum-age table covers
+/// verifies the country-aware minimum-age table covers
 /// the regulatory choices we care about and falls back safely for
 /// unknown regions.
 void main() {

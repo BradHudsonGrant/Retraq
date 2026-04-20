@@ -6,7 +6,7 @@ import 'package:retraq/widgets/atoms/retraq_logo.dart';
 
 import '../test_helpers.dart';
 
-/// Task 6.10 (partial) — Smoke tests for SplashScreen.
+/// Smoke tests for SplashScreen.
 ///
 /// Scope: verify the screen renders without throwing, surfaces the
 /// Retraq logo + loader affordance, and respects the brand surface
@@ -16,9 +16,8 @@ import '../test_helpers.dart';
 /// mounted in any fixture.
 ///
 /// Animation timing (mesh shader oneShot + logo fade + loader dots)
-/// is left to manual / golden testing in Epic 7 Task 7.15 follow-up
-/// — widget tests can't reliably capture the AnimatedMeshBackground
-/// shader output.
+/// is left to manual / golden testing — widget tests can't reliably
+/// capture the AnimatedMeshBackground shader output.
 void main() {
   Widget wrap(Widget child) {
     return MaterialApp(

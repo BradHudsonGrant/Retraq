@@ -95,7 +95,7 @@ class LockoutController extends ChangeNotifier {
   /// Persistence happens asynchronously in the background; tests can await
   /// [pendingWrites] to flush pending writes before asserting on storage.
   ///
-  /// Concurrency contract (Task 6.4):
+  /// Concurrency contract:
   /// - Each call increments `_failedAttempts` by exactly one.
   /// - Among N concurrent calls that cross the threshold, exactly one
   ///   advances `_lockoutCount` and starts the countdown — subsequent

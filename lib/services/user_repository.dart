@@ -12,18 +12,18 @@ import 'database_service.dart';
 import 'secure_storage.dart';
 
 /// Current document versions — bump when legal text changes.
-// Bumped 2026-04-18 for Task 10.1 — added the "Optional Diagnostics
+// Bumped 2026-04-18 — added the "Optional Diagnostics
 // (Crash Reporting)" section disclosing the new Sentry opt-in, plus
 // amended Data Collection + Third-Party Services to note Sentry as
 // the sole potential third party (off by default). Existing users
 // walk through the reconsent flow on next launch.
-// Prior bump 2026-04-16 for Task 12.2 — controller disclosure +
-// supervisory-authority complaint routes (OPC Canada, CAI Quebec,
-// CNIL/EDPB, ICO UK, CPPA California, OAIC Australia).
+// Prior bump 2026-04-16 — controller disclosure + supervisory-authority
+// complaint routes (OPC Canada, CAI Quebec, CNIL/EDPB, ICO UK,
+// CPPA California, OAIC Australia).
 const String currentPrivacyPolicyVersion = '2026-04-18';
-// Bumped 2026-04-16 for Task 12.6 — added mandatory consumer-law
-// carve-out to the Governing Law section. Existing users will be
-// walked through the re-consent flow on next launch.
+// Bumped 2026-04-16 — added mandatory consumer-law carve-out to
+// the Governing Law section. Existing users will be walked through
+// the re-consent flow on next launch.
 const String currentTermsOfServiceVersion = '2026-04-16';
 const String currentHealthDisclaimerVersion = '2026-03-29';
 
@@ -121,7 +121,7 @@ class UserRepository {
         await prefs.remove('review_prompt_shown');
         await prefs.remove('pin_length');
       } catch (e, st) {
-        // Task 1.4 — SharedPreferences is unavailable in test envs
+        // SharedPreferences is unavailable in test envs
         // and can also fail on hostile storage; log via AppLog so the
         // failure is captured (and surfaces in release with
         // RETRAQ_LOG=true) without escalating to the caller.
@@ -137,7 +137,7 @@ class UserRepository {
         await hardenedSecureStorage.delete(key: 'lock_lockout_start');
         await hardenedSecureStorage.delete(key: 'lock_lockout_end');
       } catch (e, st) {
-        // Task 1.4 — secure storage may be unavailable in tests.
+        // secure storage may be unavailable in tests.
         AppLog.warn('UserRepository.deleteAllData.secureStorage', e, st);
       }
       // Clear home widget data
@@ -148,7 +148,7 @@ class UserRepository {
         await HomeWidget.saveWidgetData<int>('mood', 0);
         await HomeWidget.updateWidget(name: 'JournalWidget');
       } catch (e, st) {
-        // Task 1.4 — home widget is Android-only and may not be
+        // home widget is Android-only and may not be
         // available in tests or on iOS; log and continue.
         AppLog.warn('UserRepository.deleteAllData.homeWidget', e, st);
       }

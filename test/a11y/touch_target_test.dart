@@ -7,7 +7,7 @@ import 'package:retraq/widgets/molecules/number_pad.dart';
 
 import '../test_helpers.dart';
 
-/// Task 6.22 (partial) — 48dp minimum touch-target verification.
+/// 48dp minimum touch-target verification.
 ///
 /// WCAG 2.1 AA Success Criterion 2.5.5 (Target Size, Level AAA) +
 /// 2.5.8 (Target Size (Minimum), Level AA, added in 2.2) specifies
@@ -20,7 +20,7 @@ import '../test_helpers.dart';
 /// `lib/widgets/atoms/`) plus the interactive molecules users
 /// tap most — EntryActionMenu popup button + NumberPad buttons.
 /// Per-screen semantics snapshots are a separate follow-up
-/// (Task 6.22 full scope).
+///.
 void main() {
   const minDp = 48.0;
 

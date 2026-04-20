@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:retraq/models/user_settings.dart';
 
-/// Task 1.9 — verifies UserSettings equality is driven by Equatable's
+/// verifies UserSettings equality is driven by Equatable's
 /// props list and that every field the model declares is enumerated
 /// in props. The field-count guard is deliberate: if a future setting
 /// is added to the class without being added to props, RetraqApp's

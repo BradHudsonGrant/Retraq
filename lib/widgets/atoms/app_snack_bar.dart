@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_spacing.dart';
 
-/// Task 1.7 — Centralised SnackBar helper.
+/// Centralised SnackBar helper.
 ///
 /// The app previously recreated the same SnackBar styling (floating
 /// behavior + AppSpacing.borderRadiusLg + error-variant background) at

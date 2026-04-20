@@ -22,7 +22,6 @@ enum HomeFormValidation {
 
 /// Form-state holder for the Home (Jot) screen's entry draft.
 ///
-/// Task 1.2 — first substantive step of the HomeSaveController lift.
 /// Owns the TextEditingControllers plus the mood + date-override +
 /// last-saved-id values that the screen previously held in a
 /// scattered set of bare fields. Save orchestration itself stays on

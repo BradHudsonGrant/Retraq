@@ -95,7 +95,7 @@ class _PreferencesSectionState extends State<PreferencesSection> {
         ),
         const SizedBox(height: AppSpacing.md),
 
-        // Mood tracking — Task 4.5: single-switch UX per Run 7 survey.
+        // Mood tracking — single-switch UX per Run 7 survey.
         // The `moodRequired` and `moodOnlyEntries` DB columns are still
         // in the schema (no migration) but hidden from UI; they always
         // default to `false` alongside the parent toggle. If user
@@ -132,7 +132,7 @@ class _PreferencesSectionState extends State<PreferencesSection> {
         // the Run 7 survey was unambiguous about cognitive overhead.
         const SizedBox(height: AppSpacing.md),
 
-        // Task 4.4 — Bionic Reading moved inside the Advanced expansion
+        // Bionic Reading moved inside the Advanced expansion
         // tile. Per the Run 7 simplicity brief for v1, top-level
         // Preferences stays focused on theme, mood, all-day mode,
         // opening prompt, entry title, and app lock. Power-user
@@ -154,7 +154,7 @@ class _PreferencesSectionState extends State<PreferencesSection> {
             tilePadding: EdgeInsets.zero,
             childrenPadding: EdgeInsets.zero,
             children: [
-              // Task 4.4 — Bionic Reading now lives here. Settings key
+              // Bionic Reading now lives here. Settings key
               // `bionicReadingEnabled` is unchanged, so users who had
               // it enabled see their preference preserved.
               SettingsRow(

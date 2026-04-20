@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────────────────
-// Test helper reference — preserved per review-2026-04-16 Agent 6 (Task 6.19).
+// Test helper reference — preserved per review-2026-04-16 Agent 6.
 //
 // The four patterns defined here are deliberate architectural choices; do
 // NOT bypass them without understanding why they exist:
@@ -29,9 +29,8 @@
 //      tests. When adding a new screen, add a TestKey for every
 //      meaningful tap target before writing the test.
 //
-// See Agent 6's review (2026-04-16) for the full rationale. Task 6.19
-// exists specifically to make sure this file and its usage pattern
-// survive future test-file consolidations.
+// The four patterns below survive across test-file consolidations by
+// design; reach for them first when writing a new test.
 // ─────────────────────────────────────────────────────────────────────────
 
 import 'package:flutter/material.dart';

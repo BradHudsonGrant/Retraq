@@ -100,7 +100,7 @@ class PadButton extends StatelessWidget {
 
     return Semantics(
       button: true,
-      // Task 7.10 — localize fallback labels ("Delete" / "Biometric").
+      // localize fallback labels ("Delete" / "Biometric").
       label: label ??
           (icon == Icons.backspace_outlined
               ? l10n.deleteDigit

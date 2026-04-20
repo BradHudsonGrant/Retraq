@@ -6,7 +6,7 @@ import 'package:retraq/services/database_service.dart';
 
 import '../test_helpers.dart';
 
-/// Task 1.3 (partial) — direct tests for StatsService.onThisDayEntries.
+/// direct tests for StatsService.onThisDayEntries.
 ///
 /// The rule previously lived inline inside stats_screen.dart (pre-
 /// extraction), so there was no way to exercise leap-day or empty-

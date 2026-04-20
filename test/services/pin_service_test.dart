@@ -4,7 +4,7 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:retraq/services/pin_service.dart';
 
-/// Task 6.5 — Dedicated PIN service test file.
+/// Dedicated PIN service test file.
 ///
 /// Migrated from `database_service_test.dart` where PIN crypto coverage
 /// was entangled with DB migration coverage. Owning these cases in
@@ -13,7 +13,7 @@ import 'package:retraq/services/pin_service.dart';
 ///   * Single-responsibility test files are easier to run in isolation
 ///     during debugging.
 ///
-/// Task 3.7 — v4 is the current format (250K PBKDF2). v3 (100K) and
+/// v4 is the current format (250K PBKDF2). v3 (100K) and
 /// v2 (600K) and legacy SHA-256 still verify for backward compat so
 /// existing installs keep unlocking; all non-v4 formats are flagged
 /// as legacy by `isLegacyPinHash` so the caller triggers an upgrade
@@ -24,10 +24,9 @@ import 'package:retraq/services/pin_service.dart';
 /// path (`hashPin` / `verifyPin` backed by `compute()`) is not
 /// covered here because `flutter_test` runs `compute()` inline on
 /// the same isolate — a real isolate-spawn test would need a
-/// separate device-side integration harness. Tracked in the Task 6.5
-/// follow-up scope.
+/// separate device-side integration harness.
 void main() {
-  group('PinService v4 hashing (Task 3.7)', () {
+  group('PinService v4 hashing', () {
     setUp(() {
       // Keep tests fast — real code uses 250K.
       PinService.setPbkdf2Iterations(1000);
@@ -85,8 +84,6 @@ void main() {
     });
   });
 
-  // ── Task 6.5 — migrated from database_service_test.dart ────────────
-
   group('PIN Security (migrated from DB service tests)', () {
     setUp(() {
       PinService.setPbkdf2Iterations(100);
@@ -94,7 +91,7 @@ void main() {
 
     tearDown(PinService.resetPbkdf2Iterations);
 
-    test('hashPin produces v4:iterations:salt:hash format (Task 3.7)', () {
+    test('hashPin produces v4:iterations:salt:hash format', () {
       final hash = PinService.hashPinSync('1234');
 
       expect(hash.startsWith('v4:'), true);
@@ -151,12 +148,12 @@ void main() {
       expect(PinService.verifyPinSync('12AB', stored), true);
     });
 
-    test('isLegacyPinHash detects old format (Task 3.7 = v4 current)', () {
+    test('isLegacyPinHash detects old format', () {
       // Old SHA-256 format: hex_salt:hex_hash
       expect(PinService.isLegacyPinHash('abc123:def456'), true);
       // v2 PBKDF2 (600K) is legacy — upgrade needed
       expect(PinService.isLegacyPinHash('v2:abc123:def456'), true);
-      // v3 PBKDF2 (100K) is now also legacy per Task 3.7
+      // v3 PBKDF2 (100K) is now also legacy
       expect(PinService.isLegacyPinHash('v3:100000:abc123:def456'), true);
       // v4 PBKDF2 (250K) is current
       expect(PinService.isLegacyPinHash('v4:250000:abc123:def456'), false);
@@ -200,7 +197,7 @@ void main() {
       expect(PinService.isLegacyPinHash('v2:YWJjMTIz:ZGVmNDU2'), true);
     });
 
-    test('v4 PBKDF2 format is NOT detected as legacy (Task 3.7)', () {
+    test('v4 PBKDF2 format is NOT detected as legacy', () {
       final hash = PinService.hashPinSync('5555');
       expect(PinService.isLegacyPinHash(hash), false);
       expect(PinService.isLegacyPinHash('v3:100000:salt:hash'), true);
@@ -239,7 +236,7 @@ void main() {
       // Step (c): Confirm isLegacyPinHash detects it as legacy.
       expect(PinService.isLegacyPinHash(legacyStored), true);
 
-      // Step (d): Hash the PIN with the current algorithm (v4 per Task 3.7).
+      // Step (d): Hash the PIN with the current algorithm (v4).
       final upgradedHash = PinService.hashPinSync(pin);
 
       // Step (e): The new hash should NOT be legacy format.

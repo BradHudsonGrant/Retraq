@@ -9,7 +9,7 @@ import 'package:retraq/widgets/molecules/title_field.dart';
 
 import '../../test_helpers.dart';
 
-/// Task 1.2 — tests for the TitleField molecule extracted from
+/// tests for the TitleField molecule extracted from
 /// home_screen.dart. Pure presentational widget; tests focus on:
 ///   - controller binding (typing populates the parent controller)
 ///   - TestKey presence (existing home widget tests locate the

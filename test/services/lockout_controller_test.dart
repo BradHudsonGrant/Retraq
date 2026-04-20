@@ -180,7 +180,7 @@ void main() {
     },
   );
 
-  // Task 6.15 — symmetry with the clock-rewind test above: forward-
+  // symmetry with the clock-rewind test above: forward-
   // legitimate elapsed time past the lockout window must RELEASE the
   // lockout. Guards against an off-by-one error (< vs <=) that would
   // leave users permanently locked out past the boundary.

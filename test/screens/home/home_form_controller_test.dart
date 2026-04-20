@@ -3,7 +3,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:retraq/screens/home/home_form_controller.dart';
 
-/// Task 1.2 — direct tests for HomeFormController.
+/// direct tests for HomeFormController.
 ///
 /// These cover behaviours previously untestable because the data
 /// lived as scattered bare fields inside home_screen.dart State. Now

@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:retraq/services/app_log.dart';
 
-/// Task 1.13 — AppLog captures records through its sink so future
+/// AppLog captures records through its sink so future
 /// Sentry/Crashlytics adapters can subscribe without touching callers,
 /// and so unit tests can assert on emitted diagnostics.
 void main() {

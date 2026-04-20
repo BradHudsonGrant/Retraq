@@ -34,7 +34,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   int _currentPage = 0;
   bool _ageDenied = false;
   bool _initialized = false;
-  // Task 2.6 — true when a prior consent marker was observed in
+  // true when a prior consent marker was observed in
   // hardened secure storage at init time. Flags the "Welcome back"
   // copy on the consent page.
   bool _isReturningUser = false;
@@ -45,7 +45,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   bool _healthAccepted = false;
 
   static const _ageVerifiedKey = 'age_verified';
-  // Task 2.6 — cross-install marker. Written on successful consent;
+  // cross-install marker. Written on successful consent;
   // survives uninstall on Android devices that restore hardened
   // secure storage via Google Auto-Backup. Its presence lets us
   // collapse the marketing intros to a quick "Welcome back" path
@@ -105,7 +105,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       denied =
           (await hardenedSecureStorage.read(key: ageDeniedSecureKey)) == 'true';
     } catch (e, st) {
-      // Task 1.4 — secure storage unavailability in tests is expected;
+      // secure storage unavailability in tests is expected;
       // log it via AppLog so real prod failures surface while keeping
       // the graceful handle-as-not-denied fallback.
       AppLog.warn('OnboardingScreen.checkAgeDenied', e, st);
@@ -114,7 +114,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     final prefs = await SharedPreferences.getInstance();
     final verified = prefs.getBool(_ageVerifiedKey) ?? false;
 
-    // Task 2.6 — if prior consent was recorded (cross-install marker
+    // if prior consent was recorded (cross-install marker
     // survives uninstall via Android auto-backup), collapse the
     // marketing intro pages so the returning user lands directly on
     // the consent page. Consent itself is NOT skipped — it's still
@@ -209,7 +209,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         acceptedAt: now,
         appVersion: info.appVersion,
       );
-      // Task 2.6 — write the cross-install marker so a subsequent
+      // write the cross-install marker so a subsequent
       // reinstall (on a device with Google Auto-Backup or iOS
       // Keychain sync) lands directly on the consent page next time.
       // The value is a coarse composite of all three versions so any
@@ -262,7 +262,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       try {
         await NotificationService.instance.requestPermission();
       } catch (e, st) {
-        // Task 1.4 — permission request failures shouldn't block
+        // permission request failures shouldn't block
         // onboarding, but we still want them captured so we can spot
         // platform regressions. Non-fatal; continue.
         AppLog.warn('OnboardingScreen.requestNotificationPermission', e, st);
@@ -292,7 +292,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     try {
       await hardenedSecureStorage.write(key: ageDeniedSecureKey, value: 'true');
     } catch (e, st) {
-      // Task 1.4 — log but continue; the in-memory _ageDenied flag
+      // log but continue; the in-memory _ageDenied flag
       // still guards the UI for this session even if persistence
       // fails (secure storage may be unavailable in tests or on
       // hostile devices).
@@ -350,7 +350,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (_, i) {
                       if (i == 0) {
-                        // Task 12.3 — resolve the country-aware age
+                        // resolve the country-aware age
                         // threshold from the device locale at build
                         // time. Falls back to the COPPA baseline 13
                         // when the platform provides no region.

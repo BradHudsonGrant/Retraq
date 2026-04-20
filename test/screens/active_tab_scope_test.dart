@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:retraq/screens/active_tab_scope.dart';
 
-/// Task 8.6 — unit tests for the ActiveTabScope InheritedWidget.
+/// unit tests for the ActiveTabScope InheritedWidget.
 ///
 /// This is the tab-visibility signal HomeScreen uses to pause its
 /// Drift subscriptions when the user is on Recap or Settings. The

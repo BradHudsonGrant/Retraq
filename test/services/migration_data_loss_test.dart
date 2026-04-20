@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_single_quotes
 //
 // ─────────────────────────────────────────────────────────────────────────
-// DO NOT DELETE — preserved per review-2026-04-16 Agent 6 (Task 6.17).
+// DO NOT DELETE — preserved per review-2026-04-16 Agent 6.
 // Column-drop regression suite. Protects against silent data loss during
 // Drift schema migrations (the pre-encryption → encrypted migration
 // previously dropped 5 of 19 columns; that bug is what this file exists

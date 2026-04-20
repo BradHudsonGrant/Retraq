@@ -10,7 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../test_helpers.dart';
 
-/// Task 6.3 (widget layer) — LockScreen biometric flow coverage.
+/// LockScreen biometric flow coverage.
 ///
 /// `biometric_auth_test.dart` exercises the BiometricAuthenticator
 /// abstraction in isolation. This file wires a fake authenticator

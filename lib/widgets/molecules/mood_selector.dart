@@ -16,7 +16,7 @@ export '../../utils/mood_utils.dart';
 /// Mood levels from 1 (Rough) to 5 (Amazing).
 /// Each has a blob emoji and color resolved from the theme.
 ///
-/// Task 7.5 — labels are no longer hardcoded English. Resolve via
+/// labels are no longer hardcoded English. Resolve via
 /// [moodLabelFor] which routes through the existing ARB keys
 /// (moodRough / moodLow / moodNeutral / moodGood / moodAmazing).
 class MoodOption {
@@ -75,7 +75,7 @@ class MoodSelector extends StatelessWidget {
     final l10n = L10n.of(context)!;
 
     return Semantics(
-      // Task 7.5 — localized accessibility label.
+      // localized accessibility label.
       label: l10n.moodSelectorLabel,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -140,7 +140,7 @@ class _MoodButtonState extends State<_MoodButton> {
 
   @override
   Widget build(BuildContext context) {
-    // Task 7.11 — raise unselected opacity from 0.4 (≤3:1 contrast for
+    // raise unselected opacity from 0.4 (≤3:1 contrast for
     // low-vision users) to 0.6, and force 1.0 when the OS high-contrast
     // flag is set so the mood pill is never dimmed for a11y-enabled users.
     final highContrast =
@@ -238,7 +238,7 @@ class _MoodButtonState extends State<_MoodButton> {
           );
     }
 
-    // Task 7.5 — localize both the semantic label and the visible
+    // localize both the semantic label and the visible
     // chip text. moodButtonLabel is the ICU "{label} mood" template;
     // feed it the localized moodRough/moodLow/... string.
     final l10n = L10n.of(context)!;

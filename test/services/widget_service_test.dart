@@ -81,7 +81,7 @@ void main() {
     });
 
     test(
-      'Task 3.8 — skips DB read + HomeWidget push when app is locked',
+      'skips DB read + HomeWidget push when app is locked',
       () async {
         // Seed an entry so the update WOULD produce visible data if it ran.
         final now = DateTime.now();
@@ -106,7 +106,7 @@ void main() {
             _savedWidgetData,
             isEmpty,
             reason:
-                'Widget must not push data while the app is locked (Task 3.8).',
+                'Widget must not push data while the app is locked.',
           );
           expect(
             _widgetUpdated,
@@ -120,7 +120,7 @@ void main() {
       },
     );
 
-    test('Task 3.8 — proceeds normally when isLockedChecker returns false',
+    test('proceeds normally when isLockedChecker returns false',
         () async {
       WidgetService.instance.isLockedChecker = () => false;
       try {

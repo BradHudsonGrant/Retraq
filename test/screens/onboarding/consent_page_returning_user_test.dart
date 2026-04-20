@@ -7,7 +7,7 @@ import 'package:retraq/screens/onboarding/consent_page.dart';
 
 import '../../test_helpers.dart';
 
-/// Task 2.6 — returning-user detection on the consent page.
+/// returning-user detection on the consent page.
 ///
 /// When a cross-install consent marker is observed in hardened
 /// secure storage, OnboardingScreen skips the 3 marketing intro

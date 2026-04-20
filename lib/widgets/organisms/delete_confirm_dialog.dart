@@ -79,7 +79,7 @@ class _DeleteConfirmDialogState extends State<DeleteConfirmDialog> {
                   _controller.text.isNotEmpty && !_isValid
                       ? l10n.typeDeleteError
                       : null,
-              // Task 7.16 — lift errorText from default bodySmall (12pt)
+              // lift errorText from default bodySmall (12pt)
               // to bodyMedium (14pt) so it clears the WCAG "large-text"
               // exception threshold and keeps comfortable contrast on
               // colorScheme.error against dialog surface (~4.7:1).

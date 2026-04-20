@@ -11,7 +11,7 @@ import 'database_service.dart';
 /// - `lastEntryDate` (String): ISO-8601 date of the most recent entry
 /// - `mood` (int?): mood value of the latest entry (1-5), or -1 if none
 ///
-/// Task 3.8 — Widget MUST NOT read the DB while the app is locked.
+/// Widget MUST NOT read the DB while the app is locked.
 /// The widget shows streak/entry-count/mood — mood is the main privacy
 /// concern. A thief with the locked phone could otherwise see updated
 /// mood after the legitimate user's lock-protected session ended.
@@ -31,7 +31,7 @@ class WidgetService {
   static const _androidWidgetName = 'JournalWidget';
   static const _appGroupId = 'group.com.retraq.app';
 
-  /// Task 3.8 — Wired by main.dart from `_isLocked` state. When true,
+  /// Wired by main.dart from `_isLocked` state. When true,
   /// widget updates are skipped to avoid reading the DB while the app
   /// is locked at the UI layer. Null (unset) is treated as unlocked
   /// for backward compatibility; callers without the hook get the
@@ -49,10 +49,10 @@ class WidgetService {
 
   /// Refresh widget data from the database and push to native widgets.
   Future<void> update() async {
-    // Task 3.8 — skip when the app is locked. Do NOT log — the widget
+    // Skip when the app is locked. Do NOT log — the widget
     // refresh is a routine background event and spamming logs adds
     // noise. If diagnostics are ever needed, instrument via
-    // feature_counters (Epic 11 Task 11.4).
+    // feature_counters.
     if (isLockedChecker?.call() ?? false) {
       return;
     }

@@ -6,9 +6,9 @@ import 'package:retraq/services/database_service.dart';
 
 import '../test_helpers.dart';
 
-/// Task 6.4 (partial, 3 of 3) — stream-ordering race coverage.
+/// Stream-ordering race coverage.
 ///
-/// The previous two partials of Task 6.4 covered:
+/// Companion files cover the other concurrency surfaces:
 /// - entry_repository_concurrency_test.dart — concurrent write atomicity
 /// - lockout_controller_concurrency_test.dart — rapid-PIN guard
 ///
@@ -184,7 +184,7 @@ void main() {
       'watchTotalEntryCount stream matches getTotalEntryCount at steady state',
       () async {
         // Count stream must agree with the imperative count after each
-        // write settles. The cached count (Task 8.10) could drift if
+        // write settles. The cached count could drift if
         // the stream buffer and the SELECT see different transaction
         // snapshots.
         final counts = <int>[];

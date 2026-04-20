@@ -23,7 +23,7 @@ import '../widgets/molecules/weekly_trend_chart.dart';
 class StatsScreen extends StatefulWidget {
   const StatsScreen({super.key, this.embedded = false});
 
-  /// Task 2.5 — when true, skip the Stats-specific outer chrome
+  /// when true, skip the Stats-specific outer chrome
   /// (top gradient, header row, page padding, nav-bar clearance) so
   /// this widget can live INSIDE the RecapScreen "Insights" pane
   /// without visually fighting Recap's own header + scroll. Callers
@@ -87,7 +87,7 @@ class _StatsScreenState extends State<StatsScreen>
     final range = '${fmt.format(weekStart)} – ${fmt.format(weekEnd)}';
     final count = data[index];
 
-    // Task 2.3 — localized ICU plural ("no entries" / "1 entry" /
+    // localized ICU plural ("no entries" / "1 entry" /
     // "{count} entries") via weekEntryCountSnackbar ARB key.
     final l10n = L10n.of(context)!;
     AppSnackBar.show(
@@ -98,7 +98,7 @@ class _StatsScreenState extends State<StatsScreen>
   }
 
   Future<void> _loadOnThisDay() async {
-    // Task 1.3 — delegate to StatsService.onThisDayEntries so leap-day
+    // delegate to StatsService.onThisDayEntries so leap-day
     // semantics and error handling stay in one place + the rule is
     // directly unit-testable without booting the whole screen.
     final entries = await _statsSvc.onThisDayEntries();
@@ -238,7 +238,7 @@ class _StatsScreenState extends State<StatsScreen>
     final l10n = L10n.of(context)!;
     return Semantics(
       container: true,
-      // Task 2.11 — localized screen-reader label.
+      // localized screen-reader label.
       label: l10n.statisticsOverview,
       child: Row(
         children: [
@@ -536,7 +536,7 @@ class _StatsScreenState extends State<StatsScreen>
     final tt = Theme.of(context).textTheme;
     final l10n = L10n.of(context)!;
 
-    // Task 2.5 — when embedded inside RecapScreen's Insights pane,
+    // when embedded inside RecapScreen's Insights pane,
     // the outer chrome (gradient, SafeArea, page padding, Stats
     // header, nav-bar bottom padding) all come from the enclosing
     // Recap screen. Render just the stats Column directly.

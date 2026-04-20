@@ -7,7 +7,7 @@ import '../atoms/retraq_card.dart';
 
 /// Weekly-progress pill shown on the Home hero area.
 ///
-/// Task 1.2 — extracted from `home_screen.dart::_buildProgressBar` so
+/// extracted from `home_screen.dart::_buildProgressBar` so
 /// the screen shrinks toward its 400-LOC target and the widget becomes
 /// independently testable. Zero business logic: renders whatever the
 /// parent passes in.
@@ -60,7 +60,7 @@ class ProgressBar extends StatelessWidget {
           Icon(
             Icons.local_fire_department,
             size: 18,
-            // Task 13.3 — warm amber flame, the 2nd sanctioned accent-amber
+            // warm amber flame, the 2nd sanctioned accent-amber
             // usage alongside the milestone chip in SaveSuccessOverlay.
             color: AppColors.accentAmber(Theme.of(context).brightness),
           ),

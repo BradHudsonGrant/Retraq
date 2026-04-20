@@ -67,7 +67,7 @@ class RecapSearchView extends StatelessWidget {
       ),
     );
 
-    // Task 8.1 — Previously wrapped in
+    // Previously wrapped in
     // `CustomScrollView(shrinkWrap: true, physics: NeverScrollableScrollPhysics)`
     // with SliverToBoxAdapter + SliverList.builder inside the parent
     // SingleChildScrollView. That defeated SliverList's lazy-build —

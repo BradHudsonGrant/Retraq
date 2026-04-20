@@ -100,9 +100,9 @@ class WeekDayList extends StatelessWidget {
           ).format(date); // Monday, Tuesday...
           final dateLabel = DateFormat('MMM d').format(date); // Mar 26
 
-          // Task 7.4 — semantic label uses localized "Today" + empty-
+          // semantic label uses localized "Today" + empty-
           // state phrase. Plural handling of entry count is deferred to
-          // a future ICU-plural ARB key (Task 2.3 follow-up); for now
+          // a future ICU-plural ARB key; for now
           // keep the English fragment conditional on count but prefix
           // with the localized weekday/today.
           final todayOrDayName = isToday ? l10n.todayLabel : dayLabel;
@@ -128,7 +128,7 @@ class WeekDayList extends StatelessWidget {
                     child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Day header row (Task 7.4 — localized "Today").
+                      // Day header row.
                       Row(
                         children: [
                           Text(
@@ -181,7 +181,7 @@ class WeekDayList extends StatelessWidget {
                       ] else ...[
                         const SizedBox(height: AppSpacing.sm),
                         Text(
-                          // Task 7.4 — localized empty-day label.
+                          // localized empty-day label.
                           l10n.noEntriesForDay,
                           style: tt.bodySmall?.copyWith(
                             color: cs.onSurfaceVariant.withValues(alpha: 0.6),
@@ -273,7 +273,7 @@ class _InlineEntry extends StatelessWidget {
                 backdatedLabel != null
                     ? '$backdatedLabel · $timeLabel'
                     : timeLabel,
-                // Task 7.7 — alpha raised from 0.6 to 0.75 for WCAG 1.4.3.
+                // alpha raised from 0.6 to 0.75 for WCAG 1.4.3.
                 style: tt.labelSmall?.copyWith(
                   color: cs.onSurfaceVariant.withValues(alpha: 0.75),
                   fontStyle: isBackdated ? FontStyle.italic : null,
@@ -282,7 +282,7 @@ class _InlineEntry extends StatelessWidget {
             if (hasLabel && backdatedLabel != null) ...[
               Text(
                 '$backdatedLabel · ',
-                // Task 7.7 — alpha raised from 0.6 to 0.75 for WCAG 1.4.3.
+                // alpha raised from 0.6 to 0.75 for WCAG 1.4.3.
                 style: tt.labelSmall?.copyWith(
                   color: cs.onSurfaceVariant.withValues(alpha: 0.75),
                   fontStyle: FontStyle.italic,
@@ -305,7 +305,7 @@ class _InlineEntry extends StatelessWidget {
               const SizedBox(width: AppSpacing.sm),
               Text(
                 '·',
-                // Task 7.7 — separator dot; alpha raised from 0.5 to 0.75.
+                // separator dot; alpha raised from 0.5 to 0.75.
                 // Still visually secondary to the adjacent text.
                 style: tt.labelSmall?.copyWith(
                   color: cs.onSurfaceVariant.withValues(alpha: 0.75),

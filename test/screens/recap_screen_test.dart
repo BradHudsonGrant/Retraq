@@ -28,7 +28,7 @@ void main() {
     testWidgets(
       'shows both Entries/Insights pill and Week/Month toggle in browse mode',
       (tester) async {
-        // Task 2.5 — RecapScreen now has TWO SegmentedPills in browse
+        // RecapScreen now has TWO SegmentedPills in browse
         // mode: the top-level Entries/Insights toggle and the
         // existing Week/Month toggle inside the Entries pane.
         await tester.pumpWidget(wrapWidget(const RecapScreen()));
@@ -46,7 +46,7 @@ void main() {
     testWidgets(
       'tapping Insights hides Week/Month pill and shows Stats content',
       (tester) async {
-        // Task 2.5 — the Entries pane's Week/Month pill is scoped
+        // the Entries pane's Week/Month pill is scoped
         // INSIDE the Entries branch; switching to Insights collapses
         // that whole branch.
         await tester.pumpWidget(wrapWidget(const RecapScreen()));

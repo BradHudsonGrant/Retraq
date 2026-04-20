@@ -32,7 +32,7 @@ class ConsentPage extends StatelessWidget {
   final ValueChanged<bool?> onTermsChanged;
   final ValueChanged<bool?> onHealthChanged;
 
-  /// Task 2.6 — true when a cross-install consent marker was
+  /// true when a cross-install consent marker was
   /// observed in hardened secure storage. Swaps the title from
   /// "Almost there!" to "Welcome back" and adds a subtitle
   /// explaining why consent is still required despite the marker.
@@ -88,7 +88,7 @@ class ConsentPage extends StatelessWidget {
           const SizedBox(height: AppSpacing.lg),
           Center(
             child: BionicText(
-              // Task 2.6 — swap headline for returning users (prior
+              // swap headline for returning users (prior
               // consent marker present). Consent ITSELF is still a
               // regulatory gate — only the intros are skipped.
               text: isReturningUser ? l10n.welcomeBackTitle : l10n.almostThere,
@@ -137,7 +137,7 @@ class ConsentPage extends StatelessWidget {
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: BionicText(
-                    // Task 12.16 — inject locale-appropriate crisis contact
+                    // inject locale-appropriate crisis contact
                     // so non-US users don't see a hardcoded 988 that doesn't
                     // work in their country.
                     text: l10n.healthDisclaimer(
@@ -249,7 +249,7 @@ class _ConsentCheckbox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Task 2.7 — Split the consent row into two distinct tap targets
+    // Split the consent row into two distinct tap targets
     // so tapping the label toggles the checkbox (the expected
     // behaviour) and a separate "View" button opens the legal
     // document. Previously the underlined Text intercepted taps and

@@ -10,7 +10,7 @@ import 'package:flutter/foundation.dart';
 class PinService {
   PinService._();
 
-  // Task 3.7 — raised from 100K (v3) to 250K (v4).
+  // Raised from 100K (v3) to 250K (v4).
   //
   // Rationale: for a 4-digit PIN (10K keyspace), 100K PBKDF2 iterations
   // cracks in seconds on modern GPUs if the DB hash + salt are ever
@@ -66,7 +66,7 @@ class PinService {
   static const _v2LegacyIterations = 600000;
 
   /// Hash a PIN using PBKDF2-HMAC-SHA256.
-  /// Stored as "v4:iterations:base64salt:base64hash" (Task 3.7).
+  /// Stored as "v4:iterations:base64salt:base64hash".
   /// Runs in an isolate via compute() to avoid blocking the UI.
   static Future<String> hashPin(String pin) {
     if (!useIsolateForPin) return Future.value(_hashPinIsolate(pin));
@@ -85,7 +85,7 @@ class PinService {
 
   /// Verify a PIN against a stored hash.
   /// Supports legacy SHA-256, v2 PBKDF2 (600K), v3 PBKDF2 (100K), and
-  /// v4 PBKDF2 (250K, current — Task 3.7).
+  /// v4 PBKDF2 (250K, current).
   /// Uses constant-time comparison to prevent timing attacks.
   /// Runs in an isolate via compute() to avoid blocking the UI.
   static Future<bool> verifyPin(String pin, String stored) {
@@ -137,7 +137,7 @@ class PinService {
   /// Check if a stored hash uses a legacy format. Triggers the caller
   /// to re-hash with [hashPin] on next successful unlock and persist.
   ///
-  /// Task 3.7: v3 (100K PBKDF2) is now considered legacy alongside
+  /// v3 (100K PBKDF2) is now considered legacy alongside
   /// SHA-256 and v2, so existing v3 hashes auto-upgrade to v4 (250K).
   /// Only hashes prefixed with v4: are treated as current.
   static bool isLegacyPinHash(String stored) => !stored.startsWith('v4:');

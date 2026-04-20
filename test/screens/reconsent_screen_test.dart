@@ -72,7 +72,7 @@ void main() {
       },
     );
 
-    // Task 2.7 — tapping the label no longer navigates; the dedicated
+    // tapping the label no longer navigates; the dedicated
     // "View" button adjacent to each row opens the legal doc instead.
     testWidgets('tapping privacy View button navigates to LegalScreen', (
       tester,

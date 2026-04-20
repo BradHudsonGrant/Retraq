@@ -6,11 +6,11 @@ import 'package:retraq/services/database_service.dart'
 
 import '../test_helpers.dart';
 
-/// Task 6.6 — Direct tests for `SettingsRepository`. Previously
+/// Direct tests for `SettingsRepository`. Previously
 /// covered only transitively; these pin down the singleton-row
 /// semantics + field-preservation + stream-on-write behaviour so
-/// future refactors (e.g. the per-user settings row in Task 8.4)
-/// fail here rather than in widget tests with cryptic stack traces.
+/// future refactors fail here rather than in widget tests with
+/// cryptic stack traces.
 void main() {
   setUpAll(() async {
     await initTestDatabase();
@@ -90,12 +90,13 @@ void main() {
     });
 
     test(
-      'Task 4.5 regression: moodRequired and moodOnlyEntries always force-false',
+      'regression: moodRequired and moodOnlyEntries always force-false',
       () async {
-        // Task 4.5 intentionally drops the two sub-toggles from the
-        // UI but keeps the DB columns. This test documents the
-        // current 'force-false on write' behaviour so a regression
-        // in the preferences_section UI is caught at repo level.
+        // The mood-tracking simplification intentionally drops the two
+        // sub-toggles from the UI but keeps the DB columns. This test
+        // documents the current 'force-false on write' behaviour so a
+        // regression in the preferences_section UI is caught at repo
+        // level.
         await DatabaseService.instance.settings.saveSettings(
           const UserSettings(
             moodEnabled: true,
@@ -106,9 +107,9 @@ void main() {
         final s = await DatabaseService.instance.settings.getSettings();
         expect(s.moodEnabled, true);
         // The repo doesn't itself force these to false (that's the
-        // UI's job per Task 4.5); but the values are persisted as
-        // written. We just assert the round-trip is honest — if UI
-        // writes true, repo reads true.
+        // UI's job); the values are persisted as written. We just
+        // assert the round-trip is honest — if UI writes true,
+        // repo reads true.
         expect(s.moodRequired, true);
         expect(s.moodOnlyEntries, true);
       },

@@ -5,7 +5,7 @@ import 'dart:ui' show Locale;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:retraq/services/crisis_contacts.dart';
 
-/// Task 12.16 — Locale → crisis-contact resolution must cover every
+/// Locale → crisis-contact resolution must cover every
 /// mapped region, fall back to EU 112 for unmapped EU regions, and
 /// fall back to findahelpline.com for everyone else.
 void main() {

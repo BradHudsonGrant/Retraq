@@ -36,7 +36,7 @@ class AppColors {
     // Darkened from 0xFF59615F so that 0.7-opacity usage still meets WCAG 4.5:1
     onSurfaceVariant: Color(0xFF3D4543),
     outline: Color(0xFF757C7A),
-    // Task 7.12 — previous 0xFFACB3B1 on 0xFFF8FAF8 surface = ~2.0:1,
+    // previous 0xFFACB3B1 on 0xFFF8FAF8 surface = ~2.0:1,
     // failing WCAG 1.4.11 (3:1) when used as a functional boundary
     // (focus rings, disabled borders). Darken to 0xFF8A918F which
     // measures ~3.1:1 while remaining visually subordinate to the
@@ -79,7 +79,7 @@ class AppColors {
     inversePrimary: Color(0xFF33694B),
   );
 
-  // ── Mood teal-green scale (Task 13.2) ──
+  // ── Mood teal-green scale ──
   //
   // Custom 5-step ramp rooted in the brand primary (#33694B). The
   // previous palette was unmodified Material Teal 200-700 — shared
@@ -127,7 +127,7 @@ class AppColors {
   static List<Color> moodColors(Brightness brightness) =>
       brightness == Brightness.dark ? moodColorsDark : moodColorsLight;
 
-  // ── Warm amber accent (Task 13.3) ──
+  // ── Warm amber accent ──
   //
   // Distinctive second color beyond the forest-green + mint base so
   // the Retraq brand owns a second pixel of App Store mindshare.

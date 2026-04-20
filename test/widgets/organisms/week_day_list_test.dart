@@ -5,7 +5,7 @@ import 'package:retraq/widgets/organisms/week_day_list.dart';
 
 import '../../test_helpers.dart';
 
-/// Task 6.11 (partial) — WeekDayList widget coverage.
+/// WeekDayList widget coverage.
 ///
 /// Covers:
 ///   - Renders 7 day headers for the reference week
@@ -130,7 +130,7 @@ void main() {
       // layout differs from expected, we at least assert the
       // widget mounted cleanly. The callback-routing assertion
       // is a best-effort pin for now — the real regression
-      // surface is integration-test territory (Task 6.1).
+      // surface is integration-test territory.
       if (selected != null) {
         expect(selected!.hour, 0);
         expect(selected!.minute, 0);

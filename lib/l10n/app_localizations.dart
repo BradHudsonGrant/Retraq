@@ -267,13 +267,13 @@ abstract class L10n {
   /// **'Your recent traqs will appear here.'**
   String get recentEntriesPlaceholder;
 
-  /// Task 2.13 — Empty-recent state headline on Home. Warm/low-pressure tone; reinforces the 'no pressure' brand voice.
+  /// Empty-recent state headline on Home. Warm/low-pressure tone; reinforces the 'no pressure' brand voice.
   ///
   /// In en, this message translates to:
   /// **'A fresh page'**
   String get emptyRecentHeadline;
 
-  /// Task 2.13 — Empty-recent state body copy on Home. One sentence, supportive, not imperative.
+  /// Empty-recent state body copy on Home. One sentence, supportive, not imperative.
   ///
   /// In en, this message translates to:
   /// **'No traqs from the last two days. Nothing to catch up on — just drop a breadcrumb whenever you\'re ready.'**
@@ -453,13 +453,13 @@ abstract class L10n {
   /// **'Month'**
   String get monthLabel;
 
-  /// Task 2.5 — left label on the top-level Entries/Insights pill on the Recap screen. Swaps the body between the browse view (Week/Month entries) and the embedded Stats content.
+  /// Left label on the top-level Entries/Insights pill on the Recap screen. Swaps the body between the browse view (Week/Month entries) and the embedded Stats content.
   ///
   /// In en, this message translates to:
   /// **'Entries'**
   String get entriesLabel;
 
-  /// Task 2.5 — right label on the Entries/Insights pill, shows the collapsed Stats content inside Recap.
+  /// Right label on the Entries/Insights pill, shows the collapsed Stats content inside Recap.
   ///
   /// In en, this message translates to:
   /// **'Insights'**
@@ -733,25 +733,25 @@ abstract class L10n {
   /// **'Sorry!'**
   String get ageGateDeniedTitle;
 
-  /// Task 12.3 — country-aware age threshold. {minAge} is resolved from the device locale (13 / 14 / 16 per COPPA + GDPR Art. 8 + Quebec Law 25). See locale_age_threshold.dart for the full table.
+  /// Country-aware age threshold. {minAge} is resolved from the device locale (13 / 14 / 16 per COPPA + GDPR Art. 8 + Quebec Law 25). See locale_age_threshold.dart for the full table.
   ///
   /// In en, this message translates to:
   /// **'Retraq is designed for users\naged {minAge} and older.'**
   String ageGateMessage(int minAge);
 
-  /// Task 12.3 — country-aware denial message matching ageGateMessage threshold.
+  /// Country-aware denial message matching ageGateMessage threshold.
   ///
   /// In en, this message translates to:
   /// **'Retraq requires users to be {minAge} years or older.\nPlease come back when you\'re old enough!'**
   String ageGateDenied(int minAge);
 
-  /// Task 12.3 — country-aware confirm label reflecting the regional threshold.
+  /// Country-aware confirm label reflecting the regional threshold.
   ///
   /// In en, this message translates to:
   /// **'I am {minAge} or older'**
   String ageConfirmButton(int minAge);
 
-  /// Task 12.3 — country-aware deny label.
+  /// Country-aware deny label.
   ///
   /// In en, this message translates to:
   /// **'I am under {minAge}'**
@@ -769,19 +769,19 @@ abstract class L10n {
   /// **'Almost there!'**
   String get almostThere;
 
-  /// Task 2.6 — Shown on the consent page when the user has prior consent on record (cross-install marker present). Replaces 'Almost there!' so reinstall users feel recognised. Consent itself is still required on every install.
+  /// Shown on the consent page when the user has prior consent on record (cross-install marker present). Replaces 'Almost there!' so reinstall users feel recognised. Consent itself is still required on every install.
   ///
   /// In en, this message translates to:
   /// **'Welcome back'**
   String get welcomeBackTitle;
 
-  /// Task 2.6 — Subtitle on the consent page for the returning-user path explaining why consent is still required.
+  /// Subtitle on the consent page for the returning-user path explaining why consent is still required.
   ///
   /// In en, this message translates to:
   /// **'We still need you to re-accept these, but we won\'t walk you through the intros again.'**
   String get welcomeBackSubtitle;
 
-  /// Health-disclaimer body. {crisisContact} is injected from CrisisContacts.formatInline for the user's locale. Task 12.16 — never hardcode the US/Canada 988 number; the helper resolves per-region.
+  /// Health-disclaimer body. {crisisContact} is injected from CrisisContacts.formatInline for the user's locale. never hardcode the US/Canada 988 number; the helper resolves per-region.
   ///
   /// In en, this message translates to:
   /// **'Retraq is a personal journaling app — not a medical or therapeutic tool. It does not provide health advice, diagnosis, or treatment. If you are in crisis, please contact a mental health professional or call {crisisContact}.'**
@@ -883,49 +883,49 @@ abstract class L10n {
   /// **'Biometric check failed. Try again or cancel.'**
   String get resetAppBiometricFailed;
 
-  /// Task 10.1 — Settings → Data section heading for the Sentry opt-in toggle.
+  /// Settings → Data section heading for the Sentry opt-in toggle.
   ///
   /// In en, this message translates to:
   /// **'Diagnostics'**
   String get diagnosticsLabel;
 
-  /// Task 10.1 — Settings row title for the crash-reporting opt-in toggle.
+  /// Settings row title for the crash-reporting opt-in toggle.
   ///
   /// In en, this message translates to:
   /// **'Help improve Retraq'**
   String get helpImproveRetraq;
 
-  /// Task 10.1 — Settings row subtitle explaining the opt-in scope. Keep it short and truthful; the full details live in the privacy policy.
+  /// Settings row subtitle explaining the opt-in scope. Keep it short and truthful; the full details live in the privacy policy.
   ///
   /// In en, this message translates to:
   /// **'Send anonymous crash reports so we can fix bugs. No traq content, mood, or timestamps are ever included.'**
   String get helpImproveRetraqBody;
 
-  /// Task 11.13 — Settings row title for the local-counter kill switch. Controls whether feature counters / session stamps are written to the local DB. Never sent anywhere.
+  /// Settings row title for the local-counter kill switch. Controls whether feature counters / session stamps are written to the local DB. Never sent anywhere.
   ///
   /// In en, this message translates to:
   /// **'Keep usage stats on this device'**
   String get keepUsageStats;
 
-  /// Task 11.13 — Settings row subtitle for the usage-stats kill switch. Emphasises the local-only nature to avoid confusion with Diagnostics.
+  /// Settings row subtitle for the usage-stats kill switch. Emphasises the local-only nature to avoid confusion with Diagnostics.
   ///
   /// In en, this message translates to:
   /// **'Local counters only. Never sent anywhere. Off = your taps aren\'t counted.'**
   String get keepUsageStatsBody;
 
-  /// Task 3.2 — non-dismissible SnackBar shown for 10 seconds after the user confirms a Forgot-PIN reset. Tapping the action cancels the timer and leaves all data intact.
+  /// Non-dismissible SnackBar shown for 10 seconds after the user confirms a Forgot-PIN reset. Tapping the action cancels the timer and leaves all data intact.
   ///
   /// In en, this message translates to:
   /// **'Erasing in {seconds}s — tap to cancel'**
   String resetAppUndoToast(int seconds);
 
-  /// SnackBar action label on the reset-countdown toast. Task 3.2.
+  /// SnackBar action label on the reset-countdown toast..
   ///
   /// In en, this message translates to:
   /// **'Cancel'**
   String get resetAppUndoCancel;
 
-  /// Confirmation toast after the user cancels the reset within the 10-second undo window. Task 3.2.
+  /// Confirmation toast after the user cancels the reset within the 10-second undo window..
   ///
   /// In en, this message translates to:
   /// **'Reset cancelled. Your data is safe.'**
@@ -1645,85 +1645,85 @@ abstract class L10n {
   /// **'Biometric'**
   String get biometricButton;
 
-  /// Task 7.4 — shown in WeekDayList when a day has zero journal entries.
+  /// Shown in WeekDayList when a day has zero journal entries.
   ///
   /// In en, this message translates to:
   /// **'No entries'**
   String get noEntriesForDay;
 
-  /// Task 7.9 — NudgeCard reminder-time summary, e.g. 'Daily at 8:30 PM'. {time} is pre-formatted to user locale.
+  /// NudgeCard reminder-time summary, e.g. 'Daily at 8:30 PM'. {time} is pre-formatted to user locale.
   ///
   /// In en, this message translates to:
   /// **'Daily at {time}'**
   String dailyAtTime(String time);
 
-  /// Task 2.8 — Middle action in the AM/PM switch dialog shown when the user has typed entry text. Drops the typed text and flips the day period without saving.
+  /// Middle action in the AM/PM switch dialog shown when the user has typed entry text. Drops the typed text and flips the day period without saving.
   ///
   /// In en, this message translates to:
   /// **'Discard & Switch'**
   String get discardAndSwitchButton;
 
-  /// Task 3.9 — Title of the warning dialog shown before invoking the share sheet for a plaintext export.
+  /// Title of the warning dialog shown before invoking the share sheet for a plaintext export.
   ///
   /// In en, this message translates to:
   /// **'Share this file?'**
   String get plaintextExportWarningTitle;
 
-  /// Task 3.9 — Body copy of the plaintext-export warning dialog. Reads in the brand voice: plain, non-alarmist, informative.
+  /// Body copy of the plaintext-export warning dialog. Reads in the brand voice: plain, non-alarmist, informative.
   ///
   /// In en, this message translates to:
   /// **'This file contains your journal in a readable format. The app you pick will receive everything you\'ve written. Only share with apps you trust, like your own file manager or cloud drive.'**
   String get plaintextExportWarningBody;
 
-  /// Task 3.9 — Confirm button on the plaintext-export warning dialog.
+  /// Confirm button on the plaintext-export warning dialog.
   ///
   /// In en, this message translates to:
   /// **'Share anyway'**
   String get plaintextExportShareAnyway;
 
-  /// Task 2.7 — Trailing button on the onboarding consent row that opens the legal document. Separated from the checkbox label tap target to avoid accidental navigation when toggling consent.
+  /// Trailing button on the onboarding consent row that opens the legal document. Separated from the checkbox label tap target to avoid accidental navigation when toggling consent.
   ///
   /// In en, this message translates to:
   /// **'View'**
   String get viewLabel;
 
-  /// Task 2.9 — Semantics + delete-icon tooltip on the date-override chip when an alternate day has been picked for the entry.
+  /// Semantics + delete-icon tooltip on the date-override chip when an alternate day has been picked for the entry.
   ///
   /// In en, this message translates to:
   /// **'Reset to today'**
   String get resetToTodayLabel;
 
-  /// Task 2.14 — Subtitle under the nudge time-picker explaining that the reminder is suppressed on days the user already journaled.
+  /// Subtitle under the nudge time-picker explaining that the reminder is suppressed on days the user already journaled.
   ///
   /// In en, this message translates to:
   /// **'We\'ll only remind you if you haven\'t journaled yet.'**
   String get nudgeSkipIfJournaledHint;
 
-  /// Task 2.14 — Label on the Change Time button in the NudgeCard.
+  /// Label on the Change Time button in the NudgeCard.
   ///
   /// In en, this message translates to:
   /// **'Change Time'**
   String get nudgeChangeTime;
 
-  /// Task 2.14 — Body copy inside the Settings NudgeCard explaining the purpose of the daily reminder.
+  /// Body copy inside the Settings NudgeCard explaining the purpose of the daily reminder.
   ///
   /// In en, this message translates to:
   /// **'Get a quick nudge to drop a breadcrumb before you forget your day.'**
   String get nudgeCardBody;
 
-  /// Task 2.3 — Shown when tapping a bar on the weekly-trend chart. {range} is a date-range string (e.g. 'Mar 3 – Mar 9'); {count} is the number of entries in that week.
+  /// Shown when tapping a bar on the weekly-trend chart. {range} is a date-range string (e.g. 'Mar 3 – Mar 9'); {count} is the number of entries in that week.
   ///
   /// In en, this message translates to:
   /// **'{range}: {count, plural, =0{no entries} =1{1 entry} other{{count} entries}}'**
   String weekEntryCountSnackbar(String range, int count);
 
-  /// Task 2.11 — Screen-reader label for the aggregated stats card grid.
+  /// Screen-reader label for the aggregated stats card grid.
   ///
   /// In en, this message translates to:
   /// **'Statistics overview'**
   String get statisticsOverview;
 
-  /// Task 2.11 — Screen-reader label for a recent-day card showing a snippet of its entry. {dayLabel} is a formatted day name (e.g. 'Monday'); {preview} is the first few words of the entry.
+  /// Screen-reader label for a recent-day card showing a snippet of its entry. {dayLabel} is a formatted day name (e.g. 'Monday'); {preview} is the first few words of the entry.
   ///
   /// In en, this message translates to:
   /// **'Entry for {dayLabel}: {preview}'**

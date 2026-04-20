@@ -37,7 +37,7 @@ class TestKeys {
   // ── Recap screen ────────────────────────────────────────────────────────
   static const recapSearchToggle = Key('recap_search_toggle');
   static const recapSearchField = Key('recap_search_field');
-  // Task 2.5 — Entries/Insights top-level pill. When right is active,
+  // Entries/Insights top-level pill. When right is active,
   // the embedded StatsScreen renders inside the Recap pane (Stats tab
   // collapsed into Recap; NavigationBar dropped from 4 tabs to 3).
   static const recapEntriesInsightsPill =

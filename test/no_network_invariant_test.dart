@@ -8,7 +8,7 @@ import 'package:retraq/services/export_service.dart';
 import 'package:retraq/models/journal_entry.dart';
 import 'package:retraq/models/user.dart';
 
-/// Task 12.1 — CI guard for the "no network calls" invariant.
+/// CI guard for the "no network calls" invariant.
 ///
 /// Retraq's privacy policy (`lib/legal/privacy_policy.dart`) promises
 /// "no analytics, no telemetry, no tracking of any kind." That promise
@@ -51,7 +51,7 @@ class _ThrowingHttpOverrides extends HttpOverrides {
       'If you are adding a feature that legitimately needs network access, '
       'update this test, update lib/legal/privacy_policy.dart to disclose '
       'the new processing, and add explicit Art. 9 consent gating for any '
-      'health-data-adjacent endpoint (see Epic 12 Task 12.4).',
+      'health-data-adjacent endpoint.',
     );
   }
 }

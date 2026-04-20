@@ -3,7 +3,7 @@ import '../../theme/app_motion.dart';
 
 /// Edge-glow acknowledgement for rejected tab swipes.
 ///
-/// Task 2.12 — AppShell's PageView uses `NeverScrollableScrollPhysics`
+/// AppShell's PageView uses `NeverScrollableScrollPhysics`
 /// (tabs are managed by the bottom nav, not swipe). But when a user
 /// swipes horizontally on the content area — a common instinct — the
 /// app used to silently swallow it, leading users to think the app

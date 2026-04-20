@@ -6,14 +6,14 @@ import 'app_log.dart';
 /// screenshots, screen recording, and Recent Apps thumbnails while the app is
 /// in the foreground.
 ///
-/// Task 3.4 — FLAG_SECURE is applied UNCONDITIONALLY in Retraq, not gated on
+/// FLAG_SECURE is applied UNCONDITIONALLY in Retraq, not gated on
 /// app lock. Journal content is sensitive (entries describe day-to-day life,
 /// mood, health-adjacent notes) and should not appear in Recents thumbnails
 /// or be screenshot-able regardless of whether the user set up a PIN. Users
 /// who want to screenshot their own app can export instead.
 ///
 /// iOS has no direct equivalent; calls are no-ops there. The iOS equivalent
-/// is the inactive-state blur overlay in `main.dart` (Task 3.5/3.6). The
+/// is the inactive-state blur overlay in `main.dart`. The
 /// service owns the platform channel so `main.dart` stays focused on
 /// app-level orchestration, and the behavior can be tested by swapping
 /// `MethodChannel.setMockMethodCallHandler`.

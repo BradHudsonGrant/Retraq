@@ -440,7 +440,7 @@ class DatabaseService {
     settings = SettingsRepository(_db);
     userRepo = UserRepository(_db);
     stats = StatsService(_db);
-    // Task 1.14 — expose RecapService on the facade so screens can
+    // expose RecapService on the facade so screens can
     // use db.recap.getWeeklySummary(...) instead of instantiating
     // their own RecapService(db.entries). Keeps the service surface
     // consistent with entries/settings/userRepo/stats.

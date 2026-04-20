@@ -22,7 +22,7 @@ import 'l10n/app_localizations.dart';
 import 'screens/reconsent_screen.dart';
 import 'screens/splash_screen.dart';
 
-/// Task 10.1 — Sentry DSN read at compile time via `--dart-define=
+/// Sentry DSN read at compile time via `--dart-define=
 /// SENTRY_DSN=...`. Empty string means "do not wire crash reporting"
 /// which is the safe default for local `flutter run` sessions and
 /// any build where the secret isn't provisioned.
@@ -38,7 +38,7 @@ const _sentryDsn = String.fromEnvironment(
       'https://844023f9d58cc7de383a324b205ba9aa@o4511236634443776.ingest.us.sentry.io/4511236638572544',
 );
 
-/// Task 10.1 — Sentry environment tag. Overridable via
+/// Sentry environment tag. Overridable via
 /// `--dart-define=SENTRY_ENVIRONMENT=...` so CI can split events by
 /// release track (e.g. `beta`, `testflight-internal`, `prod`). Empty
 /// default routes to the kReleaseMode-based fallback inside init,
@@ -51,7 +51,7 @@ const _sentryEnvironmentOverride = String.fromEnvironment(
   defaultValue: '',
 );
 
-/// Task 10.1 — opt-in gate. The privacy policy promises "no analytics,
+/// Sentry opt-in gate. The privacy policy promises "no analytics,
 /// no telemetry, no tracking of any kind" — Sentry events are therefore
 /// blocked in `beforeSend` unless this SharedPreferences flag is `true`.
 /// Default false; the Settings → Data → Diagnostics toggle flips it.
@@ -86,7 +86,7 @@ void main() async {
   // previous session, we honour that immediately on the next launch.
   await _loadSentryOptIn();
 
-  // Task 11.13 — prime the Analytics kill-switch cache so the very
+  // Prime the Analytics kill-switch cache so the very
   // first `bump(...)` call (e.g., a counter fired during onboarding)
   // observes the user's persisted preference. Default true when
   // SharedPreferences is unreachable — no telemetry leaves device
@@ -104,7 +104,7 @@ void main() async {
   await SentryFlutter.init(
     (options) {
       options.dsn = _sentryDsn;
-      // Task 10.1 — env + release tags so events bucket correctly in
+      // Env + release tags so events bucket correctly in
       // Sentry's UI. Free-tier 5k-event/mo quota burns fast at 1.0
       // sample rates; drop to 10% in release mode and keep 100% in
       // debug so local dev still sees full telemetry.
@@ -121,7 +121,7 @@ void main() async {
       // ignore: experimental_member_use
       options.profilesSampleRate = kReleaseMode ? 0.1 : 1.0;
 
-      // Task 10.1 — PII scrub + opt-in gate. beforeSend runs on every
+      // PII scrub + opt-in gate. beforeSend runs on every
       // event BEFORE it leaves the device. Returning null drops the
       // event entirely — the SDK never phones home.
       options.beforeSend = (event, hint) {
@@ -163,10 +163,9 @@ Future<void> _bootPlain() async {
     return true; // Prevents app crash — error is logged
   };
 
-  // Task 10.1 — route DatabaseService stream errors through Sentry so
+  // Route DatabaseService stream errors through Sentry so
   // background Drift watcher failures are captured alongside widget
-  // crashes. Task 1.4 (`AppLog.warn`) introduced this hook; this is
-  // where it finally lands a crash-reporter destination.
+  // crashes.
   DatabaseService.onStreamError = (message) {
     Sentry.captureMessage(message, level: SentryLevel.warning);
   };
@@ -224,7 +223,7 @@ class _RetraqAppState extends State<RetraqApp> with WidgetsBindingObserver {
       if (needsRebuild) {
         setState(() => _themeMode = newMode);
       }
-      // Task 3.4 — FLAG_SECURE is applied unconditionally, not gated on
+      // FLAG_SECURE is applied unconditionally, not gated on
       // appLockEnabled. Journal content is sensitive even without a PIN:
       // blocking screenshots + Recents thumbnails protects users who
       // have not set up app lock.
@@ -239,7 +238,7 @@ class _RetraqAppState extends State<RetraqApp> with WidgetsBindingObserver {
       unawaited(_initBackgroundServices());
     });
 
-    // Task 3.8 — Tell the widget service how to check lock state so
+    // Tell the widget service how to check lock state so
     // home-widget updates skip the DB while the app is locked. The
     // widget displays mood + recent activity, which should not refresh
     // on the home-screen while a thief holds a locked device.
@@ -273,17 +272,17 @@ class _RetraqAppState extends State<RetraqApp> with WidgetsBindingObserver {
 
   /// Re-lock when app goes to background (if lock is enabled).
   ///
-  /// Task 3.5 — Lock on `inactive` as well as `paused`. `inactive` fires
+  /// Lock on `inactive` as well as `paused`. `inactive` fires
   /// the instant the user swipes up into the app switcher or receives a
   /// phone call; `paused` fires later, once the OS has already snapshot
   /// the UI for the Recents thumbnail (or allowed another app to peek
   /// at the screen). Locking on `inactive` closes that window and moves
   /// the lock overlay in place BEFORE any OS-level snapshot is taken.
   ///
-  /// FLAG_SECURE (Task 3.4) is now unconditional, so the thumbnail is
+  /// FLAG_SECURE is now unconditional, so the thumbnail is
   /// blocked on Android regardless of this path. The iOS equivalent is
-  /// handled separately in Task 3.6 (native `applicationWillResignActive`
-  /// blur overlay); this change is still useful on iOS because it means
+  /// handled separately by the iOS `applicationWillResignActive`
+  /// blur overlay; this change is still useful on iOS because it means
   /// the in-Flutter lock screen appears before the OS snapshot, giving
   /// a consistent UX and a defense-in-depth layer.
   @override
@@ -321,7 +320,7 @@ class _RetraqAppState extends State<RetraqApp> with WidgetsBindingObserver {
       _needsReconsent = reconsent;
       _settingsLoaded = true;
     });
-    // Task 3.4 — unconditional (see above).
+    // Unconditional (see above).
     _updateFlagSecure(true);
     try {
       // init() is idempotent — safe to call here even though the post-frame

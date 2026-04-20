@@ -14,7 +14,7 @@ import '../../services/user_repository.dart' show UserRepository;
 
 /// Settings → Data section.
 ///
-/// Task 10.1 — hosts the Sentry opt-in toggle. The toggle writes to
+/// hosts the Sentry opt-in toggle. The toggle writes to
 /// SharedPreferences under key `sentry_opt_in` and calls
 /// `setSentryOptIn(bool)` in main.dart so the cached flag that
 /// `beforeSend` checks is updated without an app restart. Default OFF.
@@ -33,9 +33,9 @@ class _DataSectionState extends State<DataSection> {
   bool _diagnosticsEnabled = false;
   bool _diagnosticsLoaded = false;
 
-  // Task 11.13 — Analytics kill switch. Default ON because local
-  // counters never leave the device (enforced by the Task 12.1
-  // no-network CI guard), so the privacy-policy invariant is
+  // Analytics kill switch. Default ON because local counters
+  // never leave the device (enforced by the no-network CI
+  // guard), so the privacy-policy invariant is
   // preserved either way. Users can flip this off to stop on-
   // device writes entirely; existing counter rows are retained
   // (user can re-enable without loss) until Delete All Data.
@@ -83,7 +83,7 @@ class _DataSectionState extends State<DataSection> {
 
   Future<void> _setKeepUsageStats(bool value) async {
     setState(() => _keepUsageStats = value);
-    // Task 11.13 — flip the AnalyticsService cached flag
+    // flip the AnalyticsService cached flag
     // immediately so the next `bump(...)` call observes the new
     // state. Also persists via SharedPreferences inside
     // setEnabled so next cold-start honours the toggle.
@@ -174,7 +174,7 @@ class _DataSectionState extends State<DataSection> {
 
           const SizedBox(height: AppSpacing.lg),
 
-          // Task 10.1 — Diagnostics (Sentry opt-in toggle). Sits
+          // Diagnostics (Sentry opt-in toggle). Sits
           // above the danger zone but below Import because it's a
           // standing preference, not a destructive action.
           Divider(color: cs.outlineVariant.withValues(alpha: 0.4)),
@@ -207,7 +207,7 @@ class _DataSectionState extends State<DataSection> {
               onChanged: _setDiagnostics,
             ),
 
-          // Task 11.13 — Analytics kill switch. Sits inside
+          // Analytics kill switch. Sits inside
           // Diagnostics because both are "data you can choose to
           // keep/stop"; distinct from Sentry because nothing here
           // ever leaves the device.
@@ -262,7 +262,7 @@ class _DataSectionState extends State<DataSection> {
     if (!context.mounted) return;
     final exportAll = await _showExportScopeDialog(context);
     if (exportAll == null || !context.mounted) return;
-    // Task 3.9 — require explicit consent before handing a plaintext
+    // require explicit consent before handing a plaintext
     // file to the OS share sheet. The destination app (Gmail, Drive,
     // random editor) would otherwise receive decrypted journal text
     // with no visible warning. This dialog is additive to the export-
@@ -277,7 +277,7 @@ class _DataSectionState extends State<DataSection> {
         await ExportService.instance.exportAsText(exportAll: exportAll);
       }
     } catch (e, st) {
-      // Task 1.4 — capture the actual export failure so release-mode
+      // capture the actual export failure so release-mode
       // diagnostics survive. Previously the exception was discarded
       // entirely by `catch (_)`.
       AppLog.error('DataSection.exportBackup', e, st);
@@ -287,7 +287,7 @@ class _DataSectionState extends State<DataSection> {
     }
   }
 
-  /// Task 3.9 — Confirmation dialog shown before a plaintext export is
+  /// Confirmation dialog shown before a plaintext export is
   /// handed to the share sheet. Returns true when the user explicitly
   /// chose "Share anyway"; false on cancel or barrier dismiss.
   Future<bool> _showPlaintextShareWarning(BuildContext context) async {

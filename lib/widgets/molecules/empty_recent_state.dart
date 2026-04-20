@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import '../../theme/app_spacing.dart';
 
-/// Task 2.13 — Empty state shown on Home when neither yesterday nor the
+/// Empty state shown on Home when neither yesterday nor the
 /// day-before have any traqs. Replaces a flat one-line placeholder with
 /// a warmer composition: a soft iconographic mark, a short headline,
 /// and a low-pressure body copy that echoes the brand voice.

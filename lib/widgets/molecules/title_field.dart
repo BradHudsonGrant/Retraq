@@ -6,7 +6,7 @@ import '../atoms/composer_surface.dart';
 
 /// Optional-title input field shown above the traq body on Home.
 ///
-/// Task 1.2 — extracted from `home_screen.dart::_buildTitleField`.
+/// extracted from `home_screen.dart::_buildTitleField`.
 /// Pure presentational widget: the parent owns the
 /// [TextEditingController] and any save/validation logic; this widget
 /// just draws the bordered surface, applies the decoration, and
@@ -73,7 +73,7 @@ class _TitleFieldState extends State<TitleField> {
           // Hint copy sits at the same baseline as typed text, so the
           // field feels stable on focus.
           hintText: l10n.entryTitleHint,
-          // Task 7.1 — alpha 0.75 to meet WCAG 1.4.3 AA contrast.
+          // alpha 0.75 to meet WCAG 1.4.3 AA contrast.
           hintStyle: tt.titleMedium?.copyWith(
             fontWeight: FontWeight.w600,
             color: cs.onSurfaceVariant.withValues(alpha: 0.75),

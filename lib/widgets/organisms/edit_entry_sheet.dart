@@ -151,7 +151,7 @@ class _EditEntrySheetState extends State<EditEntrySheet> {
                   // WCAG 3.3.2: keep the label visible at all times so users
                   // (and screen readers) always know what the field is for.
                   floatingLabelBehavior: FloatingLabelBehavior.auto,
-                  // Task 7.1 — alpha 0.75 to meet WCAG 1.4.3 AA.
+                  // alpha 0.75 to meet WCAG 1.4.3 AA.
                   hintStyle: tt.titleMedium?.copyWith(
                     color: cs.onSurfaceVariant.withValues(alpha: 0.75),
                   ),
@@ -219,7 +219,7 @@ class _EditEntrySheetState extends State<EditEntrySheet> {
           // WCAG 3.3.2: keep the label visible at all times so users
           // (and screen readers) always know what the field is for.
           floatingLabelBehavior: FloatingLabelBehavior.auto,
-          // Task 7.1 — alpha 0.75 to meet WCAG 1.4.3 AA.
+          // alpha 0.75 to meet WCAG 1.4.3 AA.
           hintStyle: tt.bodyLarge?.copyWith(
             color: cs.onSurfaceVariant.withValues(alpha: 0.75),
           ),

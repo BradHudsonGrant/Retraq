@@ -8,10 +8,10 @@ import 'app_log.dart';
 /// Adding a new key here is a one-line change — persistence is
 /// owned by the active [AnalyticsBackend].
 enum FeatureCounterKey {
-  /// Task 11.14 — "on this day last year" card tap.
+  /// "on this day last year" card tap.
   onThisDayOpened,
 
-  /// Task 11.12 — app opened from a notification tap (as opposed
+  /// app opened from a notification tap (as opposed
   /// to cold-launch from the icon).
   notificationOpened,
 
@@ -28,14 +28,14 @@ enum FeatureCounterKey {
 
 /// Facade for on-device analytics writes.
 ///
-/// Task 11.4 / 11.13 — the single choke-point for every "bump a
+/// the single choke-point for every "bump a
 /// counter" / "stamp a timestamp" call in the app. It honours the
 /// `keep_usage_stats` SharedPreferences flag (default true) so a
 /// user who toggles "Keep usage stats" off in Settings → Data
 /// sees every write become a no-op.
 ///
 /// Counters are **local only**. Network emission was already
-/// impossible (Task 12.1 no-network CI guard); the kill switch
+/// impossible; the kill switch
 /// controls whether we WRITE to the local store, not whether
 /// we TRANSMIT.
 ///
@@ -120,13 +120,13 @@ class AnalyticsService {
   }
 
   /// Read-back, primarily for tests and the opt-in anonymized
-  /// export (Task 11.11 when it ships).
+  /// export.
   int read(FeatureCounterKey key) => _backend.read(key);
 }
 
 /// Pluggable persistence layer. The default in-memory backend ships
 /// today; a Drift-backed one replaces it when the v15 schema
-/// migration lands (Task 11.4 follow-up).
+/// migration lands.
 abstract class AnalyticsBackend {
   Future<void> bump(FeatureCounterKey key);
   int read(FeatureCounterKey key);

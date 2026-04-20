@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:retraq/widgets/atoms/mood_blob.dart';
 
-/// Task 6.11 (partial) — MoodBlob widget coverage.
+/// MoodBlob widget coverage.
 ///
 /// Covers the logic surface: mood→asset routing (1-5 map to
 /// distinct SVG assets), out-of-range clamping (0 → 1, 6 → 5),

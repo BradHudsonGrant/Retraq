@@ -9,7 +9,7 @@ import '../widgets/settings_provider.dart';
 import '../services/ai/recap_ai_provider.dart';
 import '../services/database_service.dart';
 import '../services/entry_repository.dart';
-// Task 1.14 — WeeklySummary type still flows through this screen; pulled
+// WeeklySummary type still flows through this screen; pulled
 // from the service file.
 import '../services/recap_service.dart' show WeeklySummary;
 import '../theme/app_motion.dart';
@@ -39,7 +39,7 @@ class _RecapScreenState extends State<RecapScreen>
   bool get wantKeepAlive => true;
 
   final EntryRepository _entries = DatabaseService.instance.entries;
-  // Task 1.14 — pull RecapService from the DatabaseService facade
+  // pull RecapService from the DatabaseService facade
   // instead of instantiating locally. Keeps recap access consistent
   // with db.entries / db.stats / etc., and lets future tests inject
   // a fake by swapping the DatabaseService instance.
@@ -48,7 +48,7 @@ class _RecapScreenState extends State<RecapScreen>
   // View toggle
   bool _isWeekView = true;
 
-  // Task 2.5 — top-level Entries/Insights pill state. When true,
+  // top-level Entries/Insights pill state. When true,
   // the embedded StatsScreen renders instead of the Week/Month
   // browse view. Search view is always Entries-only (search results
   // don't belong in the Insights pane).
@@ -145,10 +145,10 @@ class _RecapScreenState extends State<RecapScreen>
       }
     }
 
-    // Task 8.5 — pause the 3 Drift watcher subscriptions when the
-    // Recap tab is not visible. Mirrors Task 8.6's HomeScreen
-    // pattern via the shared ActiveTabScope. Recap tab index is 1
-    // in the 3-tab layout (Jot/Recap/Settings after Task 2.5).
+    // Pause the 3 Drift watcher subscriptions when the Recap tab
+    // is not visible. Mirrors HomeScreen's pattern via the shared
+    // ActiveTabScope. Recap tab index is 1 in the 3-tab layout
+    // (Jot/Recap/Settings).
     final isActive = ActiveTabScope.isActive(context, tabIndex: 1);
     if (isActive != _isTabActive) {
       _isTabActive = isActive;
@@ -157,7 +157,7 @@ class _RecapScreenState extends State<RecapScreen>
   }
 
   /// Whether the Recap tab is currently visible. Drives stream
-  /// pause/resume (Task 8.5).
+  /// pause/resume.
   bool _isTabActive = true;
 
   void _applyTabActiveState() {
@@ -483,7 +483,7 @@ class _RecapScreenState extends State<RecapScreen>
           if (!_showSearch) ...[
             const SizedBox(height: AppSpacing.md),
 
-            // Task 2.5 — top-level Entries / Insights pill. Replaces
+            // top-level Entries / Insights pill. Replaces
             // the removed Stats bottom-nav tab. Browse body swaps
             // between the existing Week/Month entries view and the
             // embedded StatsScreen(embedded: true).
@@ -510,7 +510,7 @@ class _RecapScreenState extends State<RecapScreen>
               Center(
                 child: SegmentedPill(
                   key: TestKeys.recapWeekMonthToggle,
-                  // Task 2.2 — localize via existing ARB keys.
+                  // localize via existing ARB keys.
                   leftLabel: l10n.weekLabel,
                   rightLabel: l10n.monthLabel,
                   isRightActive: !_isWeekView,

@@ -317,7 +317,7 @@ class StatsService {
   /// today's month + day. Used by the Stats screen to surface recurring
   /// memories.
   ///
-  /// Task 1.3 — previously lived inline inside `stats_screen.dart`,
+  /// previously lived inline inside `stats_screen.dart`,
   /// which made it untestable without spinning up the whole widget.
   /// The business rule is small but has two sharp edges worth pinning
   /// in a dedicated test: leap-day behaviour (Feb 29 from a non-leap

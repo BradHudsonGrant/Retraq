@@ -12,7 +12,7 @@ import 'settings_screen.dart';
 
 /// Root navigation shell — manages the three-tab layout.
 ///
-/// Task 2.5 — Stats was previously a top-level tab; now collapsed
+/// Stats was previously a top-level tab; now collapsed
 /// into Recap via the Entries/Insights pill. The embedded
 /// StatsScreen(embedded: true) renders inside RecapScreen when the
 /// user taps Insights. This bottom nav carries Jot / Recap /
@@ -81,13 +81,13 @@ class _AppShellState extends State<AppShell> {
       // No top AppBar — each screen owns its own header for max real-estate
       // and a faster, less repaint-heavy shell.
       //
-      // Task 2.12 — TabSwipeEdgeGlow wraps the PageView so accidental
+      // TabSwipeEdgeGlow wraps the PageView so accidental
       // horizontal drags (which the NeverScrollableScrollPhysics below
       // would silently swallow) now pulse a brief teal edge glow.
       // Signals "we heard you, use the tabs" instead of looking frozen.
       // Respects reduce-motion — no glow in that case.
       //
-      // Task 8.6 — `ActiveTabScope` exposes the current `_currentIndex`
+      // `ActiveTabScope` exposes the current `_currentIndex`
       // to descendants so tabs can pause stream subscriptions when
       // they're inactive. HomeScreen reads this in
       // `didChangeDependencies` and pauses its 4 Drift watcher subs

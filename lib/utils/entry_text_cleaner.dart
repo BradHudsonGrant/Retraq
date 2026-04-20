@@ -1,6 +1,6 @@
 /// Canonicalise free-text traq input before save.
 ///
-/// Task 1.2 — extracted from `home_screen.dart::_cleanText` so the
+/// extracted from `home_screen.dart::_cleanText` so the
 /// rule is directly unit-testable and reusable from the
 /// HomeFormController's `validate()` helper.
 ///

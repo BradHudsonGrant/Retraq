@@ -193,7 +193,7 @@ class _MonthEntryList extends StatelessWidget {
     // Sort days descending (newest first)
     final days = grouped.keys.toList()..sort((a, b) => b.compareTo(a));
 
-    // Task 8.1 — Previously wrapped in
+    // Previously wrapped in
     // `CustomScrollView(shrinkWrap: true, physics: NeverScrollableScrollPhysics)`
     // inside a parent SingleChildScrollView. That defeated SliverList's
     // lazy-build — every day card materialised on first frame anyway.

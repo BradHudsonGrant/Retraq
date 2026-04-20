@@ -5,14 +5,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:retraq/l10n/app_localizations.dart';
 import 'package:retraq/utils/milestones.dart';
 
-/// Task 1.2 — tests for `milestoneMessageFor` + `isMilestoneCount`,
+/// tests for `milestoneMessageFor` + `isMilestoneCount`,
 /// the pure-function milestone gate extracted from home_screen.dart.
 ///
 /// Milestone count thresholds are load-bearing for the save-success
 /// overlay hold duration (1000ms on milestones + first ten saves,
-/// 400ms otherwise — Task 2.15). If a threshold disappears silently,
-/// users lose a celebration cue. Pin every current one here so a
-/// future refactor has to update this file too.
+/// 400ms otherwise). If a threshold disappears silently, users lose
+/// a celebration cue. Pin every current one here so a future
+/// refactor has to update this file too.
 void main() {
   late L10n l10n;
 

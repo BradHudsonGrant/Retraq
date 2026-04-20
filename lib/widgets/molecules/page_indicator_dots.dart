@@ -53,7 +53,7 @@ class PageIndicatorDots extends StatelessWidget {
             width: active ? 24 : 8,
             height: 8,
             decoration: BoxDecoration(
-              // Task 7.2 — inactive dots previously used alpha 0.3 on
+              // inactive dots previously used alpha 0.3 on
               // onSurfaceVariant, yielding ~2.0:1 contrast on the light
               // surface and failing WCAG 1.4.11 (3:1 minimum for non-text
               // UI state indicators). `outline` is the Material 3 token

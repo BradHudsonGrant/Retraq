@@ -7,7 +7,7 @@ import 'package:retraq/widgets/molecules/progress_bar.dart';
 
 import '../../test_helpers.dart';
 
-/// Task 1.2 — extracted ProgressBar molecule needs direct coverage
+/// extracted ProgressBar molecule needs direct coverage
 /// now that it lives outside home_screen.dart. Collapses to
 /// SizedBox.shrink while weekCount < 1 so an empty placeholder card
 /// doesn't hang above the composer on a blank week.

@@ -3,7 +3,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:retraq/services/biometric_auth.dart';
 
-/// Task 6.3 — Biometric-auth branch coverage.
+/// Biometric-auth branch coverage.
 ///
 /// Retraq's unlock flow previously instantiated `LocalAuthentication()`
 /// directly inside LockScreen, which made the 5 outcome branches

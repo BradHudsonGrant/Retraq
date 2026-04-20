@@ -148,7 +148,7 @@ class NotificationService {
     return generalMessages[day % generalMessages.length];
   }
 
-  /// Task 6.8 — compute the next fire time for a daily-recurring
+  /// compute the next fire time for a daily-recurring
   /// notification at [hour]:[minute] local, relative to [now].
   /// Exposed as a pure static helper so the schedule-math can be
   /// unit-tested without mocking the flutter_local_notifications

@@ -544,7 +544,7 @@ void main() {
       }
     });
 
-    // Task 6.16 — explicit v13→v14 direct-hop assertions. The chain
+    // explicit v13→v14 direct-hop assertions. The chain
     // test above exercises the full v3→v14 sequence; these two focused
     // tests pin down exactly what the v13→v14 migration introduces,
     // which is the concrete risk surface for a user who installed

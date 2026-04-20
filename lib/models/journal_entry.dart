@@ -37,7 +37,7 @@ class JournalEntry {
     DateTime? createdAt,
   }) : createdAt = createdAt ?? DateTime.now();
 
-  /// Task 1.8 — Build a [JournalEntry] from an untyped Drift [QueryRow],
+  /// Build a [JournalEntry] from an untyped Drift [QueryRow],
   /// used by paths that issue a `customSelect` (e.g. FTS search) and
   /// therefore cannot use the typed `rowToEntry(JournalEntryRow)` mapper.
   ///

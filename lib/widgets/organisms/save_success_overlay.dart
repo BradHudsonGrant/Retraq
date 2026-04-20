@@ -35,7 +35,7 @@ class SaveSuccessOverlay extends StatefulWidget {
   /// Optional milestone message shown below "Traq saved" (e.g. "Your very first traq!").
   final String? milestoneMessage;
 
-  /// Task 2.15 — how long to hold the fully-drawn overlay before the
+  /// how long to hold the fully-drawn overlay before the
   /// exit fade begins. 1000ms for milestones / first saves, shortened
   /// to ~400ms for routine saves after the user crosses entry #10 so
   /// power users aren't blocked between thoughts.
@@ -160,7 +160,7 @@ class _SaveSuccessOverlayState extends State<SaveSuccessOverlay>
     if (!mounted) return;
     HapticFeedback.lightImpact();
 
-    // Hold for the user to see it. Task 2.15 — length comes from the
+    // Hold for the user to see it. Length comes from the
     // widget parameter so routine saves can shorten while milestones
     // keep the full celebratory dwell.
     await Future.delayed(widget.holdDuration);
@@ -409,7 +409,7 @@ class _SaveSuccessOverlayState extends State<SaveSuccessOverlay>
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           if (widget.milestoneMessage != null) ...[
-                            // Task 13.3 — milestone messages render in
+                            // milestone messages render in
                             // an amber chip so the celebration moment
                             // owns a distinctive color beyond the
                             // green/mint base. Routine saves still
@@ -456,11 +456,11 @@ class _Particle {
   });
 }
 
-/// Milestone celebration chip — warm amber accent per Task 13.3.
+/// Milestone celebration chip — warm amber accent.
 ///
 /// One of two sanctioned accent-amber usages (the other is the
-/// hero Save-button accent, wired in Task 13.3 under a flag for
-/// the A/B test path). Kept narrow scope: pill-shaped container,
+/// hero Save-button accent, wired under a flag for the A/B test
+/// path). Kept narrow scope: pill-shaped container,
 /// amber background, dark-amber text, subtle glow. No icon — copy
 /// carries the meaning (e.g. "25 traqs! Look at you go.").
 class _MilestoneChip extends StatelessWidget {

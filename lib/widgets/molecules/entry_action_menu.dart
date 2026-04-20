@@ -28,7 +28,7 @@ class EntryActionMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final l10n = L10n.of(context)!;
-    // Task 7.3 — route through existing ARB keys (entryActions,
+    // route through existing ARB keys (entryActions,
     // editAction, shareAction, deleteAction) which already live in
     // the localisation bundle. Previously hardcoded English even
     // though the keys were ready.

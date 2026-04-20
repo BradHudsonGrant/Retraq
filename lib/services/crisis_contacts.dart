@@ -1,6 +1,6 @@
 import 'dart:ui' show Locale, PlatformDispatcher;
 
-/// Task 12.16 — Crisis line lookup per locale/region.
+/// Crisis line lookup per locale/region.
 ///
 /// Hardcoding a single US/Canada number (988) in the health disclaimer
 /// is a liability for non-North-American users — if a distressed user

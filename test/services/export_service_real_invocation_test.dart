@@ -7,7 +7,7 @@ import 'package:retraq/services/export_service.dart';
 
 import '../test_helpers.dart';
 
-/// Task 6.9 (partial) — real-invocation tests for ExportService.
+/// real-invocation tests for ExportService.
 ///
 /// The existing `export_service_test.dart` rebuilds JSON by hand and
 /// asserts against a second hand-built blob — never calling the real
@@ -19,7 +19,7 @@ import '../test_helpers.dart';
 /// Why only import (not export + roundtrip here)?
 ///   - `exportAsJson` / `exportAsText` end in a `SharePlus.instance
 ///     .share(...)` call that requires a platform-channel mock. That
-///     belongs in a separate platform-mock test (Task 6.9 full scope).
+///     belongs in a separate platform-mock test.
 ///   - `importFromJson(filePath)` is file-IO only; no share channel
 ///     to mock. It's the half of the round-trip we can exercise
 ///     today without new harness scaffolding.

@@ -124,7 +124,7 @@ void main() {
     });
   });
 
-  // Task 6.8 — scheduled-time math tests. `computeNextFireTime` is
+  // scheduled-time math tests. `computeNextFireTime` is
   // a pure static helper so we can exercise the DST + day-rollover
   // branches without mocking flutter_local_notifications.
   group('computeNextFireTime', () {

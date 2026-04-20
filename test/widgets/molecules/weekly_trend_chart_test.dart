@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:retraq/widgets/molecules/weekly_trend_chart.dart';
 
-/// Task 6.11 (partial) — WeeklyTrendChart widget coverage.
+/// WeeklyTrendChart widget coverage.
 ///
 /// Covers the real logic surface: Semantics label composition,
 /// tap-to-highlight + onWeekTapped callback fire, reduce-motion
@@ -10,8 +10,7 @@ import 'package:retraq/widgets/molecules/weekly_trend_chart.dart';
 /// empty-data graceful render.
 ///
 /// Pixel-level bar-height computation is done inside a CustomPaint
-/// painter and is left for a golden / pixel-comparison test
-/// (Epic 7 Task 7.15 follow-up).
+/// painter and is left for a golden / pixel-comparison test.
 void main() {
   Widget wrap(Widget child, {bool disableAnimations = false}) {
     return MaterialApp(

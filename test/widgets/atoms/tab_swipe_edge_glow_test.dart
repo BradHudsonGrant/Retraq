@@ -6,7 +6,7 @@ import 'package:retraq/widgets/atoms/tab_swipe_edge_glow.dart';
 
 import '../../test_helpers.dart';
 
-/// Task 2.12 — tests for TabSwipeEdgeGlow.
+/// tests for TabSwipeEdgeGlow.
 ///
 /// Manual on-device verification covers the visual quality of the
 /// glow; these widget tests pin the behavioral contract that

@@ -4,7 +4,7 @@ import 'package:local_auth/local_auth.dart';
 
 /// Thin injectable abstraction over `package:local_auth`.
 ///
-/// Task 6.3 — `lock_screen.dart` previously instantiated
+/// `lock_screen.dart` previously instantiated
 /// `LocalAuthentication()` directly, which made every biometric
 /// branch (success / user-cancel / notAvailable / notEnrolled /
 /// lockedOut) impossible to test without bringing up a real

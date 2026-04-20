@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:retraq/widgets/organisms/theme_card.dart';
 
-/// Task 6.11 (partial) — ThemeCard widget coverage.
+/// ThemeCard widget coverage.
 ///
 /// The widget has three real branches worth pinning:
 ///   1. isSelected drives the border + shadow visual treatment
@@ -11,7 +11,7 @@ import 'package:retraq/widgets/organisms/theme_card.dart';
 ///
 /// Covered below. Visual swatch output (the mini colour dots) is
 /// not pixel-tested — those are Container decorations that would
-/// need a golden test (Epic 7 Task 7.15 follow-up).
+/// need a golden test.
 void main() {
   Widget wrap(
     Widget child, {

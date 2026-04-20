@@ -3,7 +3,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:retraq/utils/entry_text_cleaner.dart';
 
-/// Task 1.2 — tests for `cleanEntryText`, the pure-function
+/// tests for `cleanEntryText`, the pure-function
 /// canonicaliser previously stuck as `_cleanText` inside
 /// home_screen.dart. Every branch of the rule now has a dedicated
 /// case so future refactors can swap the implementation safely.

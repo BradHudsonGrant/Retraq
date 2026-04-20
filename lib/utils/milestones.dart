@@ -3,11 +3,11 @@ import '../l10n/app_localizations.dart';
 /// Milestone thresholds — entry counts at which Retraq celebrates
 /// with a messaged overlay instead of the routine save toast.
 ///
-/// Task 1.2 — lifted from `home_screen.dart::_milestoneForCount` so
+/// lifted from `home_screen.dart::_milestoneForCount` so
 /// the rule is independently testable + reusable. A future
 /// HomeSaveController will call this when deciding how long to hold
 /// the save-success overlay (1000ms for milestones + first ten
-/// saves, 400ms for routine thereafter — see Task 2.15).
+/// saves, 400ms for routine thereafter).
 ///
 /// Thresholds kept in sync with the ARB `milestone*` keys — adding a
 /// new milestone means:

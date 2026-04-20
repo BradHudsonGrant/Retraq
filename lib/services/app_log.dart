@@ -2,7 +2,7 @@ import 'dart:developer' as developer;
 
 import 'package:flutter/foundation.dart';
 
-/// Task 1.13 — Thin, release-safe logging façade over `dart:developer`.
+/// Thin, release-safe logging façade over `dart:developer`.
 ///
 /// Previously the app used `debugPrint` everywhere, which Flutter
 /// strips in release builds — meaning shipped apps lose every

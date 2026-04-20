@@ -16,7 +16,7 @@ void main() {
     resetTestDatabase();
   });
 
-  // Task 6.5 — PIN security tests moved to test/services/pin_service_test.dart
+  // PIN security tests moved to test/services/pin_service_test.dart
   // so PIN crypto coverage lives in its own file separate from DB migration
   // coverage. This file now focuses exclusively on DB + search + migration.
 
@@ -220,7 +220,7 @@ void main() {
   });
 
   // ─────────────────────────────────────────────────────────────────────
-  // BEGIN preserve per review-2026-04-16 Agent 6 (Task 6.18).
+  // BEGIN preserve per review-2026-04-16 Agent 6.
   // Boundary / edge-case DB coverage: non-existent-ID delete, FK
   // violation surfacing, batch save, per-day/most-active-weekday
   // SQL boundary values. Strong existing coverage Agent 6 explicitly
@@ -294,7 +294,6 @@ void main() {
     });
   });
 
-  // END preserve per Task 6.18 (boundary/edge DB data).
 
   group('Watch stream', () {
     late DatabaseService db;
@@ -498,10 +497,9 @@ void main() {
     });
   });
 
-  // ── Task 6.5: PIN cross-format verification + auto-upgrade groups
-  // moved to test/services/pin_service_test.dart ────────────────────
+  // PIN cross-format verification + auto-upgrade groups moved to
+  // test/services/pin_service_test.dart.
 
-  // ── Group 3: Database migration data integrity ────────────
 
   group('Database migration data integrity', () {
     late DatabaseService db;

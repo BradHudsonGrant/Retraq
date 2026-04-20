@@ -30,7 +30,7 @@ class SecuritySection extends StatefulWidget {
 class _SecuritySectionState extends State<SecuritySection> {
   bool _checkingBiometric = false;
 
-  // Task 6.3 — the production authenticator is constructed fresh
+  // the production authenticator is constructed fresh
   // each time rather than cached so tests can override it via a
   // @visibleForTesting override on the SecuritySection widget in a
   // future iteration. For now the Settings-side flow is covered via
@@ -42,7 +42,7 @@ class _SecuritySectionState extends State<SecuritySection> {
     try {
       return await _auth.isAvailable();
     } catch (e, st) {
-      // Task 1.4 — capture the reason the biometric check failed so
+      // capture the reason the biometric check failed so
       // we can debug device-specific regressions. Keep returning
       // false so the UI degrades gracefully (no biometric offered).
       AppLog.warn('SecuritySection.checkBiometrics', e, st);
@@ -196,7 +196,7 @@ class _SecuritySectionState extends State<SecuritySection> {
                             s.copyWith(biometricEnabled: v),
                           );
                           if (v && context.mounted) {
-                            // Task 1.7 — inline on purpose: this is the
+                            // inline on purpose: this is the
                             // only success-coloured SnackBar in the app
                             // (primaryContainer background). Adding a
                             // success variant to AppSnackBar for a

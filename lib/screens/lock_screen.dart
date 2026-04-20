@@ -33,7 +33,7 @@ class LockScreen extends StatefulWidget {
 
   final VoidCallback onUnlocked;
 
-  /// Task 6.3 — injectable biometric authenticator for tests.
+  /// injectable biometric authenticator for tests.
   /// Production callers omit this and get [PlatformBiometricAuthenticator].
   final BiometricAuthenticator? biometric;
 
@@ -89,7 +89,7 @@ class _LockScreenState extends State<LockScreen> {
     if (_lockout.isLockedOut) return;
     if (!mounted) return;
     final reason = L10n.of(context)!.unlockBiometric;
-    // Task 6.3 — outcome enum replaces a raw bool so test harnesses
+    // outcome enum replaces a raw bool so test harnesses
     // can distinguish cancel-vs-success paths. Production UX stays
     // identical: only `success` navigates; every other outcome falls
     // through to the PIN pad without a surfaced error (a wrong-attempt
@@ -194,7 +194,7 @@ class _LockScreenState extends State<LockScreen> {
                 onPressed: () => Navigator.of(ctx).pop(),
                 child: Text(l10n.cancelLabel),
               ),
-              // Task 3.2 — offer an export escape hatch before the
+              // offer an export escape hatch before the
               // destructive reset so users who genuinely forgot their PIN
               // can still recover their journal content. Export is
               // intentionally available BEFORE a PIN/biometric check
@@ -222,7 +222,7 @@ class _LockScreenState extends State<LockScreen> {
     );
   }
 
-  /// Task 3.2 — Export journal data via the share sheet before a
+  /// Export journal data via the share sheet before a
   /// destructive reset. Called from the Forgot-PIN flow when the user
   /// taps "Export first" so they can save content to another app
   /// (Files, Drive, email) before wiping the device copy.
@@ -243,7 +243,7 @@ class _LockScreenState extends State<LockScreen> {
     }
   }
 
-  /// Task 3.2 — Before wiping all data, require a biometric challenge
+  /// Before wiping all data, require a biometric challenge
   /// (where available) as an additional check. This protects against a
   /// shoulder-surfer or thief repeatedly failing the PIN until
   /// "Forgot PIN?" → "Reset App" appears, then tapping through the
@@ -260,7 +260,7 @@ class _LockScreenState extends State<LockScreen> {
     final useBiometric = _settings?.biometricEnabled == true;
 
     if (useBiometric) {
-      // Task 3.2 — allow device-credential (PIN/pattern/passcode)
+      // allow device-credential (PIN/pattern/passcode)
       // fallback so a user whose fingerprint / Face ID fails
       // temporarily (wet finger, low light, mask) can still prove
       // physical possession. `biometricOnly: false` tells the OS to
@@ -283,7 +283,7 @@ class _LockScreenState extends State<LockScreen> {
     await _scheduleResetWithUndoWindow();
   }
 
-  /// Task 3.2 — 10-second cancellable undo window between the typed
+  /// 10-second cancellable undo window between the typed
   /// "DELETE" confirmation and the actual wipe. Covers "fat-finger"
   /// regret — the user has already passed biometric + typed DELETE,
   /// but may still want a last escape.
@@ -443,7 +443,7 @@ class _LockScreenState extends State<LockScreen> {
                     isDisabled: _lockout.isLockedOut,
                   ),
 
-                  // Task 2.4 — Show "Forgot PIN?" from the FIRST failed
+                  // Show "Forgot PIN?" from the FIRST failed
                   // attempt, not after two full lockouts (~10+ wrong
                   // tries). Recognition > recall is core ADHD
                   // accommodation, and a genuinely forgetful user

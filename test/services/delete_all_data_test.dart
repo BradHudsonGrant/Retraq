@@ -7,7 +7,7 @@ import 'package:retraq/services/database_service.dart';
 
 import '../test_helpers.dart';
 
-/// Task 12.9 — Regression test proving `deleteAllData` is total and
+/// Regression test proving `deleteAllData` is total and
 /// irrecoverable via ordinary DB read paths.
 ///
 /// Retraq's privacy policy promises the "Delete All Data" option

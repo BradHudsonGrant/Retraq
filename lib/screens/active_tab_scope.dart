@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 /// InheritedWidget that exposes the currently-active bottom nav
 /// tab index to descendants.
 ///
-/// Task 8.6 — AppShell's PageView keeps all children alive via
+/// AppShell's PageView keeps all children alive via
 /// `AutomaticKeepAliveClientMixin` so stream subscriptions on
 /// inactive tabs continue running and rebuilding off-screen. This
 /// widget lets individual screens read which tab is active and

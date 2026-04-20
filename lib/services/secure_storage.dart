@@ -18,7 +18,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 /// On iOS, uses the strictest accessibility class that still allows
 /// background reads after first unlock.
 ///
-/// Task 3.1: original audit flagged this file because an older
+/// original audit flagged this file because an older
 /// version of flutter_secure_storage required an explicit
 /// `encryptedSharedPreferences: true` to opt in to a hardened backend.
 /// In v10 the flag is deprecated / ignored and the default backend is

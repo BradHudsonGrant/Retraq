@@ -238,7 +238,7 @@ class _ReconsentCheckbox extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
 
-    // Task 2.7 — split the row into a label tap-target (toggles the
+    // split the row into a label tap-target (toggles the
     // checkbox) and a separate "View" button (opens the legal doc)
     // so users who tap the text to tick the box don't get routed
     // into the legal screen instead. Matches onboarding/consent_page.

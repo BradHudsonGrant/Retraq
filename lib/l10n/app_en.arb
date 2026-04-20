@@ -1,640 +1,693 @@
 {
-  "@@locale": "en",
-
-  "appName": "Retraq",
-
-  "navJot": "Traq",
-  "navRecap": "Retraq",
-  "navStats": "Stats",
-  "navSettings": "Settings",
-
-  "heroPrompt0": "What's the\nTL;DR of ",
-  "heroPrompt1": "How was\n",
-  "heroPrompt2": "What happened\n",
-  "heroPrompt3": "Sum up\n",
-  "heroPrompt4": "What stood\nout ",
-  "heroPrompt5": "Brain dump\nfor ",
-  "heroPrompt6": "One thing\nabout ",
-
-  "homeSubtitle": "Brain dump here. Full sentences optional.",
-  "entryTitleHint": "Traq title (optional)",
-  "entryTitleLabel": "Traq title",
-  "amHint": "How did the morning go?",
-  "pmHint": "How about the rest of the day?",
-  "saveEntry": "Save Traq",
-  "saving": "Saving...",
-  "journalEntryLabel": "Tap to traq",
-  "amLabel": "AM",
-  "pmLabel": "PM",
-
-  "progressFirstEntry": "Drop your first traq above.",
-  "progressWeekCount": "{count, plural, =1{1 traq} other{{count} traqs}} this week — keep going!",
-  "@progressWeekCount": {
-    "placeholders": {
-      "count": { "type": "int" }
-    }
-  },
-
-  "recentLabel": "Recent",
-  "todayLabel": "Today",
-  "yesterdayLabel": "Yesterday",
-  "noRecentEntries": "No traqs yet. Drop a traq?",
-  "recentEntriesPlaceholder": "Your recent traqs will appear here.",
-  "emptyRecentHeadline": "A fresh page",
-  "@emptyRecentHeadline": {
-    "description": "Task 2.13 — Empty-recent state headline on Home. Warm/low-pressure tone; reinforces the 'no pressure' brand voice."
-  },
-  "emptyRecentBody": "No traqs from the last two days. Nothing to catch up on — just drop a breadcrumb whenever you're ready.",
-  "@emptyRecentBody": {
-    "description": "Task 2.13 — Empty-recent state body copy on Home. One sentence, supportive, not imperative."
-  },
-
-  "entrySaved": "Traq saved",
-  "undoLabel": "Undo",
-  "saveAndSwitch": "Save and switch?",
-  "saveAndSwitchContent": "Your {period} traq will be saved before switching to {newPeriod}.",
-  "@saveAndSwitchContent": {
-    "placeholders": {
-      "period": { "type": "String" },
-      "newPeriod": { "type": "String" }
-    }
-  },
-  "cancelLabel": "Cancel",
-  "saveAndSwitchButton": "Save & Switch",
-
-  "saveFailedMessage": "Failed to save. Please try again.",
-  "writeSomethingFirst": "Write something first!",
-  "pickMoodToSave": "Pick a mood to save",
-
-  "milestone1": "Your very first traq!",
-  "milestone5": "5 traqs! You're off to a great start.",
-  "milestone10": "10 traqs! You're building a habit.",
-  "milestone25": "25 traqs! Look at you go.",
-  "milestone50": "50 traqs! That's genuinely impressive.",
-  "milestone100": "100 traqs! You're a pro.",
-  "milestone250": "250 traqs! A real treasure trove.",
-  "milestone500": "500 traqs! Half a thousand memories.",
-  "milestone1000": "1,000 traqs! Legendary status.",
-
-  "entryCount": "{count, plural, =1{1 traq} other{{count} traqs}}",
-  "@entryCount": {
-    "placeholders": {
-      "count": { "type": "int" }
-    }
-  },
-  "moreEntries": "+{count} more",
-  "@moreEntries": {
-    "placeholders": {
-      "count": { "type": "int" }
-    }
-  },
-
-  "changeDateLabel": "Change traq date, currently {date}",
-  "@changeDateLabel": {
-    "placeholders": {
-      "date": { "type": "String" }
-    }
-  },
-
-  "recapTitle": "Retraq",
-  "searchHint": "Search your traqs...",
-  "closeSearch": "Close search",
-  "searchEntries": "Search your traqs",
-  "searching": "Searching...",
-  "noSearchResults": "No traqs found. Try different words.",
-  "weekLabel": "Week",
-  "monthLabel": "Month",
-  "entriesLabel": "Entries",
-  "@entriesLabel": {
-    "description": "Task 2.5 — left label on the top-level Entries/Insights pill on the Recap screen. Swaps the body between the browse view (Week/Month entries) and the embedded Stats content."
-  },
-  "insightsLabel": "Insights",
-  "@insightsLabel": {
-    "description": "Task 2.5 — right label on the Entries/Insights pill, shows the collapsed Stats content inside Recap."
-  },
-  "weeklyRecap": "Week Retraqd",
-  "weeklyRecapStats": "{totalEntries} traqs · {activeDays} days · {preferredTime}",
-  "@weeklyRecapStats": {
-    "placeholders": {
-      "totalEntries": { "type": "int" },
-      "activeDays": { "type": "int" },
-      "preferredTime": { "type": "String" }
-    }
-  },
-  "noEntriesYet": "No traqs yet",
-  "noEntriesYetMessage": "Your traqs will appear here once you start writing.",
-  "noEntriesForWeek": "No traqs for this week.",
-  "previousWeek": "Previous week",
-  "nextWeek": "Next week",
-  "currentWeek": "Current week",
-  "thisWeekLabel": "This week",
-
-  "statsTitle": "Stats",
-  "statsSubtitle": "Your journey so far.",
-  "noStatsYet": "No stats yet",
-  "noStatsYetMessage": "Start traqing to see your patterns and streaks.",
-  "totalEntries": "Total Traqs",
-  "daysJournaled": "Days Traqed",
-  "currentStreak": "Current Streak",
-  "bestStreak": "Best Streak",
-  "streaksSection": "Streaks",
-  "longestThisMonth": "Longest This Month",
-  "entriesPerWeek": "Entries per week",
-  "daysSuffix": "days",
-  "mostActiveDay": "Most active day: {day}",
-  "@mostActiveDay": {
-    "placeholders": {
-      "day": { "type": "String" }
-    }
-  },
-  "onThisDayLastYear": "On this day last year...",
-  "moodTitle": "Mood",
-  "moodDistribution": "Distribution",
-  "moodAverage": "Average: {value}",
-  "@moodAverage": {
-    "placeholders": {
-      "value": { "type": "String" }
-    }
-  },
-
-  "moodRough": "Rough",
-  "moodLow": "Low",
-  "moodNeutral": "Neutral",
-  "moodGood": "Good",
-  "moodAmazing": "Amazing",
-  "moodSelectorLabel": "Mood selector",
-  "moodButtonLabel": "{label} mood",
-  "@moodButtonLabel": {
-    "placeholders": {
-      "label": { "type": "String" }
-    }
-  },
-
-  "onboardingTitle1": "How've you been?\nWhat have you\nbeen up to?",
-  "onboardingBody1": "If those questions make your\nmind go blank, you're in the right place.",
-  "onboardingTitle2": "Retraq is your\nmemory backup.",
-  "onboardingBody2": "Jot down anything about your day —\na word, a sentence, whatever.\nAnything is a start.",
-  "onboardingTitle3": "Start simple.\nThat's the whole point.",
-  "onboardingBody3": "Want more features later?\nThey're all in settings,\nwaiting for when you're ready.",
-  "onboardingPageLabel": "Page {current} of {total}",
-  "@onboardingPageLabel": {
-    "placeholders": {
-      "current": { "type": "int" },
-      "total": { "type": "int" }
-    }
-  },
-  "nextButton": "Next",
-  "getStartedButton": "Drop your first traq",
-  "ageGateTitle": "Before we begin",
-  "ageGateDeniedTitle": "Sorry!",
-  "ageGateMessage": "Retraq is designed for users\naged {minAge} and older.",
-  "@ageGateMessage": {
-    "description": "Task 12.3 — country-aware age threshold. {minAge} is resolved from the device locale (13 / 14 / 16 per COPPA + GDPR Art. 8 + Quebec Law 25). See locale_age_threshold.dart for the full table.",
-    "placeholders": {
-      "minAge": { "type": "int", "example": "13" }
-    }
-  },
-  "ageGateDenied": "Retraq requires users to be {minAge} years or older.\nPlease come back when you're old enough!",
-  "@ageGateDenied": {
-    "description": "Task 12.3 — country-aware denial message matching ageGateMessage threshold.",
-    "placeholders": {
-      "minAge": { "type": "int", "example": "13" }
-    }
-  },
-  "ageConfirmButton": "I am {minAge} or older",
-  "@ageConfirmButton": {
-    "description": "Task 12.3 — country-aware confirm label reflecting the regional threshold.",
-    "placeholders": {
-      "minAge": { "type": "int", "example": "13" }
-    }
-  },
-  "ageDenyButton": "I am under {minAge}",
-  "@ageDenyButton": {
-    "description": "Task 12.3 — country-aware deny label.",
-    "placeholders": {
-      "minAge": { "type": "int", "example": "13" }
-    }
-  },
-  "ageGateContactGuardian": "If this was entered in error, please contact a parent or guardian.",
-  "almostThere": "Almost there!",
-  "welcomeBackTitle": "Welcome back",
-  "@welcomeBackTitle": {
-    "description": "Task 2.6 — Shown on the consent page when the user has prior consent on record (cross-install marker present). Replaces 'Almost there!' so reinstall users feel recognised. Consent itself is still required on every install."
-  },
-  "welcomeBackSubtitle": "We still need you to re-accept these, but we won't walk you through the intros again.",
-  "@welcomeBackSubtitle": {
-    "description": "Task 2.6 — Subtitle on the consent page for the returning-user path explaining why consent is still required."
-  },
-  "healthDisclaimer": "Retraq is a personal journaling app — not a medical or therapeutic tool. It does not provide health advice, diagnosis, or treatment. If you are in crisis, please contact a mental health professional or call {crisisContact}.",
-  "@healthDisclaimer": {
-    "description": "Health-disclaimer body. {crisisContact} is injected from CrisisContacts.formatInline for the user's locale. Task 12.16 — never hardcode the US/Canada 988 number; the helper resolves per-region.",
-    "placeholders": {
-      "crisisContact": {
-        "type": "String",
-        "example": "988 (988 Suicide & Crisis Lifeline)"
-      }
-    }
-  },
-  "healthDisclaimerCheckbox": "I acknowledge the Health Disclaimer",
-  "privacyPolicyCheckbox": "I have read and agree to the Privacy Policy",
-  "termsCheckbox": "I agree to the Terms of Use",
-  "notificationDialogTitle": "Stay on track",
-  "notificationDialogContent": "A gentle daily reminder can help you build a traqing habit. You can change or turn this off anytime in Settings.",
-  "notNow": "Not now",
-  "enableReminders": "Enable reminders",
-  "consentSaveFailed": "Failed to save consent. Please try again.",
-
-  "unlockBiometric": "Unlock Retraq",
-  "enterPin": "Enter your PIN",
-  "forgotPin": "Forgot PIN?",
-  "forgotPinMessage": "If you've forgotten your PIN, you can reset the app. This will permanently delete all your traqs and data. You can export first to save them.",
-  "resetApp": "Reset App",
-  "exportBeforeReset": "Export first",
-  "@exportBeforeReset": {
-    "description": "Button on the Forgot PIN dialog that lets the user export their data before the destructive reset."
-  },
-  "resetAppBiometricReason": "Confirm it's you before resetting Retraq",
-  "@resetAppBiometricReason": {
-    "description": "Biometric prompt shown before the destructive reset-app action fires."
-  },
-  "resetAppBiometricFailed": "Biometric check failed. Try again or cancel.",
-  "diagnosticsLabel": "Diagnostics",
-  "@diagnosticsLabel": {
-    "description": "Task 10.1 — Settings → Data section heading for the Sentry opt-in toggle."
-  },
-  "helpImproveRetraq": "Help improve Retraq",
-  "@helpImproveRetraq": {
-    "description": "Task 10.1 — Settings row title for the crash-reporting opt-in toggle."
-  },
-  "helpImproveRetraqBody": "Send anonymous crash reports so we can fix bugs. No traq content, mood, or timestamps are ever included.",
-  "@helpImproveRetraqBody": {
-    "description": "Task 10.1 — Settings row subtitle explaining the opt-in scope. Keep it short and truthful; the full details live in the privacy policy."
-  },
-  "keepUsageStats": "Keep usage stats on this device",
-  "@keepUsageStats": {
-    "description": "Task 11.13 — Settings row title for the local-counter kill switch. Controls whether feature counters / session stamps are written to the local DB. Never sent anywhere."
-  },
-  "keepUsageStatsBody": "Local counters only. Never sent anywhere. Off = your taps aren't counted.",
-  "@keepUsageStatsBody": {
-    "description": "Task 11.13 — Settings row subtitle for the usage-stats kill switch. Emphasises the local-only nature to avoid confusion with Diagnostics."
-  },
-  "resetAppUndoToast": "Erasing in {seconds}s — tap to cancel",
-  "@resetAppUndoToast": {
-    "description": "Task 3.2 — non-dismissible SnackBar shown for 10 seconds after the user confirms a Forgot-PIN reset. Tapping the action cancels the timer and leaves all data intact.",
-    "placeholders": {
-      "seconds": { "type": "int" }
-    }
-  },
-  "resetAppUndoCancel": "Cancel",
-  "@resetAppUndoCancel": {
-    "description": "SnackBar action label on the reset-countdown toast. Task 3.2."
-  },
-  "resetAppCancelled": "Reset cancelled. Your data is safe.",
-  "@resetAppCancelled": {
-    "description": "Confirmation toast after the user cancels the reset within the 10-second undo window. Task 3.2."
-  },
-  "wrongPinMessage": "Wrong PIN. {remaining, plural, =1{1 attempt} other{{remaining} attempts}} remaining.",
-  "@wrongPinMessage": {
-    "placeholders": {
-      "remaining": { "type": "int" }
-    }
-  },
-  "lockoutMessage": "Too many attempts. Wait {seconds}s.",
-  "@lockoutMessage": {
-    "placeholders": {
-      "seconds": { "type": "int" }
-    }
-  },
-
-  "updatedPolicies": "Updated Policies",
-  "reconsentMessage": "We've updated our Privacy Policy, Terms of Use, and/or Health Disclaimer. Please review and accept to continue.",
-  "continueButton": "Continue",
-
-  "appearanceTitle": "Appearance",
-  "appearanceSubtitle": "Choose how Retraq feels to you.",
-  "themeSystem": "System",
-  "themeDay": "Day",
-  "themeNight": "Night",
-
-  "securityTitle": "Security",
-  "securitySubtitle": "Keep your traqs private.",
-  "appLock": "App Lock",
-  "appLockEnabled": "PIN required to open Retraq",
-  "appLockDisabled": "No lock — anyone can open the app",
-  "changePin": "Change PIN",
-  "changePinSubtitle": "Set a new 4-digit PIN",
-  "biometricUnlock": "Biometric Unlock",
-  "biometricSubtitle": "Use fingerprint or face to unlock",
-  "biometricUnavailable": "Biometrics not available on this device",
-  "biometricEnabledMessage": "Biometric unlock enabled — you'll be prompted next time you open Retraq",
-  "appLockA11y": "App lock",
-  "biometricUnlockA11y": "Biometric unlock",
-
-  "preferencesTitle": "Preferences",
-  "allDayNotes": "All Day Notes",
-  "allDayNotesSubtitle": "One traq or split AM/PM",
-  "allDayOption": "All Day",
-  "openingPrompt": "Opening Prompt",
-  "asksAboutToday": "Asks about today",
-  "asksAboutYesterday": "Asks about yesterday",
-  "journalEntryTitle": "Traq Title",
-  "journalEntryTitleSubtitle": "Show or hide title fields in new traqs",
-  "moodTracking": "Mood Tracking",
-  "moodTrackingSubtitle": "Log how you feel with each traq",
-  "requireMood": "Require Mood",
-  "requireMoodSubtitle": "Must pick a mood before saving",
-  "moodOnlyEntries": "Mood-Only Traqs",
-  "moodOnlyEntriesSubtitle": "Save traqs with just a mood, no text",
-  "advancedTitle": "Advanced",
-  "enterToSave": "Enter to Save",
-  "enterToSaveSubtitle": "Press Enter to save traq instead of new line",
-  "bulletPointsOnEnter": "Bullet Points on Enter",
-  "bulletPointsSubtitle": "Auto-insert • when pressing Enter",
-  "bionicReading": "Bionic Reading",
-  "bionicReadingSubtitle": "Bolds the start of each word for faster reading",
-  "onDeviceAiRecap": "On-Device AI Recap",
-  "onDeviceAiRecapSubtitle": "Use your phone's built-in AI to write weekly recaps. Entries never leave your device.",
-  "onDeviceAiRecapUnavailable": "Not supported on this device",
-  "weekStartsOn": "Week Starts On",
-  "amPmSwitchesAt": "AM/PM Switches At",
-  "weekStartsOnA11y": "Week starts on {day}",
-  "@weekStartsOnA11y": {
-    "placeholders": {
-      "day": { "type": "String" }
-    }
-  },
-  "amPmSwitchesAtA11y": "AM/PM switches at {time}",
-  "@amPmSwitchesAtA11y": {
-    "placeholders": {
-      "time": { "type": "String" }
-    }
-  },
-  "mondayName": "Monday",
-  "tuesdayName": "Tuesday",
-  "wednesdayName": "Wednesday",
-  "thursdayName": "Thursday",
-  "fridayName": "Friday",
-  "saturdayName": "Saturday",
-  "sundayName": "Sunday",
-
-  "yourData": "Your Data",
-  "exportLabel": "Export",
-  "exportJson": "Export JSON",
-  "exportText": "Export Text",
-  "importLabel": "Import",
-  "importFromBackup": "Import from Backup",
-  "importAccepts": "Accepts Retraq JSON backup files only",
-  "exportScopeTitle": "Export scope",
-  "exportScopeContent": "Export this week's traqs or all traqs?\n\nThe exported file will contain your personal traqs and settings. Keep it somewhere safe.",
-  "thisWeek": "This Week",
-  "allEntries": "All Traqs",
-  "importConfirmTitle": "Import {filename}?",
-  "@importConfirmTitle": {
-    "placeholders": {
-      "filename": { "type": "String" }
-    }
-  },
-  "importConfirmContent": "This will add traqs from this backup. Duplicates will be skipped.",
-  "importButton": "Import",
-  "importSuccess": "{imported, plural, =1{Imported 1 traq} other{Imported {imported} traqs}}{skipped, plural, =0{} =1{, 1 duplicate skipped} other{, {skipped} duplicates skipped}}{errors, plural, =0{} =1{, 1 error} other{, {errors} errors}}",
-  "@importSuccess": {
-    "description": "Summary shown after a successful import. Uses ICU plurals for each counter; skipped/errors collapse to empty when zero.",
-    "placeholders": {
-      "imported": { "type": "int" },
-      "skipped": { "type": "int" },
-      "errors": { "type": "int" }
-    }
-  },
-  "importFailed": "Import failed. The file may be corrupted or in the wrong format.",
-  "filePickerFailed": "Could not open file picker. Please try again.",
-  "exportFailed": "Export failed. Please try again.",
-  "deleteAllData": "Delete All Data",
-  "deleteAllDataTitle": "Delete all data?",
-  "deleteAllDataContent": "This will permanently delete all traqs and reset your settings. This cannot be undone.\n\nConsider exporting your data first from the options above.",
-  "typeDeleteToConfirm": "Type DELETE to confirm:",
-  "typeDeleteError": "Type DELETE to confirm",
-  "deleteEverything": "Delete Everything",
-  "allDataDeleted": "All data has been deleted.",
-  "allDataDeletedTitle": "All data deleted",
-  "allDataDeletedBody": "Your traqs, settings and consent records have been cleared. Retraq will close now — reopen it to start fresh.",
-  "closeAppButton": "Close Retraq",
-  "deleteDataFailed": "Failed to delete data. Please try again.",
-
-  "editEntry": "Edit Traq",
-  "titleHint": "Title",
-  "entryTextHint": "Traq text...",
-  "entryTextLabel": "Traq text",
-  "deleteEntryTooltip": "Delete traq",
-  "saveChanges": "Save Changes",
-  "entryEmptyMessage": "Traq is empty. Add some text, a title, or a mood.",
-
-  "entrySavedOverlay": "Traq saved",
-  "niceOne": "Nice one ✓",
-  "dismissLabel": "Dismiss",
-
-  "setPinTitle": "Set a PIN",
-  "confirmPinTitle": "Confirm PIN",
-  "setPinSubtitle": "Choose a 4-digit PIN",
-  "confirmPinSubtitle": "Enter the same PIN again",
-  "choosePinSubtitle": "Choose a {length}-digit PIN",
-  "@choosePinSubtitle": {
-    "placeholders": {
-      "length": { "type": "int" }
-    }
-  },
-  "pinTooEasy": "Too easy to guess. Choose a different PIN.",
-  "pinMismatch": "PINs did not match. Try again.",
-  "fourDigits": "4 digits",
-  "sixDigits": "6 digits",
-  "setPinButton": "Set PIN",
-
-  "entryActions": "Traq actions",
-  "editAction": "Edit",
-  "shareAction": "Share",
-  "deleteAction": "Delete",
-  "deleteEntryTitle": "Delete traq?",
-  "deleteEntryMessage": "Are you sure? This can't be undone.",
-  "deleteLabel": "Delete",
-  "deleteFailedMessage": "Failed to delete. Please try again.",
-
-  "numberPadDisabled": "Number pad, disabled",
-  "deleteDigit": "Delete",
-  "biometricButton": "Biometric",
-  "noEntriesForDay": "No entries",
-  "@noEntriesForDay": {
-    "description": "Task 7.4 — shown in WeekDayList when a day has zero journal entries."
-  },
-  "dailyAtTime": "Daily at {time}",
-  "@dailyAtTime": {
-    "description": "Task 7.9 — NudgeCard reminder-time summary, e.g. 'Daily at 8:30 PM'. {time} is pre-formatted to user locale.",
-    "placeholders": {
-      "time": { "type": "String", "example": "8:30 PM" }
-    }
-  },
-  "discardAndSwitchButton": "Discard & Switch",
-  "@discardAndSwitchButton": {
-    "description": "Task 2.8 — Middle action in the AM/PM switch dialog shown when the user has typed entry text. Drops the typed text and flips the day period without saving."
-  },
-  "plaintextExportWarningTitle": "Share this file?",
-  "@plaintextExportWarningTitle": {
-    "description": "Task 3.9 — Title of the warning dialog shown before invoking the share sheet for a plaintext export."
-  },
-  "plaintextExportWarningBody": "This file contains your journal in a readable format. The app you pick will receive everything you've written. Only share with apps you trust, like your own file manager or cloud drive.",
-  "@plaintextExportWarningBody": {
-    "description": "Task 3.9 — Body copy of the plaintext-export warning dialog. Reads in the brand voice: plain, non-alarmist, informative."
-  },
-  "plaintextExportShareAnyway": "Share anyway",
-  "@plaintextExportShareAnyway": {
-    "description": "Task 3.9 — Confirm button on the plaintext-export warning dialog."
-  },
-  "viewLabel": "View",
-  "@viewLabel": {
-    "description": "Task 2.7 — Trailing button on the onboarding consent row that opens the legal document. Separated from the checkbox label tap target to avoid accidental navigation when toggling consent."
-  },
-  "resetToTodayLabel": "Reset to today",
-  "@resetToTodayLabel": {
-    "description": "Task 2.9 — Semantics + delete-icon tooltip on the date-override chip when an alternate day has been picked for the entry."
-  },
-  "nudgeSkipIfJournaledHint": "We'll only remind you if you haven't journaled yet.",
-  "@nudgeSkipIfJournaledHint": {
-    "description": "Task 2.14 — Subtitle under the nudge time-picker explaining that the reminder is suppressed on days the user already journaled."
-  },
-  "nudgeChangeTime": "Change Time",
-  "@nudgeChangeTime": {
-    "description": "Task 2.14 — Label on the Change Time button in the NudgeCard."
-  },
-  "nudgeCardBody": "Get a quick nudge to drop a breadcrumb before you forget your day.",
-  "@nudgeCardBody": {
-    "description": "Task 2.14 — Body copy inside the Settings NudgeCard explaining the purpose of the daily reminder."
-  },
-  "weekEntryCountSnackbar": "{range}: {count, plural, =0{no entries} =1{1 entry} other{{count} entries}}",
-  "@weekEntryCountSnackbar": {
-    "description": "Task 2.3 — Shown when tapping a bar on the weekly-trend chart. {range} is a date-range string (e.g. 'Mar 3 – Mar 9'); {count} is the number of entries in that week.",
-    "placeholders": {
-      "range": { "type": "String", "example": "Mar 3 – Mar 9" },
-      "count": { "type": "int", "example": "3" }
-    }
-  },
-  "statisticsOverview": "Statistics overview",
-  "@statisticsOverview": {
-    "description": "Task 2.11 — Screen-reader label for the aggregated stats card grid."
-  },
-  "entryForDayPreview": "Entry for {dayLabel}: {preview}",
-  "@entryForDayPreview": {
-    "description": "Task 2.11 — Screen-reader label for a recent-day card showing a snippet of its entry. {dayLabel} is a formatted day name (e.g. 'Monday'); {preview} is the first few words of the entry.",
-    "placeholders": {
-      "dayLabel": { "type": "String", "example": "Monday" },
-      "preview": { "type": "String", "example": "Ran errands, forgot the milk..." }
-    }
-  },
-  "pinDotsLabel": "{length} of {maxLength} digits entered{error}",
-  "@pinDotsLabel": {
-    "placeholders": {
-      "length": { "type": "int" },
-      "maxLength": { "type": "int" },
-      "error": { "type": "String" }
-    }
-  },
-
-  "monthAtGlance": "Month at a glance",
-  "previousMonth": "Previous month",
-  "nextMonth": "Next month",
-  "dayMo": "Mo",
-  "dayTu": "Tu",
-  "dayWe": "We",
-  "dayTh": "Th",
-  "dayFr": "Fr",
-  "daySa": "Sa",
-  "daySu": "Su",
-  "calendarDayA11y": "Day {day}",
-  "@calendarDayA11y": {
-    "placeholders": {
-      "day": { "type": "int" }
-    }
-  },
-  "calendarDayTodaySuffix": ", today",
-  "calendarDayHasEntriesSuffix": ", has entries",
-  "calendarDaySelectedSuffix": ", selected",
-  "entryCardA11y": "Journal traq for {dateLabel}",
-  "@entryCardA11y": {
-    "placeholders": {
-      "dateLabel": { "type": "String" }
-    }
-  },
-  "entryOptionsTooltip": "Traq options",
-
-  "themeLabel": "{label} theme",
-  "@themeLabel": {
-    "placeholders": {
-      "label": { "type": "String" }
-    }
-  },
-
-  "prompt0": "Just the highlights...",
-  "prompt1": "What did you get up to today?",
-  "prompt2": "Anything worth remembering?",
-  "prompt3": "Drop a breadcrumb for future you.",
-  "prompt4": "Sum it up in a few words.",
-  "prompt5": "What was the vibe today?",
-  "prompt6": "One good thing that happened...",
-  "prompt7": "What took up most of your brain today?",
-  "prompt8": "If today were a headline, what would it be?",
-  "prompt9": "What would you tell a friend about today?",
-  "prompt10": "The most unexpected part of today was...",
-  "prompt11": "Three words to describe today.",
-  "prompt12": "What did you learn today?",
-  "prompt13": "What are you grateful for right now?",
-  "prompt14": "What drained your energy today?",
-  "prompt15": "What gave you energy today?",
-  "prompt16": "Describe today in one sentence.",
-  "prompt17": "Something you noticed today...",
-  "prompt18": "A thought that kept coming back...",
-  "prompt19": "The best part of today was...",
-  "prompt20": "Something you want to remember...",
-  "prompt21": "How are you feeling right now?",
-  "prompt22": "What made you smile today?",
-  "prompt23": "A small win from today...",
-  "prompt24": "What would you do differently?",
-  "prompt25": "What are you looking forward to tomorrow?",
-  "prompt26": "Something that surprised you...",
-  "prompt27": "A moment of calm from today...",
-
-  "nudgeDescription": "Get a quick nudge to drop a breadcrumb before you forget your day.",
-  "changeTime": "Change Time",
-
-  "shareDay": "Share Day",
-
-  "noEntryForDay": "No traqs for this day",
-  "noEntriesThisMonth": "No traqs this month.",
-
-  "notifTitle": "Retraq",
-
-  "notifDaily0": "Quick — what happened today? Even one word counts.",
-  "notifDaily1": "30 seconds. One traq. You'll thank yourself later.",
-  "notifDaily2": "Jot something down before today disappears.",
-  "notifDaily3": "Future you wants to know what happened today.",
-  "notifDaily4": "Don't let today vanish. Drop a traq.",
-
-  "notifWeekly0": "Your week's been retraqd. Take a look back.",
-  "notifWeekly1": "Here's what you got up to this week.",
-
-  "notifReengage0": "It's been a few days. Drop a quick traq so you don't lose the week.",
-  "notifReengage1": "Your week is disappearing. Takes 10 seconds to save it.",
-
-  "settingsLegalFooter": "{appName} v{version}",
-  "@settingsLegalFooter": {
-    "placeholders": {
-      "appName": { "type": "String" },
-      "version": { "type": "String" }
-    }
-  },
-  "privacyPolicy": "Privacy Policy",
-  "termsOfService": "Terms of Service",
-  "termsOfUse": "Terms of Use",
-  "healthDisclaimerTitle": "Health Disclaimer",
-  "legalFooterTerms": "Terms",
-  "legalFooterHealth": "Health",
-  "legalFooterLicenses": "Licenses",
-
-  "exportPiiNote": "The exported file will contain your personal traqs and settings. Keep it somewhere safe."
+    "@@locale": "en",
+    "appName": "Retraq",
+    "navJot": "Traq",
+    "navRecap": "Retraq",
+    "navStats": "Stats",
+    "navSettings": "Settings",
+    "heroPrompt0": "What's the\nTL;DR of ",
+    "heroPrompt1": "How was\n",
+    "heroPrompt2": "What happened\n",
+    "heroPrompt3": "Sum up\n",
+    "heroPrompt4": "What stood\nout ",
+    "heroPrompt5": "Brain dump\nfor ",
+    "heroPrompt6": "One thing\nabout ",
+    "homeSubtitle": "Brain dump here. Full sentences optional.",
+    "entryTitleHint": "Traq title (optional)",
+    "entryTitleLabel": "Traq title",
+    "amHint": "How did the morning go?",
+    "pmHint": "How about the rest of the day?",
+    "saveEntry": "Save Traq",
+    "saving": "Saving...",
+    "journalEntryLabel": "Tap to traq",
+    "amLabel": "AM",
+    "pmLabel": "PM",
+    "progressFirstEntry": "Drop your first traq above.",
+    "progressWeekCount": "{count, plural, =1{1 traq} other{{count} traqs}} this week — keep going!",
+    "@progressWeekCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "recentLabel": "Recent",
+    "todayLabel": "Today",
+    "yesterdayLabel": "Yesterday",
+    "noRecentEntries": "No traqs yet. Drop a traq?",
+    "recentEntriesPlaceholder": "Your recent traqs will appear here.",
+    "emptyRecentHeadline": "A fresh page",
+    "@emptyRecentHeadline": {
+        "description": "Empty-recent state headline on Home. Warm/low-pressure tone; reinforces the 'no pressure' brand voice."
+    },
+    "emptyRecentBody": "No traqs from the last two days. Nothing to catch up on — just drop a breadcrumb whenever you're ready.",
+    "@emptyRecentBody": {
+        "description": "Empty-recent state body copy on Home. One sentence, supportive, not imperative."
+    },
+    "entrySaved": "Traq saved",
+    "undoLabel": "Undo",
+    "saveAndSwitch": "Save and switch?",
+    "saveAndSwitchContent": "Your {period} traq will be saved before switching to {newPeriod}.",
+    "@saveAndSwitchContent": {
+        "placeholders": {
+            "period": {
+                "type": "String"
+            },
+            "newPeriod": {
+                "type": "String"
+            }
+        }
+    },
+    "cancelLabel": "Cancel",
+    "saveAndSwitchButton": "Save & Switch",
+    "saveFailedMessage": "Failed to save. Please try again.",
+    "writeSomethingFirst": "Write something first!",
+    "pickMoodToSave": "Pick a mood to save",
+    "milestone1": "Your very first traq!",
+    "milestone5": "5 traqs! You're off to a great start.",
+    "milestone10": "10 traqs! You're building a habit.",
+    "milestone25": "25 traqs! Look at you go.",
+    "milestone50": "50 traqs! That's genuinely impressive.",
+    "milestone100": "100 traqs! You're a pro.",
+    "milestone250": "250 traqs! A real treasure trove.",
+    "milestone500": "500 traqs! Half a thousand memories.",
+    "milestone1000": "1,000 traqs! Legendary status.",
+    "entryCount": "{count, plural, =1{1 traq} other{{count} traqs}}",
+    "@entryCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "moreEntries": "+{count} more",
+    "@moreEntries": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "changeDateLabel": "Change traq date, currently {date}",
+    "@changeDateLabel": {
+        "placeholders": {
+            "date": {
+                "type": "String"
+            }
+        }
+    },
+    "recapTitle": "Retraq",
+    "searchHint": "Search your traqs...",
+    "closeSearch": "Close search",
+    "searchEntries": "Search your traqs",
+    "searching": "Searching...",
+    "noSearchResults": "No traqs found. Try different words.",
+    "weekLabel": "Week",
+    "monthLabel": "Month",
+    "entriesLabel": "Entries",
+    "@entriesLabel": {
+        "description": "Left label on the top-level Entries/Insights pill on the Recap screen. Swaps the body between the browse view (Week/Month entries) and the embedded Stats content."
+    },
+    "insightsLabel": "Insights",
+    "@insightsLabel": {
+        "description": "Right label on the Entries/Insights pill, shows the collapsed Stats content inside Recap."
+    },
+    "weeklyRecap": "Week Retraqd",
+    "weeklyRecapStats": "{totalEntries} traqs · {activeDays} days · {preferredTime}",
+    "@weeklyRecapStats": {
+        "placeholders": {
+            "totalEntries": {
+                "type": "int"
+            },
+            "activeDays": {
+                "type": "int"
+            },
+            "preferredTime": {
+                "type": "String"
+            }
+        }
+    },
+    "noEntriesYet": "No traqs yet",
+    "noEntriesYetMessage": "Your traqs will appear here once you start writing.",
+    "noEntriesForWeek": "No traqs for this week.",
+    "previousWeek": "Previous week",
+    "nextWeek": "Next week",
+    "currentWeek": "Current week",
+    "thisWeekLabel": "This week",
+    "statsTitle": "Stats",
+    "statsSubtitle": "Your journey so far.",
+    "noStatsYet": "No stats yet",
+    "noStatsYetMessage": "Start traqing to see your patterns and streaks.",
+    "totalEntries": "Total Traqs",
+    "daysJournaled": "Days Traqed",
+    "currentStreak": "Current Streak",
+    "bestStreak": "Best Streak",
+    "streaksSection": "Streaks",
+    "longestThisMonth": "Longest This Month",
+    "entriesPerWeek": "Entries per week",
+    "daysSuffix": "days",
+    "mostActiveDay": "Most active day: {day}",
+    "@mostActiveDay": {
+        "placeholders": {
+            "day": {
+                "type": "String"
+            }
+        }
+    },
+    "onThisDayLastYear": "On this day last year...",
+    "moodTitle": "Mood",
+    "moodDistribution": "Distribution",
+    "moodAverage": "Average: {value}",
+    "@moodAverage": {
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "moodRough": "Rough",
+    "moodLow": "Low",
+    "moodNeutral": "Neutral",
+    "moodGood": "Good",
+    "moodAmazing": "Amazing",
+    "moodSelectorLabel": "Mood selector",
+    "moodButtonLabel": "{label} mood",
+    "@moodButtonLabel": {
+        "placeholders": {
+            "label": {
+                "type": "String"
+            }
+        }
+    },
+    "onboardingTitle1": "How've you been?\nWhat have you\nbeen up to?",
+    "onboardingBody1": "If those questions make your\nmind go blank, you're in the right place.",
+    "onboardingTitle2": "Retraq is your\nmemory backup.",
+    "onboardingBody2": "Jot down anything about your day —\na word, a sentence, whatever.\nAnything is a start.",
+    "onboardingTitle3": "Start simple.\nThat's the whole point.",
+    "onboardingBody3": "Want more features later?\nThey're all in settings,\nwaiting for when you're ready.",
+    "onboardingPageLabel": "Page {current} of {total}",
+    "@onboardingPageLabel": {
+        "placeholders": {
+            "current": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "nextButton": "Next",
+    "getStartedButton": "Drop your first traq",
+    "ageGateTitle": "Before we begin",
+    "ageGateDeniedTitle": "Sorry!",
+    "ageGateMessage": "Retraq is designed for users\naged {minAge} and older.",
+    "@ageGateMessage": {
+        "description": "Country-aware age threshold. {minAge} is resolved from the device locale (13 / 14 / 16 per COPPA + GDPR Art. 8 + Quebec Law 25). See locale_age_threshold.dart for the full table.",
+        "placeholders": {
+            "minAge": {
+                "type": "int",
+                "example": "13"
+            }
+        }
+    },
+    "ageGateDenied": "Retraq requires users to be {minAge} years or older.\nPlease come back when you're old enough!",
+    "@ageGateDenied": {
+        "description": "Country-aware denial message matching ageGateMessage threshold.",
+        "placeholders": {
+            "minAge": {
+                "type": "int",
+                "example": "13"
+            }
+        }
+    },
+    "ageConfirmButton": "I am {minAge} or older",
+    "@ageConfirmButton": {
+        "description": "Country-aware confirm label reflecting the regional threshold.",
+        "placeholders": {
+            "minAge": {
+                "type": "int",
+                "example": "13"
+            }
+        }
+    },
+    "ageDenyButton": "I am under {minAge}",
+    "@ageDenyButton": {
+        "description": "Country-aware deny label.",
+        "placeholders": {
+            "minAge": {
+                "type": "int",
+                "example": "13"
+            }
+        }
+    },
+    "ageGateContactGuardian": "If this was entered in error, please contact a parent or guardian.",
+    "almostThere": "Almost there!",
+    "welcomeBackTitle": "Welcome back",
+    "@welcomeBackTitle": {
+        "description": "Shown on the consent page when the user has prior consent on record (cross-install marker present). Replaces 'Almost there!' so reinstall users feel recognised. Consent itself is still required on every install."
+    },
+    "welcomeBackSubtitle": "We still need you to re-accept these, but we won't walk you through the intros again.",
+    "@welcomeBackSubtitle": {
+        "description": "Subtitle on the consent page for the returning-user path explaining why consent is still required."
+    },
+    "healthDisclaimer": "Retraq is a personal journaling app — not a medical or therapeutic tool. It does not provide health advice, diagnosis, or treatment. If you are in crisis, please contact a mental health professional or call {crisisContact}.",
+    "@healthDisclaimer": {
+        "description": "Health-disclaimer body. {crisisContact} is injected from CrisisContacts.formatInline for the user's locale. never hardcode the US/Canada 988 number; the helper resolves per-region.",
+        "placeholders": {
+            "crisisContact": {
+                "type": "String",
+                "example": "988 (988 Suicide & Crisis Lifeline)"
+            }
+        }
+    },
+    "healthDisclaimerCheckbox": "I acknowledge the Health Disclaimer",
+    "privacyPolicyCheckbox": "I have read and agree to the Privacy Policy",
+    "termsCheckbox": "I agree to the Terms of Use",
+    "notificationDialogTitle": "Stay on track",
+    "notificationDialogContent": "A gentle daily reminder can help you build a traqing habit. You can change or turn this off anytime in Settings.",
+    "notNow": "Not now",
+    "enableReminders": "Enable reminders",
+    "consentSaveFailed": "Failed to save consent. Please try again.",
+    "unlockBiometric": "Unlock Retraq",
+    "enterPin": "Enter your PIN",
+    "forgotPin": "Forgot PIN?",
+    "forgotPinMessage": "If you've forgotten your PIN, you can reset the app. This will permanently delete all your traqs and data. You can export first to save them.",
+    "resetApp": "Reset App",
+    "exportBeforeReset": "Export first",
+    "@exportBeforeReset": {
+        "description": "Button on the Forgot PIN dialog that lets the user export their data before the destructive reset."
+    },
+    "resetAppBiometricReason": "Confirm it's you before resetting Retraq",
+    "@resetAppBiometricReason": {
+        "description": "Biometric prompt shown before the destructive reset-app action fires."
+    },
+    "resetAppBiometricFailed": "Biometric check failed. Try again or cancel.",
+    "diagnosticsLabel": "Diagnostics",
+    "@diagnosticsLabel": {
+        "description": "Settings → Data section heading for the Sentry opt-in toggle."
+    },
+    "helpImproveRetraq": "Help improve Retraq",
+    "@helpImproveRetraq": {
+        "description": "Settings row title for the crash-reporting opt-in toggle."
+    },
+    "helpImproveRetraqBody": "Send anonymous crash reports so we can fix bugs. No traq content, mood, or timestamps are ever included.",
+    "@helpImproveRetraqBody": {
+        "description": "Settings row subtitle explaining the opt-in scope. Keep it short and truthful; the full details live in the privacy policy."
+    },
+    "keepUsageStats": "Keep usage stats on this device",
+    "@keepUsageStats": {
+        "description": "Settings row title for the local-counter kill switch. Controls whether feature counters / session stamps are written to the local DB. Never sent anywhere."
+    },
+    "keepUsageStatsBody": "Local counters only. Never sent anywhere. Off = your taps aren't counted.",
+    "@keepUsageStatsBody": {
+        "description": "Settings row subtitle for the usage-stats kill switch. Emphasises the local-only nature to avoid confusion with Diagnostics."
+    },
+    "resetAppUndoToast": "Erasing in {seconds}s — tap to cancel",
+    "@resetAppUndoToast": {
+        "description": "Non-dismissible SnackBar shown for 10 seconds after the user confirms a Forgot-PIN reset. Tapping the action cancels the timer and leaves all data intact.",
+        "placeholders": {
+            "seconds": {
+                "type": "int"
+            }
+        }
+    },
+    "resetAppUndoCancel": "Cancel",
+    "@resetAppUndoCancel": {
+        "description": "SnackBar action label on the reset-countdown toast.."
+    },
+    "resetAppCancelled": "Reset cancelled. Your data is safe.",
+    "@resetAppCancelled": {
+        "description": "Confirmation toast after the user cancels the reset within the 10-second undo window.."
+    },
+    "wrongPinMessage": "Wrong PIN. {remaining, plural, =1{1 attempt} other{{remaining} attempts}} remaining.",
+    "@wrongPinMessage": {
+        "placeholders": {
+            "remaining": {
+                "type": "int"
+            }
+        }
+    },
+    "lockoutMessage": "Too many attempts. Wait {seconds}s.",
+    "@lockoutMessage": {
+        "placeholders": {
+            "seconds": {
+                "type": "int"
+            }
+        }
+    },
+    "updatedPolicies": "Updated Policies",
+    "reconsentMessage": "We've updated our Privacy Policy, Terms of Use, and/or Health Disclaimer. Please review and accept to continue.",
+    "continueButton": "Continue",
+    "appearanceTitle": "Appearance",
+    "appearanceSubtitle": "Choose how Retraq feels to you.",
+    "themeSystem": "System",
+    "themeDay": "Day",
+    "themeNight": "Night",
+    "securityTitle": "Security",
+    "securitySubtitle": "Keep your traqs private.",
+    "appLock": "App Lock",
+    "appLockEnabled": "PIN required to open Retraq",
+    "appLockDisabled": "No lock — anyone can open the app",
+    "changePin": "Change PIN",
+    "changePinSubtitle": "Set a new 4-digit PIN",
+    "biometricUnlock": "Biometric Unlock",
+    "biometricSubtitle": "Use fingerprint or face to unlock",
+    "biometricUnavailable": "Biometrics not available on this device",
+    "biometricEnabledMessage": "Biometric unlock enabled — you'll be prompted next time you open Retraq",
+    "appLockA11y": "App lock",
+    "biometricUnlockA11y": "Biometric unlock",
+    "preferencesTitle": "Preferences",
+    "allDayNotes": "All Day Notes",
+    "allDayNotesSubtitle": "One traq or split AM/PM",
+    "allDayOption": "All Day",
+    "openingPrompt": "Opening Prompt",
+    "asksAboutToday": "Asks about today",
+    "asksAboutYesterday": "Asks about yesterday",
+    "journalEntryTitle": "Traq Title",
+    "journalEntryTitleSubtitle": "Show or hide title fields in new traqs",
+    "moodTracking": "Mood Tracking",
+    "moodTrackingSubtitle": "Log how you feel with each traq",
+    "requireMood": "Require Mood",
+    "requireMoodSubtitle": "Must pick a mood before saving",
+    "moodOnlyEntries": "Mood-Only Traqs",
+    "moodOnlyEntriesSubtitle": "Save traqs with just a mood, no text",
+    "advancedTitle": "Advanced",
+    "enterToSave": "Enter to Save",
+    "enterToSaveSubtitle": "Press Enter to save traq instead of new line",
+    "bulletPointsOnEnter": "Bullet Points on Enter",
+    "bulletPointsSubtitle": "Auto-insert • when pressing Enter",
+    "bionicReading": "Bionic Reading",
+    "bionicReadingSubtitle": "Bolds the start of each word for faster reading",
+    "onDeviceAiRecap": "On-Device AI Recap",
+    "onDeviceAiRecapSubtitle": "Use your phone's built-in AI to write weekly recaps. Entries never leave your device.",
+    "onDeviceAiRecapUnavailable": "Not supported on this device",
+    "weekStartsOn": "Week Starts On",
+    "amPmSwitchesAt": "AM/PM Switches At",
+    "weekStartsOnA11y": "Week starts on {day}",
+    "@weekStartsOnA11y": {
+        "placeholders": {
+            "day": {
+                "type": "String"
+            }
+        }
+    },
+    "amPmSwitchesAtA11y": "AM/PM switches at {time}",
+    "@amPmSwitchesAtA11y": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "mondayName": "Monday",
+    "tuesdayName": "Tuesday",
+    "wednesdayName": "Wednesday",
+    "thursdayName": "Thursday",
+    "fridayName": "Friday",
+    "saturdayName": "Saturday",
+    "sundayName": "Sunday",
+    "yourData": "Your Data",
+    "exportLabel": "Export",
+    "exportJson": "Export JSON",
+    "exportText": "Export Text",
+    "importLabel": "Import",
+    "importFromBackup": "Import from Backup",
+    "importAccepts": "Accepts Retraq JSON backup files only",
+    "exportScopeTitle": "Export scope",
+    "exportScopeContent": "Export this week's traqs or all traqs?\n\nThe exported file will contain your personal traqs and settings. Keep it somewhere safe.",
+    "thisWeek": "This Week",
+    "allEntries": "All Traqs",
+    "importConfirmTitle": "Import {filename}?",
+    "@importConfirmTitle": {
+        "placeholders": {
+            "filename": {
+                "type": "String"
+            }
+        }
+    },
+    "importConfirmContent": "This will add traqs from this backup. Duplicates will be skipped.",
+    "importButton": "Import",
+    "importSuccess": "{imported, plural, =1{Imported 1 traq} other{Imported {imported} traqs}}{skipped, plural, =0{} =1{, 1 duplicate skipped} other{, {skipped} duplicates skipped}}{errors, plural, =0{} =1{, 1 error} other{, {errors} errors}}",
+    "@importSuccess": {
+        "description": "Summary shown after a successful import. Uses ICU plurals for each counter; skipped/errors collapse to empty when zero.",
+        "placeholders": {
+            "imported": {
+                "type": "int"
+            },
+            "skipped": {
+                "type": "int"
+            },
+            "errors": {
+                "type": "int"
+            }
+        }
+    },
+    "importFailed": "Import failed. The file may be corrupted or in the wrong format.",
+    "filePickerFailed": "Could not open file picker. Please try again.",
+    "exportFailed": "Export failed. Please try again.",
+    "deleteAllData": "Delete All Data",
+    "deleteAllDataTitle": "Delete all data?",
+    "deleteAllDataContent": "This will permanently delete all traqs and reset your settings. This cannot be undone.\n\nConsider exporting your data first from the options above.",
+    "typeDeleteToConfirm": "Type DELETE to confirm:",
+    "typeDeleteError": "Type DELETE to confirm",
+    "deleteEverything": "Delete Everything",
+    "allDataDeleted": "All data has been deleted.",
+    "allDataDeletedTitle": "All data deleted",
+    "allDataDeletedBody": "Your traqs, settings and consent records have been cleared. Retraq will close now — reopen it to start fresh.",
+    "closeAppButton": "Close Retraq",
+    "deleteDataFailed": "Failed to delete data. Please try again.",
+    "editEntry": "Edit Traq",
+    "titleHint": "Title",
+    "entryTextHint": "Traq text...",
+    "entryTextLabel": "Traq text",
+    "deleteEntryTooltip": "Delete traq",
+    "saveChanges": "Save Changes",
+    "entryEmptyMessage": "Traq is empty. Add some text, a title, or a mood.",
+    "entrySavedOverlay": "Traq saved",
+    "niceOne": "Nice one ✓",
+    "dismissLabel": "Dismiss",
+    "setPinTitle": "Set a PIN",
+    "confirmPinTitle": "Confirm PIN",
+    "setPinSubtitle": "Choose a 4-digit PIN",
+    "confirmPinSubtitle": "Enter the same PIN again",
+    "choosePinSubtitle": "Choose a {length}-digit PIN",
+    "@choosePinSubtitle": {
+        "placeholders": {
+            "length": {
+                "type": "int"
+            }
+        }
+    },
+    "pinTooEasy": "Too easy to guess. Choose a different PIN.",
+    "pinMismatch": "PINs did not match. Try again.",
+    "fourDigits": "4 digits",
+    "sixDigits": "6 digits",
+    "setPinButton": "Set PIN",
+    "entryActions": "Traq actions",
+    "editAction": "Edit",
+    "shareAction": "Share",
+    "deleteAction": "Delete",
+    "deleteEntryTitle": "Delete traq?",
+    "deleteEntryMessage": "Are you sure? This can't be undone.",
+    "deleteLabel": "Delete",
+    "deleteFailedMessage": "Failed to delete. Please try again.",
+    "numberPadDisabled": "Number pad, disabled",
+    "deleteDigit": "Delete",
+    "biometricButton": "Biometric",
+    "noEntriesForDay": "No entries",
+    "@noEntriesForDay": {
+        "description": "Shown in WeekDayList when a day has zero journal entries."
+    },
+    "dailyAtTime": "Daily at {time}",
+    "@dailyAtTime": {
+        "description": "NudgeCard reminder-time summary, e.g. 'Daily at 8:30 PM'. {time} is pre-formatted to user locale.",
+        "placeholders": {
+            "time": {
+                "type": "String",
+                "example": "8:30 PM"
+            }
+        }
+    },
+    "discardAndSwitchButton": "Discard & Switch",
+    "@discardAndSwitchButton": {
+        "description": "Middle action in the AM/PM switch dialog shown when the user has typed entry text. Drops the typed text and flips the day period without saving."
+    },
+    "plaintextExportWarningTitle": "Share this file?",
+    "@plaintextExportWarningTitle": {
+        "description": "Title of the warning dialog shown before invoking the share sheet for a plaintext export."
+    },
+    "plaintextExportWarningBody": "This file contains your journal in a readable format. The app you pick will receive everything you've written. Only share with apps you trust, like your own file manager or cloud drive.",
+    "@plaintextExportWarningBody": {
+        "description": "Body copy of the plaintext-export warning dialog. Reads in the brand voice: plain, non-alarmist, informative."
+    },
+    "plaintextExportShareAnyway": "Share anyway",
+    "@plaintextExportShareAnyway": {
+        "description": "Confirm button on the plaintext-export warning dialog."
+    },
+    "viewLabel": "View",
+    "@viewLabel": {
+        "description": "Trailing button on the onboarding consent row that opens the legal document. Separated from the checkbox label tap target to avoid accidental navigation when toggling consent."
+    },
+    "resetToTodayLabel": "Reset to today",
+    "@resetToTodayLabel": {
+        "description": "Semantics + delete-icon tooltip on the date-override chip when an alternate day has been picked for the entry."
+    },
+    "nudgeSkipIfJournaledHint": "We'll only remind you if you haven't journaled yet.",
+    "@nudgeSkipIfJournaledHint": {
+        "description": "Subtitle under the nudge time-picker explaining that the reminder is suppressed on days the user already journaled."
+    },
+    "nudgeChangeTime": "Change Time",
+    "@nudgeChangeTime": {
+        "description": "Label on the Change Time button in the NudgeCard."
+    },
+    "nudgeCardBody": "Get a quick nudge to drop a breadcrumb before you forget your day.",
+    "@nudgeCardBody": {
+        "description": "Body copy inside the Settings NudgeCard explaining the purpose of the daily reminder."
+    },
+    "weekEntryCountSnackbar": "{range}: {count, plural, =0{no entries} =1{1 entry} other{{count} entries}}",
+    "@weekEntryCountSnackbar": {
+        "description": "Shown when tapping a bar on the weekly-trend chart. {range} is a date-range string (e.g. 'Mar 3 – Mar 9'); {count} is the number of entries in that week.",
+        "placeholders": {
+            "range": {
+                "type": "String",
+                "example": "Mar 3 – Mar 9"
+            },
+            "count": {
+                "type": "int",
+                "example": "3"
+            }
+        }
+    },
+    "statisticsOverview": "Statistics overview",
+    "@statisticsOverview": {
+        "description": "Screen-reader label for the aggregated stats card grid."
+    },
+    "entryForDayPreview": "Entry for {dayLabel}: {preview}",
+    "@entryForDayPreview": {
+        "description": "Screen-reader label for a recent-day card showing a snippet of its entry. {dayLabel} is a formatted day name (e.g. 'Monday'); {preview} is the first few words of the entry.",
+        "placeholders": {
+            "dayLabel": {
+                "type": "String",
+                "example": "Monday"
+            },
+            "preview": {
+                "type": "String",
+                "example": "Ran errands, forgot the milk..."
+            }
+        }
+    },
+    "pinDotsLabel": "{length} of {maxLength} digits entered{error}",
+    "@pinDotsLabel": {
+        "placeholders": {
+            "length": {
+                "type": "int"
+            },
+            "maxLength": {
+                "type": "int"
+            },
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "monthAtGlance": "Month at a glance",
+    "previousMonth": "Previous month",
+    "nextMonth": "Next month",
+    "dayMo": "Mo",
+    "dayTu": "Tu",
+    "dayWe": "We",
+    "dayTh": "Th",
+    "dayFr": "Fr",
+    "daySa": "Sa",
+    "daySu": "Su",
+    "calendarDayA11y": "Day {day}",
+    "@calendarDayA11y": {
+        "placeholders": {
+            "day": {
+                "type": "int"
+            }
+        }
+    },
+    "calendarDayTodaySuffix": ", today",
+    "calendarDayHasEntriesSuffix": ", has entries",
+    "calendarDaySelectedSuffix": ", selected",
+    "entryCardA11y": "Journal traq for {dateLabel}",
+    "@entryCardA11y": {
+        "placeholders": {
+            "dateLabel": {
+                "type": "String"
+            }
+        }
+    },
+    "entryOptionsTooltip": "Traq options",
+    "themeLabel": "{label} theme",
+    "@themeLabel": {
+        "placeholders": {
+            "label": {
+                "type": "String"
+            }
+        }
+    },
+    "prompt0": "Just the highlights...",
+    "prompt1": "What did you get up to today?",
+    "prompt2": "Anything worth remembering?",
+    "prompt3": "Drop a breadcrumb for future you.",
+    "prompt4": "Sum it up in a few words.",
+    "prompt5": "What was the vibe today?",
+    "prompt6": "One good thing that happened...",
+    "prompt7": "What took up most of your brain today?",
+    "prompt8": "If today were a headline, what would it be?",
+    "prompt9": "What would you tell a friend about today?",
+    "prompt10": "The most unexpected part of today was...",
+    "prompt11": "Three words to describe today.",
+    "prompt12": "What did you learn today?",
+    "prompt13": "What are you grateful for right now?",
+    "prompt14": "What drained your energy today?",
+    "prompt15": "What gave you energy today?",
+    "prompt16": "Describe today in one sentence.",
+    "prompt17": "Something you noticed today...",
+    "prompt18": "A thought that kept coming back...",
+    "prompt19": "The best part of today was...",
+    "prompt20": "Something you want to remember...",
+    "prompt21": "How are you feeling right now?",
+    "prompt22": "What made you smile today?",
+    "prompt23": "A small win from today...",
+    "prompt24": "What would you do differently?",
+    "prompt25": "What are you looking forward to tomorrow?",
+    "prompt26": "Something that surprised you...",
+    "prompt27": "A moment of calm from today...",
+    "nudgeDescription": "Get a quick nudge to drop a breadcrumb before you forget your day.",
+    "changeTime": "Change Time",
+    "shareDay": "Share Day",
+    "noEntryForDay": "No traqs for this day",
+    "noEntriesThisMonth": "No traqs this month.",
+    "notifTitle": "Retraq",
+    "notifDaily0": "Quick — what happened today? Even one word counts.",
+    "notifDaily1": "30 seconds. One traq. You'll thank yourself later.",
+    "notifDaily2": "Jot something down before today disappears.",
+    "notifDaily3": "Future you wants to know what happened today.",
+    "notifDaily4": "Don't let today vanish. Drop a traq.",
+    "notifWeekly0": "Your week's been retraqd. Take a look back.",
+    "notifWeekly1": "Here's what you got up to this week.",
+    "notifReengage0": "It's been a few days. Drop a quick traq so you don't lose the week.",
+    "notifReengage1": "Your week is disappearing. Takes 10 seconds to save it.",
+    "settingsLegalFooter": "{appName} v{version}",
+    "@settingsLegalFooter": {
+        "placeholders": {
+            "appName": {
+                "type": "String"
+            },
+            "version": {
+                "type": "String"
+            }
+        }
+    },
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "termsOfUse": "Terms of Use",
+    "healthDisclaimerTitle": "Health Disclaimer",
+    "legalFooterTerms": "Terms",
+    "legalFooterHealth": "Health",
+    "legalFooterLicenses": "Licenses",
+    "exportPiiNote": "The exported file will contain your personal traqs and settings. Keep it somewhere safe."
 }

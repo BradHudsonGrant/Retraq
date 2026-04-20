@@ -6,17 +6,16 @@ import 'package:retraq/utils/test_keys.dart';
 
 import '../test_helpers.dart';
 
-/// Task 6.10 (partial) — Smoke tests for AppShell.
+/// Smoke tests for AppShell.
 ///
-/// Scope: verify the three-tab NavigationBar renders (Task 2.5
-/// collapsed Stats into Recap; bottom nav is now Jot/Recap/Settings),
+/// Scope: verify the three-tab NavigationBar renders (Stats is
+/// collapsed into Recap; bottom nav is now Jot/Recap/Settings),
 /// all three tabs are reachable by their TestKey, and the
 /// currentIndex behaviour responds correctly to tab taps. We do NOT
 /// pumpAndSettle through the 360ms emphasized page-view curve
 /// because several tabs (Home, Recap) rely on Drift streams that
 /// require a full initTestDatabase() fixture — those integration-
-/// level assertions belong in an end-to-end journey test
-/// (Task 6.1 follow-up).
+/// level assertions belong in an end-to-end journey test.
 ///
 /// The value here is guarding against a NavigationBar structural
 /// regression (wrong destination count, missing keys, null-unsafe
@@ -55,7 +54,7 @@ void main() {
 
   testWidgets('has three navigation destinations (Jot / Recap / Settings)',
       (tester) async {
-    // Task 2.5 — down from 4 to 3. Stats now lives inside Recap's
+    // down from 4 to 3. Stats now lives inside Recap's
     // Insights pane rather than as a top-level tab.
     await tester.pumpWidget(wrapScreen(
       buildShell(),
@@ -77,13 +76,13 @@ void main() {
     expect(find.byKey(TestKeys.navJournalTab), findsOneWidget);
     expect(find.byKey(TestKeys.navRecapTab), findsOneWidget);
     expect(find.byKey(TestKeys.navSettingsTab), findsOneWidget);
-    // Task 2.5 — Stats no longer exists at the shell level. The
+    // Stats no longer exists at the shell level. The
     // TestKey itself remains in test_keys.dart for any lingering
     // tests that still reference it; expect it NOT to render here.
     expect(find.byKey(TestKeys.navStatsTab), findsNothing,
         reason:
-            'Stats must not be a top-level tab after Task 2.5. If this '
-            'fires, the collapse-into-Recap regressed.');
+            'Stats must not be a top-level tab. If this fires, '
+            'the collapse-into-Recap regressed.');
     await flushDriftTimers(tester);
   });
 
@@ -103,9 +102,9 @@ void main() {
   // screens' full DB fixtures (Drift streams) to settle without
   // pending-timer warnings. The structural checks above (4
   // destinations, 4 test keys, starts-on-index-0) catch the
-  // regression surface Task 6.10 cares about; tab-transition
-  // behaviour belongs in an end-to-end journey test (Task 6.1
-  // follow-up) with the full integration harness.
+  // regression surface this file cares about; tab-transition
+  // behaviour belongs in an end-to-end journey test with the full
+  // integration harness.
 
   testWidgets('page view scroll is disabled (NeverScrollableScrollPhysics)',
       (tester) async {

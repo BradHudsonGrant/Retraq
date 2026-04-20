@@ -3,12 +3,13 @@ import 'package:equatable/equatable.dart';
 /// User settings — singleton pattern.
 /// Plain Dart class — Drift table definition lives in database_service.dart.
 ///
-/// Task 1.9 — equality now comes from [Equatable] via [props]. The manual
-/// `==` / `hashCode` pair previously enumerated 18 fields; the matching
-/// props list below is the single source of truth and a dedicated test
-/// (`test/models/user_settings_equatable_test.dart`) guards the count so
-/// any new setting that forgets to update `props` fails loudly rather
-/// than silently breaking the RetraqApp settings-stream rebuild.
+/// Equality comes from [Equatable] via [props]. The manual `==` /
+/// `hashCode` pair previously enumerated 18 fields; the matching
+/// props list below is the single source of truth and a dedicated
+/// test (`test/models/user_settings_equatable_test.dart`) guards
+/// the count so any new setting that forgets to update `props`
+/// fails loudly rather than silently breaking the RetraqApp
+/// settings-stream rebuild.
 class UserSettings extends Equatable {
   // 0 = system (default), 1 = light, 2 = dark
   static const int themeModeSystem = 0;

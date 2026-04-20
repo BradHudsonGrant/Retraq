@@ -4,7 +4,7 @@ import 'package:retraq/services/database_service.dart';
 
 import '../test_helpers.dart';
 
-/// Task 6.4 (partial) — concurrent-write regression tests for
+/// concurrent-write regression tests for
 /// EntryRepository.
 ///
 /// Scope: race-condition surface where a user mashes the save button,
@@ -17,7 +17,7 @@ import '../test_helpers.dart';
 /// Stream-ordering races (HomeScreen / StatsScreen subscriber
 /// out-of-order emissions) are harder to test without FakeAsync; they
 /// live in a separate follow-up. Lockout controller races are covered
-/// in the dedicated lockout_controller_test.dart expansion (Task 6.15).
+/// in the dedicated lockout_controller_test.dart expansion.
 void main() {
   setUpAll(() async {
     await initTestDatabase();

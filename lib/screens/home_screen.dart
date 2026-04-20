@@ -51,9 +51,9 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   bool get wantKeepAlive => true;
 
-  // Task 1.2 — form state (text, mood, date override, last saved id)
-  // lives on a ChangeNotifier so it's independently testable and
-  // shared cleanly between the input widgets, validation flow, and
+  // Form state (text, mood, date override, last saved id) lives on
+  // a ChangeNotifier so it's independently testable and shared
+  // cleanly between the input widgets, validation flow, and
   // post-save overlay. Screen attaches a listener in initState and
   // calls setState inside it so the existing rebuild loop is
   // preserved.
@@ -66,8 +66,8 @@ class _HomeScreenState extends State<HomeScreen>
   bool _isSaving = false;
   bool _showSaveSuccess = false;
   String? _milestoneMessage;
-  // Task 2.15 — how long the current overlay should hold before the
-  // exit fade. 1000ms for milestones / first ten saves, 400ms for
+  // How long the current overlay should hold before the exit
+  // fade. 1000ms for milestones / first ten saves, 400ms for
   // routine power-user saves.
   Duration _overlayHoldDuration = const Duration(milliseconds: 1000);
   bool _isAm = true;
@@ -76,10 +76,10 @@ class _HomeScreenState extends State<HomeScreen>
   StreamSubscription<int>? _totalCountSub;
   StreamSubscription<List<JournalEntry>>? _yesterdaySub;
   StreamSubscription<List<JournalEntry>>? _dayBeforeSub;
-  // Task 8.10 — cached total entry count. Sourced from
-  // watchTotalEntryCount() so we don't block the save path on a
-  // synchronous count query. Starts at 0 until the first stream
-  // event arrives (matches the empty-DB state).
+  // Cached total entry count. Sourced from watchTotalEntryCount()
+  // so we don't block the save path on a synchronous count query.
+  // Starts at 0 until the first stream event arrives (matches the
+  // empty-DB state).
   int _totalCount = 0;
   List<JournalEntry> _yesterdayEntries = [];
   List<JournalEntry> _dayBeforeEntries = [];
@@ -101,10 +101,10 @@ class _HomeScreenState extends State<HomeScreen>
   void initState() {
     super.initState();
     _form = HomeFormController();
-    // Task 1.2 — rebuild when the form's mood / date override /
-    // last-saved-id changes. Text-controller rebuilds continue to
-    // flow through their own Listenable chain (TextField listens to
-    // the controller directly).
+    // Rebuild when the form's mood / date override / last-saved-id
+    // changes. Text-controller rebuilds continue to flow through
+    // their own Listenable chain (TextField listens to the
+    // controller directly).
     _form.addListener(_onFormChanged);
     WidgetsBinding.instance.addObserver(this);
     _initStreams();
@@ -142,16 +142,15 @@ class _HomeScreenState extends State<HomeScreen>
       if (oldAskAboutToday != s.askAboutToday) _subscribeRecentDays();
     }
 
-    // Task 8.6 — pause our 4 Drift watcher subscriptions when the
-    // user is on another tab (Recap or Settings). AppShell installs
-    // the `ActiveTabScope`; when its `activeIndex` flips away from
-    // 0 (Jot), Flutter calls this method and we pause so off-screen
+    // Pause the 4 Drift watcher subscriptions when the user is on
+    // another tab (Recap or Settings). AppShell installs the
+    // `ActiveTabScope`; when its `activeIndex` flips away from 0
+    // (Jot), Flutter calls this method and we pause so off-screen
     // stream emissions don't trigger rebuild work. Resuming restores
     // the subscriptions and Drift re-emits the latest snapshot.
     //
     // Unit tests that pump HomeScreen without an AppShell ancestor
-    // see `isActive == true` (no scope → no pausing), matching the
-    // pre-8.6 behaviour.
+    // see `isActive == true` (no scope → no pausing).
     final isActive = ActiveTabScope.isActive(context, tabIndex: 0);
     if (isActive != _isTabActive) {
       _isTabActive = isActive;
@@ -160,7 +159,7 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   /// Whether the Home tab is currently the visible one. Drives
-  /// stream-subscription pause/resume (Task 8.6).
+  /// stream-subscription pause/resume.
   bool _isTabActive = true;
 
   void _applyTabActiveState() {
@@ -199,11 +198,11 @@ class _HomeScreenState extends State<HomeScreen>
           setState(() => _weekCount = count);
         });
 
-    // Task 8.10 — keep a running cache of the total entry count so the
-    // save-tap path doesn't have to await a count() query before
-    // deciding milestone/overlay length. Drift pushes a new value
-    // whenever anything in journal_entries changes, so the cache is
-    // always in sync.
+    // Keep a running cache of the total entry count so the save-tap
+    // path doesn't have to await a count() query before deciding
+    // milestone/overlay length. Drift pushes a new value whenever
+    // anything in journal_entries changes, so the cache is always
+    // in sync.
     _totalCountSub?.cancel();
     _totalCountSub = _entries
         .watchTotalEntryCount()
@@ -269,10 +268,9 @@ class _HomeScreenState extends State<HomeScreen>
   String get _accentWord =>
       '${formatDateLabel(_entryDate, capitalize: false)}?';
 
-  /// Task 7.6 — localize hero prompts via already-existing
-  /// `heroPrompt0..6` ARB keys (previously hardcoded English despite
-  /// the keys being ready). Rotation still based on day-of-year so the
-  /// prompt changes daily without UI state.
+  /// Localize hero prompts via already-existing `heroPrompt0..6`
+  /// ARB keys. Rotation based on day-of-year so the prompt changes
+  /// daily without UI state.
   String _resolveHeroPrompt(L10n l10n) {
     final now = DateTime.now();
     final dayOfYear = now.difference(DateTime(now.year, 1, 1)).inDays;
@@ -293,7 +291,7 @@ class _HomeScreenState extends State<HomeScreen>
     return [
       const SizedBox(height: AppSpacing.md),
 
-      // Hero prompt (Task 7.6 — localized via _resolveHeroPrompt).
+      // Hero prompt.
       // Brand mark previously sat here; removed so the hero copy
       // anchors the top of every tab and the rest of the content
       // moves up by ~40px. The app-icon-level branding lives on
@@ -348,8 +346,7 @@ class _HomeScreenState extends State<HomeScreen>
         const SizedBox(height: AppSpacing.md),
       ],
 
-      // Entry title (optional).
-      // Task 1.2 — molecule extraction; see lib/widgets/molecules/title_field.dart.
+      // Entry title (optional). See lib/widgets/molecules/title_field.dart.
       if (_settings?.showEntryTitle ?? false) ...[
         TitleField(
           controller: _form.titleCtrl,
@@ -397,10 +394,9 @@ class _HomeScreenState extends State<HomeScreen>
 
       const SizedBox(height: AppSpacing.lg),
 
-      // Progress bar
-      // Task 1.2 — extracted into lib/widgets/molecules/progress_bar.dart
-      // so home_screen stays testable without pulling in its full
-      // state machine.
+      // Progress bar. Extracted into
+      // lib/widgets/molecules/progress_bar.dart so home_screen stays
+      // testable without pulling in its full state machine.
       ProgressBar(
         weekCount: _weekCount,
         bionicReadingEnabled: _settings?.bionicReadingEnabled ?? false,
@@ -532,8 +528,8 @@ class _HomeScreenState extends State<HomeScreen>
             ),
           ],
           if (_yesterdayEntries.isEmpty && _dayBeforeEntries.isEmpty)
-            // Task 2.13 — warmer empty-recent state (headline + body +
-            // soft icon) instead of a flat dimmed one-liner.
+            // Warmer empty-recent state (headline + body + soft
+            // icon) instead of a flat dimmed one-liner.
             const Padding(
               padding: EdgeInsets.only(top: AppSpacing.xl),
               child: EmptyRecentState(),
@@ -636,8 +632,8 @@ class _HomeScreenState extends State<HomeScreen>
             ),
           ],
           if (_yesterdayEntries.isEmpty && _dayBeforeEntries.isEmpty)
-            // Task 2.13 — warmer empty-recent state in the phone layout
-            // too. Drop the bionic wrapper + opacity trick and use the
+            // Warmer empty-recent state in the phone layout too.
+            // Drop the bionic wrapper + opacity trick and use the
             // dedicated widget.
             const Padding(
               padding: EdgeInsets.only(top: AppSpacing.sm),
@@ -670,10 +666,10 @@ class _HomeScreenState extends State<HomeScreen>
     final l10n = L10n.of(context)!;
     final hasText = _cleanText(_form.entryCtrl.text).isNotEmpty;
     if (hasText) {
-      // Task 2.8 — add a third "Discard & Switch" action so users who
-      // made an accidental entry aren't forced to save it before
-      // flipping the period. Matches the three-action pattern already
-      // used elsewhere in the app.
+      // Add a third "Discard & Switch" action so users who made an
+      // accidental entry aren't forced to save it before flipping
+      // the period. Matches the three-action pattern already used
+      // elsewhere in the app.
       final choice = await showDialog<String>(
         context: context,
         builder:
@@ -721,9 +717,8 @@ class _HomeScreenState extends State<HomeScreen>
     _form.titleCtrl.clear();
   }
 
-  // Task 1.2 — lifted to `lib/utils/entry_text_cleaner.dart`
-  // (pure function, unit-tested). Kept as a thin instance forwarder
-  // so existing call sites don't need to change.
+  // Thin instance forwarder for `cleanEntryText` so existing call
+  // sites don't need to change.
   String _cleanText(String raw) => cleanEntryText(raw);
 
   Future<void> _saveEntry() async {
@@ -735,10 +730,10 @@ class _HomeScreenState extends State<HomeScreen>
     final moodOnlyEntries = _settings?.moodOnlyEntries ?? false;
     final hasText = text.isNotEmpty;
 
-    // Task 1.2 — validation lifted to HomeFormController.validate so
-    // the rule (text OR mood-only-with-mood; mood globally required
-    // when moodRequired) is directly unit-testable without booting
-    // the screen.
+    // Validation lives on HomeFormController.validate so the rule
+    // (text OR mood-only-with-mood; mood globally required when
+    // moodRequired) is directly unit-testable without booting the
+    // screen.
     final validation = _form.validate(
       textCleaner: _cleanText,
       moodEnabled: moodEnabled,
@@ -747,8 +742,8 @@ class _HomeScreenState extends State<HomeScreen>
     );
     switch (validation) {
       case HomeFormValidation.missingText:
-        // Task 7.18 — gate the shake through AppMotion so reduce-motion
-        // users get the validation feedback via the SnackBar only, no
+        // Gate the shake through AppMotion so reduce-motion users
+        // get the validation feedback via the SnackBar only, no
         // 300ms animation. WCAG 2.3.3 / 2.2.2.
         if (!AppMotion.reduce(context)) {
           _shakeController.forward(from: 0);
@@ -802,16 +797,16 @@ class _HomeScreenState extends State<HomeScreen>
 
     if (!mounted) return;
 
-    // Task 8.10 — read the cached total rather than awaiting another
-    // count() query. The watchTotalEntryCount subscription set up in
-    // _initStreams keeps _totalCount current, and Drift will emit the
-    // post-insert value on its next tick. Add 1 optimistically so the
-    // milestone check sees the just-saved entry in the same frame
-    // without waiting for the stream event.
+    // Read the cached total rather than awaiting another count()
+    // query. The watchTotalEntryCount subscription set up in
+    // _initStreams keeps _totalCount current, and Drift will emit
+    // the post-insert value on its next tick. Add 1 optimistically
+    // so the milestone check sees the just-saved entry in the same
+    // frame without waiting for the stream event.
     final totalCount = _totalCount + 1;
 
-    // Task 1.2 — milestone copy resolved by the `milestones.dart`
-    // utility so it can be exercised independently of this screen.
+    // Milestone copy is resolved by `milestones.dart` so it can be
+    // exercised independently of this screen.
     final milestone = milestoneMessageFor(totalCount, l10n);
 
     FocusScope.of(context).unfocus();
@@ -822,9 +817,9 @@ class _HomeScreenState extends State<HomeScreen>
     // tree (text controllers, recent day cards) on the same frame as the
     // overlay's elastic entry causes a visible jank. Defer the clear to the
     // dismissal callback when the overlay is already mid-fade-out.
-    // Task 2.15 — keep the full ~1000ms dwell for milestone saves and
-    // the first ten overall; drop to 400ms for routine saves afterward
-    // so frequent journaling doesn't feel blocked between thoughts.
+    // Keep the full ~1000ms dwell for milestone saves and the first
+    // ten overall; drop to 400ms for routine saves afterward so
+    // frequent journaling doesn't feel blocked between thoughts.
     final isMilestone = milestone != null;
     final shortDwell = !isMilestone && totalCount > 10;
     _form.setLastSavedEntryId(savedId);
@@ -840,12 +835,12 @@ class _HomeScreenState extends State<HomeScreen>
     // Check for in-app review prompt (fires once at 5th entry)
     ReviewService.instance.checkAndPrompt(totalCount);
 
-    // Refresh home screen widget with latest data.
-    // Task 8.11 — explicit fire-and-forget. The update hops a platform
-    // channel and can spend a few ms marshalling; we don't want the
-    // save-tap UI path blocked on it, and the save-success overlay is
-    // already visible by this point. Errors inside update() are
-    // swallowed and logged via AppLog (Task 1.13).
+    // Refresh home screen widget with latest data. Explicit
+    // fire-and-forget — the update hops a platform channel and can
+    // spend a few ms marshalling; we don't want the save-tap UI
+    // path blocked on it, and the save-success overlay is already
+    // visible by this point. Errors inside update() are swallowed
+    // and logged via AppLog.
     unawaited(WidgetService.instance.update());
 
     // Cancel/reschedule today's reminder so users who already journaled
@@ -859,7 +854,7 @@ class _HomeScreenState extends State<HomeScreen>
     }
   }
 
-  // Task 1.2 — `_milestoneForCount` lifted to
+  // `_milestoneForCount` lifted to
   // `lib/utils/milestones.dart::milestoneMessageFor`. Screen callers
   // use that utility directly; test coverage lives beside it.
 }

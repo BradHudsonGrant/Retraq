@@ -1,4 +1,4 @@
-/// Task 12.3 — Country-aware minimum self-attestation age for the
+/// Country-aware minimum self-attestation age for the
 /// onboarding age gate.
 ///
 /// Regulatory basis:
@@ -29,7 +29,7 @@
 /// - **User self-attests ≥ threshold**: proceed to consent flow.
 /// - **User self-attests < threshold**: show the denial screen.
 ///   No parental-consent flow in v1 — requires counsel-reviewed
-///   verified-consent UX (Task 12.12 follow-up). Denial persists
+///   verified-consent UX. Denial persists
 ///   via secure storage (existing `ageDeniedSecureKey` path).
 ///
 /// When the counsel-reviewed parental-consent page lands (v1.1+),

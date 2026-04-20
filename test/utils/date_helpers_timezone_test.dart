@@ -3,15 +3,14 @@ import 'package:retraq/utils/date_helpers.dart';
 import 'package:timezone/data/latest.dart' as tzdata;
 import 'package:timezone/timezone.dart' as tz;
 
-/// Task 6.2 — Timezone + DST edge-case tests for `date_helpers.dart`.
+/// Timezone + DST edge-case tests for `date_helpers.dart`.
 ///
 /// Scope: pure functions that take a `DateTime` argument and return
 /// a derived value. These we can test fully by constructing
 /// `TZDateTime` values across DST transitions and feeding them in
 /// directly. Functions that internally call `DateTime.now()`
 /// (formatDateLabel, weekStartDate) cannot be exercised against a
-/// fixed-wall-clock without a Clock injection refactor — tracked
-/// as the broader Task 6.2 follow-up.
+/// fixed wall-clock without a Clock injection refactor.
 ///
 /// Scenarios covered:
 ///   - EU spring-forward (Berlin, 2026-03-29 02:00 → 03:00 jump)

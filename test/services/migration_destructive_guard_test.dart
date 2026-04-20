@@ -8,8 +8,8 @@ import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:retraq/services/database_service.dart';
 
-/// Regression tests for Epic 1 Task 1.1 — "Narrow the bare-catch around
-/// encrypted-DB open probe."
+/// Regression tests for "Narrow the bare-catch around encrypted-DB
+/// open probe."
 ///
 /// Before the fix, `DatabaseService.init()` caught ALL exceptions from the
 /// encrypted-open probe and immediately called `_migrateToEncrypted`, which

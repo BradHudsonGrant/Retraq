@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:retraq/widgets/atoms/animated_mesh_background.dart';
 
-/// Task 6.11 (final) — AnimatedMeshBackground widget coverage.
+/// AnimatedMeshBackground widget coverage.
 ///
 /// The shader-driven mesh is hard to pixel-test, but there are real
 /// branches worth pinning:
