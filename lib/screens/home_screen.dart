@@ -391,17 +391,30 @@ class _HomeScreenState extends State<HomeScreen>
                   ),
         ),
       ),
-
-      const SizedBox(height: AppSpacing.lg),
-
-      // Progress bar. Extracted into
-      // lib/widgets/molecules/progress_bar.dart so home_screen stays
-      // testable without pulling in its full state machine.
-      ProgressBar(
-        weekCount: _weekCount,
-        bionicReadingEnabled: _settings?.bionicReadingEnabled ?? false,
-      ),
     ];
+  }
+
+  /// "Recent" section header — label on the left, compact streak pill
+  /// on the right. Pill collapses to SizedBox.shrink on a blank week,
+  /// so the row renders cleanly either way.
+  Widget _buildRecentHeader(ColorScheme cs, TextTheme tt, L10n l10n) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          l10n.recentLabel,
+          style: tt.titleSmall?.copyWith(
+            fontWeight: FontWeight.w600,
+            color: cs.onSurfaceVariant,
+          ),
+        ),
+        const Spacer(),
+        ProgressBar(
+          weekCount: _weekCount,
+          bionicReadingEnabled: _settings?.bionicReadingEnabled ?? false,
+        ),
+      ],
+    );
   }
 
   /// Compact date chip used in the top-left slot of the JournalTextArea.
@@ -499,13 +512,7 @@ class _HomeScreenState extends State<HomeScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: AppSpacing.xl),
-          Text(
-            l10n.recentLabel,
-            style: tt.titleSmall?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: cs.onSurfaceVariant,
-            ),
-          ),
+          _buildRecentHeader(cs, tt, l10n),
           const SizedBox(height: AppSpacing.sm),
           if (_yesterdayEntries.isNotEmpty)
             RecentDayCard(
@@ -601,15 +608,12 @@ class _HomeScreenState extends State<HomeScreen>
         children: [
           ..._buildJournalContent(cs, tt, l10n),
 
-          // Recent days
-          const SizedBox(height: AppSpacing.xl),
-          Text(
-            l10n.recentLabel,
-            style: tt.titleSmall?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: cs.onSurfaceVariant,
-            ),
-          ),
+          // Recent days. Tightened the gap (xl → lg) since the
+          // standalone progress card between the composer and this
+          // section was removed — the streak now lives inline in the
+          // header row below.
+          const SizedBox(height: AppSpacing.lg),
+          _buildRecentHeader(cs, tt, l10n),
           const SizedBox(height: AppSpacing.sm),
           if (_yesterdayEntries.isNotEmpty)
             RecentDayCard(
