@@ -48,7 +48,6 @@ void main() {
         User(
           displayName: 'Test User',
           email: 'test@test.com',
-          subscriptionTier: 'free',
           createdAt: DateTime(2026, 3, 15),
         ),
       );
@@ -182,7 +181,6 @@ void main() {
       final user = User(
         displayName: 'Test User',
         email: 'test@example.com',
-        subscriptionTier: 'free',
         createdAt: DateTime(2026, 3, 15),
       );
       final id = await db.userRepo.saveUser(user);
@@ -193,19 +191,6 @@ void main() {
       expect(loaded, isNotNull);
       expect(loaded!.displayName, 'Test User');
       expect(loaded.email, 'test@example.com');
-      expect(loaded.subscriptionTier, 'free');
-    });
-
-    test('subscriptionTier has default value of free', () async {
-      final user = User(
-        displayName: 'Default Tier User',
-        createdAt: DateTime(2026, 3, 15),
-      );
-      await db.userRepo.saveUser(user);
-
-      final loaded = await db.userRepo.getUser();
-      expect(loaded, isNotNull);
-      expect(loaded!.subscriptionTier, 'free');
     });
 
     test('displayName and email are nullable', () async {
@@ -234,7 +219,6 @@ void main() {
         id: id,
         displayName: 'Updated',
         email: 'updated@example.com',
-        subscriptionTier: 'premium',
         createdAt: DateTime(2026, 3, 15),
       );
       await db.userRepo.saveUser(updated);
@@ -242,7 +226,6 @@ void main() {
       final loaded = await db.userRepo.getUser();
       expect(loaded!.displayName, 'Updated');
       expect(loaded.email, 'updated@example.com');
-      expect(loaded.subscriptionTier, 'premium');
     });
   });
 
@@ -1047,9 +1030,10 @@ void main() {
     });
 
     test(
-      'mood-only entry (no text, just mood) works with moodOnlyEntries',
+      'entry with null text + mood persists at the row level',
       () async {
-        // v10 adds mood_only_entries setting to allow entries with mood but no text
+        // JournalEntry allows null text at the schema level even though
+        // the save-path UI always requires non-empty text today.
         final id = await db.entries.saveEntry(
           JournalEntry(
             date: DateTime(2026, 3, 22),
@@ -1071,24 +1055,14 @@ void main() {
     test('mood settings columns exist with correct defaults', () async {
       final settings = await db.settings.getSettings();
       expect(settings.moodEnabled, false);
-      expect(settings.moodRequired, false);
-      expect(settings.moodOnlyEntries, false);
     });
 
     test('mood settings round-trip correctly', () async {
       final settings = await db.settings.getSettings();
-      await db.settings.saveSettings(
-        settings.copyWith(
-          moodEnabled: true,
-          moodRequired: true,
-          moodOnlyEntries: true,
-        ),
-      );
+      await db.settings.saveSettings(settings.copyWith(moodEnabled: true));
 
       final reloaded = await db.settings.getSettings();
       expect(reloaded.moodEnabled, true);
-      expect(reloaded.moodRequired, true);
-      expect(reloaded.moodOnlyEntries, true);
     });
 
     test('mood setting columns exist in raw schema', () async {
@@ -1097,16 +1071,13 @@ void main() {
               .customSelect("PRAGMA table_info('user_settings_table')")
               .get();
       final columnNames = columns.map((r) => r.data['name'] as String).toSet();
-      expect(
-        columnNames,
-        containsAll(['mood_enabled', 'mood_required', 'mood_only_entries']),
-      );
+      expect(columnNames, contains('mood_enabled'));
     });
 
-    test('schema version is 15', () async {
+    test('schema version is 18', () async {
       final result = await db.db.customSelect('PRAGMA user_version').get();
       final version = result.first.data['user_version'] as int;
-      expect(version, 15);
+      expect(version, 18);
     });
   });
 
@@ -1188,8 +1159,6 @@ void main() {
           'am_pm_cutoff_hour',
           'user_id',
           'mood_enabled',
-          'mood_required',
-          'mood_only_entries',
         ]),
       );
     });
@@ -1213,6 +1182,20 @@ void main() {
       final settingsColumnNames =
           settingsColumns.map((r) => r.data['name'] as String).toSet();
       expect(settingsColumnNames, isNot(contains('is_dark_mode')));
+      // Dropped at v18 when mood sub-toggles were removed.
+      expect(settingsColumnNames, isNot(contains('mood_required')));
+      expect(settingsColumnNames, isNot(contains('mood_only_entries')));
+      // Dropped at v17 with the RevenueCat scaffolding removal.
+      final usersColumns =
+          await db.db.customSelect("PRAGMA table_info('users')").get();
+      final usersColumnNames =
+          usersColumns.map((r) => r.data['name'] as String).toSet();
+      expect(usersColumnNames, isNot(contains('subscription_tier')));
+      // Dropped at v16 when on-device AI recap was removed.
+      expect(
+        settingsColumnNames,
+        isNot(contains('use_on_device_ai_for_recaps')),
+      );
     });
 
     test('end-to-end: entry with all fields persists and reads back', () async {
@@ -1220,7 +1203,6 @@ void main() {
         User(
           displayName: 'E2E User',
           email: 'e2e@test.com',
-          subscriptionTier: 'premium',
           createdAt: DateTime(2026, 1, 1),
         ),
       );

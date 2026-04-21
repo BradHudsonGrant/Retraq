@@ -730,20 +730,11 @@ class _HomeScreenState extends State<HomeScreen>
     final text = _cleanText(_form.entryCtrl.text);
     final titleText = _form.titleCtrl.text.trim();
     final moodEnabled = _settings?.moodEnabled ?? false;
-    final moodRequired = _settings?.moodRequired ?? false;
-    final moodOnlyEntries = _settings?.moodOnlyEntries ?? false;
     final hasText = text.isNotEmpty;
 
     // Validation lives on HomeFormController.validate so the rule
-    // (text OR mood-only-with-mood; mood globally required when
-    // moodRequired) is directly unit-testable without booting the
-    // screen.
-    final validation = _form.validate(
-      textCleaner: _cleanText,
-      moodEnabled: moodEnabled,
-      moodRequired: moodRequired,
-      moodOnlyEntries: moodOnlyEntries,
-    );
+    // is directly unit-testable without booting the screen.
+    final validation = _form.validate(textCleaner: _cleanText);
     switch (validation) {
       case HomeFormValidation.missingText:
         // Gate the shake through AppMotion so reduce-motion users
@@ -755,13 +746,6 @@ class _HomeScreenState extends State<HomeScreen>
         AppSnackBar.show(
           context,
           l10n.writeSomethingFirst,
-          duration: const Duration(seconds: 2),
-        );
-        return;
-      case HomeFormValidation.missingMood:
-        AppSnackBar.show(
-          context,
-          l10n.pickMoodToSave,
           duration: const Duration(seconds: 2),
         );
         return;

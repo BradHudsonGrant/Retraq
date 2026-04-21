@@ -7,19 +7,20 @@ void main() {
     test('every field is settable', () {
       // Guards against adding a field to User but forgetting to thread
       // it through copyWith. A silently-dropped field would cause
-      // "my subscription tier reverts on save" bugs.
+      // "my profile reverts on save" bugs.
       final user = User();
+      final createdAt = DateTime(2026, 4, 20);
       final updated = user.copyWith(
         id: 7,
         displayName: 'Bob',
         email: 'bob@example.com',
-        subscriptionTier: 'premium',
+        createdAt: createdAt,
       );
 
       expect(updated.id, 7);
       expect(updated.displayName, 'Bob');
       expect(updated.email, 'bob@example.com');
-      expect(updated.subscriptionTier, 'premium');
+      expect(updated.createdAt, createdAt);
     });
   });
 }

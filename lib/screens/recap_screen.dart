@@ -6,7 +6,6 @@ import 'package:retraq/l10n/app_localizations.dart';
 import '../models/journal_entry.dart';
 import '../models/user_settings.dart';
 import '../widgets/settings_provider.dart';
-import '../services/ai/recap_ai_provider.dart';
 import '../services/database_service.dart';
 import '../services/entry_repository.dart';
 // WeeklySummary type still flows through this screen; pulled
@@ -68,17 +67,6 @@ class _RecapScreenState extends State<RecapScreen>
   WeeklySummary? _weeklySummary;
   int _weekOffset = 0; // 0 = current week, -1 = last week, etc.
 
-  // On-device AI UX state. Drives:
-  //   * the "generating..." shimmer on the weekly recap card while an
-  //     AI call is in flight;
-  //   * an auto-refresh when the platform reports the model just finished
-  //     downloading, so users who toggle the setting on don't stare at
-  //     a template recap for the whole download.
-  bool _isGeneratingAiObservation = false;
-  final RecapAiProvider _aiProvider = PlatformRecapAiProvider();
-  StreamSubscription<RecapAiEvent>? _aiEventsSub;
-  RecapAiStatus? _lastAiStatus;
-
   // Calendar state
   late DateTime _selectedMonth;
   int? _selectedDay;
@@ -110,20 +98,6 @@ class _RecapScreenState extends State<RecapScreen>
 
     _subscribeMonthMeta();
     _refreshMonthEntriesSubscription();
-
-    // Track AI status transitions so the recap auto-refreshes when a
-    // just-started download finishes — otherwise the user stares at the
-    // template observation until they manually navigate weeks.
-    _aiEventsSub = _aiProvider.events().listen((event) {
-      final prev = _lastAiStatus;
-      _lastAiStatus = event.status;
-      if (prev != RecapAiStatus.available &&
-          event.status == RecapAiStatus.available &&
-          (_settings?.useOnDeviceAiForRecaps ?? false) &&
-          _settings != null) {
-        _loadWeeklySummary(_settings!.weekStartDay);
-      }
-    });
   }
 
   @override
@@ -132,16 +106,10 @@ class _RecapScreenState extends State<RecapScreen>
     final s = SettingsProvider.maybeOf(context);
     if (s != null && s != _settings) {
       final oldStart = _settings?.weekStartDay;
-      final oldAi = _settings?.useOnDeviceAiForRecaps ?? false;
       _settings = s;
       if (oldStart != s.weekStartDay || _weekEntriesSub == null) {
         _weekOffset = 0;
         _subscribeWeekEntries(s.weekStartDay);
-      } else if (oldAi != s.useOnDeviceAiForRecaps) {
-        // User just flipped the on-device AI toggle. Re-run the summary
-        // so the recap picks up (or drops) the AI observation without
-        // waiting for the next save/delete to retrigger the stream.
-        _loadWeeklySummary(s.weekStartDay);
       }
     }
 
@@ -197,24 +165,12 @@ class _RecapScreenState extends State<RecapScreen>
 
   Future<void> _loadWeeklySummary(int weekStartDay) async {
     final weekStart = _weekStartForOffset(weekStartDay);
-    final useAi = _settings?.useOnDeviceAiForRecaps ?? false;
-    // Only flip into "generating" mode when the AI is actually going to
-    // run. The recap service short-circuits for useAi=false or when
-    // there are <2 entries, so don't bother showing a shimmer in those
-    // cases — the template renders instantly.
-    if (useAi && mounted) {
-      setState(() => _isGeneratingAiObservation = true);
-    }
     final summary = await _recapService.getWeeklySummary(
       weekStart,
       weekStartDay,
-      useOnDeviceAi: useAi,
     );
     if (!mounted) return;
-    setState(() {
-      _weeklySummary = summary;
-      _isGeneratingAiObservation = false;
-    });
+    setState(() => _weeklySummary = summary);
   }
 
   void _goToPreviousWeek() {
@@ -391,7 +347,6 @@ class _RecapScreenState extends State<RecapScreen>
     _monthEntriesSub?.cancel();
     _monthDaysSub?.cancel();
     _monthMoodsSub?.cancel();
-    _aiEventsSub?.cancel();
     super.dispose();
   }
 
@@ -534,7 +489,6 @@ class _RecapScreenState extends State<RecapScreen>
                 weekStart: _weekStartForOffset(weekStartDay),
                 onPreviousWeek: _goToPreviousWeek,
                 onNextWeek: _weekOffset < 0 ? _goToNextWeek : null,
-                isGeneratingAiObservation: _isGeneratingAiObservation,
                 onDaySelected: (date) {
                   // Switch to month view and select the day
                   if (date.month != _selectedMonth.month ||

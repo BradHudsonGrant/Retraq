@@ -135,8 +135,8 @@ class AppColors {
   // Usage guidelines:
   //   - Max one accent per screen — scarcity is what makes it read
   //     as distinctive, not decorative
-  //   - Reserved for premium / celebratory moments: milestone
-  //     chips, future paywall CTA (v1.1), "Save" hero (A/B test)
+  //   - Reserved for celebratory moments: milestone chips,
+  //     "Save" hero (A/B test)
   //   - NEVER use as a destructive action color (that's cs.error)
   //   - NEVER stack on cs.primary — pick one
   //

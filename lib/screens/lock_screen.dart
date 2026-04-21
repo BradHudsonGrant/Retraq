@@ -198,10 +198,8 @@ class _LockScreenState extends State<LockScreen> {
               // destructive reset so users who genuinely forgot their PIN
               // can still recover their journal content. Export is
               // intentionally available BEFORE a PIN/biometric check
-              // because (a) it has no network component (local file → OS
-              // share intent) and (b) it uses the same ExportService path
-              // that would later be gated by RevenueCat tier — separate
-              // from reset. Users with data to recover are the main
+              // because it has no network component (local file → OS
+              // share intent). Users with data to recover are the main
               // beneficiaries; the actual unlock still requires PIN.
               TextButton(
                 onPressed: () async {

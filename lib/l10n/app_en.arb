@@ -23,7 +23,7 @@
     "amLabel": "AM",
     "pmLabel": "PM",
     "progressFirstEntry": "Drop your first traq above.",
-    "progressWeekCount": "{count, plural, =1{1 traq} other{{count} traqs}} this week — keep going!",
+    "progressWeekCount": "{count, plural, =1{1 traq} other{{count} traqs}} this week",
     "@progressWeekCount": {
         "placeholders": {
             "count": {
@@ -62,7 +62,6 @@
     "saveAndSwitchButton": "Save & Switch",
     "saveFailedMessage": "Failed to save. Please try again.",
     "writeSomethingFirst": "Write something first!",
-    "pickMoodToSave": "Pick a mood to save",
     "milestone1": "Your very first traq!",
     "milestone5": "5 traqs! You're off to a great start.",
     "milestone10": "10 traqs! You're building a habit.",
@@ -294,14 +293,6 @@
     "@helpImproveRetraqBody": {
         "description": "Settings row subtitle explaining the opt-in scope. Keep it short and truthful; the full details live in the privacy policy."
     },
-    "keepUsageStats": "Keep usage stats on this device",
-    "@keepUsageStats": {
-        "description": "Settings row title for the local-counter kill switch. Controls whether feature counters / session stamps are written to the local DB. Never sent anywhere."
-    },
-    "keepUsageStatsBody": "Local counters only. Never sent anywhere. Off = your taps aren't counted.",
-    "@keepUsageStatsBody": {
-        "description": "Settings row subtitle for the usage-stats kill switch. Emphasises the local-only nature to avoid confusion with Diagnostics."
-    },
     "resetAppUndoToast": "Erasing in {seconds}s — tap to cancel",
     "@resetAppUndoToast": {
         "description": "Non-dismissible SnackBar shown for 10 seconds after the user confirms a Forgot-PIN reset. Tapping the action cancels the timer and leaves all data intact.",
@@ -367,10 +358,6 @@
     "journalEntryTitleSubtitle": "Show or hide title fields in new traqs",
     "moodTracking": "Mood Tracking",
     "moodTrackingSubtitle": "Log how you feel with each traq",
-    "requireMood": "Require Mood",
-    "requireMoodSubtitle": "Must pick a mood before saving",
-    "moodOnlyEntries": "Mood-Only Traqs",
-    "moodOnlyEntriesSubtitle": "Save traqs with just a mood, no text",
     "advancedTitle": "Advanced",
     "enterToSave": "Enter to Save",
     "enterToSaveSubtitle": "Press Enter to save traq instead of new line",
@@ -378,9 +365,6 @@
     "bulletPointsSubtitle": "Auto-insert • when pressing Enter",
     "bionicReading": "Bionic Reading",
     "bionicReadingSubtitle": "Bolds the start of each word for faster reading",
-    "onDeviceAiRecap": "On-Device AI Recap",
-    "onDeviceAiRecapSubtitle": "Use your phone's built-in AI to write weekly recaps. Entries never leave your device.",
-    "onDeviceAiRecapUnavailable": "Not supported on this device",
     "weekStartsOn": "Week Starts On",
     "amPmSwitchesAt": "AM/PM Switches At",
     "weekStartsOnA11y": "Week starts on {day}",

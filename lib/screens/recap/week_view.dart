@@ -25,7 +25,6 @@ class RecapWeekView extends StatelessWidget {
     required this.onPreviousWeek,
     this.onNextWeek,
     required this.onDaySelected,
-    this.isGeneratingAiObservation = false,
   });
 
   final List<JournalEntry> weekEntries;
@@ -36,7 +35,6 @@ class RecapWeekView extends StatelessWidget {
   final VoidCallback onPreviousWeek;
   final VoidCallback? onNextWeek; // null = can't go forward (current week)
   final ValueChanged<DateTime> onDaySelected;
-  final bool isGeneratingAiObservation;
 
   @override
   Widget build(BuildContext context) {
@@ -75,10 +73,7 @@ class RecapWeekView extends StatelessWidget {
                 curve: AppMotion.emphasizedDecelerate,
               ),
             ],
-            child: WeeklySummaryCard(
-              summary: weeklySummary!,
-              isGenerating: isGeneratingAiObservation,
-            ),
+            child: WeeklySummaryCard(summary: weeklySummary!),
           ),
           const SizedBox(height: AppSpacing.md),
         ],

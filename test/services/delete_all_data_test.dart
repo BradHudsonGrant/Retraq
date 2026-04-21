@@ -47,7 +47,6 @@ void main() {
       User(
         displayName: 'Test User',
         email: 'test@example.com',
-        subscriptionTier: 'free',
         createdAt: DateTime(2026, 3, 1),
       ),
     );
@@ -118,7 +117,6 @@ void main() {
       User(
         displayName: 'FTS Tester',
         email: null,
-        subscriptionTier: 'free',
         createdAt: DateTime(2026, 3, 1),
       ),
     );

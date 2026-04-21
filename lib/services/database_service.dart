@@ -48,13 +48,6 @@ class Users extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get displayName => text().nullable()();
   TextColumn get email => text().nullable()();
-  // Cached subscription tier — INFORMATIONAL ONLY. Do NOT use this column to
-  // gate premium features. The source of truth is RevenueCat: any paywall
-  // check must call Purchases.getCustomerInfo() and read entitlements live.
-  // This field exists so the UI can show a tier label without waiting on
-  // network, and so an export can include the user's last-known tier.
-  TextColumn get subscriptionTier =>
-      text().withDefault(const Constant('free'))();
   DateTimeColumn get createdAt => dateTime()();
 }
 
@@ -82,15 +75,7 @@ class UserSettingsTable extends Table {
       boolean().withDefault(const Constant(false))();
   IntColumn get amPmCutoffHour => integer().withDefault(const Constant(14))();
   BoolColumn get moodEnabled => boolean().withDefault(const Constant(false))();
-  BoolColumn get moodRequired => boolean().withDefault(const Constant(false))();
-  BoolColumn get moodOnlyEntries =>
-      boolean().withDefault(const Constant(false))();
   BoolColumn get bionicReadingEnabled =>
-      boolean().withDefault(const Constant(false))();
-  // v15: opt-in use of the device's built-in AI (Gemini Nano on Android,
-  // Apple Foundation Models on iOS) to generate the weekly recap
-  // observation. Defaults OFF; inference is strictly on-device.
-  BoolColumn get useOnDeviceAiForRecaps =>
       boolean().withDefault(const Constant(false))();
   IntColumn get userId => integer().nullable()();
 }
@@ -113,7 +98,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 15;
+  int get schemaVersion => 18;
 
   @override
   MigrationStrategy get migration => buildMigrationStrategy(this);
@@ -352,7 +337,6 @@ class DatabaseService {
           UsersCompanion.insert(
             displayName: Value(row.displayName),
             email: Value(row.email),
-            subscriptionTier: Value(row.subscriptionTier),
             createdAt: row.createdAt,
           ),
         );
@@ -390,10 +374,7 @@ class DatabaseService {
             bulletPointsOnEnter: Value(row.bulletPointsOnEnter),
             amPmCutoffHour: Value(row.amPmCutoffHour),
             moodEnabled: Value(row.moodEnabled),
-            moodRequired: Value(row.moodRequired),
-            moodOnlyEntries: Value(row.moodOnlyEntries),
             bionicReadingEnabled: Value(row.bionicReadingEnabled),
-            useOnDeviceAiForRecaps: Value(row.useOnDeviceAiForRecaps),
             userId: Value(row.userId),
           ),
         );

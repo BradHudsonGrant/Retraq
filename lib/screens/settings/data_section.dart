@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../l10n/app_localizations.dart';
 import '../../main.dart' show setSentryOptIn;
-import '../../services/analytics_service.dart';
 import '../../services/database_service.dart';
 import '../../services/app_log.dart';
 import '../../services/export_service.dart';
@@ -33,15 +32,6 @@ class _DataSectionState extends State<DataSection> {
   bool _diagnosticsEnabled = false;
   bool _diagnosticsLoaded = false;
 
-  // Analytics kill switch. Default ON because local counters
-  // never leave the device (enforced by the no-network CI
-  // guard), so the privacy-policy invariant is
-  // preserved either way. Users can flip this off to stop on-
-  // device writes entirely; existing counter rows are retained
-  // (user can re-enable without loss) until Delete All Data.
-  bool _keepUsageStats = true;
-  bool _keepUsageStatsLoaded = false;
-
   @override
   void initState() {
     super.initState();
@@ -55,15 +45,12 @@ class _DataSectionState extends State<DataSection> {
       setState(() {
         _diagnosticsEnabled = prefs.getBool(_sentryOptInKey) ?? false;
         _diagnosticsLoaded = true;
-        _keepUsageStats = AnalyticsService.instance.isEnabled;
-        _keepUsageStatsLoaded = true;
       });
     } catch (e, st) {
       AppLog.warn('DataSection.loadToggles', e, st);
       if (!mounted) return;
       setState(() {
         _diagnosticsLoaded = true;
-        _keepUsageStatsLoaded = true;
       });
     }
   }
@@ -79,15 +66,6 @@ class _DataSectionState extends State<DataSection> {
     } catch (e, st) {
       AppLog.warn('DataSection.setDiagnostics', e, st);
     }
-  }
-
-  Future<void> _setKeepUsageStats(bool value) async {
-    setState(() => _keepUsageStats = value);
-    // flip the AnalyticsService cached flag
-    // immediately so the next `bump(...)` call observes the new
-    // state. Also persists via SharedPreferences inside
-    // setEnabled so next cold-start honours the toggle.
-    await AnalyticsService.instance.setEnabled(value);
   }
 
   @override
@@ -205,30 +183,6 @@ class _DataSectionState extends State<DataSection> {
               ),
               value: _diagnosticsEnabled,
               onChanged: _setDiagnostics,
-            ),
-
-          // Analytics kill switch. Sits inside
-          // Diagnostics because both are "data you can choose to
-          // keep/stop"; distinct from Sentry because nothing here
-          // ever leaves the device.
-          if (_keepUsageStatsLoaded)
-            SwitchListTile.adaptive(
-              contentPadding: EdgeInsets.zero,
-              title: Text(
-                l10n.keepUsageStats,
-                style: tt.bodyLarge,
-              ),
-              subtitle: Padding(
-                padding: const EdgeInsets.only(top: AppSpacing.xs),
-                child: Text(
-                  l10n.keepUsageStatsBody,
-                  style: tt.bodySmall?.copyWith(
-                    color: cs.onSurfaceVariant,
-                  ),
-                ),
-              ),
-              value: _keepUsageStats,
-              onChanged: _setKeepUsageStats,
             ),
 
           const SizedBox(height: AppSpacing.lg),

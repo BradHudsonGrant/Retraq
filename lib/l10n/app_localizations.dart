@@ -234,7 +234,7 @@ abstract class L10n {
   /// No description provided for @progressWeekCount.
   ///
   /// In en, this message translates to:
-  /// **'{count, plural, =1{1 traq} other{{count} traqs}} this week — keep going!'**
+  /// **'{count, plural, =1{1 traq} other{{count} traqs}} this week'**
   String progressWeekCount(int count);
 
   /// No description provided for @recentLabel.
@@ -326,12 +326,6 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Write something first!'**
   String get writeSomethingFirst;
-
-  /// No description provided for @pickMoodToSave.
-  ///
-  /// In en, this message translates to:
-  /// **'Pick a mood to save'**
-  String get pickMoodToSave;
 
   /// No description provided for @milestone1.
   ///
@@ -901,18 +895,6 @@ abstract class L10n {
   /// **'Send anonymous crash reports so we can fix bugs. No traq content, mood, or timestamps are ever included.'**
   String get helpImproveRetraqBody;
 
-  /// Settings row title for the local-counter kill switch. Controls whether feature counters / session stamps are written to the local DB. Never sent anywhere.
-  ///
-  /// In en, this message translates to:
-  /// **'Keep usage stats on this device'**
-  String get keepUsageStats;
-
-  /// Settings row subtitle for the usage-stats kill switch. Emphasises the local-only nature to avoid confusion with Diagnostics.
-  ///
-  /// In en, this message translates to:
-  /// **'Local counters only. Never sent anywhere. Off = your taps aren\'t counted.'**
-  String get keepUsageStatsBody;
-
   /// Non-dismissible SnackBar shown for 10 seconds after the user confirms a Forgot-PIN reset. Tapping the action cancels the timer and leaves all data intact.
   ///
   /// In en, this message translates to:
@@ -1135,30 +1117,6 @@ abstract class L10n {
   /// **'Log how you feel with each traq'**
   String get moodTrackingSubtitle;
 
-  /// No description provided for @requireMood.
-  ///
-  /// In en, this message translates to:
-  /// **'Require Mood'**
-  String get requireMood;
-
-  /// No description provided for @requireMoodSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Must pick a mood before saving'**
-  String get requireMoodSubtitle;
-
-  /// No description provided for @moodOnlyEntries.
-  ///
-  /// In en, this message translates to:
-  /// **'Mood-Only Traqs'**
-  String get moodOnlyEntries;
-
-  /// No description provided for @moodOnlyEntriesSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Save traqs with just a mood, no text'**
-  String get moodOnlyEntriesSubtitle;
-
   /// No description provided for @advancedTitle.
   ///
   /// In en, this message translates to:
@@ -1200,24 +1158,6 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Bolds the start of each word for faster reading'**
   String get bionicReadingSubtitle;
-
-  /// No description provided for @onDeviceAiRecap.
-  ///
-  /// In en, this message translates to:
-  /// **'On-Device AI Recap'**
-  String get onDeviceAiRecap;
-
-  /// No description provided for @onDeviceAiRecapSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Use your phone\'s built-in AI to write weekly recaps. Entries never leave your device.'**
-  String get onDeviceAiRecapSubtitle;
-
-  /// No description provided for @onDeviceAiRecapUnavailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Not supported on this device'**
-  String get onDeviceAiRecapUnavailable;
 
   /// No description provided for @weekStartsOn.
   ///

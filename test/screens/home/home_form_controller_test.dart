@@ -159,89 +159,30 @@ void main() {
   group('HomeFormController — validate', () {
     String trimClean(String raw) => raw.trim();
 
-    test('empty text + no mood → missingText', () {
+    test('empty text → missingText', () {
       final form = HomeFormController();
       addTearDown(form.dispose);
 
-      final result = form.validate(
-        textCleaner: trimClean,
-        moodEnabled: false,
-        moodRequired: false,
-        moodOnlyEntries: false,
-      );
+      final result = form.validate(textCleaner: trimClean);
       expect(result, HomeFormValidation.missingText);
     });
 
-    test('empty text + mood selected + moodOnlyEntries=false → missingText',
-        () {
-      final form = HomeFormController();
-      addTearDown(form.dispose);
-      form.setMood(4);
-
-      final result = form.validate(
-        textCleaner: trimClean,
-        moodEnabled: true,
-        moodRequired: false,
-        moodOnlyEntries: false,
-      );
-      // Without moodOnlyEntries, text is still required.
-      expect(result, HomeFormValidation.missingText);
-    });
-
-    test('empty text + mood selected + moodOnlyEntries=true → ok', () {
-      final form = HomeFormController();
-      addTearDown(form.dispose);
-      form.setMood(4);
-
-      final result = form.validate(
-        textCleaner: trimClean,
-        moodEnabled: true,
-        moodRequired: false,
-        moodOnlyEntries: true,
-      );
-      expect(result, HomeFormValidation.ok);
-    });
-
-    test('text present + no mood + moodRequired=true → missingMood', () {
+    test('text present → ok', () {
       final form = HomeFormController();
       addTearDown(form.dispose);
       form.entryCtrl.text = 'A quick traq.';
 
-      final result = form.validate(
-        textCleaner: trimClean,
-        moodEnabled: true,
-        moodRequired: true,
-        moodOnlyEntries: false,
-      );
-      expect(result, HomeFormValidation.missingMood);
-    });
-
-    test('text present + no mood + moodRequired=false → ok', () {
-      final form = HomeFormController();
-      addTearDown(form.dispose);
-      form.entryCtrl.text = 'A quick traq.';
-
-      final result = form.validate(
-        textCleaner: trimClean,
-        moodEnabled: true,
-        moodRequired: false,
-        moodOnlyEntries: false,
-      );
+      final result = form.validate(textCleaner: trimClean);
       expect(result, HomeFormValidation.ok);
     });
 
-    test('text present + mood selected + everything enabled → ok', () {
+    test('text present + mood selected → ok', () {
       final form = HomeFormController();
       addTearDown(form.dispose);
       form.entryCtrl.text = 'A quick traq.';
       form.setMood(3);
 
-      final result = form.validate(
-        textCleaner: trimClean,
-        moodEnabled: true,
-        moodRequired: true,
-        moodOnlyEntries: true,
-      );
+      final result = form.validate(textCleaner: trimClean);
       expect(result, HomeFormValidation.ok);
     });
 
@@ -255,12 +196,7 @@ void main() {
       addTearDown(form.dispose);
       form.entryCtrl.text = '   \n\n';
 
-      final result = form.validate(
-        textCleaner: trimClean,
-        moodEnabled: false,
-        moodRequired: false,
-        moodOnlyEntries: false,
-      );
+      final result = form.validate(textCleaner: trimClean);
       expect(result, HomeFormValidation.missingText,
           reason:
               'A draft that becomes empty after cleaning must fail '

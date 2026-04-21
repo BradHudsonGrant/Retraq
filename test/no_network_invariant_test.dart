@@ -94,7 +94,6 @@ void main() {
         User(
           displayName: 'Test',
           email: 'test@test.example',
-          subscriptionTier: 'free',
           createdAt: DateTime(2026, 4, 16),
         ),
       );
@@ -123,7 +122,6 @@ void main() {
           User(
             displayName: 'Reader',
             email: 'reader@test.example',
-            subscriptionTier: 'free',
             createdAt: DateTime(2026, 4, 16),
           ),
         );

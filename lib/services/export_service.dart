@@ -152,8 +152,6 @@ class ExportService {
     'bulletPointsOnEnter': s.bulletPointsOnEnter,
     'amPmCutoffHour': s.amPmCutoffHour,
     'moodEnabled': s.moodEnabled,
-    'moodRequired': s.moodRequired,
-    'moodOnlyEntries': s.moodOnlyEntries,
   };
 
   /// Serialise [User] to a JSON-safe map, or null.
@@ -163,7 +161,6 @@ class ExportService {
           : {
             'displayName': u.displayName,
             'email': u.email,
-            'subscriptionTier': u.subscriptionTier,
             'createdAt': u.createdAt.toIso8601String(),
           };
 

@@ -265,8 +265,6 @@ void main() {
           expect(settings.amPmCutoffHour, 14, reason: 'v5 added');
           expect(settings.nudgeMinute, 0, reason: 'v8 added');
           expect(settings.moodEnabled, false, reason: 'v10 added');
-          expect(settings.moodRequired, false, reason: 'v10 added');
-          expect(settings.moodOnlyEntries, false, reason: 'v10 added');
           expect(settings.bionicReadingEnabled, false, reason: 'v12 added');
 
           // Assert: indices added by later migrations all exist
@@ -594,13 +592,12 @@ void main() {
         final version = row.data.values.first as int;
         expect(
           version,
-          15,
+          18,
           reason:
               'After v3→latest migration, PRAGMA user_version must match the '
-              'current schema version (15). A mismatch here means the migration '
+              'current schema version (18). A mismatch here means the migration '
               'stopped short and the head-version invariants (FTS triggers, '
-              'indices, on-device AI toggle column) cannot be relied upon by '
-              'application code.',
+              'indices) cannot be relied upon by application code.',
         );
       } finally {
         await db.close();

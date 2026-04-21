@@ -1,28 +1,17 @@
 // ignore_for_file: prefer_single_quotes
 
 import '../utils/date_helpers.dart';
-import 'ai/recap_ai_provider.dart';
-import 'app_log.dart';
 import 'entry_repository.dart';
 
 /// Weekly recap generation.
 ///
-/// Stats (entry count, streak, busiest day, mood distribution) are always
-/// computed deterministically from the Drift query. The `observation`
-/// string is produced by a [RecapAiProvider] — the [TemplateRecapAiProvider]
-/// by default, or a [PlatformRecapAiProvider] when the user has opted in
-/// *and* the device reports on-device AI capability.
+/// Stats (entry count, streak, busiest day, mood distribution) and the
+/// observation string are all computed deterministically from the entry
+/// data. There is no AI/ML inference — the recap is a plain template.
 class RecapService {
   final EntryRepository _entries;
-  final RecapAiProvider _templateProvider;
-  final RecapAiProvider _platformProvider;
 
-  RecapService(
-    this._entries, {
-    RecapAiProvider? templateProvider,
-    RecapAiProvider? platformProvider,
-  })  : _templateProvider = templateProvider ?? const TemplateRecapAiProvider(),
-        _platformProvider = platformProvider ?? PlatformRecapAiProvider();
+  RecapService(this._entries);
 
   static const _dayNames = {
     DateTime.monday: "Monday",
@@ -36,9 +25,8 @@ class RecapService {
 
   Future<WeeklySummary> getWeeklySummary(
     DateTime weekStart,
-    int weekStartDay, {
-    bool useOnDeviceAi = false,
-  }) async {
+    int weekStartDay,
+  ) async {
     final weekEnd = weekStart.add(const Duration(days: 6));
     final entries = await _entries.getEntriesForDateRange(weekStart, weekEnd);
 
@@ -110,44 +98,13 @@ class RecapService {
     }
     final averageMood = moodCount > 0 ? moodSum / moodCount : null;
 
-    // Always compute a template observation — it's the guaranteed
-    // fallback if the on-device AI is disabled, unavailable, or errors.
-    String observation = await _templateProvider.summarize(
+    final observation = _buildObservation(
       totalEntries: totalEntries,
       activeDays: activeDays,
       streak: streak,
       busiestDay: busiestDay,
-      preferredTime: preferredTime,
       averageMood: averageMood,
-      entries: entries,
     );
-
-    // Only reach for on-device AI if the user has opted in AND there's
-    // actual content worth summarizing. The empty/single-entry template
-    // strings are already the correct thing to show in those cases.
-    if (useOnDeviceAi && totalEntries >= 2) {
-      try {
-        final status = await _platformProvider.checkStatus();
-        if (status == RecapAiStatus.available) {
-          final aiObservation = await _platformProvider.summarize(
-            totalEntries: totalEntries,
-            activeDays: activeDays,
-            streak: streak,
-            busiestDay: busiestDay,
-            preferredTime: preferredTime,
-            averageMood: averageMood,
-            entries: entries,
-          );
-          if (aiObservation.isNotEmpty) {
-            observation = aiObservation;
-          }
-        }
-      } catch (e) {
-        // Never fail the recap just because the AI call failed — the
-        // user still sees the deterministic template summary above.
-        AppLog.error('RecapService.platformAi', e);
-      }
-    }
 
     return WeeklySummary(
       totalEntries: totalEntries,
@@ -161,6 +118,42 @@ class RecapService {
     );
   }
 
+  static String _buildObservation({
+    required int totalEntries,
+    required int activeDays,
+    required int streak,
+    required String busiestDay,
+    required double? averageMood,
+  }) {
+    String observation;
+    if (totalEntries == 0) {
+      observation =
+          "No entries this week. That's okay \u2014 every week is different.";
+    } else if (totalEntries == 1) {
+      observation =
+          "You captured one moment this week. Even a single entry matters.";
+    } else if (activeDays == 7) {
+      observation =
+          "You journaled every day this week! Incredible consistency.";
+    } else if (streak >= 3) {
+      observation = "You're on a $streak-day streak. Nice momentum!";
+    } else {
+      observation =
+          "You wrote $totalEntries entries across $activeDays days. $busiestDay was your most active day.";
+    }
+    if (averageMood != null) {
+      observation += " Your average mood was ${_moodLabel(averageMood)}.";
+    }
+    return observation;
+  }
+
+  static String _moodLabel(double avg) {
+    if (avg >= 4.5) return "Amazing";
+    if (avg >= 3.5) return "Good";
+    if (avg >= 2.5) return "Neutral";
+    if (avg >= 1.5) return "Low";
+    return "Rough";
+  }
 }
 
 /// Summary data for a single week.

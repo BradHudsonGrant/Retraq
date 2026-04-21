@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'models/user_settings.dart';
-import 'services/analytics_service.dart';
 import 'theme/app_motion.dart';
 import 'theme/app_theme.dart';
 import 'screens/app_shell.dart';
@@ -85,13 +84,6 @@ void main() async {
   // already observes the correct state. If the user opted in on the
   // previous session, we honour that immediately on the next launch.
   await _loadSentryOptIn();
-
-  // Prime the Analytics kill-switch cache so the very
-  // first `bump(...)` call (e.g., a counter fired during onboarding)
-  // observes the user's persisted preference. Default true when
-  // SharedPreferences is unreachable — no telemetry leaves device
-  // regardless of local write state, so permissive default is safe.
-  await AnalyticsService.instance.refreshFromPrefs();
 
   // Sentry is optional — if no DSN is configured we skip init entirely
   // and just keep a vanilla FlutterError handler. This keeps `flutter

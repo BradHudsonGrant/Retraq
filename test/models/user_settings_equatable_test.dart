@@ -51,15 +51,9 @@ void main() {
     // forgotten in props". If you add a field to UserSettings you MUST
     // bump this number AND add the field to props; otherwise equality
     // will ignore it and settings changes won't propagate.
-    test('props enumerates exactly 19 fields', () {
+    test('props enumerates exactly 16 fields', () {
       const s = UserSettings();
-      expect(s.props.length, 19);
-    });
-
-    test('instances differ when useOnDeviceAiForRecaps differs', () {
-      const a = UserSettings();
-      const b = UserSettings(useOnDeviceAiForRecaps: true);
-      expect(a, isNot(equals(b)));
+      expect(s.props.length, 16);
     });
 
     test('props entries cover every distinct initial value', () {
@@ -83,10 +77,7 @@ void main() {
         bulletPointsOnEnter: true,
         amPmCutoffHour: 6,
         moodEnabled: true,
-        moodRequired: true,
-        moodOnlyEntries: true,
         bionicReadingEnabled: true,
-        useOnDeviceAiForRecaps: true,
       );
       expect(everything, isNot(equals(defaults)));
     });

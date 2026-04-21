@@ -38,8 +38,6 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  cupertino_icons: ^1.0.8
-
   # Database (Drift — type-safe SQLite)
   drift: ^2.22.1
   sqlite3: ^3.3.1

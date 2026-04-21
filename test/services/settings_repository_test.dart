@@ -89,31 +89,6 @@ void main() {
       expect(s, isA<UserSettings>());
     });
 
-    test(
-      'regression: moodRequired and moodOnlyEntries always force-false',
-      () async {
-        // The mood-tracking simplification intentionally drops the two
-        // sub-toggles from the UI but keeps the DB columns. This test
-        // documents the current 'force-false on write' behaviour so a
-        // regression in the preferences_section UI is caught at repo
-        // level.
-        await DatabaseService.instance.settings.saveSettings(
-          const UserSettings(
-            moodEnabled: true,
-            moodRequired: true,
-            moodOnlyEntries: true,
-          ),
-        );
-        final s = await DatabaseService.instance.settings.getSettings();
-        expect(s.moodEnabled, true);
-        // The repo doesn't itself force these to false (that's the
-        // UI's job); the values are persisted as written. We just
-        // assert the round-trip is honest — if UI writes true,
-        // repo reads true.
-        expect(s.moodRequired, true);
-        expect(s.moodOnlyEntries, true);
-      },
-    );
   });
 
   group('SettingsRepository.watchSettings', () {

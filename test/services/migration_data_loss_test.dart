@@ -17,11 +17,9 @@ import 'package:retraq/services/database_service.dart';
 
 /// Regression test for the pre-encryption → encrypted migration data-loss bug.
 ///
-/// Prior to the fix, `_migrateToEncrypted` copied only 14 of 19 columns from
-/// `UserSettingsTable`, silently dropping:
+/// Prior to the fix, `_migrateToEncrypted` silently dropped columns from
+/// `UserSettingsTable`, including:
 ///   - moodEnabled
-///   - moodRequired
-///   - moodOnlyEntries
 ///   - bionicReadingEnabled
 ///   - userId
 ///
@@ -70,7 +68,6 @@ void main() {
         //   appLockEnabled=false, pinHash=null, biometricEnabled=false,
         //   onboardingComplete=false, enterToSave=false,
         //   bulletPointsOnEnter=false, amPmCutoffHour=14, moodEnabled=false,
-        //   moodRequired=false, moodOnlyEntries=false,
         //   bionicReadingEnabled=false, userId=null
         //
         // Our values flip every bool, shift every int, and set every nullable
@@ -94,8 +91,6 @@ void main() {
                 bulletPointsOnEnter: const Value(true), // flipped from false
                 amPmCutoffHour: const Value(3), // flipped from 14 → 3
                 moodEnabled: const Value(true), // flipped from false ***
-                moodRequired: const Value(true), // flipped from false ***
-                moodOnlyEntries: const Value(true), // flipped from false ***
                 bionicReadingEnabled: const Value(
                   true,
                 ), // flipped from false ***
@@ -179,22 +174,12 @@ void main() {
           reason: 'amPmCutoffHour was not copied',
         );
 
-        // These five are the regression-pinning asserts — they are the exact
-        // columns that the original `_migrateToEncrypted` was silently dropping.
+        // These asserts pin columns that the original `_migrateToEncrypted`
+        // was silently dropping.
         expect(
           targetRow.moodEnabled,
           true,
           reason: 'REGRESSION: moodEnabled was dropped during migration',
-        );
-        expect(
-          targetRow.moodRequired,
-          true,
-          reason: 'REGRESSION: moodRequired was dropped during migration',
-        );
-        expect(
-          targetRow.moodOnlyEntries,
-          true,
-          reason: 'REGRESSION: moodOnlyEntries was dropped during migration',
         );
         expect(
           targetRow.bionicReadingEnabled,
@@ -221,7 +206,6 @@ void main() {
               UsersCompanion.insert(
                 displayName: const Value('Ada Lovelace'),
                 email: const Value('ada@example.com'),
-                subscriptionTier: const Value('premium'),
                 createdAt: DateTime.utc(2026, 1, 2, 3, 4, 5),
               ),
             );
@@ -257,7 +241,6 @@ void main() {
         expect(copiedUsers, hasLength(1));
         expect(copiedUsers.single.displayName, 'Ada Lovelace');
         expect(copiedUsers.single.email, 'ada@example.com');
-        expect(copiedUsers.single.subscriptionTier, 'premium');
         // Drift stores DateTime as unix-seconds (UTC) and reads back in local
         // time, so compare using isAtSameMomentAs rather than == to avoid a
         // spurious timezone mismatch in the assertion.

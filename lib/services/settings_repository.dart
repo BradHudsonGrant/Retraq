@@ -30,10 +30,7 @@ class SettingsRepository {
       bulletPointsOnEnter: row.bulletPointsOnEnter,
       amPmCutoffHour: row.amPmCutoffHour,
       moodEnabled: row.moodEnabled,
-      moodRequired: row.moodRequired,
-      moodOnlyEntries: row.moodOnlyEntries,
       bionicReadingEnabled: row.bionicReadingEnabled,
-      useOnDeviceAiForRecaps: row.useOnDeviceAiForRecaps,
     );
   }
 
@@ -106,10 +103,7 @@ class SettingsRepository {
       bulletPointsOnEnter: Value(s.bulletPointsOnEnter),
       amPmCutoffHour: Value(s.amPmCutoffHour),
       moodEnabled: Value(s.moodEnabled),
-      moodRequired: Value(s.moodRequired),
-      moodOnlyEntries: Value(s.moodOnlyEntries),
       bionicReadingEnabled: Value(s.bionicReadingEnabled),
-      useOnDeviceAiForRecaps: Value(s.useOnDeviceAiForRecaps),
     );
   }
 

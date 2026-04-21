@@ -42,7 +42,6 @@ class UserRepository {
           UsersCompanion(
             displayName: Value(user.displayName),
             email: Value(user.email),
-            subscriptionTier: Value(user.subscriptionTier),
           ),
         );
         return user.id!;
@@ -53,7 +52,6 @@ class UserRepository {
               UsersCompanion.insert(
                 displayName: Value(user.displayName),
                 email: Value(user.email),
-                subscriptionTier: Value(user.subscriptionTier),
                 createdAt: user.createdAt,
               ),
             );
@@ -65,13 +63,12 @@ class UserRepository {
   }
 
   /// Convert a Drift row to our User model. Centralised so both
-  /// [getUser] and [watchUser] enumerate the same five fields in one
-  /// place instead of rebuilding the constructor twice.
+  /// [getUser] and [watchUser] enumerate the same fields in one place
+  /// instead of rebuilding the constructor twice.
   User _rowToUser(UserRow row) => User(
         id: row.id,
         displayName: row.displayName,
         email: row.email,
-        subscriptionTier: row.subscriptionTier,
         createdAt: row.createdAt.toLocal(),
       );
 

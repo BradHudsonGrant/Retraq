@@ -327,12 +327,49 @@ MigrationStrategy buildMigrationStrategy(AppDatabase db) {
         ''');
       }
       if (from < 15) {
-        // v14→v15: Add opt-in toggle for the device's built-in AI recap
-        // generator. Defaults OFF so existing users keep the template
-        // observation until they explicitly enable the platform AI in
-        // Settings → Preferences.
+        // v14→v15: Previously added an opt-in toggle for on-device AI
+        // recap generation. The feature was removed in v16; keeping the
+        // ADD COLUMN statement so anyone still at v14 reaches a valid
+        // v15 schema before the v16 DROP COLUMN runs immediately after.
         await db.customStatement(
           'ALTER TABLE user_settings_table ADD COLUMN use_on_device_ai_for_recaps INTEGER NOT NULL DEFAULT 0',
+        );
+      }
+      if (from < 16) {
+        // v15→v16: On-device AI recap (Gemini Nano path) removed. Drop
+        // the now-dead column. DROP COLUMN requires SQLite 3.35+, which
+        // ships with sqlite3_flutter_libs.
+        await db.customStatement(
+          'ALTER TABLE user_settings_table DROP COLUMN use_on_device_ai_for_recaps',
+        );
+      }
+      if (from < 17) {
+        // v16→v17: Revenue / paid scaffolding removed. The users table
+        // previously carried a cached `subscription_tier` column intended
+        // for a future RevenueCat integration. The column is dropped
+        // conditionally because v3→v4 migration paths never added it
+        // after the Dart table definition changed.
+        final info = await db
+            .customSelect("PRAGMA table_info(users)")
+            .get();
+        final hasColumn = info.any(
+          (r) => (r.data['name'] as String?) == 'subscription_tier',
+        );
+        if (hasColumn) {
+          await db.customStatement(
+            'ALTER TABLE users DROP COLUMN subscription_tier',
+          );
+        }
+      }
+      if (from < 18) {
+        // v17→v18: Mood sub-toggles removed. The `mood_required` and
+        // `mood_only_entries` columns were reachable only by direct DB
+        // edit (no UI), so dropping them is user-invisible.
+        await db.customStatement(
+          'ALTER TABLE user_settings_table DROP COLUMN mood_required',
+        );
+        await db.customStatement(
+          'ALTER TABLE user_settings_table DROP COLUMN mood_only_entries',
         );
       }
     },

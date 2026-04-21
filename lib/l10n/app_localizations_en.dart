@@ -85,7 +85,7 @@ class L10nEn extends L10n {
       other: '$count traqs',
       one: '1 traq',
     );
-    return '$_temp0 this week — keep going!';
+    return '$_temp0 this week';
   }
 
   @override
@@ -135,9 +135,6 @@ class L10nEn extends L10n {
 
   @override
   String get writeSomethingFirst => 'Write something first!';
-
-  @override
-  String get pickMoodToSave => 'Pick a mood to save';
 
   @override
   String get milestone1 => 'Your very first traq!';
@@ -472,13 +469,6 @@ class L10nEn extends L10n {
       'Send anonymous crash reports so we can fix bugs. No traq content, mood, or timestamps are ever included.';
 
   @override
-  String get keepUsageStats => 'Keep usage stats on this device';
-
-  @override
-  String get keepUsageStatsBody =>
-      'Local counters only. Never sent anywhere. Off = your taps aren\'t counted.';
-
-  @override
   String resetAppUndoToast(int seconds) {
     return 'Erasing in ${seconds}s — tap to cancel';
   }
@@ -605,18 +595,6 @@ class L10nEn extends L10n {
   String get moodTrackingSubtitle => 'Log how you feel with each traq';
 
   @override
-  String get requireMood => 'Require Mood';
-
-  @override
-  String get requireMoodSubtitle => 'Must pick a mood before saving';
-
-  @override
-  String get moodOnlyEntries => 'Mood-Only Traqs';
-
-  @override
-  String get moodOnlyEntriesSubtitle => 'Save traqs with just a mood, no text';
-
-  @override
   String get advancedTitle => 'Advanced';
 
   @override
@@ -638,16 +616,6 @@ class L10nEn extends L10n {
   @override
   String get bionicReadingSubtitle =>
       'Bolds the start of each word for faster reading';
-
-  @override
-  String get onDeviceAiRecap => 'On-Device AI Recap';
-
-  @override
-  String get onDeviceAiRecapSubtitle =>
-      'Use your phone\'s built-in AI to write weekly recaps. Entries never leave your device.';
-
-  @override
-  String get onDeviceAiRecapUnavailable => 'Not supported on this device';
 
   @override
   String get weekStartsOn => 'Week Starts On';
