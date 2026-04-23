@@ -1,4 +1,4 @@
-/// Rotating ADHD-friendly journal prompts shown as hint text.
+/// Rotating journal prompts shown as hint text.
 /// Rotates deterministically by day of year so the user sees variety
 /// without randomness (consistent across app restarts on the same day).
 const _prompts = [

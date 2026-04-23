@@ -249,15 +249,9 @@
     "@welcomeBackSubtitle": {
         "description": "Subtitle on the consent page for the returning-user path explaining why consent is still required."
     },
-    "healthDisclaimer": "Retraq is a personal journaling app — not a medical or therapeutic tool. It does not provide health advice, diagnosis, or treatment. If you are in crisis, please contact a mental health professional or call {crisisContact}.",
+    "healthDisclaimer": "Retraq is a personal journaling app — not a medical or therapeutic tool. It does not provide medical advice, diagnosis, or treatment. For any health concerns, please consult a qualified professional.",
     "@healthDisclaimer": {
-        "description": "Health-disclaimer body. {crisisContact} is injected from CrisisContacts.formatInline for the user's locale. never hardcode the US/Canada 988 number; the helper resolves per-region.",
-        "placeholders": {
-            "crisisContact": {
-                "type": "String",
-                "example": "988 (988 Suicide & Crisis Lifeline)"
-            }
-        }
+        "description": "Health-disclaimer body shown on the consent page."
     },
     "healthDisclaimerCheckbox": "I acknowledge the Health Disclaimer",
     "privacyPolicyCheckbox": "I have read and agree to the Privacy Policy",

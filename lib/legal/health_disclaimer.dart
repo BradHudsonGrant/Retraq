@@ -1,35 +1,33 @@
 const String healthDisclaimerText = '''
 # Health & Wellness Disclaimer
 
-**Last Updated: March 29, 2026**
+**Last updated: April 23, 2026**
 
-## Not a Medical Device
+## The short version
 
-Retraq is **not** a medical device, health app, or therapeutic tool. It has not been evaluated or approved by any regulatory body for medical use, including the FDA, EMA, or any equivalent authority.
+Retraq is a journaling app, not a medical tool. It doesn't give medical advice, diagnose conditions, or replace professional care. For anything health-related, please talk to a qualified professional.
 
-## Purpose of the App
+## Not a medical device
 
-Retraq is designed as a productivity and memory aid for people who have ADHD. It provides a simple, structured way to capture daily thoughts and experiences. The App is a personal organization tool -- nothing more.
+Retraq is **not** a medical device, a health app, or a therapeutic tool. It has not been evaluated or approved by any regulatory body for medical use (including the FDA, EMA, Health Canada, or any equivalent authority).
 
-## No Medical Claims
+## What Retraq is
 
-Retraq does **not** diagnose, treat, cure, or prevent any medical condition, including but not limited to ADHD, anxiety, depression, or any other mental health condition. The App makes no health claims whatsoever. It is a simple daily log tool that some people with ADHD may find helpful for keeping track of their day.
+Retraq is a personal journaling and memory aid. It gives you a simple, structured place to capture daily thoughts, events, and moods. It's an organisation tool — nothing more.
 
-## Not a Substitute for Professional Advice
+## No medical claims
 
-The App is not a substitute for professional medical advice, diagnosis, or treatment. Never disregard professional medical advice or delay seeking it because of something related to your use of this App.
+Retraq does **not** diagnose, treat, cure, or prevent any medical condition. The app makes no health claims of any kind. It's a daily log that some people find helpful for keeping track of what they've been up to.
 
-## Mental Health Resources
+## Not a substitute for professional advice
 
-If you are struggling with your mental health, please reach out to a qualified healthcare provider. You are not alone, and professional support can make a real difference.
+The app is not a substitute for professional medical advice, diagnosis, or treatment. Never disregard professional medical advice or delay seeking it because of anything related to your use of Retraq.
 
-## Your Responsibility
+## Your responsibility
 
-By using Retraq, you acknowledge that the App is a personal daily log tool and that any decisions you make regarding your health or well-being should be made in consultation with qualified healthcare professionals.
+By using Retraq, you acknowledge that it's a personal journaling tool, and that any decisions about your health or well-being should be made with a qualified professional.
 
-## Contact Us
-
-If you have any questions about this disclaimer, please contact us at:
+## Contact
 
 contact@retraq.app
 ''';

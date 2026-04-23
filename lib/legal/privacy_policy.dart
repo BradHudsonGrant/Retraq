@@ -1,111 +1,99 @@
 const String privacyPolicyText = '''
 # Privacy Policy
 
-**Last Updated: April 16, 2026**
+**Last updated: April 23, 2026**
 
-## Overview
+## The short version
 
-Retraq ("the App") is a personal daily log application designed to help people with ADHD capture and organize their thoughts. Your privacy is fundamental to how Retraq is built. The App stores all data locally on your device and does not transmit your traqs or personal data over the internet.
+Retraq keeps your traqs on your phone. There are no accounts, no sign-ups, no servers that hold your data, and no analytics or ad trackers. The only thing that can leave your device is an optional crash report, and it's off by default.
 
-## Data Collection
+## What's stored on your device
 
-Retraq does **not** collect any personal data by default. There are no accounts, no sign-ups, no analytics, and no tracking of any kind. Your data never leaves your device unless you explicitly opt in to the single diagnostic feature described in the "Optional Diagnostics" section below.
+Retraq saves the following in a local, encrypted database (SQLCipher-compatible AES-256):
 
-## Data Stored Locally on Your Device
+- Your traqs — the text, optional title, date, optional AM/PM label, and optional 1–5 mood rating
+- Your settings — theme, notification time, display options
+- Optionally, a display name and email if you enter one
+- Optionally, a PIN hash if you turn on App Lock (PBKDF2-HMAC-SHA256, 250,000 iterations, salted — we can't reverse it into your PIN)
 
-The App stores the following data exclusively on your device using an encrypted SQLite database (SQLCipher with AES-256 encryption):
+None of this leaves your device.
 
-- Traqs (text content, titles, and dates)
-- User profile (display name and email, if you choose to provide them)
-- User preferences and settings (theme, notification time, display options)
-- PIN hash (if you enable App Lock)
+## Biometric unlock (Face ID, fingerprint)
 
-This data never leaves your device unless you explicitly choose to export it.
+If you enable biometric unlock, the match happens on your device through iOS or Android. Retraq never sees your face, fingerprint, or any biometric data — just a yes/no from the operating system.
 
-## Data That Never Leaves Your Device
+## What can go over the internet
 
-All traqs, settings, and security credentials remain on your device at all times. Retraq does not have servers, cloud infrastructure, or any mechanism to access your data remotely.
+**By default: nothing.** Retraq doesn't need an internet connection to work.
 
-## Third-Party Services
+If you turn on **"Help improve Retraq"** in Settings → Data, the app will send crash reports to Sentry (sentry.io) when something breaks. Those reports include:
 
-Retraq does not use any advertising networks, analytics platforms, or general-purpose tracking services. The only third-party service the App can connect to is **Sentry** (sentry.io), and only when you explicitly enable it under the "Optional Diagnostics" section below — which is off by default.
+- The error type and a code-level stack trace
+- The app version and OS version
+- The device model category (e.g. "Pixel 10 Pro")
+- The rough time the crash happened
 
-## Optional Diagnostics (Crash Reporting)
+We strip the device nickname before anything leaves your phone.
 
-Retraq includes a single, **opt-in**, off-by-default diagnostic feature: crash reporting via Sentry.
+Crash reports **never** include: your traq text, titles, moods, dates, your name or email, your PIN, biometric data, or anything else you've typed into the app.
 
-**What it does:** if you enable "Help improve Retraq" in Settings → Data, the App will send crash stack traces and technical error details to Sentry (sentry.io) when the App encounters a bug. This helps us fix crashes before they affect more users.
+You can turn this off at any time in Settings → Data. Events already sent are kept for 30 days by Sentry's default retention and then purged. Sentry is operated by Functional Software, Inc. in the US, so if you're in the EU or UK, the HTTPS connection reaches US infrastructure — the scrubbing above means no personal data of yours travels with it. If that's a concern, leave the toggle off; the app works exactly the same.
 
-**What is sent:** Dart exception type and stack trace, Flutter framework version, Retraq version, operating system version, device model category (e.g. "Pixel 10 Pro"), and the approximate moment the crash occurred. We scrub device-specific PII (for example, iOS auto-generated device names like "Brad's iPhone") before the event leaves your device.
+## Exporting and deleting your data
 
-**What is NEVER sent:** traq text, titles, mood selections, dates, timestamps of your entries, biometric data, PIN hash, IP address (Sentry sees the HTTPS connection's IP but we do not attach it to the event), contact info, email, or any field you have typed into the App. Stack traces are code-level only.
+- **Export**: Settings → Data → Export shares a JSON or plain-text copy through your device's share sheet. We don't keep a copy.
+- **Delete one traq**: delete it directly from the entry.
+- **Delete everything**: Settings → Data → Delete All Data clears every traq, setting, and consent record from your device.
+- **Uninstall**: removes everything. There's no cloud backup to clean up afterwards.
 
-**How to opt out:** toggle "Help improve Retraq" to off in Settings → Data at any time. New events stop immediately. Sentry's data retention for already-uploaded events is 30 days on the free tier we use; after that they are purged automatically. You can request earlier deletion by contacting us.
+## Permissions we ask for
 
-**Who operates Sentry:** Functional Software, Inc. d/b/a Sentry — a US-based company. For EU users, uploaded events cross the border; the scrubbing described above means no personal data of yours is transferred, but the HTTPS connection itself does reach US infrastructure. If this matters to you, leave the toggle off — the App functions identically without it.
+- **Notifications** — so Retraq can send you a daily reminder. Optional; turn it off in Settings or your OS settings.
+- **Biometric / fingerprint** — only if you turn on App Lock.
+- **Run after device restart** (Android) — so daily reminders still fire after a reboot.
 
-**Default state:** off. You must actively toggle it on. We will never enable it without your explicit action.
+We don't ask for contacts, location, camera, microphone, photos, or general storage access.
 
-## Data Export
+## Children
 
-You may export your traqs at any time using the in-app export feature. Exports are available in JSON and plain text formats. Exporting is entirely user-initiated and uses your device's native share sheet. Retraq does not retain copies of exported data.
+Retraq is intended for people aged 13 and up. Since the app doesn't collect data at all, there's no mechanism to gather children's data either. If you think a child is using the app and shouldn't be, let us know.
 
-## Data Deletion
+## Your rights (GDPR, PIPEDA, and similar)
 
-You can delete individual traqs at any time from within the App. You can also use the "Delete All Data" option in Settings to erase all traqs, settings, and consent records at once. Alternatively, you can uninstall the App to remove all stored data from your device. There is no cloud backup to worry about -- once deleted from your device, your data is gone.
+Even though we don't hold your data on our servers, you still have rights under laws like GDPR and PIPEDA:
 
-## Children's Privacy
+- **Access** — everything is visible in the app and exportable as JSON.
+- **Delete** — use Delete All Data, or uninstall.
+- **Portability** — the JSON export is a standard, machine-readable format.
 
-Retraq is intended for users aged 13 and older. The App does not knowingly collect or store data from children under the age of 13. Since Retraq does not collect any data at all, there is no mechanism through which children's data could be gathered. If you believe a child under 13 is using the App inappropriately, please contact us.
+Because no data reaches our servers, there's nothing for us to access, change, or delete on our end.
 
-## Your Rights (GDPR and Similar Regulations)
+## Who's behind this app
 
-Even though Retraq does not collect or transmit your data, we respect your rights under GDPR and similar privacy regulations:
+Retraq is built by an independent developer based in Canada. A registered business entity name and mailing address will be added here once registration completes. Until then, privacy questions can go to **contact@retraq.app**.
 
-- **Right to Access:** You can view all your data directly in the App and export it at any time using the JSON export feature.
-- **Right to Delete:** You can delete individual traqs or uninstall the App to remove all data.
-- **Right to Portability:** The JSON export feature allows you to take your data with you in a standard, machine-readable format.
+If you believe your privacy rights have been infringed, you have the right to complain to your local data-protection authority. We'd appreciate the chance to address it first, but that's not required. Some contacts:
 
-Because no data is transmitted to or stored on our servers, there is no data for us to access, process, or delete on our end.
+- **Canada**: Office of the Privacy Commissioner — https://www.priv.gc.ca/
+- **Quebec**: Commission d'accès à l'information du Québec — https://www.cai.gouv.qc.ca/
+- **EU**: your national supervisory authority (list: https://edpb.europa.eu/about-edpb/about-edpb/members_en)
+- **UK**: Information Commissioner's Office — https://ico.org.uk/
+- **California**: California Privacy Protection Agency — https://cppa.ca.gov/
+- **Australia**: Office of the Australian Information Commissioner — https://www.oaic.gov.au/
 
-## Future Cloud Features
+## If we ever add cloud features
 
-We may introduce optional cloud-based features in the future, such as AI-powered weekly recaps or cloud sync. Any such features will:
+If we add something like cloud sync or AI recaps in the future, it will be:
 
-- Require your explicit, informed consent before activation
-- Be covered by a separate, detailed privacy notice
-- Never be enabled by default
-- Clearly explain what data is transmitted and how it is used
+- Opt-in, off by default
+- Covered by a separate, clear privacy notice
+- Never enabled without you actively turning it on
 
-## Data Controller
+## Changes to this policy
 
-Retraq is developed by an independent developer based in Canada. All data remains on your device under your control. Because no personal data is collected or processed on external servers, the concept of a data controller under GDPR and similar frameworks does not apply in the traditional sense for ordinary App use.
+We'll update this policy from time to time. When something material changes, you'll see an in-app notice the next time you open Retraq and we'll ask you to accept the new version before continuing.
 
-Nevertheless, for the purposes of GDPR Article 13(1)(a), PIPEDA Principle 1 (Accountability), and Quebec Law 25 accountability provisions, the data controller for any processing that does occur (for example, receipt of a privacy inquiry sent to the contact address below) is the App's developer, reachable at `contact@retraq.app`. A Canadian business entity name and mailing address will be published here alongside the controller contact once entity registration completes; see the repository's `docs/external-blockers.md` (item B-5) for the pending milestone.
-
-A specific privacy officer / data protection officer is not appointed at this size; privacy inquiries may be sent to the same contact address.
-
-## Supervisory Authority Complaint Routes
-
-If you believe your privacy rights have been infringed by the App, you have the right to lodge a complaint with your local data-protection supervisory authority. Without limitation:
-
-- **Canada:** Office of the Privacy Commissioner of Canada — https://www.priv.gc.ca/
-- **Quebec:** Commission d'accès à l'information du Québec (CAI) — https://www.cai.gouv.qc.ca/
-- **European Union:** your national supervisory authority; a list is maintained by the European Data Protection Board at https://edpb.europa.eu/about-edpb/about-edpb/members_en . If you are unsure, the French CNIL (https://www.cnil.fr/) serves as a common fallback.
-- **United Kingdom:** Information Commissioner's Office (ICO) — https://ico.org.uk/
-- **United States (California):** California Privacy Protection Agency — https://cppa.ca.gov/ and the California Attorney General — https://oag.ca.gov/privacy
-- **Australia:** Office of the Australian Information Commissioner — https://www.oaic.gov.au/
-- **Other jurisdictions:** your local data-protection authority or equivalent regulator.
-
-We encourage you to contact us first at `contact@retraq.app` so we have an opportunity to address your concern, but this is not a precondition for exercising your right to complain.
-
-## Changes to This Policy
-
-We may update this Privacy Policy from time to time. Changes will be communicated through an in-app notice when you open the App after an update. We encourage you to review this policy periodically. Material changes to this policy will require your explicit acceptance before you can continue using the App.
-
-## Contact Us
-
-If you have any questions or concerns about this Privacy Policy, please contact us at:
+## Contact
 
 contact@retraq.app
 ''';

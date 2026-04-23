@@ -443,8 +443,8 @@ class _LockScreenState extends State<LockScreen> {
 
                   // Show "Forgot PIN?" from the FIRST failed
                   // attempt, not after two full lockouts (~10+ wrong
-                  // tries). Recognition > recall is core ADHD
-                  // accommodation, and a genuinely forgetful user
+                  // tries). Recognition > recall reduces cognitive
+                  // load, and a genuinely forgetful user
                   // should see the escape hatch immediately, not be
                   // forced through two exponential-backoff lockouts
                   // first. The destructive reset itself is still gated

@@ -9,7 +9,7 @@ import '../../theme/app_text.dart';
 /// Uses `cs.primary` colorFilter for visibility in both light and dark mode.
 ///
 /// Supports optional entrance animation (fade + scale) and a gentle
-/// breathing pulse — both designed to be calming for ADHD users.
+/// breathing pulse — designed to feel calming.
 ///
 /// Set [showText] to display "Retraq" branded text below the icon.
 class RetraqLogo extends StatefulWidget {

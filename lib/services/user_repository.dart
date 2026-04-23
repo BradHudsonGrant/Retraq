@@ -12,20 +12,41 @@ import 'database_service.dart';
 import 'secure_storage.dart';
 
 /// Current document versions — bump when legal text changes.
-// Bumped 2026-04-18 — added the "Optional Diagnostics
+// Bumped 2026-04-23 — full rewrite for plain-language, shorter
+// structure. Substance unchanged (same local-only storage, same
+// opt-in Sentry disclosure, same rights + controller + supervisory
+// authority list) but every section was reworded. Existing users
+// walk through the reconsent flow on next launch so they see the
+// new wording and re-accept.
+// Prior bump 2026-04-18 — added the "Optional Diagnostics
 // (Crash Reporting)" section disclosing the new Sentry opt-in, plus
 // amended Data Collection + Third-Party Services to note Sentry as
-// the sole potential third party (off by default). Existing users
-// walk through the reconsent flow on next launch.
+// the sole potential third party (off by default).
 // Prior bump 2026-04-16 — controller disclosure + supervisory-authority
 // complaint routes (OPC Canada, CAI Quebec, CNIL/EDPB, ICO UK,
 // CPPA California, OAIC Australia).
-const String currentPrivacyPolicyVersion = '2026-04-18';
-// Bumped 2026-04-16 — added mandatory consumer-law carve-out to
-// the Governing Law section. Existing users will be walked through
-// the re-consent flow on next launch.
-const String currentTermsOfServiceVersion = '2026-04-16';
-const String currentHealthDisclaimerVersion = '2026-03-29';
+const String currentPrivacyPolicyVersion = '2026-04-23';
+// Bumped 2026-04-23 — full rewrite for plain-language, shorter
+// structure. Reflects current state only: removed the "no subscription
+// to cancel" qualifier and the California Automatic Renewal Law
+// carve-out (no paid tier / subscriptions exist — RevenueCat isn't
+// wired). Legal substance unchanged (same "as is" warranty, same
+// liability cap, same Ontario governing law, same consumer-protection
+// carve-outs for Quebec, EU/EEA/UK, California, Australia). Existing
+// users walk through the reconsent flow on next launch.
+// Prior bump 2026-04-16 — added mandatory consumer-law carve-out to
+// the Governing Law section.
+const String currentTermsOfServiceVersion = '2026-04-23';
+// Bumped 2026-04-23 — rewrite for plain-language, shorter structure.
+// Removed condition-specific references and the "Mental Health
+// Resources" section to align legal copy with the app's current
+// product positioning (generic journaling / memory aid, no
+// mental-health claims). Legal substance unchanged: same "not a
+// medical device", same "no medical claims", same "not a substitute
+// for professional advice". Added Health Canada alongside FDA/EMA in
+// the regulatory callout. Existing users walk through the reconsent
+// flow on next launch.
+const String currentHealthDisclaimerVersion = '2026-04-23';
 
 /// User CRUD, consent records, and data deletion.
 class UserRepository {

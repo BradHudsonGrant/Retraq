@@ -9,7 +9,6 @@ import '../../widgets/atoms/glow_box.dart';
 import '../../legal/privacy_policy.dart';
 import '../../legal/health_disclaimer.dart';
 import '../../legal/terms_of_service.dart';
-import '../../services/crisis_contacts.dart';
 import '../legal_screen.dart';
 
 /// Consent page where users accept privacy policy, terms, and health disclaimer.
@@ -137,14 +136,7 @@ class ConsentPage extends StatelessWidget {
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: BionicText(
-                    // inject locale-appropriate crisis contact
-                    // so non-US users don't see a hardcoded 988 that doesn't
-                    // work in their country.
-                    text: l10n.healthDisclaimer(
-                      CrisisContacts.formatInline(
-                        CrisisContacts.forLocale(Localizations.localeOf(context)),
-                      ),
-                    ),
+                    text: l10n.healthDisclaimer,
                     style: tt.bodySmall?.copyWith(
                       color: cs.onTertiaryContainer,
                       height: 1.5,

@@ -85,9 +85,8 @@ void main() {
     );
     expect(field.textCapitalization, TextCapitalization.sentences,
         reason:
-            'ADHD-friendly autocap behaviour: first-letter caps on new '
-            'sentences. Dropping this would regress a previously-landed '
-            'UX pass.');
+            'Autocap behaviour: first-letter caps on new sentences. '
+            'Dropping this would regress a previously-landed UX pass.');
   });
 
   testWidgets('submitting with nextFocusNode moves focus to the body',

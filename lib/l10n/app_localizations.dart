@@ -775,11 +775,11 @@ abstract class L10n {
   /// **'We still need you to re-accept these, but we won\'t walk you through the intros again.'**
   String get welcomeBackSubtitle;
 
-  /// Health-disclaimer body. {crisisContact} is injected from CrisisContacts.formatInline for the user's locale. never hardcode the US/Canada 988 number; the helper resolves per-region.
+  /// Health-disclaimer body shown on the consent page.
   ///
   /// In en, this message translates to:
-  /// **'Retraq is a personal journaling app — not a medical or therapeutic tool. It does not provide health advice, diagnosis, or treatment. If you are in crisis, please contact a mental health professional or call {crisisContact}.'**
-  String healthDisclaimer(String crisisContact);
+  /// **'Retraq is a personal journaling app — not a medical or therapeutic tool. It does not provide medical advice, diagnosis, or treatment. For any health concerns, please consult a qualified professional.'**
+  String get healthDisclaimer;
 
   /// No description provided for @healthDisclaimerCheckbox.
   ///

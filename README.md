@@ -9,7 +9,7 @@ Tagline: "Lost traq? Retraq."
 - **Quick journaling** — AM/PM or all-day traqs with rotating hero prompts;
   one tap to type, one tap to save.
 - **Mood tracking** — Optional 5-level scale with on-device stats (mood is
-  opt-in and off by default — ADHD-friendly simplicity).
+  opt-in and off by default).
 - **Recap** — Browse by week/month, full-text search with FTS5 + highlighting,
   weekly summary card, "on this day last year" recurrence.
 - **Stats** — Streaks, trends, weekly activity, mood distribution, milestones.

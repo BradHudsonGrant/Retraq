@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 /// Typography tokens matching the prototypes:
-///   Headlines → Lexend (clean, round, ADHD-friendly)
+///   Headlines → Lexend (clean, round, optimised for reading proficiency)
 ///   Body/Labels → Manrope (geometric, highly readable)
 ///
 /// We use fontFamily strings here which work with bundled font assets.

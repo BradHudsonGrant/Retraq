@@ -401,9 +401,8 @@ class L10nEn extends L10n {
       'We still need you to re-accept these, but we won\'t walk you through the intros again.';
 
   @override
-  String healthDisclaimer(String crisisContact) {
-    return 'Retraq is a personal journaling app — not a medical or therapeutic tool. It does not provide health advice, diagnosis, or treatment. If you are in crisis, please contact a mental health professional or call $crisisContact.';
-  }
+  String get healthDisclaimer =>
+      'Retraq is a personal journaling app — not a medical or therapeutic tool. It does not provide medical advice, diagnosis, or treatment. For any health concerns, please consult a qualified professional.';
 
   @override
   String get healthDisclaimerCheckbox => 'I acknowledge the Health Disclaimer';
