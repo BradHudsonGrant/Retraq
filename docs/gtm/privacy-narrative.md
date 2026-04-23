@@ -63,7 +63,7 @@ fails any build that adds one.
 
 How We Feel (nonprofit) is the closest comparable on the on-
 device posture; they've built a reputation on it. Retraq is the
-only ADHD-adult-targeted journal app with this architecture at
+only consumer-targeted journal app with this architecture at
 v1 launch.
 
 ## Writing rules
@@ -112,7 +112,7 @@ At least 2 of the 5 carry the privacy narrative (3 + 4).
 Five soundbites, each ≤ 1 sentence, pre-approved for reviewers
 and creators to quote:
 
-1. *"Retraq is the only ADHD-adult journaling app shipping v1
+1. *"Retraq is the only consumer journaling app shipping v1
    with a CI-enforced zero-network posture for entry data."*
 2. *"The weekly recap runs entirely on-device. There's no LLM
    call, no cloud summary, no 'AI-powered' caveat."*

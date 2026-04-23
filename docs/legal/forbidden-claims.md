@@ -142,13 +142,13 @@ fi
 ### Why NOT use the broader guardrails list
 
 The 30+ term `health-claim-guardrails.md` red list is
-context-sensitive: `ADHD` is RED in listing copy (marketing
-claim) but GREEN in privacy-policy explanations. A CI lint
-that enforces it blindly would fail every audit doc that
-references "ADHD" or "memory" legitimately. The 6-term list
-above has zero legitimate-use cases in the codebase outside
-the three exempted meta-docs, so the CI floor enforces it
-without reviewer judgment required.
+context-sensitive: `ADHD` is RED everywhere in shipping copy
+(marketing claim) but may appear in privacy-policy explanations
+or historical audit docs. A CI lint that enforces it blindly
+would fail every audit doc that references "ADHD" or "memory"
+legitimately. The 6-term list above has zero legitimate-use
+cases in the codebase outside the three exempted meta-docs, so
+the CI floor enforces it without reviewer judgment required.
 
 ## Integration with existing CI
 

@@ -3,10 +3,10 @@
 **Status:** Ship-ready · **Task:** 5.9 companion · **Last updated:** 2026-04-16
 
 A per-string review checklist any engagement-adjacent copy in the
-app or marketing surfaces has to pass. "Streak shame" is the
-single biggest ADHD app-review complaint; Retraq's anti-penalty
-posture is a positioning claim (one of the three proof points in
-the positioning one-pager) so slipping loss-framed language into
+app or marketing surfaces has to pass. "Streak shame" is a common
+app-review complaint; Retraq's anti-penalty posture is a
+positioning claim (one of the three proof points in the
+positioning one-pager) so slipping loss-framed language into
 the product or listings undermines the wedge.
 
 Pair with `engagement-hook-spec.md` (Hook B is the primary

@@ -25,7 +25,7 @@ they fit. Pulled from the brand guide + agent-13 audit + user memory.
 | Traq the moment. Retraq the memory. | TikTok intro clip overlay |
 | Don't lose traq. Retraq. | TikTok sticker, second social CTA |
 | Your memory backup. | Non-pun fallback — store description body, medical-adjacent contexts |
-| For people who forget Tuesday by Thursday. | Reddit r/ADHD post title, TikTok relatable-ADHD creator caption |
+| For people who forget Tuesday by Thursday. | Reddit post title, TikTok relatable creator caption |
 | Journalling apps want your life story. Retraq just wants a sentence. | Twitter/X thread intro, landing page hero-alt |
 
 ## Empty-state microcopy (preserve verbatim)
@@ -60,9 +60,9 @@ warm, non-streak-shaming, anti-Duolingo tone.
 
 | Slot | Limit | Primary content | A/B variant |
 |---|---|---|---|
-| Name | 30 | `Retraq — Remember Your Week` | `Retraq — ADHD-friendly journal` |
-| Subtitle | 30 | `Lost traq? Retraq.` | `ADHD memory journal` |
-| Keywords | 100 | `adhd,journal,diary,memory,mood,daily,log,private,offline,lexend,simple,recap,habit,notes` | — |
+| Name | 30 | `Retraq — Remember Your Week` | `Retraq — Memory Journal` |
+| Subtitle | 30 | `Lost traq? Retraq.` | `Your memory backup.` |
+| Keywords | 100 | `journal,diary,memory,mood,daily,log,private,offline,lexend,simple,recap,habit,notes,jot` | — |
 
 ### Google Play
 
@@ -86,14 +86,13 @@ guard.
 - `cures` · `treats` · `diagnoses` · `FDA-approved` · `HIPAA-compliant` ·
   `clinically proven` (Task 12.5 forbidden-claims list).
 - `streak` framed as penalty (`lost streak`, `streak reset`).
-- `guilt` / `failure` / `oops, you missed a day` framings — anti-ADHD.
-- Clinical-medical vocabulary targeting dementia users in any copy
-  until Retraq Care sub-brand v2 ships (Task 13.5 + B-10 caregiver
-  legal framework).
+- `guilt` / `failure` / `oops, you missed a day` framings.
+- Clinical-medical vocabulary or health-condition targeting in any
+  copy (see `forbidden-claims.md` red-list).
 
 ## Where to source creator-outreach DMs
 
-See Epic 5 Task 5.8 — the ADHDTok creator seeding playbook. 20-30 free
+See Epic 5 Task 5.8 — the creator seeding playbook. 20-30 free
 Premium codes + a creative brief matching the taglines in this file.
 
 ## Where to commit new taglines

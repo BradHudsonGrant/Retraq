@@ -2,10 +2,11 @@
 
 **Status:** Ship-ready (v1.1 spec) · **Task:** 5.9 · **Last updated:** 2026-04-16
 
-> **Problem:** Finch (pet care) and Stoic (daily quote) own ADHDTok
-> share moments. Retraq has no equivalent. But Retraq must NOT add
-> streak-penalty mechanics — "streak shame" is the #1 complaint in
-> ADHD app reviews (top-of-thread in r/ADHD "why I deleted Finch").
+> **Problem:** Finch (pet care) and Stoic (daily quote) own
+> journaling-creator share moments. Retraq has no equivalent. But
+> Retraq must NOT add streak-penalty mechanics — "streak shame" is
+> a common top-of-thread app-review complaint ("why I deleted
+> Finch").
 >
 > **Solution:** three candidate hooks, all share-able, none
 > loss-framed. One ships in v1.1 — the monthly retraq callback is
@@ -13,7 +14,7 @@
 
 ## The sweet spot
 
-ADHD-target engagement works when:
+Lightweight engagement works when:
 
 1. **The hook is voluntary** — user chooses to engage, app never
    demands it.
@@ -23,7 +24,7 @@ ADHD-target engagement works when:
 3. **The framing is encouragement, not loss** — "you logged 4
    days this week, nice" NOT "you broke your streak."
 4. **The artifact is screenshot-ready** — if there's nothing
-   visually worth posting, no ADHDTok lift.
+   visually worth posting, no social lift.
 5. **Privacy stays intact** — shareable doesn't mean exposing
    entry text by default.
 

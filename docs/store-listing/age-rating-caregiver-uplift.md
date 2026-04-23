@@ -1,5 +1,7 @@
 # Caregiver-tier age-rating uplift plan (v2)
 
+**[Superseded 2026-04-23 — caregiver/memory-concern exploration abandoned.]**
+
 **Status:** Pre-planned — not ready to submit · **Task:** 9.9
 companion · **Last updated:** 2026-04-16
 
@@ -107,7 +109,7 @@ submission, the app must have:
 - [ ] **v2-specific listing-copy guardrail pass** —
       `health-claim-guardrails.md` red/yellow list re-applied to
       caregiver-tier marketing copy with extra scrutiny on
-      "memory loss," "dementia," "Alzheimer" (all still RED).
+      "memory loss," and any cognitive-decline condition names (all still RED).
 - [ ] **Ethics / privacy-counsel sign-off** (Epic 12 Task 12.12)
       from B-6 / B-10.
 - [ ] **Legal review of caregiver-specific listing copy** by

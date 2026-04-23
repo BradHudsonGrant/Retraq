@@ -8,17 +8,17 @@ This epic translates the 14 rows of the Agent 5 Detailed Findings Table into con
 
 ### Task 5.1 — Write v1 launch narrative hook + differentiation one-pager
 
-**Source:** A5 finding "ADHD-focused simplicity positioning is crowded, not distinctive" / Bottom Line "biggest strategic risk is launching without a distinctive narrative hook" · **Rating:** Gap
+**Source:** A5 finding "Simplicity positioning is crowded, not distinctive" / Bottom Line "biggest strategic risk is launching without a distinctive narrative hook" · **Rating:** Gap
 **Priority:** P0 · **Effort:** M · **Tier:** v1 launch
 
 #### Problem
-Retraq sits in one of the most crowded corners of the App Store. "ADHD-focused simplicity" is claimed by Daylio, Day One, Apple Journal, Stoic, Finch, Journey, Reflectly, Rosebud, Mindsera, Inflow. Without a distinctive narrative, ASO + creator seeding will underperform and the app will be treated as "another ADHD journal."
+Retraq sits in one of the most crowded corners of the App Store. "Simplicity" is claimed by Daylio, Day One, Apple Journal, Stoic, Finch, Journey, Reflectly, Rosebud, Mindsera, Inflow. Without a distinctive narrative, ASO + creator seeding will underperform and the app will be treated as "another journaling app."
 
 #### Root cause (market dynamic that drives this)
-Every incumbent has already planted a flag on simplicity/ADHD/mood; users searching for journaling apps pattern-match to Daylio and Apple Journal by default. Differentiation must come from a vertical wedge (caregiver), a trust story (on-device privacy), or a memory-recall job-to-be-done — not from UX polish alone.
+Every incumbent has already planted a flag on simplicity/mood/journaling; users searching for journaling apps pattern-match to Daylio and Apple Journal by default. Differentiation must come from a trust story (on-device privacy) or a memory-recall job-to-be-done — not from UX polish alone.
 
 #### Deliverables
-- `docs/gtm/positioning-one-pager.md` — single-page narrative: target persona, core job-to-be-done ("retrieve a week/month you wouldn't otherwise remember"), the three proof points (on-device, caregiver-aware, recap-first), and the "why now" line.
+- `docs/gtm/positioning-one-pager.md` — single-page narrative: target persona, core job-to-be-done ("retrieve a week/month you wouldn't otherwise remember"), the three proof points (on-device, recall-first, anti-streak-shaming), and the "why now" line.
 - `docs/gtm/taglines-ab.md` — 5 tagline candidates incl. current "Lost traq? Retraq." and 4 alternates (e.g. "Your memories never leave your phone.", "Retraq your week before it disappears.") with A/B testing rationale.
 - `docs/gtm/narrative-hook.md` — the 1-sentence hook used across App Store subtitle, Play short-description, press, and creator DMs.
 
@@ -88,16 +88,16 @@ Daylio's moat is install base + mood-icon familiarity, not recap depth. Users wh
 Apple Journal is bundled in iOS 17.2+, free, AI-prompted, and widely recommended in 2026 roundups. Any iOS user searching "journal" sees Apple Journal recommended first. Retraq must give iOS users a concrete reason to install a third-party app.
 
 #### Root cause (market dynamic that drives this)
-OS-bundled apps have zero install friction and default-trust. Third-party apps must beat Apple Journal on either cross-device (Apple Journal is iOS-only), export/portability (Apple Journal locks data in), or a specific audience need (ADHD/memory) that Apple Journal does not address.
+OS-bundled apps have zero install friction and default-trust. Third-party apps must beat Apple Journal on either cross-device (Apple Journal is iOS-only), export/portability (Apple Journal locks data in), or a specific recall-first need Apple Journal does not address.
 
 #### Deliverables
-- `docs/gtm/battlecards/apple-journal.md` — iOS-specific battlecard. Focus on: (a) cross-device (Android parity day 1), (b) full data export, (c) ADHD + caregiver-aware UX, (d) structured recap/stats Apple Journal lacks.
-- `docs/gtm/android-first-positioning.md` — rationale for leading the launch on Android where Apple Journal is not a threat; iOS becomes a secondary market sized against specific ADHD/export-wanting segments.
+- `docs/gtm/battlecards/apple-journal.md` — iOS-specific battlecard. Focus on: (a) cross-device (Android parity day 1), (b) full data export, (c) recall-first UX, (d) structured recap/stats Apple Journal lacks.
+- `docs/gtm/android-first-positioning.md` — rationale for leading the launch on Android where Apple Journal is not a threat; iOS becomes a secondary market sized against specific export-wanting segments.
 - `assets/store-listing/ios-subtitle-variants.md` — 3 subtitle variants (30 chars) that plant the flag vs Apple Journal without naming it.
 
 #### Implementation approach
 1. Research Apple Journal's Mac/iPad support status as of 2026-04 and document gaps.
-2. Draft iOS listing subtitle variants explicitly differentiating on export or ADHD.
+2. Draft iOS listing subtitle variants explicitly differentiating on export or recall-first frame.
 3. Add a "Why not Apple Journal?" FAQ entry to the press kit.
 
 #### Success criteria

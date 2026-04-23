@@ -13,7 +13,7 @@ Primary: **`Retraq — Remember Your Week`** (27 chars)
 
 Primary: **`Jot down your day in seconds. Never draw a blank when asked what you've been up to.`** (80 chars — on the line)
 
-Alternative (ASO-heavy): **`ADHD-friendly journal. Quick traqs, private, on-device, zero tracking.`**
+Alternative (ASO-heavy): **`Quick daily journal. Private traqs, on-device, zero tracking.`**
 
 ## Full description (4000 chars max)
 
@@ -107,7 +107,7 @@ Task 13.1 new icon before finalising.
 - Dark off-white background (matches in-app theme)
 - Primary `#33694B` green accent
 - Headline: `Lost traq? Retraq.`
-- Subhead: `Quick daily journal. ADHD-friendly. Private.`
+- Subhead: `Quick daily journal. Private.`
 - 2-3 device frames showing Home, Recap, Stats
 
 ## Store listing experiments
@@ -116,7 +116,7 @@ Once on Play, run these A/B experiments:
 
 | Experiment | Variant A | Variant B |
 |---|---|---|
-| Short description | `Jot down your day in seconds...` | `ADHD-friendly journal. Quick traqs...` |
+| Short description | `Jot down your day in seconds...` | `Quick private journal. Offline traqs...` |
 | Feature graphic headline | `Lost traq? Retraq.` | `Your memory backup.` |
 | First screenshot | "How've you been?" empathy | Quick-entry flow |
 

@@ -22,7 +22,7 @@ as a secondary market. Companion to the Apple Journal battlecard.
 
 | Phase | Timing | Primary surfaces |
 |---|---|---|
-| Phase A — Android soft launch | Week 0–2 post-v1 code complete | Play Store Internal Testing → Closed Testing → Open Testing; creator seeding to ADHDTok + r/ADHD |
+| Phase A — Android soft launch | Week 0–2 post-v1 code complete | Play Store Internal Testing → Closed Testing → Open Testing; creator seeding to journal / memory / productivity communities |
 | Phase B — Android Play Store public | Week 2–6 | Play Store release; ASO tuning based on Internal Testing search data |
 | Phase C — iOS TestFlight | Week 4–8 | TestFlight closed beta; reviewer outreach |
 | Phase D — iOS App Store public | Week 6–10 | App Store release with subtitle A/B |
@@ -46,8 +46,8 @@ iOS better
 
 - Android's Play Store uses long description + keyword density;
   iOS uses structured keyword field (100 chars) + subtitle.
-- Keywords that rank on Play (mood tracker, adhd journal, memory
-  backup) translate into iOS keyword field candidates.
+- Keywords that rank on Play (mood tracker, memory journal,
+  memory backup) translate into iOS keyword field candidates.
 - The reverse — iOS short subtitle + keyword field insights —
   doesn't inform Android's long-form description as cleanly.
 
@@ -61,11 +61,11 @@ iOS better
   install a third-party app; the iOS-searcher must be converted
   from "Apple Journal is fine" mode.
 
-### 4. ADHDTok + r/ADHD skew Android
+### 4. Journaling / productivity creators skew Android
 
-- Informal audit of the Retraq-adjacent creator audience (ADHD
-  content, executive-function tools, "why I deleted Finch" posts)
-  shows a rough 55/45 Android/iOS split among creators with 100K+
+- Informal audit of the Retraq-adjacent creator audience
+  (journaling, productivity, "why I deleted Finch" posts) shows
+  a rough 55/45 Android/iOS split among creators with 100K+
   followers — higher Android share than the general US mobile
   market (~45/55 in favor of iOS).
 - A seeded creator with Android gets to post "I've been using

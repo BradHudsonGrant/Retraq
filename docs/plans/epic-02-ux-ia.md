@@ -142,7 +142,7 @@ The bar-tap interaction was added later than the rest of Stats' localization and
 **Priority:** P0 · **Effort:** XS · **Tier:** v1 launch
 
 #### Problem
-`lock_screen.dart:278` gates the "Forgot PIN?" button behind `_lockout.lockoutCount >= 2`, which means ~10 failed attempts (two full lockouts) before the escape hatch appears. For ADHD users (the target audience) who juggle multiple PINs and benefit from recognition over recall, this is a hard Barrier — users will uninstall before reaching the button.
+`lock_screen.dart:278` gates the "Forgot PIN?" button behind `_lockout.lockoutCount >= 2`, which means ~10 failed attempts (two full lockouts) before the escape hatch appears. For users who juggle multiple PINs and benefit from recognition over recall, this is a hard Barrier — users will uninstall before reaching the button.
 
 #### Root cause
 Defensive anti-brute-force instinct during original implementation. But the Forgot-PIN flow already requires a separate recovery challenge, so exposing the button early doesn't weaken security — it only removes a psychological cliff.
@@ -182,7 +182,7 @@ Defensive anti-brute-force instinct during original implementation. But the Forg
 **Priority:** P1 · **Effort:** L · **Tier:** v1 launch
 
 #### Problem
-`AppShell` ships 4 bottom tabs (Jot / Recap / Stats / Settings) but Stats' bar chart + streaks duplicate insights already surfaced on Recap's `weekly_summary_card`. Four-tab navigation blurs IA, makes the bottom nav feel heavy, and forces ADHD users to remember "was that on Stats or Recap?"
+`AppShell` ships 4 bottom tabs (Jot / Recap / Stats / Settings) but Stats' bar chart + streaks duplicate insights already surfaced on Recap's `weekly_summary_card`. Four-tab navigation blurs IA, makes the bottom nav feel heavy, and forces users to remember "was that on Stats or Recap?"
 
 #### Root cause
 Stats was added as a separate surface during Epic 4; the weekly-summary card on Recap grew organically and eventually overlapped Stats content without Stats being consolidated.
@@ -667,7 +667,7 @@ N/A — working as designed.
 **Priority:** P3 · **Effort:** XS · **Tier:** no-op
 
 #### Problem
-None. The Lexend headline + Manrope body pairing with variable-axis fontVariations and no `textScaleFactor` overrides is a Delight — WCAG 1.4.4 resize is preserved, and Lexend is specifically tuned for dyslexic / ADHD readability.
+None. The Lexend headline + Manrope body pairing with variable-axis fontVariations and no `textScaleFactor` overrides is a Delight — WCAG 1.4.4 resize is preserved, and Lexend is specifically tuned for reading fluency.
 
 #### Root cause
 N/A — working as designed.

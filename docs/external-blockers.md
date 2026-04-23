@@ -42,8 +42,8 @@ through Task 6.4 race-coverage testing).
 - **B-18** ASO vendor (iOS) — gates post-launch iOS tuning
 - **B-19** ASO vendor (Play) — gates post-launch Play tuning
 - **B-20** Android keystore — mostly done per audit; verification only
-- **B-21** ADHDTok creator list — gates Task 5.8 seeding
-- **B-22** r/ADHD mod outreach — gates Task 5.8 seeding
+- **B-21** Creator seeding list (TikTok / Instagram) — gates Task 5.8 seeding
+- **B-22** Community / subreddit outreach — gates Task 5.8 seeding
 - **B-23** Therapist referral partnerships — gates Task 5.7 + 5.8
 - **B-24** ✅ **RESOLVED 2026-04-18** — Codecov repo configured,
   `CODECOV_TOKEN` in GitHub Secrets. Task 10.8 upload step now
@@ -286,7 +286,7 @@ dSYM upload step (next commit).
 
 ### [ ] B-18. ASO keyword research  _(feeds Task 9.3)_
 
-**Scope:** Keyword-volume + competition data for ADHD journaling, memory journal, mood diary, daily log, etc. I can draft a strategy table; you verify with a real ASO tool.
+**Scope:** Keyword-volume + competition data for journaling, memory journal, mood diary, daily log, etc. I can draft a strategy table; you verify with a real ASO tool.
 
 **Vendors:** MobileAction free tier, AppTweak trial, Sensor Tower, App Radar.
 
@@ -314,25 +314,25 @@ Per the audit, this is already in place — just needs verification.
 
 ## Creator / community outreach
 
-### [ ] B-21. ADHDTok creator seeding list  _(blocks Task 5.8)_
+### [ ] B-21. Creator seeding list  _(blocks Task 5.8)_
 
-**Scope:** Compile 20–30 handles of ADHD-focused TikTok creators (mid-tier, 10k–500k followers). Seed each with a free Retraq Pro code and the "for people who forget Tuesday by Thursday" creative brief.
+**Scope:** Compile 20–30 handles of journaling / memory / productivity TikTok and Instagram creators (mid-tier, 10k–500k followers). Seed each with a free Retraq Pro code and the "for people who forget Tuesday by Thursday" creative brief.
 
 **Cost:** $0 (free codes) + time to curate list. Optional paid seeding service: ~$200–$1000 per campaign via agencies like Linqia or Insense.
 
 ---
 
-### [ ] B-22. r/ADHD mod outreach  _(blocks Task 5.8)_
+### [ ] B-22. Community / subreddit outreach  _(blocks Task 5.8)_
 
-**Scope:** Soft introduction of Retraq to r/ADHD mods; request sticky post or launch-day AMA. Requires building a relationship — do NOT spam.
+**Scope:** Soft introduction of Retraq to relevant subreddit mods (journaling, memory, productivity communities); request sticky post or launch-day AMA. Requires building a relationship — do NOT spam.
 
 **Cost:** $0 + relational time.
 
 ---
 
-### [ ] B-23. Therapist referral partnerships  _(blocks Task 5.7 caregiver + Task 5.8 ADHD channels)_
+### [ ] B-23. Therapist referral partnerships  _(blocks Task 5.7 caregiver + Task 5.8 community channels)_
 
-**Scope:** List of 5–10 therapists / ADHD coaches willing to mention Retraq to clients. Provide them with a printable "why a simple journal helps" one-pager.
+**Scope:** List of 5–10 therapists / coaches willing to mention Retraq to clients. Provide them with a printable "why a simple journal helps" one-pager.
 
 **Cost:** $0 + outreach time. Optional: small affiliate program via ReferralCandy ($100/mo).
 
@@ -373,7 +373,7 @@ Per the audit, this is already in place — just needs verification.
 - B-8 (subscription counsel review)
 - B-18, B-19 (ASO polish)
 - B-11 (independent WCAG audit, before EU release)
-- B-21, B-22, B-23 (creator/community seeding)
+- B-21, B-22, B-23 (creator / community seeding)
 
 **Later (v1.1 cloud AI, v2 caregiver):**
 - B-9 (Art. 9 / AI Act counsel review)

@@ -9,7 +9,7 @@ Daylio/Apple Journal/Rosebud battlecards (`docs/gtm/battlecards/`).
 
 ## One-sentence hook
 
-> **Retraq is the on-device memory backup for ADHD adults who forget
+> **Retraq is the on-device memory backup for people who forget
 > their week by Friday — drop a sentence a day, get it back as a
 > recap when your brain goes blank.**
 
@@ -20,7 +20,7 @@ rest of the story on store.
 
 ## Target persona — v1
 
-- **Who:** ADHD adults, 25–45, who have tried Daylio or Apple Journal
+- **Who:** Adults, 25–45, who have tried Daylio or Apple Journal
   and bounced because the friction didn't fit the "open the app when
   you actually remember" use pattern.
 - **Core job-to-be-done:** "When I try to remember what happened last
@@ -66,10 +66,11 @@ Retraq leads with:
 
 ## "Why now" line
 
-- **ADHD journaling apps are all converging on the same UX** (mood
+- **Journaling apps are all converging on the same UX** (mood
   icon + one-tap save) and the differentiation has collapsed. The
-  "streak shaming" backlash (visible in r/ADHD and TikTok "I deleted
-  Finch because it made me cry") is a real opening.
+  "streak shaming" backlash (visible in app-review threads and
+  TikTok "I deleted Finch because it made me cry") is a real
+  opening.
 - **iOS Apple Journal shipped in iOS 17.2** and has the
   "write-first" model as its spine. Users who want recall-first
   have nowhere to go on iPhone. Retraq's iOS listing leads with
@@ -79,17 +80,16 @@ Retraq leads with:
   by-design expectations — every quarter makes "Zero data leaves
   your device" more valuable, not less.
 
-## How this differs from "just another ADHD journal"
+## How this differs from "just another journal app"
 
-An ADHD journal competitor hears "ADHD + journal + mood tracker" and
-reaches for the same feature list. Retraq reaches past the feature
-list:
+A journal competitor hears "journal + mood tracker" and reaches
+for the same feature list. Retraq reaches past the feature list:
 
 | They claim | Retraq claims |
 |---|---|
 | Simple | Nothing. "Simple" is table stakes. |
-| ADHD-friendly UX | **Recall-first** UX. Simple is a *consequence* of recall-first, not the pitch. |
-| Mood tracking | Mood opt-in (off by default). Because ADHD users who want mood already know they want it; forcing it makes the first-run feel clinical. |
+| Friendly UX | **Recall-first** UX. Simple is a *consequence* of recall-first, not the pitch. |
+| Mood tracking | Mood opt-in (off by default). Because users who want mood already know they want it; forcing it makes the first-run feel clinical. |
 | Private | **On-device only, CI-guarded.** Not a marketing claim — a verifiable architectural promise. |
 | Streaks | **Freeze-equipped streaks.** The freeze is a product philosophy statement. |
 | Journaling app | **Memory backup.** The frame is different — you're not keeping a journal, you're keeping a week you'll otherwise lose. |
@@ -105,8 +105,8 @@ list:
 - **Do lean into the pun** (`Lost traq? Retraq.`) in English-market
   short slots. The pun passes the 3-second recall test.
 - **Do lean into specifics** — "forget Tuesday by Thursday" beats
-  "ADHD-friendly" in every click-through test we've seen on similar
-  positioning.
+  any generic audience-descriptor in every click-through test
+  we've seen on similar positioning.
 
 ## Sibling artifacts
 

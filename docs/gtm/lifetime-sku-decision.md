@@ -33,8 +33,8 @@ forever pick Lifetime.
 ## Why $5.99 specifically
 
 - **Below "impulse ceiling"**: $5.99 is in the one-tap range for
-  ADHD-adult target users; $9.99+ triggers "do I really want
-  this" hesitation that hurts conversion.
+  target users; $9.99+ triggers "do I really want this"
+  hesitation that hurts conversion.
 - **2-year equivalent of monthly is $71.76**: pricing Lifetime at
   $5.99 signals "we're not trying to arbitrage you" — it's a
   statement of intent, not a pricing optimization.
@@ -68,11 +68,11 @@ This is the anti-instinctive part. The intuitive move is
    want cloud AI later, they subscribe to Monthly. They don't
    downgrade from a "Lifetime-with-AI" that never existed.
 
-## Positioning — "respects your executive function"
+## Positioning — "no subscription trap"
 
-The Lifetime SKU is the product statement that counters the ADHD
-community's #1 paid-app complaint: subscription fatigue. From
-r/ADHD and ADHDTok review threads, users post:
+The Lifetime SKU is the product statement that counters a common
+paid-app complaint: subscription fatigue. Across journaling and
+productivity app review threads, users post:
 
 - "I have 12 active subscriptions I forgot about."
 - "I cancel everything monthly just so I don't get trapped."

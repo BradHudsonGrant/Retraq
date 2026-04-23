@@ -17,19 +17,19 @@ Primary: **`Retraq — Remember Your Week`** (27 chars)
 Primary: **`Lost traq? Retraq.`** (18 chars) — brand pun; matches
 App Store's brevity-is-memorable heuristic.
 
-Alternative (for ASO if pun under-converts): **`ADHD memory journal`** (19 chars)
+Alternative (for ASO if pun under-converts): **`Private memory journal`** (22 chars)
 
 ## Promotional Text (170 chars, updatable without review)
 
 > Draw a blank when someone asks what you've been up to? Retraq is a
-> tiny daily journal that remembers for you. ADHD-friendly. No accounts,
+> tiny daily journal that remembers for you. Quick. Private. No accounts,
 > no cloud, no tracking.
 
 ## Description (4000 chars max)
 
 ```
-Retraq is a quick daily journal for people whose memory doesn't quite
-keep up with their lives. Open. Write. Done.
+Retraq is a quick daily journal for people who want to remember their
+week. Open. Write. Done.
 
 --- Why Retraq ---
 
@@ -53,9 +53,8 @@ what past-you was doing on today's date.
 
 --- For busy brains ---
 
-Retraq is built for people with ADHD, early memory concerns, or just
-too many tabs open. Every design choice asks: does this reduce
-cognitive load?
+Retraq is built for people with too many tabs open. Every design
+choice asks: does this reduce cognitive load?
 
 • Lexend font for reading fluency (research-backed).
 • Bionic reading mode (optional).
@@ -106,15 +105,15 @@ Contact: hello@retraq.app
 ## Keywords (100 chars, comma-separated)
 
 ```
-adhd,journal,diary,memory,mood,daily,log,private,offline,lexend,simple,recap,habit,notes,brain
+journal,diary,memory,mood,daily,log,private,offline,lexend,simple,recap,habit,notes,brain,jot
 ```
 
 Rationale:
-- `adhd`, `journal`, `diary`, `memory`, `mood` — highest-intent category terms per Agent 5 market research.
-- `lexend` — brand differentiator (research-backed ADHD-readable font).
+- `journal`, `diary`, `memory`, `mood` — highest-intent category terms per Agent 5 market research.
+- `lexend` — brand differentiator (research-backed readable font).
 - `private`, `offline` — captures the growing privacy-first search intent.
-- `recap`, `habit`, `notes`, `brain` — related terms for discoverability.
-- Intentionally dropped: `tracker` (too generic), `AI` (paid tier only), `depression`/`anxiety`/`dementia` (health-claim territory — Task 9.8).
+- `recap`, `habit`, `notes`, `brain`, `jot` — related terms for discoverability.
+- Intentionally dropped: `tracker` (too generic), `AI` (paid tier only), `depression`/`anxiety` (health-claim territory — Task 9.8).
 
 ## Category
 
@@ -183,8 +182,8 @@ under EAR 740.17(b). See `app/docs/legal/ear-encryption-exemption.md`
 
 | Element | Variant A | Variant B | Measure |
 |---|---|---|---|
-| Subtitle | `Lost traq? Retraq.` | `ADHD memory journal` | Install conversion from store view |
-| Name | `Retraq — Remember Your Week` | `Retraq: ADHD Journal` | Install conversion |
+| Subtitle | `Lost traq? Retraq.` | `Your memory backup.` | Install conversion from store view |
+| Name | `Retraq — Remember Your Week` | `Retraq: Memory Journal` | Install conversion |
 | First screenshot caption | `How've you been?` | `Lost traq? Retraq.` | Install conversion |
 
 Run A/B via Apple's App Store product pages (up to 3 variants at 50/50/50 split).

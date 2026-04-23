@@ -99,13 +99,15 @@ Same as 4.1 — plan predates the feature-decisions memory and was never reconci
 
 ---
 
-### Task 4.3 — Move caregiver/Alzheimer features from Phase 7 to v2 exploration
+### Task 4.3 — Move caregiver features from Phase 7 to v2 exploration
 
-**Source:** A4 finding "Caregiver/Alzheimer features still in plan Phase 7 despite being dropped" · **Rating:** Rethink
+**[Superseded 2026-04-23 — caregiver/memory-concern exploration abandoned.]**
+
+**Source:** A4 finding "Caregiver features still in plan Phase 7 despite being dropped" · **Rating:** Rethink
 **Priority:** P0 · **Effort:** S · **Tier:** v2
 
 #### Problem
-`implementation_plan.md` lines 178-185 still describe Phase 7 caregiver/dementia features (Retraq Care dashboard, memory-clinic partnerships, shared-family view, GPS safety pings) as an active roadmap phase. Per April 6 decision, personas 2 (elderly memory loss) and 3 (caregiver) are dropped for v1. These features should be marked "potential v2 exploration" not "Phase 7 roadmap."
+`implementation_plan.md` lines 178-185 still describe Phase 7 caregiver features (Retraq Care dashboard, memory-clinic partnerships, shared-family view, GPS safety pings) as an active roadmap phase. Per April 6 decision, personas 2 (elderly memory-concern) and 3 (caregiver) are dropped for v1. These features should be marked "potential v2 exploration" not "Phase 7 roadmap."
 
 #### Root cause
 Same provenance issue — plan predates persona-narrowing decision.
@@ -117,10 +119,10 @@ Same provenance issue — plan predates persona-narrowing decision.
 - A5 (market research) — caregiver is a real market gap; preserve the finding as v2 opportunity note
 
 #### Implementation approach
-1. Rename section heading "Phase 7: Retraq Care (Caregiver)" → "Appendix C: Potential v2 exploration — caregiver & dementia support".
+1. Rename section heading "Phase 7: Retraq Care (Caregiver)" → "Appendix C: Potential v2 exploration — caregiver & memory-concern support".
 2. Before/after outline:
    - BEFORE Phase 7 contents: dashboard spec, FHIR mention, family sharing, clinical-trial outreach plan.
-   - AFTER Appendix C contents: one paragraph noting A5 research showed a $450M market with 15-20% CAGR; feature set TBD pending v1 activation and a separate business-case exercise; not to be confused with v1.1 Pro IAP (which is ADHD-adult–focused).
+   - AFTER Appendix C contents: one paragraph noting A5 research showed a $450M market with 15-20% CAGR; feature set TBD pending v1 activation and a separate business-case exercise; not to be confused with v1.1 Pro IAP (which is consumer-focused).
 3. Add note: "A v2 caregiver build would likely require 12+/Teen age rating, separate data-sharing privacy label, and HIPAA-adjacent compliance review (see Agent 9)."
 
 #### Test plan
@@ -129,7 +131,7 @@ Same provenance issue — plan predates persona-narrowing decision.
 
 #### Acceptance criteria
 - [ ] Caregiver features live under Appendix C / v2 only
-- [ ] Plan clearly states v1 targets Persona 1 (ADHD adult) exclusively
+- [ ] Plan clearly states v1 targets Persona 1 (consumer adult) exclusively
 - [ ] Settings decision documented — N/A (no settings affected)
 - [ ] Commit pushed to `BradHudsonGrant/Retraq` with `docs(product):` prefix referencing Task 4.3
 
@@ -145,7 +147,7 @@ Same provenance issue — plan predates persona-narrowing decision.
 **Priority:** P1 · **Effort:** M · **Tier:** v1
 
 #### Problem
-`lib/screens/settings_screen.dart` lines 112-179 show five top-level settings sections with sub-toggles that dilute the "radical simplicity" promise. Three toggles in particular — AM/PM cutoff, bullet-points-on-enter, bionic reading — are power-user ergonomics, not v1 core. Surfacing them above the Advanced fold risks first-run overwhelm for the ADHD-adult persona who is the entire v1 target.
+`lib/screens/settings_screen.dart` lines 112-179 show five top-level settings sections with sub-toggles that dilute the "radical simplicity" promise. Three toggles in particular — AM/PM cutoff, bullet-points-on-enter, bionic reading — are power-user ergonomics, not v1 core. Surfacing them above the Advanced fold risks first-run overwhelm for the consumer persona who is the entire v1 target.
 
 #### Root cause
 Feature drift: each toggle was added for a good individual reason, but cumulative surface area was never re-audited against the simplicity brief.
@@ -251,7 +253,7 @@ README was updated during the Retraq rebrand but not reconciled against Run 7 de
 1. Read README.md end-to-end; compare every bullet against `memory/project_feature_decisions.md`.
 2. Specifically reconcile:
    - Monetization language → "v1 ships free; v1.1 planned one-time Pro IAP."
-   - Persona scope → "v1 targets ADHD adults."
+   - Persona scope → "v1 targets general consumer adults (25–45)."
    - Home widget + tablet two-pane → keep (real features) and add matching Epic references per Task 4.7.
 3. Make sure tagline ("Lost traq? Retraq.") is preserved — it is branded and A5/A9 both flagged it positively.
 
@@ -470,7 +472,7 @@ N/A.
 - `implementation_plan.md` — add "soft streak" guardrail note
 
 #### Implementation approach
-1. Add a note under Epic 3 (or Retention epic): "Streak UI must remain non-punitive. Never add red/loss visuals, never interrupt with a streak-broken modal. Protected invariant for ADHD audience."
+1. Add a note under Epic 3 (or Retention epic): "Streak UI must remain non-punitive. Never add red/loss visuals, never interrupt with a streak-broken modal. Protected invariant for the anti-streak-shaming brand posture."
 2. No code changes.
 
 #### Test plan
@@ -492,7 +494,7 @@ N/A.
 **Priority:** P3 · **Effort:** XS · **Tier:** no-op
 
 #### Problem
-None; current behavior matches the ADHD-adult brief.
+None; current behavior matches the consumer-adult brief.
 
 #### Root cause
 N/A.
@@ -548,13 +550,13 @@ N/A.
 
 ---
 
-### Task 4.15 — Reference: preserve distinctive name and tagline (ADHD-lead subtitle note)
+### Task 4.15 — Reference: preserve distinctive name and tagline
 
 **Source:** A4 finding "App store positioning: name distinctive; tagline strong" · **Rating:** Ship It
 **Priority:** P3 · **Effort:** XS · **Tier:** no-op (feeds Epic 9 App Store work)
 
 #### Problem
-None today. A4 suggests the app-store subtitle should lead with an ADHD/busy-brain hook rather than pure brand voice. That decision belongs to Agent 9's App Store readiness epic; Task 4.15 only notes the positioning intent here.
+None today. A4 originally suggested the app-store subtitle should lead with a condition-specific hook; the 2026-04-23 repositioning moved away from that. The primary subtitle is the brand pun (`Lost traq? Retraq.`); alternative subtitles are non-pun recall-first frames (see `store-listing/ios.md`).
 
 #### Root cause
 N/A.
@@ -565,7 +567,7 @@ N/A.
 - `docs/retraq-branding-guide.md` — cross-reference from plan
 
 #### Implementation approach
-1. Add a line to plan Epic 9 (App Store): "Subtitle must lead with ADHD/busy-brain hook (A4 + A9 agreement). Brand voice carries in first-screenshot copy instead."
+1. Add a line to plan Epic 9 (App Store): "Subtitle leads with brand pun; alt subtitles are non-pun recall/memory-first frames. No condition-specific targeting."
 
 #### Test plan
 - None (decision deferred to Epic 9 copywriting).
@@ -586,7 +588,7 @@ N/A.
 **Priority:** P3 · **Effort:** XS · **Tier:** v1.1 backlog
 
 #### Problem
-None for v1 — narrowing scope is deliberate. A4 flags voice entry as the top v1.1 candidate because it's a natural ADHD fit (offload thought without thumb friction).
+None for v1 — narrowing scope is deliberate. A4 flags voice entry as the top v1.1 candidate because it's a natural fit for quick-capture users (offload thought without thumb friction).
 
 #### Root cause
 N/A.

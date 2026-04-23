@@ -65,8 +65,14 @@ blocker. The CI check (see below) fails the build.
 - `symptom`, `symptoms`, `symptom tracker`, `symptom monitoring`
 - `memory loss`, `memory problems`, `forgetting is a problem`
 - `psychologist`, `psychiatrist`, `counselor`, `social worker`
-- `ADHD management`, `manage your ADHD`, `manage your anxiety`,
-  `manage your depression` (management verb)
+- `ADHD`, `ADHD-friendly`, `ADHD-adjacent`, `ADHDer`,
+  `for ADHD brains`, `ADHD management`, `manage your ADHD`,
+  `manage your anxiety`, `manage your depression`
+  (**promoted to RED 2026-04-23** — Retraq's positioning no
+  longer targets ADHD or any condition-specific audience; any
+  use in any copy is a hard fail)
+- `neurodivergent`, `neurodivergent-friendly`
+  (**promoted to RED 2026-04-23** — same reasoning as ADHD)
 - `behavior change`, `rewire your brain`, `neural pathways`,
   `neuroplasticity`
 
@@ -77,17 +83,16 @@ contexts, but any use in a listing file requires explicit
 sign-off from brand review (Epic 13) + legal (Epic 12). They
 should appear in the PR description with rationale:
 
-- `ADHD`, `ADHD-friendly`, `ADHD-adjacent`, `ADHDer`,
-  `for ADHD brains` — allowed as audience descriptor, NOT as
-  intervention claim. Sentence-level context check required.
-- `neurodivergent`, `neurodivergent-friendly` — same as ADHD.
 - `memory`, `forgetful`, `forget`, `remember` — central to the
   'memory backup' positioning but adjacent to cognitive-
   function territory. OK when paired with a
   user-behavioral-frame ('days you forget what you had for
   lunch') not a clinical frame ('memory impairment').
 - `busy brain`, `scattered brain`, `executive function` —
-  audience-descriptor OK, function-claim NOT OK.
+  audience-descriptor OK, function-claim NOT OK. `busy brain`
+  stays yellow (generic, non-diagnostic) but `scattered brain`
+  and `executive function` now require extra review because
+  they read as adjacent to neurodivergence framing.
 - `wellness`, `well-being`, `self-care` — borderline with Play
   Health Apps. Avoid as primary frame; OK as adjacent language.
 - `journal`, `journaling` — green on its own but yellow when
@@ -110,8 +115,6 @@ should appear in the PR description with rationale:
   'behavior change')
 - `quick`, `one sentence`, `a line a day` (speed-descriptive;
   tone-compatible with brand voice)
-- `ADHDTok`, `r/ADHD` (community-reference contexts only —
-  audience-descriptor, not claim)
 
 ## Positioning warning — "simple" is green but lazy
 

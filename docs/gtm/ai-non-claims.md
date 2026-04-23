@@ -19,7 +19,7 @@ the product positioning at the same time.
 | **Therapy** | "AI therapist," "AI therapy," "therapeutic journaling" | Medical-device risk (Apple 1.4.1, Play Health policy); implies licensed clinical practice |
 | **Coaching** | "AI coach," "your AI coach," "personalized coaching" | Marketed coaching claims trigger therapy/wellness overlap in regulated markets; undermines the memory-backup frame |
 | **Named modality** | "AI-guided CBT," "DBT-informed AI prompts," "EMDR support" | Named evidence-based therapies are clinical claims; we are not licensed to deliver them |
-| **Diagnosis** | "AI detects depression," "ADHD screening," "identifies anxiety patterns" | Medical-device classification trigger; FDA / Health Canada / EMA territory |
+| **Diagnosis** | "AI detects depression," "mood-disorder screening," "identifies anxiety patterns" | Medical-device classification trigger; FDA / Health Canada / EMA territory |
 | **Treatment** | "AI treats," "AI reduces symptoms," "manages your condition" | Same; plus FTC advertising rules forbid unsubstantiated outcomes |
 | **Behavioral outcomes** | "Change your habits," "rewire your brain," "build new neural pathways" | Unsubstantiated claims; attracts FTC scrutiny even in wellness apps |
 | **Clinical outcomes** | "Better sleep," "reduced anxiety," "improved focus" | Health benefit claims without clinical trial basis |

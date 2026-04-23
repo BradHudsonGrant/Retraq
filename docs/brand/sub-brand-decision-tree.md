@@ -1,19 +1,18 @@
 # Sub-brand decision tree — v2 caregiver
 
+**[Superseded 2026-04-23 — caregiver/memory-concern exploration abandoned.]**
+
 **Status:** Strategy doc — activates when v2 caregiver tier
 enters planning · **Task:** 13.5 · **Last updated:** 2026-04-16
 
-Retraq's v1 voice is native to ADHD-adult culture (drop a traq,
-busy brains, "for people who forget Tuesday by Thursday"). That
-voice will NOT land with Persona 2 (40-something caregiver) or
-Persona 3 (65+ with memory concerns). When Retraq Care ships in
-v2, a sub-brand decision must resolve before any caregiver-
-facing surface ships.
+Retraq's v1 voice is native to busy-brain adult culture (drop a traq,
+"for people who forget Tuesday by Thursday"). That voice will NOT
+land with Persona 2 (40-something caregiver) or Persona 3 (65+ with
+memory concerns). When Retraq Care ships in v2, a sub-brand decision
+must resolve before any caregiver-facing surface ships.
 
 Gated by Epic 12 Task 12.12 (caregiver pre-build legal
-framework) and Epic 5 Task 5.6 is moot because 5.6 ships Retraq
-as Inflow's complement for ADHD, not caregiver positioning.
-Paired with `../store-listing/age-rating-caregiver-uplift.md`
+framework). Paired with `../store-listing/age-rating-caregiver-uplift.md`
 (age/rating uplift plan) and
 `implementation_plan.md Part III.1` (v2 scope).
 
@@ -51,10 +50,10 @@ Q1: Does Retraq Care ship standalone (separate app / sub-brand)
     copy + surfaces caregiver dashboard.
     Pros: lower marketing cost, one codebase, shared user base,
           faster to ship.
-    Cons: persona friction — ADHD-young-adult users see
+    Cons: persona friction — consumer users see
           "invite your caregiver" in their Settings and feel
           wrong. Caregiver users download Retraq expecting
-          ADHD journaling and find a family feature.
+          consumer journaling and find a family feature.
 ```
 
 ## Recommendation
@@ -63,7 +62,7 @@ Q1: Does Retraq Care ship standalone (separate app / sub-brand)
 
 ### Why
 
-- The three personas (ADHD-young, caregiver, memory-concern)
+- The three personas (consumer-adult, caregiver, memory-concern)
   have incompatible brand voices. Trying to stretch one app
   across all three produces copy that lands with none.
 - App Store / Play Console category + age-rating posture for
@@ -71,24 +70,23 @@ Q1: Does Retraq Care ship standalone (separate app / sub-brand)
   `../store-listing/age-rating-caregiver-uplift.md`) flips from
   Everyone → Teen minimum, Health Apps Declaration flips from
   No → Yes. Keeping those under a separate package keeps the
-  v1 ADHD-adult listing clean.
+  v1 consumer listing clean.
 - Ad targeting + ASO keywords for caregiver search intent
-  (`dementia journal`, `help my parent remember`, `family
-  memory tool`) are entirely different from v1 ASO
-  (`adhd journal`, `quick mood log`). Separate listings let
-  each rank natively.
-- Marketing channel differences: v1 leverages ADHDTok +
-  r/ADHD + ADHD coaches (see `../gtm/battlecards/inflow.md`
-  creator seeding). v2 caregiver marketing flows through
-  elder-care facilities, AARP, memory-care clinics — a
-  completely separate go-to-market motion with different
-  creative, different CAC assumptions, different tone.
+  (`help my parent remember`, `family memory tool`) are
+  entirely different from v1 ASO (`memory journal`,
+  `quick mood log`). Separate listings let each rank natively.
+- Marketing channel differences: v1 leverages general creator
+  seeding + subreddit outreach (see `../gtm/battlecards/inflow.md`).
+  v2 caregiver marketing flows through elder-care facilities,
+  AARP, memory-care clinics — a completely separate go-to-market
+  motion with different creative, different CAC assumptions,
+  different tone.
 - Legal posture diverges: caregiver tier requires
   Task 12.12's pre-build legal framework (controllership
   model, capacity attestation, mandatory-reporter analysis).
   Launching it inside the v1 app would require updating the
   v1 Privacy Policy, ToS, and consent flow in ways that
-  complicate the ADHD-adult story.
+  complicate the consumer story.
 
 ### What "Retraq for Family" looks like
 
@@ -100,7 +98,7 @@ Q1: Does Retraq Care ship standalone (separate app / sub-brand)
   accent replacing the teal
 
 **Voice:**
-- Warm-professional, not ADHD-playful.
+- Warm-professional, not consumer-playful.
 - "Your loved one journaled 3 times this week. Here are the
   moments they wanted to remember."
 - NO "traq," NO "busy brains," NO "drop a," NO executive-
@@ -159,7 +157,7 @@ Q1: Does Retraq Care ship standalone (separate app / sub-brand)
 Considered and rejected. Reasons:
 
 1. **Brand voice contamination.** Once a caregiver surface
-   exists in Settings, the v1 ADHD-young-adult user
+   exists in Settings, the v1 consumer user
    encounters it and the positioning story breaks. "Lost
    traq? Retraq." doesn't land if the Settings screen has
    a "Connect your parent" row.
@@ -172,11 +170,11 @@ Considered and rejected. Reasons:
 
 3. **Privacy policy scope blast.** Adding multi-user data
    sharing to the v1 app means the Privacy Policy covers
-   both single-user ADHD journaling AND caregiver sharing
+   both single-user consumer journaling AND caregiver sharing
    flows. Current policy is 1,200 words; adding caregiver
    pushes toward 2,500 and loses its "plain language"
    readability advantage (v1 is explicitly written for
-   ADHD-readable length).
+   short / scannable length).
 
 4. **Monetization blur.** Pricing a caregiver premium
    feature at $2-3/mo inside Retraq Pro would anchor it
@@ -186,9 +184,9 @@ Considered and rejected. Reasons:
    without dragging down consumer v1 pricing.
 
 5. **ASO + marketing collision.** Apple Search Ads and Play
-   keyword auctions for "adhd journal" and "memory care"
-   are in completely separate bidding pools. One listing
-   cannot win both.
+   keyword auctions for consumer-memory-journal keywords and
+   "memory care" are in completely separate bidding pools.
+   One listing cannot win both.
 
 ## Concept exploration checklist
 
@@ -207,7 +205,7 @@ Agent 13 audit recommendation):
       against the same primary green.
 - [ ] **Voice samples** — 5 lines of onboarding copy in
       the proposed sub-brand voice. Acceptance: none uses
-      "traq" / "busy brains" / ADHD-specific referents.
+      "traq" / "busy brains" / consumer-young-adult referents.
 
 Compare candidate visual language against known caregiver-
 market competitors for positioning clarity:
@@ -217,8 +215,8 @@ market competitors for positioning clarity:
 - **Lotsa Helping Hands** — caregiver coordination. Calendar-
   driven, not journal-driven.
 - **CareZone** — senior-care heavy. Green + white utilitarian.
-- **MindMate** — brain-training + journaling for early-stage
-  dementia. Bright + playful (WRONG tone for Retraq Care).
+- **MindMate** — brain-training + journaling competitor in the
+  memory-care space. Bright + playful (WRONG tone for Retraq Care).
 
 The gap Retraq Care occupies: caregiver-visible memory
 journaling with zero-retention cloud posture and a warm-

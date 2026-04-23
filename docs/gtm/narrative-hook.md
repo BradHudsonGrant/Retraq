@@ -17,11 +17,11 @@ landing page hero.
 | Slot | Character budget | Copy |
 |---|---|---|
 | iOS App Store subtitle | 30 | `Lost traq? Retraq.` |
-| iOS App Store promotional text | 170 | `The on-device memory backup for ADHD brains. Drop a sentence a day — get your week back as a recap. No streaks to protect, no data to lose.` |
-| Play short description | 80 | `Memory backup for ADHD brains. Drop a sentence a day, retraq your week.` |
+| iOS App Store promotional text | 170 | `The on-device memory backup for busy brains. Drop a sentence a day — get your week back as a recap. No streaks to protect, no data to lose.` |
+| Play short description | 80 | `Memory backup for busy brains. Drop a sentence a day, retraq your week.` |
 | Play full description — opening line | — | Same as full hook above. |
-| Press outreach subject line | ~60 | `Retraq — the recall-first journal for ADHD adults.` |
-| Creator DM opener | ~200 | `Hey {name} — I built Retraq for the week-blackout problem ADHD folks keep posting about. On-device, no streak shaming, one sentence a day, and a recap you can actually re-read when your brain goes blank. Would love your take.` |
+| Press outreach subject line | ~60 | `Retraq — the recall-first daily journal.` |
+| Creator DM opener | ~200 | `Hey {name} — I built Retraq for the week-blackout problem so many people keep posting about. On-device, no streak shaming, one sentence a day, and a recap you can actually re-read when your brain goes blank. Would love your take.` |
 | Landing page H1 | — | `Lost traq? Retraq.` |
 | Landing page subhead | — | `The on-device memory backup for people who forget their week by Friday.` |
 

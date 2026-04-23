@@ -95,7 +95,7 @@ description slot:
 
 | Variant | Short description (≤80 chars) |
 |---|---|
-| **A (control)** | `Memory backup for ADHD brains. Drop a sentence a day, retraq your week.` (69) |
+| **A (control)** | `Memory backup for busy brains. Drop a sentence a day, retraq your week.` (69) |
 | **B** | `Your memory backup. On-device journal with weekly recap. No sync, no ads.` (72) |
 | **C** | `The journal that remembers. Weekly recap of a week you wouldn't have.` (69) |
 

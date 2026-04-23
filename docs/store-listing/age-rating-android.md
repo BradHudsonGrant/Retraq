@@ -65,8 +65,8 @@ from children. Retraq answers:
 
 | Gate | Answer | Rationale |
 |---|---|---|
-| Designated for Families (DFF) | **No** | Retraq's audience is ADHD adults; it's not a kids-first app. Not enrolling in DFF. |
-| Targets children as the primary audience? | **No** | Target demographic is 25–45 ADHD adults per `docs/gtm/positioning-one-pager.md`. |
+| Designated for Families (DFF) | **No** | Retraq's audience is general adults; it's not a kids-first app. Not enrolling in DFF. |
+| Targets children as the primary audience? | **No** | Target demographic is 25–45 adults per `docs/gtm/positioning-one-pager.md`. |
 | Contains features that COPPA would govern? | **No** | No child-targeted features; onboarding includes age-gate + consent flow (see Epic 12) that handles the edge case of an under-13 user attempting to install. |
 | Family Policy self-cert required? | **No** | Only required if DFF program or ≤13 targeting. Neither applies. |
 

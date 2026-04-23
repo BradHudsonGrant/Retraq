@@ -8,8 +8,9 @@
 > iOS users a concrete reason to install — and "better UI" isn't it.
 
 Pair with the positioning one-pager and narrative hook. Do NOT
-position Retraq as "the ADHD Apple Journal" — that pitch loses in
-head-to-head. Position on **cross-platform, export, recall-first**.
+position Retraq against Apple Journal on condition-specific
+audience framing — that pitch loses in head-to-head. Position on
+**cross-platform, export, recall-first**.
 
 ## The competitor at a glance
 
@@ -66,15 +67,15 @@ head-to-head. Position on **cross-platform, export, recall-first**.
   Recap tab is a dedicated read surface. FTS5 search across every
   entry. "On this day last year" recurrence.
 
-### 4. ADHD-adult audience fit
+### 4. Recall-oriented prompt set
 
 - Apple Journal's AI prompts lean generic ("How are you feeling
   today?"). They don't reduce cognitive load for the
-  week-blackout problem ADHD adults face.
+  week-blackout problem many users describe.
 - **Retraq counter:** Rotating daily hero prompts that guide
   specifically to recall moments ("One thing you want to
   remember from today"). Freeze-equipped streaks that don't
-  punish executive-function drop-offs.
+  punish missed days.
 
 ### 5. No widget / tablet story yet (verify quarterly)
 

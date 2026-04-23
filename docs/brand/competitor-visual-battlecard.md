@@ -98,7 +98,7 @@ This doc is the **visual** half of the same competitive picture.
 - **Voice:** Self-help-adjacent. "Your personal AI-driven
   journal for self-care."
 - **Market position:** AI-guided, subscription-heavy. Once
-  popular on ADHDTok; losing ground to Rosebud.
+  popular in social creator circuits; losing ground to Rosebud.
 
 ### Moodnotes
 
@@ -136,7 +136,7 @@ This doc is the **visual** half of the same competitive picture.
 - **Typography:** Lexend (body, research-backed for cognitive
   accessibility) + Manrope (labels, geometric clarity).
   Locked per Task 13.10.
-- **Voice:** ADHD-adjacent warm-casual. "Drop a traq." "Lost
+- **Voice:** Warm-casual. "Drop a traq." "Lost
   traq? Retraq." "For people who forget Tuesday by Thursday."
 - **Market position:** Free-forever core journal, one-time
   \$5.99 Pro Lifetime OR \$2.99/mo Pro Cloud AI (v1.1).
@@ -186,8 +186,7 @@ Two-axis plot:
   "system blue," so in-feed screenshots are recognizable as
   Retraq before you read the wordmark.
 - **Tonally distinct from Daylio** because Retraq's voice
-  (ADHD-adjacent, "drop a traq") is specific where Daylio's
-  is broad.
+  ("drop a traq") is specific where Daylio's is broad.
 - **Distinct from Finch / Rosebud** on the gamification +
   AI-as-companion axes — Retraq explicitly isn't either
   (see `../gtm/engagement-hook-spec.md` no-pet-mechanics
@@ -219,7 +218,7 @@ WITHOUT reading the wordmark:
   "another Daylio" comparison.
 - **Don't use pink-pastel palettes.** Finch owns that space;
   even adjacent palettes read as "cute self-care app"
-  which conflicts with Retraq's ADHD-adult positioning.
+  which conflicts with Retraq's warm-but-grown-up positioning.
 - **Don't adopt serif typography.** Day One owns "literary
   journaling"; Retraq's voice is warm-conversational, not
   literary.

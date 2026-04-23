@@ -61,8 +61,9 @@ live within minutes.
 ### Invite list — ~25 testers
 
 - 3 core contributors (minimum).
-- 5 ADHD-adult friends/family who match the ICP persona.
-- 5 non-ADHD adults for "does this make sense at all?" check.
+- 5 friends/family who match the ICP persona (busy brains,
+  journal-curious, memory-keen).
+- 5 other adults for "does this make sense at all?" check.
 - 5 technically-inclined testers who will actually file bug
   reports (preferably on different Android device vendors —
   Pixel, Samsung, OnePlus).

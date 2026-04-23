@@ -21,7 +21,7 @@ reconstruct them from two listing files.
 
 Rationale: Lifestyle is the honest primary — Retraq is a journal,
 not a clinical tool. Health & Fitness as secondary captures the
-real ADHD-adult + wellness adjacency without triggering Apple
+real consumer + wellness adjacency without triggering Apple
 1.4.1 clinical-device review, provided the description copy
 avoids medical language (see Task 9.8 guardrail list).
 
@@ -86,9 +86,11 @@ terms:
 - `CBT`, `DBT`, `EMDR`, `ACT`, any named evidence-based therapy
 - `clinical`, `clinically proven`
 - `symptom tracker`, `symptom monitoring`
-- `ADHD management` (management implies intervention)
-- `dementia` (specific regulated condition; plus v1 is not
-  caregiver-targeted)
+- `ADHD`, `ADHD management`, `ADHD-friendly`, `neurodivergent`
+  (condition-specific audience targeting; promoted to red-list
+  2026-04-23 — see `health-claim-guardrails.md`)
+- `dementia`, `Alzheimer`, `memory loss`, `cognitive decline`
+  (specific regulated conditions)
 - `depression`, `anxiety`, `PTSD`, `bipolar` (condition names
   in a feature-benefit context)
 - `cure`, `heal`, `medical-grade`, `hospital-grade`
@@ -107,9 +109,7 @@ Retraq CAN (and does) describe itself using:
 - "Mood scale" (noun, not verb — no "mood tracking")
 - "On-device" / "private" / "offline"
 - "Low-pressure habit" / "gentle reminders"
-- "Designed for how ADHD-shaped memory actually works" — this
-  is the edge case: it's a design-intent statement, not an
-  efficacy claim. OK to use with care.
+- "For busy brains" (generic, not condition-specific)
 
 ## Apple 5.1.1(ix) healthcare-data check
 

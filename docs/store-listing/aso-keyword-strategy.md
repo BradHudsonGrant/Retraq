@@ -17,10 +17,10 @@ keyword field.
 ### iOS 100-char keyword field (committed for v1)
 
 ```
-adhd,journal,diary,memory,mood,daily,log,private,offline,lexend,simple,recap,habit,notes,brain
+journal,diary,memory,mood,daily,log,private,offline,lexend,simple,recap,habit,notes,brain,jot
 ```
 
-That's 95 chars including separators — 5 chars of headroom for a
+That's 94 chars including separators — 6 chars of headroom for a
 future tuning pass.
 
 ## Research strategy
@@ -45,9 +45,6 @@ Long = low volume, exact-intent, winnable immediately
 
 | Keyword | Type | Volume (est.) | Competition | Intent | Action |
 |---|---|---|---|---|---|
-| adhd | Head | High | High (Inflow, Finch, Stoic) | Very High for target | Included; lead with it |
-| adhd journal | Mid | Med | Med | Exact match | Not in 100-char (comma-split), but covered by "adhd" + "journal" tokens — App Store tokenizes |
-| adhd app | Mid | Med | High | Med (search intent may be tracker, therapy) | Not included; too broad |
 | journal | Head | Very High | Very High (Day One, Daylio) | Med (generic) | Included as fallback |
 | diary | Head | High | High (Daylio) | Med | Included |
 | memory journal | Long | Low | Low | Very High | Split: "memory" + "journal" |
@@ -65,7 +62,9 @@ Long = low volume, exact-intent, winnable immediately
 | notes app | Head | Very High | Unwinnable (Apple Notes, Google Keep) | Low | "notes" included only as combo support |
 | brain dump | Long | Low | Low | Very High | "brain" included |
 | lexend | Long | Very Low | Very Low (no other app name-drops) | Very High for reading-font searchers | Included as brand differentiator |
-| adhd diary | Long | Low | Low | Exact match | Covered by combo tokens |
+| jot | Long | Low | Low | High (quick-capture intent) | Included — aligns with in-app "Jot" tab |
+| adhd | n/a | n/a | n/a | Off-limits (condition-specific audience targeting, promoted to red 2026-04-23 — see `health-claim-guardrails.md`) | NOT included |
+| neurodivergent | n/a | n/a | n/a | Off-limits (same reason) | NOT included |
 | dementia | n/a | n/a | n/a | Off-limits (health-claim risk) | NOT included |
 | alzheimer | n/a | n/a | n/a | Off-limits | NOT included |
 | therapy | n/a | n/a | n/a | Off-limits (not a clinical tool) | NOT included |
@@ -78,18 +77,19 @@ Long = low volume, exact-intent, winnable immediately
 
 The one keyword almost no competitor uses. Lexend is a Google-built
 font researched for reading fluency. Users who search "lexend" are
-either font-aware designers (niche but genuine) or ADHD users who've
-heard about Lexend from a therapist/OT. Every such searcher is a
-near-perfect match for Retraq. Zero competition and ~0 install cost
-for the keyword slot.
+font-aware designers or readers who've heard about Lexend from an
+educator or OT. Every such searcher is a near-perfect match for
+Retraq. Zero competition and ~0 install cost for the keyword slot.
 
-### Why NOT "adhd app" or "therapy"?
+### Why NOT "therapy" or condition names?
 
 These are high-intent terms for clinical apps. Retraq's tagline
 "not a medical device" and the brand's anti-obligation voice are
 actively incompatible with the search intent. A user searching
 "therapy" is looking for Talkspace or BetterHelp — they'll install
 Retraq, be disappointed, uninstall, and leave a 1-star review.
+Condition names (ADHD, depression, anxiety, dementia) are on the
+red-list per `health-claim-guardrails.md`.
 
 ## Competitor keyword posture (manual snapshot)
 
@@ -97,13 +97,13 @@ Based on App Store listings viewed 2026-04-16:
 
 | Competitor | Subtitle / keyword posture | Gap for Retraq |
 |---|---|---|
-| Daylio | "Micro Diary · Mood Tracker" | Owns "mood tracker" head. Gap: ADHD-specific, Lexend |
-| Day One | "Journal · Diary · Notes" | Owns "journal" head. Gap: ADHD, private-offline explicitness |
+| Daylio | "Micro Diary · Mood Tracker" | Owns "mood tracker" head. Gap: Lexend, on-device |
+| Day One | "Journal · Diary · Notes" | Owns "journal" head. Gap: private-offline explicitness |
 | Journey | "Diary, Journal" | Similar to Day One but less saturated |
 | Reflectly | "AI Journal" | Owns "AI journal" combo. Gap: non-AI / offline-first |
 | Finch | "Self-Care Pet" | Different category (gamified wellness). Not a keyword competitor |
-| Stoic | "Journal, Guided, Habits" | Owns "stoic" + "philosophy" niche. Gap: ADHD |
-| How We Feel | "Mood Journal" | Owns "emotion" terminology. Gap: ADHD-specific workflow |
+| Stoic | "Journal, Guided, Habits" | Owns "stoic" + "philosophy" niche. Gap: lightweight recap-first |
+| How We Feel | "Mood Journal" | Owns "emotion" terminology. Gap: quick-capture workflow |
 | Apple Journal | Default iOS | Unwinnable on "journal" within iOS; compete on offline-only |
 | Rosebud | "AI Journal" | Overlaps with Reflectly. Gap: free tier |
 | Mindsera | "Guided Journal" | Premium positioning. Gap: entry-level price |
@@ -111,8 +111,8 @@ Based on App Store listings viewed 2026-04-16:
 ## Long-description indexing (Play Console)
 
 Play Console indexes the full description (not just a keyword field).
-The current listing body already seeds: adhd, memory, journal, mood,
-private, offline, recap, tracker, notes, brain. Tune by adding one
+The current listing body seeds: memory, journal, mood, private,
+offline, recap, tracker, notes, brain, jot. Tune by adding one
 mention per target head-term every 300 chars or so, without keyword-
 stuffing (Play has spam detection for that).
 
