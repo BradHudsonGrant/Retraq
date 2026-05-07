@@ -50,7 +50,7 @@ dependencies:
   # Security
   local_auth: ^3.0.0
   crypto: ^3.0.6
-  flutter_secure_storage: ^10.0.0
+  flutter_secure_storage: ^10.1.0
   shared_preferences: ^2.3.0
 
   # Notifications
